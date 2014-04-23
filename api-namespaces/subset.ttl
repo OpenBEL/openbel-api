@@ -1,0 +1,219 @@
+@prefix affx: <http://www.openbel.org/bel/namespace/affy-probeset/> .
+@prefix belv: <http://www.openbel.org/vocabulary/> .
+@prefix chebi: <http://www.openbel.org/bel/namespace/chebi/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix do: <http://www.openbel.org/bel/namespace/disease-ontology/> .
+@prefix egid: <http://www.openbel.org/bel/namespace/entrez-gene/> .
+@prefix gobp: <http://www.openbel.org/bel/namespace/go-biological-process/> .
+@prefix gocc: <http://www.openbel.org/bel/namespace/go-cellular-component/> .
+@prefix hgnc: <http://www.openbel.org/bel/namespace/hgnc-human-genes/> .
+@prefix meshcs: <http://www.openbel.org/bel/namespace/mesh-cellular-structures/> .
+@prefix meshd: <http://www.openbel.org/bel/namespace/mesh-diseases/> .
+@prefix meshpp: <http://www.openbel.org/bel/namespace/mesh-processes/> .
+@prefix mgi: <http://www.openbel.org/bel/namespace/mgi-mouse-genes/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rgd: <http://www.openbel.org/bel/namespace/rgd-rat-genes/> .
+@prefix schem: <http://www.openbel.org/bel/namespace/selventa-legacy-chemical-names/> .
+@prefix scomp: <http://www.openbel.org/bel/namespace/selventa-named-complexes/> .
+@prefix sdis: <http://www.openbel.org/bel/namespace/selventa-legacy-diseases/> .
+@prefix sfam: <http://www.openbel.org/bel/namespace/selventa-protein-families/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sp: <http://www.openbel.org/bel/namespace/swissprot/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.openbel.org/bel/namespace/affy-probeset/100001_at> a belv:RNAConcept ;
+    dcterms:identifier "100001_at" ;
+    belv:fromSpecies "10090" ;
+    skos:exactMatch <http://www.openbel.org/bel/namespace/entrez-gene/12502> ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/affy-probeset> ;
+    skos:prefLabel "100001_at" .
+
+<http://www.openbel.org/bel/namespace/chebi/100> a belv:AbundanceConcept ;
+    dcterms:identifier "100" ;
+    dcterms:title "(-)-medicarpin" ;
+    skos:altLabel "(-)-Medicarpin",
+        "(6aR,11aR)-9-methoxy-6a,11a-dihydro-6H-[1]benzofuro[3,2-c]chromen-3-ol",
+        "C16H14O4",
+        "medicarpin" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/chebi> ;
+    skos:prefLabel "(-)-medicarpin" .
+
+<http://www.openbel.org/bel/namespace/disease-ontology/0000000> a belv:PathologyConcept ;
+    dcterms:identifier "0000000" ;
+    dcterms:title "gallbladder disease" ;
+    skos:exactMatch meshd:D005705 ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/disease-ontology> ;
+    skos:prefLabel "gallbladder disease" .
+
+
+<http://www.openbel.org/bel/namespace/entrez-gene/100008564> a belv:GeneConcept,
+        belv:RNAConcept ;
+    dcterms:identifier "100008564" ;
+    dcterms:title "predicted gene 14018" ;
+    belv:fromSpecies "10090" ;
+    skos:altLabel "Gm14018",
+        "OTTMUSG00000015378",
+        "WD repeat domain 76 pseudogene",
+        "Wdr76p" ;
+    skos:exactMatch <http://www.openbel.org/bel/namespace/mgi-mouse-genes/3649456> ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/entrez-gene> ;
+    skos:prefLabel "100008564" .
+
+<http://www.openbel.org/bel/namespace/go-biological-process/0000001> a belv:BiologicalProcessConcept ;
+    dcterms:identifier "0000001" ;
+    skos:altLabel "mitochondrial inheritance" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/go-biological-process> ;
+    skos:prefLabel "mitochondrion inheritance" .
+
+<http://www.openbel.org/bel/namespace/go-cellular-component/0000220> a belv:ComplexConcept ;
+    dcterms:identifier "0000220" ;
+    skos:altLabel "vacuolar hydrogen ion-transporting ATPase V0 domain" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/go-cellular-component> ;
+    skos:prefLabel "vacuolar proton-transporting V-type ATPase, V0 domain" .
+
+<http://www.openbel.org/bel/namespace/hgnc-human-genes/19049> a belv:GeneConcept,
+        belv:RNAConcept ;
+    dcterms:identifier "19049" ;
+    dcterms:title "aldehyde oxidase 3, pseudogene" ;
+    belv:fromSpecies "9606" ;
+    skos:altLabel "AOH1" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/hgnc-human-genes> ;
+    skos:prefLabel "AOX3P" .
+
+meshd:D008844 a belv:PathologyConcept ;
+    dcterms:identifier "D008844" ;
+    skos:altLabel "Micrognathisms" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/mesh-diseases> ;
+    skos:prefLabel "Micrognathism" .
+
+meshpp:D052138 a belv:BiologicalProcessConcept ;
+    dcterms:identifier "D052138" ;
+    skos:altLabel "Cancer Gene",
+        "Gene, Cancer",
+        "Gene, Neoplasm",
+        "Genes, Cancer",
+        "Neoplasm Gene",
+        "Neoplasm Genes" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/mesh-processes> ;
+    skos:prefLabel "Genes, Neoplasm" .
+
+<http://www.openbel.org/bel/namespace/mgi-mouse-genes/106584> a belv:GeneConcept ;
+    dcterms:identifier "106584" ;
+    dcterms:title "pigtail-rotator" ;
+    belv:fromSpecies "10090" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/mgi-mouse-genes> ;
+    skos:prefLabel "pgtr" .
+
+<http://www.openbel.org/bel/namespace/rgd-rat-genes/1589842> a belv:GeneConcept,
+        belv:ProteinConcept,
+        belv:RNAConcept ;
+    dcterms:identifier "1589842" ;
+    dcterms:title "hypothetical protein LOC690939" ;
+    belv:fromSpecies "10116" ;
+    skos:altLabel "hypothetical protein LOC690939" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/rgd-rat-genes> ;
+    skos:prefLabel "LOC690939" .
+
+schem:A0001 a belv:AbundanceConcept ;
+    dcterms:identifier "A0001" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/selventa-legacy-chemical-names> ;
+    skos:prefLabel "( -)-Ibuprofen" .
+
+sdis:D0002 a belv:PathologyConcept ;
+    dcterms:identifier "D0002" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/selventa-legacy-diseases> ;
+    skos:prefLabel "ATP Depletion" .
+
+scomp:C0098 a belv:ComplexConcept ;
+    dcterms:identifier "C0098" ;
+    skos:exactMatch <http://www.openbel.org/bel/namespace/go-cellular-component/0070993> ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/selventa-named-complexes> ;
+    skos:prefLabel "Preinitiation Complex" .
+
+sfam:F0004 a belv:ProteinConcept ;
+    dcterms:identifier "F0004" ;
+    skos:altLabel "acyl-CoA oxidase" ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/selventa-protein-families> ;
+    skos:prefLabel "ACOX Family" .
+
+sp:A0A183 a belv:GeneConcept,
+        belv:ProteinConcept,
+        belv:RNAConcept ;
+    dcterms:identifier "A0A183" ;
+    dcterms:title "Late cornified envelope protein 6A" ;
+    belv:fromSpecies "9606" ;
+    skos:altLabel "LCE6A" ;
+    skos:exactMatch <http://www.openbel.org/bel/namespace/hgnc-human-genes/31824> ;
+    skos:inScheme <http://www.openbel.org/bel/namespace/swissprot> ;
+    skos:prefLabel "LCE6A_HUMAN" .
+
+<http://www.openbel.org/bel/namespace/selventa-named-complexes> a belv:NamespaceConceptScheme ;
+    belv:prefix "scomp" ;
+    skos:prefLabel "Selventa Named Complexes" .
+
+<http://www.openbel.org/bel/namespace/mesh-cellular-structures> a belv:NamespaceConceptScheme ;
+    belv:prefix "meshcs" ;
+    skos:prefLabel "Mesh Cellular Structures" .
+
+<http://www.openbel.org/bel/namespace/selventa-protein-families> a belv:NamespaceConceptScheme ;
+    belv:prefix "sfam" ;
+    skos:prefLabel "Selventa Protein Families" .
+
+<http://www.openbel.org/bel/namespace/selventa-legacy-diseases> a belv:NamespaceConceptScheme ;
+    belv:prefix "sdis" ;
+    skos:prefLabel "Selventa Legacy Diseases" .
+
+<http://www.openbel.org/bel/namespace/mesh-processes> a belv:NamespaceConceptScheme ;
+    belv:prefix "meshpp" ;
+    skos:prefLabel "Mesh Processes" .
+
+<http://www.openbel.org/bel/namespace/selventa-legacy-chemical-names> a belv:NamespaceConceptScheme ;
+    belv:prefix "schem" ;
+    skos:prefLabel "Selventa Legacy Chemical Names" .
+
+<http://www.openbel.org/bel/namespace/go-cellular-component> a belv:NamespaceConceptScheme ;
+    belv:prefix "gocc" ;
+    skos:prefLabel "Go Cellular Component" .
+
+<http://www.openbel.org/bel/namespace/mesh-diseases> a belv:NamespaceConceptScheme ;
+    belv:prefix "meshd" ;
+    skos:prefLabel "Mesh Diseases" .
+
+<http://www.openbel.org/bel/namespace/disease-ontology> a belv:NamespaceConceptScheme ;
+    belv:prefix "do" ;
+    skos:prefLabel "Disease Ontology" .
+
+<http://www.openbel.org/bel/namespace/go-biological-process> a belv:NamespaceConceptScheme ;
+    belv:prefix "gobp" ;
+    skos:prefLabel "Go Biological Process" .
+
+<http://www.openbel.org/bel/namespace/hgnc-human-genes> a belv:NamespaceConceptScheme ;
+    belv:prefix "hgnc" ;
+    skos:prefLabel "Hgnc Human Genes" .
+
+<http://www.openbel.org/bel/namespace/swissprot> a belv:NamespaceConceptScheme ;
+    belv:prefix "sp" ;
+    skos:prefLabel "Swissprot" .
+
+<http://www.openbel.org/bel/namespace/chebi> a belv:NamespaceConceptScheme ;
+    belv:prefix "chebi" ;
+    skos:prefLabel "Chebi" .
+
+<http://www.openbel.org/bel/namespace/rgd-rat-genes> a belv:NamespaceConceptScheme ;
+    belv:prefix "rgd" ;
+    skos:prefLabel "Rgd Rat Genes" .
+
+<http://www.openbel.org/bel/namespace/mgi-mouse-genes> a belv:NamespaceConceptScheme ;
+    belv:prefix "mgi" ;
+    skos:prefLabel "Mgi Mouse Genes" .
+
+<http://www.openbel.org/bel/namespace/entrez-gene> a belv:NamespaceConceptScheme ;
+    belv:prefix "egid" ;
+    skos:prefLabel "Entrez Gene" .
+
+<http://www.openbel.org/bel/namespace/affy-probeset> a belv:NamespaceConceptScheme ;
+    belv:prefix "affx" ;
+    skos:prefLabel "Affy Probeset" .
+
