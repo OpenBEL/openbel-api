@@ -21,7 +21,6 @@ class Namespaces < Sinatra::Base
     SPOKEN_CONTENT_TYPES = %w[application/json text/html text/xml]
   end
 
-  # 27 milliseconds (via curl)
   get '/namespaces' do
     ns = storage.namespaces
     if ns.empty?
@@ -29,11 +28,10 @@ class Namespaces < Sinatra::Base
     end
     
     render_multiple(request, ns.sort { |x,y|
-      x.prefLabel.to_s <=> y.prefLabel.to_s
+      x.name.to_s <=> y.name.to_s
     }.map(&:to_h))
   end
 
-  # 15 milliseconds (via curl)
   get '/namespaces/:namespace' do |ns|
     ns = storage.namespace(ns)
     if ns
@@ -44,22 +42,21 @@ class Namespaces < Sinatra::Base
     end
   end
 
-  #get '/namespaces/:namespace/all' do |ns|
-    #status 200
-    #stream do |out|
-      #scheme_pattern = {predicate: URI('http://www.w3.org/2004/02/skos/core#inScheme')}
-      #proxy.each(scheme_pattern) do |trpl|
-        #subject_uri = trpl.subject.uri
-        #proxy.each({
-          #subject: subject_uri,
-          #predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel')}) do |label|
-          #out << label.object.to_s + "\n"
-        #end
-      #end
-    #end
-  #end
+  get '/namespaces/:namespace/all' do |ns|
+    status 200
+    stream do |out|
+      scheme_pattern = {predicate: URI('http://www.w3.org/2004/02/skos/core#inScheme')}
+      proxy.each(scheme_pattern) do |trpl|
+        subject_uri = trpl.subject.uri
+        proxy.each({
+          subject: subject_uri,
+          predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel')}) do |label|
+          out << label.object.to_s + "\n"
+        end
+      end
+    end
+  end
 
-  # 13 milliseconds (via curl)
   get '/namespaces/:namespace/:id' do |ns, id|
     statements = storage.info(ns, id)
     if not statements or statements.empty?
@@ -69,7 +66,6 @@ class Namespaces < Sinatra::Base
     statements.map(&:to_s)
   end
 
-  # 2.9 seconds for 38646 hgnc ids (via curl)
   post '/namespaces/:namespace/canonical-form' do |ns|
     request.body.rewind
     body = request.body.read
@@ -84,7 +80,6 @@ class Namespaces < Sinatra::Base
     JSON.unparse json_body.map { |x| fx.call(x) }
   end
 
-  # 3.7 seconds for 38646 hgnc ids (via curl)
   post '/namespaces/:namespace/stream-canonical-form' do |ns|
     request.body.rewind
     body = request.body.read
@@ -133,8 +128,8 @@ class Namespaces < Sinatra::Base
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         builder { |xml|
+          xml.name hash['name']
           xml.prefix hash['prefix']
-          xml.label hash['prefLabel']
         }
       else
         response.headers['Content-Type'] = 'application/json'
@@ -155,8 +150,8 @@ class Namespaces < Sinatra::Base
           xml.namespaces {
             resources.each do |resource|
               xml.namespace {
+                xml.name resource['name']
                 xml.prefix resource['prefix']
-                xml.label resource['prefLabel']
               }
             end
           }
