@@ -4,6 +4,12 @@ module OpenBEL
     class Namespace
 
       ATTR_MAP = { prefLabel: 'name', prefix: 'prefix' }
+      attr_accessor :uri, :name, :prefix
+
+      def ==(other)
+        return false if other == nil
+        @uri == other.uri && @name == other.name && @prefix == other.prefix
+      end
 
       def to_h
         instance_variables.inject({}) { |res, attr|
@@ -18,29 +24,23 @@ module OpenBEL
             uri = s.predicate.uri
             attribute = uri.fragment || uri.path[uri.path.rindex('/')+1..-1]
             if attribute == 'type'
-              define_attribute('uri', s.subject, ns)
+              ns.send(:uri=, s.subject)
             else
               attribute = ATTR_MAP[attribute.to_sym]
-              define_attribute(attribute, s.object, ns) if attribute
+              if attribute
+                ns.send(:"#{attribute}=", s.object)
+              end
             end
           end
           (ns.respond_to? :uri and ns.uri) ? ns : nil
         end
 
-        def from_statements!(statements)
-          unless self.from_statements(statements)
-            raise ArgumentError, "Statements do not describe NamespaceConceptScheme rdf:type."
-          end
-        end
-
-        private
         def define_attribute(attribute, value, instance)
           if not instance.respond_to? attribute
             define_method(attribute) do
               instance_variable_get :"@#{attribute}"
             end
           end
-          instance.instance_variable_set :"@#{attribute}", value
         end
       end
     end
