@@ -10,7 +10,7 @@ module OpenBEL
         @uri == other.uri && @name == other.name && @prefix == other.prefix
       end
 
-      def to_h
+      def to_hash
         instance_variables.inject({}) { |res, attr|
           res.merge({attr[1..-1] => instance_variable_get(attr).value})
         }
@@ -23,10 +23,10 @@ module OpenBEL
             uri = s.predicate.uri
             attribute = uri.fragment || uri.path[uri.path.rindex('/')+1..-1]
             if attribute == 'type' and ns.respond_to? :uri=
-              ns.send(:uri=, s.subject)
+              ns.send(:uri=, s.subject.value.to_s)
             else
               if ns.respond_to? :"#{attribute}="
-                ns.send(:"#{attribute}=", s.object)
+                ns.send(:"#{attribute}=", s.object.value.to_s)
               end
             end
           end

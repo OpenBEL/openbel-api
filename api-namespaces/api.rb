@@ -7,8 +7,9 @@ require 'json'
 require_relative 'lib/openbel'
 
 class Namespaces < Sinatra::Base
+  include OpenBEL::Namespace
 
-  storage = OpenBEL::Namespace::SqliteStorage.new 'namespaces.db'
+  storage = SqliteStorage.new 'namespaces.db'
 
   configure :development do
     require 'perftools'
@@ -21,8 +22,7 @@ class Namespaces < Sinatra::Base
     SPOKEN_CONTENT_TYPES = %w[application/json text/html text/xml]
   end
 
-  # 27 milliseconds (via curl)
-  get '/namespaces' do
+  get '/namespaces/?' do
     ns = storage.namespaces
     if ns.empty?
       halt 404
@@ -30,36 +30,34 @@ class Namespaces < Sinatra::Base
     
     render_multiple(request, ns.sort { |x,y|
       x.prefLabel.to_s <=> y.prefLabel.to_s
-    }.map(&:to_h))
+    })
   end
 
-  # 15 milliseconds (via curl)
-  get '/namespaces/:namespace' do |ns|
+  get '/namespaces/:namespace/?' do |ns|
     ns = storage.namespace(ns)
     if ns
       status 200
-      render_single(request, ns.to_h)
+      render_single(request, ns)
     else
       status 404
     end
   end
 
-  #get '/namespaces/:namespace/all' do |ns|
-    #status 200
-    #stream do |out|
-      #scheme_pattern = {predicate: URI('http://www.w3.org/2004/02/skos/core#inScheme')}
-      #proxy.each(scheme_pattern) do |trpl|
-        #subject_uri = trpl.subject.uri
-        #proxy.each({
-          #subject: subject_uri,
-          #predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel')}) do |label|
-          #out << label.object.to_s + "\n"
-        #end
-      #end
-    #end
-  #end
+  get '/namespaces/:namespace/all' do |ns|
+    status 200
+    stream do |out|
+      scheme_pattern = {predicate: URI('http://www.w3.org/2004/02/skos/core#inScheme')}
+      proxy.each(scheme_pattern) do |trpl|
+        subject_uri = trpl.subject.uri
+        proxy.each({
+          subject: subject_uri,
+          predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel')}) do |label|
+          out << label.object.to_s + "\n"
+        end
+      end
+    end
+  end
 
-  # 13 milliseconds (via curl)
   get '/namespaces/:namespace/:id' do |ns, id|
     statements = storage.info(ns, id)
     if not statements or statements.empty?
@@ -69,7 +67,6 @@ class Namespaces < Sinatra::Base
     statements.map(&:to_s)
   end
 
-  # 2.9 seconds for 38646 hgnc ids (via curl)
   post '/namespaces/:namespace/canonical-form' do |ns|
     request.body.rewind
     body = request.body.read
@@ -84,7 +81,6 @@ class Namespaces < Sinatra::Base
     JSON.unparse json_body.map { |x| fx.call(x) }
   end
 
-  # 3.7 seconds for 38646 hgnc ids (via curl)
   post '/namespaces/:namespace/stream-canonical-form' do |ns|
     request.body.rewind
     body = request.body.read
@@ -125,35 +121,30 @@ class Namespaces < Sinatra::Base
   helpers do
     def render_single(request, resource)
       case request.preferred_type.to_str
-      when 'application/json'
-        response.headers['Content-Type'] = 'application/json'
-        JSON.unparse hash
       when 'text/html'
         'html'
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
+        hash = resource.to_h
         builder { |xml|
           xml.prefix hash['prefix']
           xml.label hash['prefLabel']
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        JSON.unparse hash
+        resource.extend(NamespaceResourceJSON).to_json
       end
     end
 
     def render_multiple(request, resources)
       case request.preferred_type.to_str
-      when 'application/json'
-        response.headers['Content-Type'] = 'application/json'
-        JSON.unparse resources
       when 'text/html'
         'html'
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         builder { |xml|
           xml.namespaces {
-            resources.each do |resource|
+            resources.map(&:to_h).each do |resource|
               xml.namespace {
                 xml.prefix resource['prefix']
                 xml.label resource['prefLabel']
@@ -163,7 +154,7 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        JSON.unparse resources
+        resources.extend(NamespacesResourceJSON).to_json
       end
     end
 
