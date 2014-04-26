@@ -43,7 +43,7 @@ class Namespaces < Sinatra::Base
     end
   end
 
-  get '/namespaces/:namespace/all' do |ns|
+  get '/namespaces/:namespace/all/?' do |ns|
     status 200
     stream do |out|
       scheme_pattern = {predicate: URI('http://www.w3.org/2004/02/skos/core#inScheme')}
@@ -58,7 +58,7 @@ class Namespaces < Sinatra::Base
     end
   end
 
-  get '/namespaces/:namespace/:id' do |ns, id|
+  get '/namespaces/:namespace/:id/?' do |ns, id|
     statements = storage.info(ns, id)
     if not statements or statements.empty?
       halt 404
@@ -67,7 +67,7 @@ class Namespaces < Sinatra::Base
     statements.map(&:to_s)
   end
 
-  post '/namespaces/:namespace/canonical-form' do |ns|
+  post '/namespaces/:namespace/canonical-form/?' do |ns|
     request.body.rewind
     body = request.body.read
 
@@ -81,7 +81,7 @@ class Namespaces < Sinatra::Base
     JSON.unparse json_body.map { |x| fx.call(x) }
   end
 
-  post '/namespaces/:namespace/stream-canonical-form' do |ns|
+  post '/namespaces/:namespace/stream-canonical-form/?' do |ns|
     request.body.rewind
     body = request.body.read
 
@@ -99,16 +99,16 @@ class Namespaces < Sinatra::Base
     end
   end
 
-  get '/namespaces/:namespace/:id/canonical-form' do |ns, id|
+  get '/namespaces/:namespace/:id/canonical-form/?' do |ns, id|
     storage.canonical(ns, id)
   end
 
-  get '/namespaces/:namespace/:id/equivalence' do |ns, id|
+  get '/namespaces/:namespace/:id/equivalence/?' do |ns, id|
     headers 'Content-Type' => 'application/json'
     JSON.unparse storage.equivalences(ns, id)
   end
 
-  get '/namespaces/:namespace/:id/equivalence/:target' do |ns, id, target|
+  get '/namespaces/:namespace/:id/equivalence/:target/?' do |ns, id, target|
     storage.namespace_equivalence(ns, id, target)
   end
 
