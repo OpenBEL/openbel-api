@@ -5,18 +5,20 @@ require 'representable/json/collection'
 module OpenBEL
   module Namespace
 
-    module NamespaceResourceJSON
+    module NamespaceResource
       include Roar::Representer::JSON
+      include OpenBEL::HTML
 
       property :uri, as: :rdf_uri
       property :prefLabel, as: :name
       property :prefix
     end
 
-    module NamespacesResourceJSON
+    module NamespacesResource
       include Representable::JSON::Collection
+      include OpenBEL::HTML
 
-      items extend: NamespaceResourceJSON, class: OpenBEL::Namespace::Namespace
+      items extend: NamespaceResource, class: OpenBEL::Namespace::Namespace
     end
   end
 end

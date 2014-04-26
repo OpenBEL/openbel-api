@@ -122,7 +122,9 @@ class Namespaces < Sinatra::Base
     def render_single(request, resource)
       case request.preferred_type.to_str
       when 'text/html'
-        'html'
+        #erb :namespace, :layout => :obj
+        obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
+        resource.extend(NamespaceResource).to_html(obj_doc)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         hash = resource.to_h
@@ -132,7 +134,7 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resource.extend(NamespaceResourceJSON).to_json
+        resource.extend(NamespaceResource).to_json
       end
     end
 
@@ -154,7 +156,7 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resources.extend(NamespacesResourceJSON).to_json
+        resources.extend(NamespacesResource).to_json
       end
     end
 

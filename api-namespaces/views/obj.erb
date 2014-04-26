@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Namespace - http://www.openbel.org/bel/namespace/hgnc-human-genes</title>
+    <style>
+      body {
+        min-height: 100%; font-family: Verdana, "Trebuchet MS", Helvicita, Arial, sans-serif; font-size: 95%;
+        background-color: #ffffff; color: #000000; padding: 0px; margin: 0px; margin-bottom: 10px;
+        background-image: url(images/back.png);
+      }
+      hr { border: none; height: 1px; background-color: #808080; }
+      .titled { border-bottom: 1px dashed #000000; }
+      .output { margin-top: 1em; margin-bottom: 1em; }
+      h3 { margin-top: -0.3em; margin-bottom: 0.5em; font-size: 105%; }
+      table { border: 1px solid #000000; border-collapse: collapse; }
+      table td, table th { padding: 0.2em 0.3em; border: 1px solid #000000; vertical-align: top; }
+      div.object { padding: 1.5em; border: 1px solid #000000; background-color: #eeeeee; height: 1%; position: relative; }
+      .objecttable { background-color: #ffffff; }
+      div.array { padding: 1.5em; border: 1px solid #000000; background-color: #eeeeff; height: 1%; position: relative; }
+      .arraytable { background-color: #ffffee; }
+      .wrap { display: table; margin: 0.3em; }
+      .ex { vertical-align: middle; margin-bottom: 1px; margin-top: 1px; }
+      .clear { clear: both; }
+      .lfloat { float: left; }
+      .rfloat { float: right; }
+    </style>
+  </head>
+
+  <body id="body">
+    <div id="output" class="output">
+      <div class="wrap">
+        <div class="object">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
