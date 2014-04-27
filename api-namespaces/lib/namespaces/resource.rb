@@ -6,12 +6,17 @@ module OpenBEL
   module Namespace
 
     module NamespaceResource
-      include Roar::Representer::JSON
       include OpenBEL::HTML
+      include Roar::Representer::JSON
+      include Roar::Representer::Feature::Hypermedia
 
       property :uri, as: :rdf_uri
       property :prefLabel, as: :name
       property :prefix
+
+      link :self do |opts|
+        "#{opts[:base_url]}/namespaces/#{prefLabel}"
+      end
     end
 
     module NamespacesResource

@@ -134,7 +134,7 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resource.extend(NamespaceResource).to_json
+        resource.extend(NamespaceResource).to_json(base_url: request.base_url)
       end
     end
 
@@ -156,7 +156,7 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resources.extend(NamespacesResource).to_json
+        resources.extend(NamespacesResource).to_json(base_url: request.base_url)
       end
     end
 
