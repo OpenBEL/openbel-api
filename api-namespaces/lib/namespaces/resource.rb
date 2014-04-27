@@ -15,7 +15,8 @@ module OpenBEL
       property :prefix
 
       link :self do |opts|
-        "#{opts[:base_url]}/namespaces/#{prefLabel}"
+        resource_name = uri[uri.rindex('/')+1..-1]
+        "#{opts[:base_url]}/namespaces/#{resource_name}"
       end
     end
 
