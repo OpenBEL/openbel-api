@@ -13,6 +13,7 @@ module OpenBEL
       property :uri, as: :rdf_uri
       property :prefLabel, as: :name
       property :prefix
+      property :type
 
       link :self do |opts|
         resource_name = uri[uri.rindex('/')+1..-1]
@@ -25,6 +26,29 @@ module OpenBEL
       include OpenBEL::HTML
 
       items extend: NamespaceResource, class: OpenBEL::Namespace::Namespace
+    end
+
+    module NamespaceValueResource
+      include OpenBEL::HTML
+      include Roar::Representer::JSON
+      include Roar::Representer::Feature::Hypermedia
+
+      property :uri, as: :rdf_uri
+      property :type
+      property :identifier
+      property :prefLabel, as: :name
+      property :title
+      property :fromSpecies, as: :species
+      property :inScheme, as: :namespace_uri
+
+      link :self do |opts|
+        parts = URI(uri).path.split('/')[1..-1]
+        "#{opts[:base_url]}/#{parts.join('/')}"
+      end
+      link :parent do |opts|
+        parts = URI(uri).path.split('/')[1...-1]
+        "#{opts[:base_url]}/#{parts.join('/')}"
+      end
     end
   end
 end

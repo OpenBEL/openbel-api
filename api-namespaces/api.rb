@@ -59,12 +59,12 @@ class Namespaces < Sinatra::Base
   end
 
   get '/namespaces/:namespace/:id/?' do |ns, id|
-    statements = storage.info(ns, id)
-    if not statements or statements.empty?
+    value = storage.info(ns, id)
+    if not value
       halt 404
     end
 
-    statements.map(&:to_s)
+    render_single(request, value)
   end
 
   post '/namespaces/:namespace/canonical-form/?' do |ns|
@@ -119,12 +119,13 @@ class Namespaces < Sinatra::Base
   end
 
   helpers do
-    def render_single(request, resource)
+    def render_single(request, obj)
+      resource = wrap_resource(obj)
       case request.preferred_type.to_str
       when 'text/html'
         #erb :namespace, :layout => :obj
         obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
-        resource.extend(NamespaceResource).to_html(obj_doc)
+        resource.to_html(obj_doc)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         hash = resource.to_h
@@ -134,11 +135,12 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resource.extend(NamespaceResource).to_json(base_url: request.base_url)
+        resource.to_json(base_url: request.base_url)
       end
     end
 
-    def render_multiple(request, resources)
+    def render_multiple(request, obj)
+      resources = wrap_array(obj)
       case request.preferred_type.to_str
       when 'text/html'
         'html'
@@ -156,7 +158,32 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resources.extend(NamespacesResource).to_json(base_url: request.base_url)
+        resources.to_json(base_url: request.base_url)
+      end
+    end
+
+    def wrap_resource(obj)
+      case obj
+      when Namespace
+        obj.extend(NamespaceResource)
+      when (NamespaceValue or (obj.respond_to?(:each) and obj.first.is_a? NamespaceValue))
+        obj.extend(NamespaceValueResource)
+      else
+        fail NotImplementedError, "Cannot make resource from #{obj.class}."
+      end
+    end
+
+    def wrap_array(obj)
+      if not obj or obj.empty?
+        return obj.extend(NamespaceResource)
+      end
+
+      first_obj = obj.first
+      case first_obj
+      when Namespace
+        obj.extend(NamespacesResource)
+      else
+        fail NotImplementedError, "Cannot make resource from #{obj.class}."
       end
     end
 

@@ -99,9 +99,9 @@ module OpenBEL
       end
 
       def info(ns, id)
-        @proxy.all({
+        NamespaceValue.from_statements(@proxy.all({
           subject: URI(NAMESPACE_PREFIX + ns + '/' + id)
-        })
+        }))
       end
 
       def canonical(ns, id)
