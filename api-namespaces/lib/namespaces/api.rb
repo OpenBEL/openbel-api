@@ -117,13 +117,18 @@ module OpenBEL
             chain(subject_uri, object_uri) AS (
               SELECT E.* FROM temp.equivalences E WHERE subject_uri = ? or object_uri = ?
               UNION
-              SELECT E.* FROM temp.equivalences E JOIN chain ON (E.subject_uri = chain.object_uri or E.object_uri = chain.subject_uri)
+              SELECT E.* FROM temp.equivalences E JOIN chain ON (
+                E.subject_uri = chain.subject_uri or
+                E.object_uri = chain.object_uri or
+                E.subject_uri = chain.object_uri or
+                E.object_uri = chain.subject_uri
+              )
             )
           SELECT * from chain;
         """)
         stmt.bind_param 1, uri
         stmt.bind_param 2, uri
-        stmt.execute.map{ |res| res.first }.map(&:to_s)
+        stmt.execute.map {|res| res}.flatten.uniq.map(&:to_s)
       end
 
       def namespace_equivalence(ns, id, target)
