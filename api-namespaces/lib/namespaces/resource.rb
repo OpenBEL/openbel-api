@@ -5,6 +5,8 @@ require 'representable/json/collection'
 module OpenBEL
   module Namespace
 
+    VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
+
     module NamespaceResource
       include OpenBEL::HTML
       include Roar::Representer::JSON
@@ -13,7 +15,9 @@ module OpenBEL
       property :uri, as: :rdf_uri
       property :prefLabel, as: :name
       property :prefix
-      property :type
+      property :type, :getter => lambda { |opts|
+        type.sub(VOCABULARY_RDF, '')
+      }
 
       link :self do |opts|
         resource_name = uri[uri.rindex('/')+1..-1]
@@ -34,7 +38,9 @@ module OpenBEL
       include Roar::Representer::Feature::Hypermedia
 
       property :uri, as: :rdf_uri
-      property :type
+      property :type, :getter => lambda { |opts|
+        type.sub(VOCABULARY_RDF, '')
+      }
       property :identifier
       property :prefLabel, as: :name
       property :title
