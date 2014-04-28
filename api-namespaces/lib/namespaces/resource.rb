@@ -55,6 +55,17 @@ module OpenBEL
         parts = URI(uri).path.split('/')[3...-1]
         "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
       end
+      link(rel: :subresource, type: 'equivalence') do |opts|
+        parts = URI(uri).path.split('/')[3..-1]
+        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalences"
+      end
+    end
+
+    module NamespaceValuesResource
+      include Representable::JSON::Collection
+      include OpenBEL::HTML
+
+      items extend: NamespaceValueResource, class: OpenBEL::Namespace::NamespaceValue
     end
   end
 end

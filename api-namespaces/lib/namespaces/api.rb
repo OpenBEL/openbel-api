@@ -52,15 +52,15 @@ module OpenBEL
           temp table equivalences
         as
           select
-            US.uri as subject_uri, UO.uri as object_uri
+            US.id as subject_id, UO.id as object_id
           from
             uris U, uris US, uris UO, triples T
           where
             T.predicateUri = U.id and
             U.uri = 'http://www.w3.org/2004/02/skos/core#exactMatch' and
             US.id = T.subjectUri and UO.id = T.objectUri;""",
-        'create index temp.sub_index on equivalences(subject_uri);',
-        'create index temp.obj_index on equivalences(object_uri);'
+        'create index temp.sub_index on equivalences(subject_id);',
+        'create index temp.obj_index on equivalences(object_id);'
       ]
 
       def initialize(storage_name)
@@ -99,9 +99,7 @@ module OpenBEL
       end
 
       def info(ns, id)
-        NamespaceValue.from_statements(@proxy.all({
-          subject: URI(NAMESPACE_PREFIX + ns + '/' + id)
-        }))
+        namespace_value_by_uri(URI(NAMESPACE_PREFIX + ns + '/' + id))
       end
 
       def canonical(ns, id)
@@ -112,23 +110,41 @@ module OpenBEL
 
       def equivalences(ns, id) 
         uri = NAMESPACE_PREFIX + ns + '/' + id
-        stmt = @db.prepare("""
-          WITH RECURSIVE
-            chain(subject_uri, object_uri) AS (
-              SELECT E.* FROM temp.equivalences E WHERE subject_uri = ? or object_uri = ?
-              UNION
-              SELECT E.* FROM temp.equivalences E JOIN chain ON (
-                E.subject_uri = chain.subject_uri or
-                E.object_uri = chain.object_uri or
-                E.subject_uri = chain.object_uri or
-                E.object_uri = chain.subject_uri
+        begin
+          value_query = @db.prepare('select id from uris where uri = ?')
+          value_query.bind_param 1, uri
+          value_id = value_query.execute.first[0]
+        ensure
+          value_query.close if value_query
+        end
+        return nil unless value_id
+
+        begin
+          eq_query = @db.prepare("""
+            WITH RECURSIVE
+              chain(subject_id, object_id) AS (
+                SELECT E.* FROM temp.equivalences E WHERE subject_id = ? or object_id = ?
+                UNION
+                SELECT E.* FROM temp.equivalences E JOIN chain ON (
+                  E.subject_id = chain.subject_id or
+                  E.object_id = chain.object_id or
+                  E.subject_id = chain.object_id or
+                  E.object_id = chain.subject_id
+                )
               )
-            )
-          SELECT * from chain;
-        """)
-        stmt.bind_param 1, uri
-        stmt.bind_param 2, uri
-        stmt.execute.map {|res| res}.flatten.uniq.map(&:to_s)
+            SELECT * from chain;
+          """)
+          eq_query.bind_param 1, value_id
+          eq_query.bind_param 2, value_id
+          eq_ids = eq_query.execute.map { |res| res }.flatten.uniq.find_all { |x| x != value_id }
+          eq_ids.map { |eq_id|
+            uri_by_id(eq_id)
+          }.map { |eq_uri|
+            namespace_value_by_uri(URI(eq_uri))
+          }
+        ensure
+          eq_query.close if eq_query
+        end
       end
 
       def namespace_equivalence(ns, id, target)
@@ -164,6 +180,22 @@ module OpenBEL
         Namespace.from_statements(@proxy.all({
           subject: uri
         }))
+      end
+
+      def namespace_value_by_uri(uri)
+        NamespaceValue.from_statements(@proxy.all({
+          subject: uri
+        }))
+      end
+
+      def uri_by_id(id)
+        begin
+          uri_query = @db.prepare('select uri from uris where id = ?')
+          uri_query.bind_param 1, id
+          uri_query.execute.first[0]
+        ensure
+          uri_query.close if uri_query
+        end
       end
     end
   end

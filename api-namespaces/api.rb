@@ -103,9 +103,15 @@ class Namespaces < Sinatra::Base
     storage.canonical(ns, id)
   end
 
-  get '/namespaces/:namespace/:id/equivalence/?' do |ns, id|
-    headers 'Content-Type' => 'application/json'
-    JSON.unparse storage.equivalences(ns, id)
+  get '/namespaces/:namespace/:id/equivalences/?' do |ns, id|
+    equivalences = storage.equivalences(ns, id)
+    if equivalences.empty?
+      halt 404
+    end
+    
+    render_multiple(request, equivalences.sort { |x,y|
+      x.prefLabel.to_s <=> y.prefLabel.to_s
+    }, "Equivalences for #{ns} / #{id}")
   end
 
   get '/namespaces/:namespace/:id/equivalence/:target/?' do |ns, id, target|
@@ -125,7 +131,9 @@ class Namespaces < Sinatra::Base
       when 'text/html'
         response.headers['Content-Type'] = 'text/html'
         obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
-        resource.to_html(obj_doc, title, base_url: request.base_url)
+        resource.to_html(obj_doc, title,
+          base_url: request.base_url,
+          url: request.url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         hash = resource.to_h
@@ -135,7 +143,7 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resource.to_json(base_url: request.base_url)
+        resource.to_json(base_url: request.base_url, url: request.url)
       end
     end
 
@@ -145,7 +153,9 @@ class Namespaces < Sinatra::Base
       when 'text/html'
         response.headers['Content-Type'] = 'text/html'
         obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
-        resources.to_html(obj_doc, title, base_url: request.base_url)
+        resources.to_html(obj_doc, title,
+          base_url: request.base_url,
+          url: request.url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         builder { |xml|
@@ -160,7 +170,7 @@ class Namespaces < Sinatra::Base
         }
       else
         response.headers['Content-Type'] = 'application/json'
-        resources.to_json(base_url: request.base_url)
+        resources.to_json(base_url: request.base_url, url: request.url)
       end
     end
 
@@ -184,6 +194,8 @@ class Namespaces < Sinatra::Base
       case first_obj
       when Namespace
         obj.extend(NamespacesResource)
+      when NamespaceValue
+        obj.extend(NamespaceValuesResource)
       else
         fail NotImplementedError, "Cannot make resource from #{obj.class}."
       end
