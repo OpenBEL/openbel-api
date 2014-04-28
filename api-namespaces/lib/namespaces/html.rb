@@ -34,11 +34,11 @@ module OpenBEL
     end
 
     # Returns a JSON string representing this object.
-    def to_html(layout_doc, *args)
+    def to_html(layout_doc, title, *args)
       obj_hash = to_hash(*args)
       obj_doc = layout_doc.clone
       div = obj_doc.at('//div[@class="wrap"]')
-      object_div = make_object(obj_doc, obj_hash, 'Namespace')
+      object_div = make_object(obj_doc, obj_hash, title)
       div.add_child(object_div)
       obj_doc.to_html
     end

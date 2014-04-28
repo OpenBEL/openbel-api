@@ -30,14 +30,14 @@ class Namespaces < Sinatra::Base
     
     render_multiple(request, ns.sort { |x,y|
       x.prefLabel.to_s <=> y.prefLabel.to_s
-    })
+    }, 'All Namespaces')
   end
 
   get '/namespaces/:namespace/?' do |ns|
     ns = storage.namespace(ns)
     if ns
       status 200
-      render_single(request, ns)
+      render_single(request, ns, 'Namespace')
     else
       status 404
     end
@@ -64,7 +64,7 @@ class Namespaces < Sinatra::Base
       halt 404
     end
 
-    render_single(request, value)
+    render_single(request, value, 'Namespace Value')
   end
 
   post '/namespaces/:namespace/canonical-form/?' do |ns|
@@ -119,13 +119,13 @@ class Namespaces < Sinatra::Base
   end
 
   helpers do
-    def render_single(request, obj)
+    def render_single(request, obj, title)
       resource = wrap_resource(obj)
       case request.preferred_type.to_str
       when 'text/html'
         response.headers['Content-Type'] = 'text/html'
         obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
-        resource.to_html(obj_doc, base_url: request.base_url)
+        resource.to_html(obj_doc, title, base_url: request.base_url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         hash = resource.to_h
@@ -139,13 +139,13 @@ class Namespaces < Sinatra::Base
       end
     end
 
-    def render_multiple(request, obj)
+    def render_multiple(request, obj, title)
       resources = wrap_array(obj)
       case request.preferred_type.to_str
       when 'text/html'
         response.headers['Content-Type'] = 'text/html'
         obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
-        resources.to_html(obj_doc, base_url: request.base_url)
+        resources.to_html(obj_doc, title, base_url: request.base_url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         builder { |xml|
