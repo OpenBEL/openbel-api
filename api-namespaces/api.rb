@@ -125,9 +125,39 @@ class Namespaces < Sinatra::Base
   end
 
   helpers do
+    def resolve_supported_content_type(request)
+      preferred = request.preferred_type.to_str
+      if preferred == '*/*'
+        'application/json'
+      else
+        preferred
+      end
+    end
+
     def render_single(request, obj, title)
-      resource = wrap_resource(obj)
-      case request.preferred_type.to_str
+      content_type = resolve_supported_content_type(request)
+      resource = OpenBEL::Namespace.resource_for(obj, content_type)
+      case content_type
+      when 'application/json'
+        response.headers['Content-Type'] = 'application/json'
+        resource.to_json(base_url: request.base_url, url: request.url)
+      when 'text/html'
+        response.headers['Content-Type'] = 'text/html'
+        obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
+        resource.to_html(obj_doc, title,
+          base_url: request.base_url,
+          url: request.url)
+      when 'text/xml'
+        response.headers['Content-Type'] = 'text/xml'
+        puts resource.class
+        resource.to_xml(base_url: request.base_url, url: request.url)
+      end
+    end
+
+    def render_multiple(request, obj, title)
+      content_type = resolve_supported_content_type(request)
+      resource = OpenBEL::Namespace.resource_for(obj, content_type)
+      case content_type
       when 'text/html'
         response.headers['Content-Type'] = 'text/html'
         obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
@@ -141,72 +171,6 @@ class Namespaces < Sinatra::Base
         response.headers['Content-Type'] = 'application/json'
         resource.to_json(base_url: request.base_url, url: request.url)
       end
-    end
-
-    def render_multiple(request, obj, title)
-      resources = wrap_array(obj)
-      case request.preferred_type.to_str
-      when 'text/html'
-        response.headers['Content-Type'] = 'text/html'
-        obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
-        resources.to_html(obj_doc, title,
-          base_url: request.base_url,
-          url: request.url)
-      when 'text/xml'
-        response.headers['Content-Type'] = 'text/xml'
-        resources.to_xml(base_url: request.base_url, url: request.url)
-      else
-        response.headers['Content-Type'] = 'application/json'
-        resources.to_json(base_url: request.base_url, url: request.url)
-      end
-    end
-
-    def wrap_resource(obj)
-      case obj
-      when Namespace
-        obj.extend(NamespaceResource)
-      when (NamespaceValue or (obj.respond_to?(:each) and obj.first.is_a? NamespaceValue))
-        obj.extend(NamespaceValueResource)
-      else
-        fail NotImplementedError, "Cannot make resource from #{obj.class}."
-      end
-    end
-
-    def wrap_array(obj)
-      if not obj or obj.empty?
-        return obj.extend(NamespaceResource)
-      end
-
-      first_obj = obj.first
-      case first_obj
-      when Namespace
-        obj.extend(NamespacesResource)
-      when NamespaceValue
-        obj.extend(NamespaceValuesResource)
-      else
-        fail NotImplementedError, "Cannot make resource from #{obj.class}."
-      end
-    end
-
-    def make_url(path)
-      url(Addressable::URI::encode(path))
-    end
-
-    def valid_content_length(request)
-      if not request.content_length or request.content_length.to_i <= 0 then
-          status 411 # length required
-          return false
-      end
-      true
-    end
-
-    def is_json(request)
-      if not request.content_type or \
-         not request.content_type.include? 'application/json' then
-         status 415 # unsupported media type
-         return false
-      end
-      true
     end
   end
 end
