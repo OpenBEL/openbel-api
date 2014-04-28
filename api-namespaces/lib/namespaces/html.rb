@@ -1,5 +1,7 @@
 require 'representable/hash'
 require 'nokogiri'
+require 'pry'
+require 'uri'
 
 module OpenBEL
   module HTML
@@ -36,13 +38,69 @@ module OpenBEL
     def to_html(layout_doc, *args)
       obj_hash = to_hash(*args)
       obj_doc = layout_doc.clone
-      span = Nokogiri::XML::Node.new('span', obj_doc)
-      span.set_attribute('class', 'titled')
-      span.add_child(Nokogiri::XML::Text.new('Namespace', obj_doc))
-      h3 = Nokogiri::XML::Node.new('h3', obj_doc)
-      h3.add_child(span)
-      obj_doc.at('//div[@class="object"]').add_child(h3)
+      div = obj_doc.at('//div[@class="wrap"]')
+      object_div = make_object(obj_doc, obj_hash, 'Namespace')
+      div.add_child(object_div)
       obj_doc.to_html
+    end
+
+    def make_object(doc, obj, name)
+      div = Nokogiri::XML::Node.new('div', doc)
+      div.set_attribute('class', 'object')
+
+      span = Nokogiri::XML::Node.new('span', doc)
+      span.set_attribute('class', 'titled')
+      span.add_child(Nokogiri::XML::Text.new(name, doc))
+      h3 = Nokogiri::XML::Node.new('h3', doc)
+      h3.add_child(span)
+
+      table = Nokogiri::XML::Node.new('table', doc)
+      table.set_attribute('class', 'objecttable')
+      tbody = Nokogiri::XML::Node.new('tbody', doc)
+      tr = Nokogiri::XML::Node.new('tr', doc)
+      th = Nokogiri::XML::Node.new('th', doc)
+      th.add_child(Nokogiri::XML::Text.new('Name', doc))
+      tr.add_child(th)
+      th = Nokogiri::XML::Node.new('th', doc)
+      th.add_child(Nokogiri::XML::Text.new('Value', doc))
+      tr.add_child(th)
+      tbody.add_child(tr)
+
+      obj.each do |k, v|
+        puts "handling #{k.to_s}, type: #{k.class}"
+        tr = Nokogiri::XML::Node.new('tr', doc)
+        th = Nokogiri::XML::Node.new('th', doc)
+        th.add_child(Nokogiri::XML::Text.new(k.to_s, doc))
+        tr.add_child(th)
+        th = Nokogiri::XML::Node.new('th', doc)
+        uri_value = nil
+        begin
+          uri_value = v if URI.parse(v).scheme
+        rescue URI::InvalidURIError
+          uri_value = nil
+        end
+
+        if uri_value
+          anchor = Nokogiri::XML::Node.new('a', doc)
+          anchor.set_attribute('href', v)
+          anchor.add_child(Nokogiri::XML::Text.new(uri_value, doc))
+          th.add_child(anchor)
+        elsif v.is_a? Hash
+          th.add_child(make_object(doc, v, ''))
+        elsif v.is_a? Array
+          puts "into array for #{k.to_s}"
+          v.each { |x| th.add_child(make_object(doc, x, '')) }
+        else
+          th.add_child(Nokogiri::XML::Text.new(v.to_s, doc))
+        end
+        tr.add_child(th)
+        tbody.add_child(tr)
+      end
+      
+      table.add_child(tbody)
+      div.add_child(h3)
+      div.add_child(table)
+      div
     end
   end
 end
