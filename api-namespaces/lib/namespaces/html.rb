@@ -65,33 +65,47 @@ module OpenBEL
       tr.add_child(th)
       tbody.add_child(tr)
 
-      obj.each do |k, v|
-        tr = Nokogiri::XML::Node.new('tr', doc)
-        th = Nokogiri::XML::Node.new('th', doc)
-        th.add_child(Nokogiri::XML::Text.new(k.to_s, doc))
-        tr.add_child(th)
-        th = Nokogiri::XML::Node.new('th', doc)
-        uri_value = nil
-        begin
-          uri_value = v if URI.parse(v).scheme
-        rescue URI::InvalidURIError
+      if obj.is_a? Array
+        obj.each_with_index do |item, index|
+          tr = Nokogiri::XML::Node.new('tr', doc)
+          th = Nokogiri::XML::Node.new('th', doc)
+          th.add_child(Nokogiri::XML::Text.new(index.to_s, doc))
+          tr.add_child(th)
+          
+          th = Nokogiri::XML::Node.new('th', doc)
+          th.add_child(make_object(doc, item, ''))
+          tr.add_child(th)
+          tbody.add_child(tr)
+        end
+      else
+        obj.each do |k, v|
+          tr = Nokogiri::XML::Node.new('tr', doc)
+          th = Nokogiri::XML::Node.new('th', doc)
+          th.add_child(Nokogiri::XML::Text.new(k.to_s, doc))
+          tr.add_child(th)
+          th = Nokogiri::XML::Node.new('th', doc)
           uri_value = nil
-        end
+          begin
+            uri_value = v if URI.parse(v).scheme
+          rescue URI::InvalidURIError
+            uri_value = nil
+          end
 
-        if uri_value
-          anchor = Nokogiri::XML::Node.new('a', doc)
-          anchor.set_attribute('href', v)
-          anchor.add_child(Nokogiri::XML::Text.new(uri_value, doc))
-          th.add_child(anchor)
-        elsif v.is_a? Hash
-          th.add_child(make_object(doc, v, ''))
-        elsif v.is_a? Array
-          v.each { |x| th.add_child(make_object(doc, x, '')) }
-        else
-          th.add_child(Nokogiri::XML::Text.new(v.to_s, doc))
+          if uri_value
+            anchor = Nokogiri::XML::Node.new('a', doc)
+            anchor.set_attribute('href', v)
+            anchor.add_child(Nokogiri::XML::Text.new(uri_value, doc))
+            th.add_child(anchor)
+          elsif v.is_a? Hash
+            th.add_child(make_object(doc, v, ''))
+          elsif v.is_a? Array
+            v.each { |x| th.add_child(make_object(doc, x, '')) }
+          else
+            th.add_child(Nokogiri::XML::Text.new(v.to_s, doc))
+          end
+          tr.add_child(th)
+          tbody.add_child(tr)
         end
-        tr.add_child(th)
-        tbody.add_child(tr)
       end
       
       table.add_child(tbody)
