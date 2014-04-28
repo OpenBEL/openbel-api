@@ -149,7 +149,6 @@ class Namespaces < Sinatra::Base
           url: request.url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
-        puts resource.class
         resource.to_xml(base_url: request.base_url, url: request.url)
       end
     end
