@@ -1,6 +1,5 @@
 require 'representable/hash'
 require 'nokogiri'
-require 'pry'
 require 'uri'
 
 module OpenBEL
@@ -67,7 +66,6 @@ module OpenBEL
       tbody.add_child(tr)
 
       obj.each do |k, v|
-        puts "handling #{k.to_s}, type: #{k.class}"
         tr = Nokogiri::XML::Node.new('tr', doc)
         th = Nokogiri::XML::Node.new('th', doc)
         th.add_child(Nokogiri::XML::Text.new(k.to_s, doc))
@@ -88,7 +86,6 @@ module OpenBEL
         elsif v.is_a? Hash
           th.add_child(make_object(doc, v, ''))
         elsif v.is_a? Array
-          puts "into array for #{k.to_s}"
           v.each { |x| th.add_child(make_object(doc, x, '')) }
         else
           th.add_child(Nokogiri::XML::Text.new(v.to_s, doc))
