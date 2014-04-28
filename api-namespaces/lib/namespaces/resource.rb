@@ -48,12 +48,13 @@ module OpenBEL
       property :inScheme, as: :namespace_uri
 
       link :self do |opts|
-        parts = URI(uri).path.split('/')[1..-1]
-        "#{opts[:base_url]}/#{parts.join('/')}"
+        puts URI(uri).path.split('/')
+        parts = URI(uri).path.split('/')[3..-1]
+        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
       end
       link :parent do |opts|
-        parts = URI(uri).path.split('/')[1...-1]
-        "#{opts[:base_url]}/#{parts.join('/')}"
+        parts = URI(uri).path.split('/')[3...-1]
+        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
       end
     end
   end
