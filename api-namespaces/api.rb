@@ -136,11 +136,7 @@ class Namespaces < Sinatra::Base
           url: request.url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
-        hash = resource.to_h
-        builder { |xml|
-          xml.prefix hash['prefix']
-          xml.label hash['prefLabel']
-        }
+        resource.to_xml(base_url: request.base_url, url: request.url)
       else
         response.headers['Content-Type'] = 'application/json'
         resource.to_json(base_url: request.base_url, url: request.url)
@@ -158,16 +154,7 @@ class Namespaces < Sinatra::Base
           url: request.url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
-        builder { |xml|
-          xml.namespaces {
-            resources.map(&:to_h).each do |resource|
-              xml.namespace {
-                xml.prefix resource['prefix']
-                xml.label resource['prefLabel']
-              }
-            end
-          }
-        }
+        resources.to_xml(base_url: request.base_url, url: request.url)
       else
         response.headers['Content-Type'] = 'application/json'
         resources.to_json(base_url: request.base_url, url: request.url)

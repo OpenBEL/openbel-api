@@ -1,5 +1,6 @@
 require 'roar/decorator'
 require 'roar/representer/json'
+require 'roar/representer/xml'
 require 'representable/json/collection'
 
 module OpenBEL
@@ -8,8 +9,9 @@ module OpenBEL
     VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
     module NamespaceResource
-      include OpenBEL::HTML
       include Roar::Representer::JSON
+      include Roar::Representer::XML
+      include OpenBEL::HTML
       include Roar::Representer::Feature::Hypermedia
 
       property :uri, as: :rdf_uri
@@ -27,14 +29,16 @@ module OpenBEL
 
     module NamespacesResource
       include Representable::JSON::Collection
+      include Roar::Representer::XML
       include OpenBEL::HTML
 
       items extend: NamespaceResource, class: OpenBEL::Namespace::Namespace
     end
 
     module NamespaceValueResource
-      include OpenBEL::HTML
       include Roar::Representer::JSON
+      include Roar::Representer::XML
+      include OpenBEL::HTML
       include Roar::Representer::Feature::Hypermedia
 
       property :uri, as: :rdf_uri
@@ -63,6 +67,7 @@ module OpenBEL
 
     module NamespaceValuesResource
       include Representable::JSON::Collection
+      include Roar::Representer::XML
       include OpenBEL::HTML
 
       items extend: NamespaceValueResource, class: OpenBEL::Namespace::NamespaceValue
