@@ -123,9 +123,9 @@ class Namespaces < Sinatra::Base
       resource = wrap_resource(obj)
       case request.preferred_type.to_str
       when 'text/html'
-        #erb :namespace, :layout => :obj
+        response.headers['Content-Type'] = 'text/html'
         obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
-        resource.to_html(obj_doc)
+        resource.to_html(obj_doc, base_url: request.base_url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         hash = resource.to_h
@@ -143,7 +143,9 @@ class Namespaces < Sinatra::Base
       resources = wrap_array(obj)
       case request.preferred_type.to_str
       when 'text/html'
-        'html'
+        response.headers['Content-Type'] = 'text/html'
+        obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
+        resources.to_html(obj_doc, base_url: request.base_url)
       when 'text/xml'
         response.headers['Content-Type'] = 'text/xml'
         builder { |xml|
