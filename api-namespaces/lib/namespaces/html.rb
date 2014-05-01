@@ -37,24 +37,21 @@ module OpenBEL
     def to_html(layout_doc, title, *args)
       obj_hash = to_hash(*args)
       obj_doc = layout_doc.clone
-      div = obj_doc.at('//div[@class="wrap"]')
+      body = obj_doc.at('/html/body')
       object_div = make_object(obj_doc, obj_hash, title)
-      div.add_child(object_div)
+      body.add_child(object_div)
       obj_doc.to_html
     end
 
     def make_object(doc, obj, name)
       div = Nokogiri::XML::Node.new('div', doc)
-      div.set_attribute('class', 'object')
 
       span = Nokogiri::XML::Node.new('span', doc)
-      span.set_attribute('class', 'titled')
       span.add_child(Nokogiri::XML::Text.new(name, doc))
       h3 = Nokogiri::XML::Node.new('h3', doc)
       h3.add_child(span)
 
       table = Nokogiri::XML::Node.new('table', doc)
-      table.set_attribute('class', 'objecttable')
       tbody = Nokogiri::XML::Node.new('tbody', doc)
       tr = Nokogiri::XML::Node.new('tr', doc)
       th = Nokogiri::XML::Node.new('th', doc)
