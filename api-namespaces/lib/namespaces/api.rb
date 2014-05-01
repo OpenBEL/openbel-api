@@ -1,5 +1,4 @@
 require_relative 'model.rb'
-require 'pry'
 
 module OpenBEL
   module Namespace
@@ -206,7 +205,6 @@ module OpenBEL
           ortho_query.bind_param 1, value_id
           ortho_query.bind_param 2, value_id
           ortho_ids = ortho_query.execute.map { |res| res }.flatten.uniq.find_all { |x| x != value_id }
-          binding.pry
           ortho_ids.map { |ortho_id|
             uri_by_id(ortho_id)
           }.map { |ortho_uri|
