@@ -1,4 +1,5 @@
 require_relative 'model.rb'
+require 'pry'
 
 module OpenBEL
   module Namespace
@@ -48,19 +49,28 @@ module OpenBEL
       include OpenBEL::Namespace::Storage
 
       ON_OPEN = [
-        """create
-          temp table equivalences
-        as
-          select
-            US.id as subject_id, UO.id as object_id
-          from
-            uris U, uris US, uris UO, triples T
-          where
-            T.predicateUri = U.id and
-            U.uri = 'http://www.w3.org/2004/02/skos/core#exactMatch' and
-            US.id = T.subjectUri and UO.id = T.objectUri;""",
-        'create index temp.sub_index on equivalences(subject_id);',
-        'create index temp.obj_index on equivalences(object_id);'
+        """create temp table equivalence as
+           select
+             US.id as subject_id, UO.id as object_id
+           from
+             uris U, uris US, uris UO, triples T
+           where
+             T.predicateUri = U.id and
+             U.uri = 'http://www.w3.org/2004/02/skos/core#exactMatch' and
+             US.id = T.subjectUri and UO.id = T.objectUri;""",
+        'create index temp.equivalence_sub_index on equivalence(subject_id);',
+        'create index temp.equivalence_obj_index on equivalence(object_id);',
+        """create temp table orthology as
+           select
+              US.id as subject_id, UO.id as object_id
+            from
+              uris U, uris US, uris UO, triples T
+            where
+              T.predicateUri = U.id and
+              U.uri = 'http://www.openbel.org/vocabulary/orthologousMatch' and
+              US.id = T.subjectUri and UO.id = T.objectUri;""",
+        'create index temp.orthology_sub_index on orthology(subject_id);',
+        'create index temp.orthology_obj_index on orthology(object_id);',
       ]
 
       def initialize(storage_name)
@@ -123,9 +133,9 @@ module OpenBEL
           eq_query = @db.prepare("""
             WITH RECURSIVE
               chain(subject_id, object_id) AS (
-                SELECT E.* FROM temp.equivalences E WHERE subject_id = ? or object_id = ?
+                SELECT E.* FROM temp.equivalence E WHERE subject_id = ? or object_id = ?
                 UNION
-                SELECT E.* FROM temp.equivalences E JOIN chain ON (
+                SELECT E.* FROM temp.equivalence E JOIN chain ON (
                   E.subject_id = chain.subject_id or
                   E.object_id = chain.object_id or
                   E.subject_id = chain.object_id or
@@ -167,8 +177,44 @@ module OpenBEL
         @db.execute(query).map(&:to_s)
       end
 
-      def orthologs(uri)
-        raise NotImplementedError
+      def orthologs(ns, id)
+        uri = NAMESPACE_PREFIX + ns + '/' + id
+        begin
+          value_query = @db.prepare('select id from uris where uri = ?')
+          value_query.bind_param 1, uri
+          value_id = value_query.execute.first[0]
+        ensure
+          value_query.close if value_query
+        end
+        return nil unless value_id
+
+        begin
+          ortho_query = @db.prepare("""
+            WITH RECURSIVE
+              chain(subject_id, object_id) AS (
+                SELECT E.* FROM temp.orthology E WHERE subject_id = ? or object_id = ?
+                UNION
+                SELECT E.* FROM temp.orthology E JOIN chain ON (
+                  E.subject_id = chain.subject_id or
+                  E.object_id = chain.object_id or
+                  E.subject_id = chain.object_id or
+                  E.object_id = chain.subject_id
+                )
+              )
+            SELECT * from chain;
+          """)
+          ortho_query.bind_param 1, value_id
+          ortho_query.bind_param 2, value_id
+          ortho_ids = ortho_query.execute.map { |res| res }.flatten.uniq.find_all { |x| x != value_id }
+          binding.pry
+          ortho_ids.map { |ortho_id|
+            uri_by_id(ortho_id)
+          }.map { |ortho_uri|
+            namespace_value_by_uri(URI(ortho_uri))
+          }
+        ensure
+          ortho_query.close if ortho_query
+        end
       end
 
       def species_ortholog(uri, species)

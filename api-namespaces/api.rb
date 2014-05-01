@@ -114,6 +114,17 @@ class Namespaces < Sinatra::Base
     }, "Equivalences for #{ns} / #{id}")
   end
 
+  get '/namespaces/:namespace/:id/orthologs/?' do |ns, id|
+    orthologs = storage.orthologs(ns, id)
+    if orthologs.empty?
+      halt 404
+    end
+    
+    render_multiple(request, orthologs.sort { |x,y|
+      x.prefLabel.to_s <=> y.prefLabel.to_s
+    }, "Orthologs for #{ns} / #{id}")
+  end
+
   get '/namespaces/:namespace/:id/equivalence/:target/?' do |ns, id, target|
     storage.namespace_equivalence(ns, id, target)
   end
