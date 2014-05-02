@@ -25,6 +25,16 @@ OptionParser.new do |opts|
   end
 end.parse!
 
+unless options[:files]
+  $stderr.write("An rdf file is required.\n");
+  exit 1
+end
+
+if options[:new] != 'yes' and not File.exist? options[:name]
+  options[:new] = 'yes'
+end
+  
+
 def which_parser(file)
   case
   when file.end_with?('.nt')
