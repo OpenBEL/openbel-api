@@ -8,7 +8,6 @@ gem 'nokogiri'
 gem 'redlander'
 gem 'roar'
 gem 'sinatra'
-gem 'sqlite3'
 
 group :development do
   gem 'pry'
