@@ -54,7 +54,6 @@ module OpenBEL
           name: storage_name,
           synchronous: 'off'
         })
-        @proxy = Redlander::ModelProxy.new(@model)
 
         if block_given?
           yield @model
@@ -62,7 +61,7 @@ module OpenBEL
       end
 
       def namespaces
-        @proxy.all({
+        @model.statements.all({
           predicate: URI('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
           object: URI('http://www.openbel.org/vocabulary/NamespaceConceptScheme')
         }).map { |trpl|
@@ -73,7 +72,7 @@ module OpenBEL
       # TODO Create a Namespace object that is enumerable over values.
 
       def namespace(id)
-        Namespace.from_statements(@proxy.all({
+        Namespace.from_statements(@model.statements.all({
           subject: URI(NAMESPACE_PREFIX + id)
         }))
       end
@@ -90,7 +89,7 @@ module OpenBEL
 
       def equivalences(ns, id) 
         uri = NAMESPACE_PREFIX + ns + '/' + id
-        @proxy.all({
+        @model.statements.all({
           subject: URI(uri),
           predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
         }).map { |trpl|
@@ -106,7 +105,7 @@ module OpenBEL
 
       def orthologs(ns, id)
         uri = NAMESPACE_PREFIX + ns + '/' + id
-        @proxy.all({
+        @model.statements.all({
           subject: URI(uri),
           predicate: URI('http://www.openbel.org/vocabulary/orthologousMatch')
         }).map { |trpl|
@@ -120,13 +119,13 @@ module OpenBEL
 
       private
       def namespace_by_uri(uri)
-        Namespace.from_statements(@proxy.all({
+        Namespace.from_statements(@model.statements.all({
           subject: uri
         }))
       end
 
       def namespace_value_by_uri(uri)
-        NamespaceValue.from_statements(@proxy.all({
+        NamespaceValue.from_statements(@model.statements.all({
           subject: uri
         }))
       end
