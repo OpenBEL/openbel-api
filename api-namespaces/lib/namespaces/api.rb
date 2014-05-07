@@ -94,7 +94,7 @@ module OpenBEL
           subject: URI(uri),
           predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
         }).map { |trpl|
-          namespace_by_uri(trpl.object.uri)
+          namespace_value_by_uri(trpl.object.uri)
         }
       end
 
@@ -110,7 +110,7 @@ module OpenBEL
           subject: URI(uri),
           predicate: URI('http://www.openbel.org/vocabulary/orthologousMatch')
         }).map { |trpl|
-          namespace_by_uri(trpl.object.uri)
+          namespace_value_by_uri(trpl.object.uri)
         }
       end
 

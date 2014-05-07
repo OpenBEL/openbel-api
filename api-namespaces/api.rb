@@ -109,9 +109,7 @@ class Namespaces < Sinatra::Base
       halt 404
     end
     
-    render_multiple(request, equivalences.sort { |x,y|
-      x.prefLabel.to_s <=> y.prefLabel.to_s
-    }, "Equivalences for #{ns} / #{id}")
+    render_multiple(request, equivalences, "Equivalences for #{ns} / #{id}")
   end
 
   get '/namespaces/:namespace/:id/orthologs/?' do |ns, id|
@@ -120,9 +118,7 @@ class Namespaces < Sinatra::Base
       halt 404
     end
     
-    render_multiple(request, orthologs.sort { |x,y|
-      x.prefLabel.to_s <=> y.prefLabel.to_s
-    }, "Orthologs for #{ns} / #{id}")
+    render_multiple(request, orthologs, "Orthologs for #{ns} / #{id}")
   end
 
   get '/namespaces/:namespace/:id/equivalence/:target/?' do |ns, id, target|
