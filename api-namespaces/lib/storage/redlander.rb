@@ -1,13 +1,13 @@
 require_relative 'storage.rb'
 require 'redlander'
-require 'uri'
 
 class StorageRedlander
   include OpenBEL::Storage
+  include Redlander
 
   def initialize(options = {})
     storage_configuration = DEFAULTS.merge(options)
-    @model = Redlander::Model.new(storage_configuration)
+    @model = Model.new(storage_configuration)
   end
 
   def describe(subject, &block)
@@ -24,11 +24,11 @@ class StorageRedlander
     unless pattern.respond_to? :to_hash
       fail ArgumentError, "pattern expected to respond to 'to_hash'"
     end
-    hash = pattern.to_hash
+    spo = pattern.to_hash
     if block_given?
-      @model.statements.each(hash, &block)
+      @model.statements.each(spo, &block)
     else
-      @model.statements.all(hash)
+      @model.statements.all(spo)
     end
   end
 
