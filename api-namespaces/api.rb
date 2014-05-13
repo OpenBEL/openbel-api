@@ -2,6 +2,7 @@
 
 require 'set'
 require 'sinatra/base'
+require 'sinatra/config_file'
 require 'sinatra/reloader'
 require 'json'
 require_relative 'lib/openbel'
@@ -9,7 +10,14 @@ require_relative 'lib/openbel'
 class Namespaces < Sinatra::Base
   include OpenBEL::Namespace
 
-  storage = SqliteStorage.new 'namespaces.db'
+  register Sinatra::ConfigFile
+  config_file 'config.yml'
+
+  def initialize
+    super
+    require './lib/storage/redlander.rb'
+    @api = API.new StorageRedlander.new(settings.storage)
+  end
 
   configure :development do
     require 'perftools'
@@ -23,18 +31,18 @@ class Namespaces < Sinatra::Base
   end
 
   get '/namespaces/?' do
-    ns = storage.namespaces
-    if ns.empty?
+    namespaces = @api.find_namespaces
+    if namespaces.empty?
       halt 404
     end
     
-    render_multiple(request, ns.sort { |x,y|
+    render_multiple(request, namespaces.sort { |x,y|
       x.prefLabel.to_s <=> y.prefLabel.to_s
     }, 'All Namespaces')
   end
 
-  get '/namespaces/:namespace/?' do |ns|
-    ns = storage.namespace(ns)
+  get '/namespaces/:namespace/?' do |namespace|
+    ns = @api.find_namespace(namespace)
     if ns
       status 200
       render_single(request, ns, 'Namespace')
@@ -43,23 +51,8 @@ class Namespaces < Sinatra::Base
     end
   end
 
-  get '/namespaces/:namespace/all/?' do |ns|
-    status 200
-    stream do |out|
-      scheme_pattern = {predicate: URI('http://www.w3.org/2004/02/skos/core#inScheme')}
-      proxy.each(scheme_pattern) do |trpl|
-        subject_uri = trpl.subject.uri
-        proxy.each({
-          subject: subject_uri,
-          predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel')}) do |label|
-          out << label.object.to_s + "\n"
-        end
-      end
-    end
-  end
-
-  get '/namespaces/:namespace/:id/?' do |ns, id|
-    value = storage.info(ns, id)
+  get '/namespaces/:namespace/:id/?' do |namespace, value|
+    value = @api.find_namespace_value(namespace, value)
     if not value
       halt 404
     end
@@ -67,62 +60,44 @@ class Namespaces < Sinatra::Base
     render_single(request, value, 'Namespace Value')
   end
 
-  post '/namespaces/:namespace/canonical-form/?' do |ns|
-    request.body.rewind
-    body = request.body.read
-
-    if body.empty?
-      halt 400
-    end
-
-    headers 'Content-Type' => 'application/json'
-    fx = storage.method(:canonical).to_proc.curry.call(ns)
-    json_body = JSON.parse body
-    JSON.unparse json_body.map { |x| fx.call(x) }
-  end
-
-  post '/namespaces/:namespace/stream-canonical-form/?' do |ns|
-    request.body.rewind
-    body = request.body.read
-
-    if body.empty?
-      halt 400
-    end
-
-    status 200
-    stream do |out|
-      json_body = JSON.parse body
-      fx = storage.method(:canonical).to_proc.curry.call(ns)
-      json_body.each do |value|
-        out << JSON.unparse(fx.call(value))
-      end
-    end
-  end
-
-  get '/namespaces/:namespace/:id/canonical-form/?' do |ns, id|
-    storage.canonical(ns, id)
-  end
-
-  get '/namespaces/:namespace/:id/equivalences/?' do |ns, id|
-    equivalences = storage.equivalences(ns, id)
+  get '/namespaces/:namespace/:id/equivalences/?' do |namespace, value|
+    equivalences = @api.find_equivalence(namespace, value)
     if equivalences.empty?
       halt 404
     end
     
-    render_multiple(request, equivalences, "Equivalences for #{ns} / #{id}")
+    render_multiple(request, equivalences, "Equivalences for #{namespace} / #{value}")
   end
 
-  get '/namespaces/:namespace/:id/orthologs/?' do |ns, id|
-    orthologs = storage.orthologs(ns, id)
+  get '/namespaces/:namespace/:id/equivalence/:target/?' do |namespace, value, target|
+    equivalences = @api.find_equivalence(namespace, value, {
+      target: target
+    })
+    if equivalences.empty?
+      halt 404
+    end
+    
+    render_multiple(request, equivalences, "Equivalences for #{namespace} / #{value} in #{target}")
+  end
+
+  get '/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
+    orthologs = @api.find_orthology(namespace, value)
     if orthologs.empty?
       halt 404
     end
     
-    render_multiple(request, orthologs, "Orthologs for #{ns} / #{id}")
+    render_multiple(request, orthologs, "Orthologs for #{namespace} / #{value}")
   end
 
-  get '/namespaces/:namespace/:id/equivalence/:target/?' do |ns, id, target|
-    storage.namespace_equivalence(ns, id, target)
+  get '/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
+    orthologs = @api.find_orthology(namespace, value, {
+      target: target
+    })
+    if orthologs.empty?
+      halt 404
+    end
+    
+    render_multiple(request, orthologs, "Orthologs for #{namespace} / #{value} in #{target}")
   end
 
   before do

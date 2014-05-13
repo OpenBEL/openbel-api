@@ -40,6 +40,10 @@ module OpenBEL
           res.merge({attr[1..-1] => instance_variable_get(attr).value})
         }
       end
+
+      def to_s
+        @uri
+      end
     end
 
     class NamespaceValue

@@ -8,12 +8,12 @@ gem 'nokogiri'
 gem 'redlander'
 gem 'roar'
 gem 'sinatra'
+gem 'sinatra-contrib'
 
 group :development do
   gem 'pry'
   gem 'pry-doc'
   gem 'pry-nav'
-  gem 'sinatra-contrib'
   gem 'perftools.rb'
   gem 'rack-perftools_profiler'
 end
