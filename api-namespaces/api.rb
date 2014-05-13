@@ -69,7 +69,7 @@ class Namespaces < Sinatra::Base
     render_multiple(request, equivalences, "Equivalences for #{namespace} / #{value}")
   end
 
-  get '/namespaces/:namespace/:id/equivalence/:target/?' do |namespace, value, target|
+  get '/namespaces/:namespace/:id/equivalences/:target/?' do |namespace, value, target|
     equivalences = @api.find_equivalence(namespace, value, {
       target: target
     })
