@@ -28,7 +28,7 @@ class StorageRedlander
     if block_given?
       @model.statements.each(spo, &block)
     else
-      @model.statements.all(spo)
+      @model.statements.each(spo)
     end
   end
 

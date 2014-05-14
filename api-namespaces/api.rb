@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'rack'
 require 'set'
 require 'sinatra/base'
 require 'sinatra/config_file'
@@ -49,6 +50,36 @@ class Namespaces < Sinatra::Base
     else
       status 404
     end
+  end
+
+  post '/namespaces/:namespace/equivalences/?' do |namespace|
+    unless request.media_type == 'application/json'
+      halt 400
+    end
+
+    request.body.rewind
+    json_body = JSON.parse request.body.read
+    halt 400 unless json_body['values']
+    matches = @api.find_equivalences(namespace, json_body['values'])
+    
+    response.headers['Content-Type'] = 'application/json'
+    JSON.dump(matches, response)
+  end
+
+  post '/namespaces/:namespace/equivalences/:target/?' do |namespace, target|
+    unless request.media_type == 'application/json'
+      halt 400
+    end
+
+    request.body.rewind
+    json_body = JSON.parse request.body.read
+    halt 400 unless json_body['values']
+    matches = @api.find_equivalences(namespace, json_body['values'], {
+      target: target
+    })
+    
+    response.headers['Content-Type'] = 'application/json'
+    JSON.dump(matches, response)
   end
 
   get '/namespaces/:namespace/:id/?' do |namespace, value|
@@ -107,6 +138,7 @@ class Namespaces < Sinatra::Base
   end
 
   helpers do
+
     def resolve_supported_content_type(request)
       preferred = request.preferred_type.to_str
       if preferred == '*/*'

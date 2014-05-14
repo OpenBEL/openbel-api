@@ -1,4 +1,5 @@
 require_relative 'model.rb'
+require 'set'
 require 'uri'
 
 module OpenBEL
@@ -69,6 +70,72 @@ module OpenBEL
           }
         else
           equivalences.map { |s| namespace_value_by_uri(s.object.uri) }
+        end
+      end
+
+      def find_equivalences(namespace, values, options = {})
+        vset = Set.new(values)
+
+        if options[:target]
+          target_namespace = options[:target]
+          vset.map { |v|
+            pref = @storage.statements({
+              predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+              object: v.to_s
+            }).find { |statement|
+              statement.subject.uri.to_s.include? namespace
+            }
+
+            if pref
+              match = @storage.statements({
+                subject: pref.subject,
+                predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
+              }).find { |statement|
+                statement.object.uri.to_s.include? target_namespace
+              }
+              if match
+                target_pref = @storage.statements({
+                  subject: match.object,
+                  predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+                }).first
+                [v, target_pref ? target_pref.object.value : nil]
+              else
+                [v, nil]
+              end
+            else
+              [v, nil]
+            end
+          }.to_h
+        else
+          vset.map { |v|
+            pref = @storage.statements({
+              predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+              object: v.to_s
+            }).first
+
+            if pref
+              matches = @storage.statements({
+                subject: pref.subject,
+                predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
+              }).map { |statement|
+                statement.object
+              }
+              if matches
+                all_equivalences = matches.map { |match|
+                  eq_pref = @storage.statements({
+                    subject: match,
+                    predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+                  }).first
+                  eq_pref ? eq_pref.object.value : nil
+                }.find_all.to_a
+                [v, all_equivalences]
+              else
+                [v, nil]
+              end
+            else
+              [v, nil]
+            end
+          }.to_h
         end
       end
 
