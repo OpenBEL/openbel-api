@@ -20,44 +20,27 @@ module OpenBEL
       end
 
       def find_namespace(namespace, options = {})
-        # TODO namespace can also be prefix or prefLabel
-        uri = case namespace
-          when URI
-            namespace
-          when Namespace
-            namespace.uri
-          else
-            URI(NAMESPACE_PREFIX + namespace.to_s)
-          end
-        namespace_by_uri(uri)
+        namespace_uri = find_namespace_rdf_uri(namespace)
+        return nil unless namespace_uri
+
+        namespace_by_uri(namespace_uri)
       end
 
       def find_namespace_value(namespace, value, options = {})
-        value_uri = case value
-          when URI
-            value
-          when NamespaceValue
-            value.uri
-          else
-            URI(NAMESPACE_PREFIX + namespace + '/' + value)
-          end
+        namespace_uri = find_namespace_rdf_uri(namespace)
+        return nil unless namespace_uri
+
+        # TODO Namespace value can be identifier, prefLabel, or title
+        value_uri = URI(namespace_uri.to_s + '/' + value)
         namespace_value_by_uri(value_uri)
-        # TODO namespace can be uri, prefix, prefLabel, or Namespace
-        # TODO value can be concept identifier, prefLabel, or title
       end
 
       def find_equivalence(namespace, value, options = {})
-        # TODO namespace can be uri, prefix, prefLabel, or Namespace
-        # TODO value can be concept identifier, prefLabel, or title
-        # TODO options[:target_namespace] can control target ns
-        value_uri = case value
-          when URI
-            value
-          when NamespaceValue
-            value.uri
-          else
-            URI(NAMESPACE_PREFIX + namespace + '/' + value)
-          end
+        namespace_uri = find_namespace_rdf_uri(namespace)
+        return nil unless namespace_uri
+
+        # TODO Namespace value can be identifier, prefLabel, or title
+        value_uri = URI(namespace_uri.to_s + '/' + value)
         equivalences = @storage.statements({
           subject: URI(value_uri),
           predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
@@ -76,14 +59,15 @@ module OpenBEL
       def find_equivalences(namespace, values, options = {})
         vset = Set.new(values)
 
+        namespace_uri = find_namespace_rdf_uri(namespace).to_s
         if options[:target]
-          target_namespace = options[:target]
+          target_namespace = find_namespace_rdf_uri(options[:target]).to_s
           vset.map { |v|
             pref = @storage.statements({
               predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
               object: v.to_s
             }).find { |statement|
-              statement.subject.uri.to_s.include? namespace
+              statement.subject.uri.to_s.include? namespace_uri
             }
 
             if pref
@@ -111,7 +95,9 @@ module OpenBEL
             pref = @storage.statements({
               predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
               object: v.to_s
-            }).first
+            }).find { |statement|
+              statement.subject.uri.to_s.include? namespace_uri
+            }
 
             if pref
               matches = @storage.statements({
@@ -140,17 +126,11 @@ module OpenBEL
       end
 
       def find_orthology(namespace, value, options = {})
-        # TODO namespace can be uri, prefix, prefLabel, or Namespace
-        # TODO value can be concept identifier, prefLabel, or title
-        # TODO options[:target_namespace] can control target ns
-        value_uri = case value
-          when URI
-            value
-          when NamespaceValue
-            value.uri
-          else
-            URI(NAMESPACE_PREFIX + namespace + '/' + value)
-          end
+        namespace_uri = find_namespace_rdf_uri(namespace)
+        return nil unless namespace_uri
+
+        # TODO Namespace value can be identifier, prefLabel, or title
+        value_uri = URI(namespace_uri.to_s + '/' + value)
         orthology = @storage.statements({
           subject: URI(value_uri),
           predicate: URI('http://www.openbel.org/vocabulary/orthologousMatch')
@@ -170,14 +150,43 @@ module OpenBEL
 
       NAMESPACE_PREFIX = 'http://www.openbel.org/bel/namespace/'
 
+
       def find_namespace_rdf_uri(namespace)
         return nil unless namespace
 
-        if namespace.is_a? OpenBEL::Model::Namespace
+        case namespace
+        when OpenBEL::Namespace::Namespace
           namespace.uri
-        else
-          NAMESPACE_PREFIX
+        when URI
+          namespace
+        when String
+          [
+            self.method(:namespace_by_prefix),
+            self.method(:namespace_by_pref_label),
+            self.method(:namespace_by_uri_part)
+          ].each do |m|
+            uri = m.call(namespace)
+            return uri if uri
+          end
         end
+      end
+
+      def namespace_by_prefix(prefix)
+        @storage.statements({
+          predicate: URI('http://www.openbel.org/vocabulary/prefix'),
+          object: prefix
+        }).map { |statement| statement.subject.uri }.first
+      end
+
+      def namespace_by_pref_label(label)
+        @storage.statements({
+          predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          object: label
+        }).map { |statement| statement.subject.uri }.first
+      end
+
+      def namespace_by_uri_part(label)
+        URI(NAMESPACE_PREFIX + label)
       end
 
       def namespace_by_uri(uri)
@@ -191,6 +200,7 @@ module OpenBEL
           subject: uri
         }))
       end
+
     end
   end
 end
