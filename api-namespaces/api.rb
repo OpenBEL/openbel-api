@@ -33,7 +33,7 @@ class Namespaces < Sinatra::Base
 
   get '/namespaces/?' do
     namespaces = @api.find_namespaces
-    if namespaces.empty?
+    if not namespaces or namespaces.empty?
       halt 404
     end
     
@@ -44,12 +44,12 @@ class Namespaces < Sinatra::Base
 
   get '/namespaces/:namespace/?' do |namespace|
     ns = @api.find_namespace(namespace)
-    if ns
-      status 200
-      render_single(request, ns, 'Namespace')
-    else
-      status 404
+    if not ns
+      halt 404
     end
+
+    status 200
+    render_single(request, ns, 'Namespace')
   end
 
   post '/namespaces/:namespace/equivalences/?' do |namespace|
@@ -93,7 +93,7 @@ class Namespaces < Sinatra::Base
 
   get '/namespaces/:namespace/:id/equivalences/?' do |namespace, value|
     equivalences = @api.find_equivalence(namespace, value)
-    if equivalences.empty?
+    if not equivalences or equivalences.empty?
       halt 404
     end
     
@@ -104,7 +104,7 @@ class Namespaces < Sinatra::Base
     equivalences = @api.find_equivalence(namespace, value, {
       target: target
     })
-    if equivalences.empty?
+    if not equivalences or equivalences.empty?
       halt 404
     end
     
@@ -113,7 +113,7 @@ class Namespaces < Sinatra::Base
 
   get '/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
     orthologs = @api.find_orthology(namespace, value)
-    if orthologs.empty?
+    if not orthologs or orthologs.empty?
       halt 404
     end
     
@@ -124,7 +124,7 @@ class Namespaces < Sinatra::Base
     orthologs = @api.find_orthology(namespace, value, {
       target: target
     })
-    if orthologs.empty?
+    if not orthologs or orthologs.empty?
       halt 404
     end
     
