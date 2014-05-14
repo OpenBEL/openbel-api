@@ -35,7 +35,7 @@ module OpenBEL
         namespace_value_by_uri(value_uri)
       end
 
-      def find_equivalence(namespace, value, options = {})
+      def find_equivalent(namespace, value, options = {})
         namespace_uri = find_namespace_rdf_uri(namespace)
         return nil unless namespace_uri
 
@@ -56,7 +56,7 @@ module OpenBEL
         end
       end
 
-      def find_equivalences(namespace, values, options = {})
+      def find_equivalents(namespace, values, options = {})
         vset = Set.new(values)
 
         namespace_uri = find_namespace_rdf_uri(namespace).to_s
@@ -125,7 +125,7 @@ module OpenBEL
         end
       end
 
-      def find_orthology(namespace, value, options = {})
+      def find_orthologs(namespace, value, options = {})
         namespace_uri = find_namespace_rdf_uri(namespace)
         return nil unless namespace_uri
 

@@ -159,9 +159,9 @@ module OpenBEL
         parts = URI(uri).path.split('/')[3...-1]
         "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
       end
-      link(:rel => :equivalence) do |opts|
+      link(:rel => :equivalents) do |opts|
         parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalences"
+        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalents"
       end
       link(:rel => :orthology) do |opts|
         parts = URI(uri).path.split('/')[3..-1]
@@ -191,9 +191,9 @@ module OpenBEL
         parts = URI(uri).path.split('/')[3...-1]
         "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
       end
-      link(:rel => :equivalence) do |opts|
+      link(:rel => :equivalents) do |opts|
         parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalences"
+        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalents"
       end
       link(:rel => :orthology) do |opts|
         parts = URI(uri).path.split('/')[3..-1]
@@ -224,9 +224,9 @@ module OpenBEL
         parts = URI(uri).path.split('/')[3...-1]
         "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
       end
-      link(:rel => :equivalence) do |opts|
+      link(:rel => :equivalents) do |opts|
         parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalences"
+        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalents"
       end
       link(:rel => :orthology) do |opts|
         parts = URI(uri).path.split('/')[3..-1]

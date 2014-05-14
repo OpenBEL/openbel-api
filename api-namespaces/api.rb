@@ -52,7 +52,7 @@ class Namespaces < Sinatra::Base
     render_single(request, ns, 'Namespace')
   end
 
-  post '/namespaces/:namespace/equivalences/?' do |namespace|
+  post '/namespaces/:namespace/equivalents/?' do |namespace|
     unless request.media_type == 'application/json'
       halt 400
     end
@@ -60,13 +60,13 @@ class Namespaces < Sinatra::Base
     request.body.rewind
     json_body = JSON.parse request.body.read
     halt 400 unless json_body['values']
-    matches = @api.find_equivalences(namespace, json_body['values'])
+    matches = @api.find_equivalents(namespace, json_body['values'])
     
     response.headers['Content-Type'] = 'application/json'
     JSON.dump(matches, response)
   end
 
-  post '/namespaces/:namespace/equivalences/:target/?' do |namespace, target|
+  post '/namespaces/:namespace/equivalents/:target/?' do |namespace, target|
     unless request.media_type == 'application/json'
       halt 400
     end
@@ -74,7 +74,7 @@ class Namespaces < Sinatra::Base
     request.body.rewind
     json_body = JSON.parse request.body.read
     halt 400 unless json_body['values']
-    matches = @api.find_equivalences(namespace, json_body['values'], {
+    matches = @api.find_equivalents(namespace, json_body['values'], {
       target: target
     })
     
@@ -91,28 +91,28 @@ class Namespaces < Sinatra::Base
     render_single(request, value, 'Namespace Value')
   end
 
-  get '/namespaces/:namespace/:id/equivalences/?' do |namespace, value|
-    equivalences = @api.find_equivalence(namespace, value)
-    if not equivalences or equivalences.empty?
+  get '/namespaces/:namespace/:id/equivalents/?' do |namespace, value|
+    equivalents = @api.find_equivalent(namespace, value)
+    if not equivalents or equivalents.empty?
       halt 404
     end
     
-    render_multiple(request, equivalences, "Equivalences for #{namespace} / #{value}")
+    render_multiple(request, equivalents, "Equivalents for #{namespace} / #{value}")
   end
 
-  get '/namespaces/:namespace/:id/equivalences/:target/?' do |namespace, value, target|
-    equivalences = @api.find_equivalence(namespace, value, {
+  get '/namespaces/:namespace/:id/equivalents/:target/?' do |namespace, value, target|
+    equivalents = @api.find_equivalent(namespace, value, {
       target: target
     })
-    if not equivalences or equivalences.empty?
+    if not equivalents or equivalents.empty?
       halt 404
     end
     
-    render_multiple(request, equivalences, "Equivalences for #{namespace} / #{value} in #{target}")
+    render_multiple(request, equivalents, "Equivalents for #{namespace} / #{value} in #{target}")
   end
 
   get '/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
-    orthologs = @api.find_orthology(namespace, value)
+    orthologs = @api.find_orthologs(namespace, value)
     if not orthologs or orthologs.empty?
       halt 404
     end
@@ -121,7 +121,7 @@ class Namespaces < Sinatra::Base
   end
 
   get '/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
-    orthologs = @api.find_orthology(namespace, value, {
+    orthologs = @api.find_orthologs(namespace, value, {
       target: target
     })
     if not orthologs or orthologs.empty?
