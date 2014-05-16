@@ -52,31 +52,16 @@ class Namespaces < Sinatra::Base
     render_single(request, ns, 'Namespace')
   end
 
-  post '/namespaces/:namespace/equivalents/?' do |namespace|
-    unless request.media_type == 'application/json'
-      halt 400
+  get '/namespaces/:namespace/equivalents/?' do |namespace|
+    values = request.params['values'].split(',')
+    halt 404 unless values and not values.empty?
+
+    options = {}
+    if request.params['namespace']
+      options[:target] = request.params['namespace']
     end
 
-    request.body.rewind
-    json_body = JSON.parse request.body.read
-    halt 400 unless json_body['values']
-    matches = @api.find_equivalents(namespace, json_body['values'])
-    
-    response.headers['Content-Type'] = 'application/json'
-    JSON.dump(matches, response)
-  end
-
-  post '/namespaces/:namespace/equivalents/:target/?' do |namespace, target|
-    unless request.media_type == 'application/json'
-      halt 400
-    end
-
-    request.body.rewind
-    json_body = JSON.parse request.body.read
-    halt 400 unless json_body['values']
-    matches = @api.find_equivalents(namespace, json_body['values'], {
-      target: target
-    })
+    matches = @api.find_equivalents(namespace, values, options)
     
     response.headers['Content-Type'] = 'application/json'
     JSON.dump(matches, response)
