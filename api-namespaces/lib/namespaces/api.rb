@@ -189,7 +189,7 @@ module OpenBEL
       end
 
       def namespace_by_uri_part(label)
-        URI(NAMESPACE_PREFIX + label)
+        URI(NAMESPACE_PREFIX + URI.encode(label))
       end
 
       def namespace_by_uri(uri)
