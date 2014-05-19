@@ -150,9 +150,12 @@ module OpenBEL
 
       NAMESPACE_PREFIX = 'http://www.openbel.org/bel/namespace/'
 
-
       def find_namespace_rdf_uri(namespace)
         return nil unless namespace
+
+        if namespace.is_a? Symbol
+          namespace = namespace.to_s
+        end
 
         case namespace
         when OpenBEL::Namespace::Namespace
