@@ -27,20 +27,16 @@ module OpenBEL
       end
 
       def find_namespace_value(namespace, value, options = {})
-        namespace_uri = find_namespace_rdf_uri(namespace)
-        return nil unless namespace_uri
+        value_uri = find_namespace_value_rdf_uri(namespace, value)
+        return nil unless value_uri
 
-        # TODO Namespace value can be identifier, prefLabel, or title
-        value_uri = URI(namespace_uri.to_s + '/' + value)
         namespace_value_by_uri(value_uri)
       end
 
       def find_equivalent(namespace, value, options = {})
-        namespace_uri = find_namespace_rdf_uri(namespace)
-        return nil unless namespace_uri
+        value_uri = find_namespace_value_rdf_uri(namespace, value)
+        return nil unless value_uri
 
-        # TODO Namespace value can be identifier, prefLabel, or title
-        value_uri = URI(namespace_uri.to_s + '/' + value)
         equivalences = @storage.statements({
           subject: URI(value_uri),
           predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
@@ -126,11 +122,9 @@ module OpenBEL
       end
 
       def find_orthologs(namespace, value, options = {})
-        namespace_uri = find_namespace_rdf_uri(namespace)
-        return nil unless namespace_uri
+        value_uri = find_namespace_value_rdf_uri(namespace, value)
+        return nil unless value_uri
 
-        # TODO Namespace value can be identifier, prefLabel, or title
-        value_uri = URI(namespace_uri.to_s + '/' + value)
         orthology = @storage.statements({
           subject: URI(value_uri),
           predicate: URI('http://www.openbel.org/vocabulary/orthologousMatch')
@@ -172,6 +166,63 @@ module OpenBEL
             return uri if uri
           end
         end
+      end
+
+      def find_namespace_value_rdf_uri(namespace, value)
+        return nil unless value
+
+        case value
+        when OpenBEL::Namespace::NamespaceValue
+          value.uri
+        when String
+          namespace_uri = find_namespace_rdf_uri(namespace)
+          [
+            self.method(:namespace_value_by_pref_label),
+            self.method(:namespace_value_by_identifier),
+            self.method(:namespace_value_by_title)
+          ].each do |m|
+            uri = m.call(namespace_uri, value)
+            return uri if uri
+          end
+          
+          pref_statement = @storage.statements({
+            predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+            object: value
+          }).find { |statement|
+            statement.subject.uri.to_s.start_with? namespace_uri.to_s
+          }
+          pref_statement ? pref_statement.subject.uri : nil
+        end
+      end
+
+      def namespace_value_by_pref_label(namespace_uri, label)
+        pref_statement = @storage.statements({
+          predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+          object: label
+        }).find { |statement|
+          statement.subject.uri.to_s.start_with? namespace_uri.to_s
+        }
+        pref_statement ? pref_statement.subject.uri : nil
+      end
+
+      def namespace_value_by_identifier(namespace_uri, id)
+        id_statement = @storage.statements({
+          predicate: URI('http://purl.org/dc/terms/identifier'),
+          object: id
+        }).find { |statement|
+          statement.subject.uri.to_s.start_with? namespace_uri.to_s
+        }
+        id_statement ? id_statement.subject.uri : nil
+      end
+
+      def namespace_value_by_title(namespace_uri, title)
+        title_statement = @storage.statements({
+          predicate: URI('http://purl.org/dc/terms/title'),
+          object: title
+        }).find { |statement|
+          statement.subject.uri.to_s.start_with? namespace_uri.to_s
+        }
+        title_statement ? title_statement.subject.uri : nil
       end
 
       def namespace_by_prefix(prefix)
