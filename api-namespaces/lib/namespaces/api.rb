@@ -67,18 +67,21 @@ module OpenBEL
             }
 
             if pref
-              match = @storage.statements({
+              matches = @storage.statements({
                 subject: pref.subject,
                 predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
-              }).find { |statement|
+              }).find_all { |statement|
                 statement.object.uri.to_s.include? target_namespace
               }
-              if match
-                target_pref = @storage.statements({
-                  subject: match.object,
-                  predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
-                }).first
-                [v, target_pref ? target_pref.object.value : nil]
+              if matches
+                target_equivalences = matches.map { |match|
+                  eq_pref = @storage.statements({
+                    subject: match.object,
+                    predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
+                  }).first
+                  eq_pref ? eq_pref.object.value : nil
+                }.find_all.to_a
+                [v, target_equivalences]
               else
                 [v, nil]
               end
