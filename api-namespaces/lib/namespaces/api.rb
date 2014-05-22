@@ -81,7 +81,7 @@ module OpenBEL
                   }).first
                   eq_pref ? eq_pref.object.value : nil
                 }.find_all.to_a
-                [v, target_equivalences]
+                [v, target_equivalences.empty? ? nil : target_equivalences]
               else
                 [v, nil]
               end
@@ -113,7 +113,7 @@ module OpenBEL
                   }).first
                   eq_pref ? eq_pref.object.value : nil
                 }.find_all.to_a
-                [v, all_equivalences]
+                [v, all_equivalences.empty? ? nil : all_equivalences]
               else
                 [v, nil]
               end
