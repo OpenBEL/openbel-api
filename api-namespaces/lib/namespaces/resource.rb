@@ -11,7 +11,7 @@ module OpenBEL
     def self.resource_for(obj, content_type)
       if obj.respond_to? :each
         if not obj or obj.empty?
-          return obj.extend(NamespaceResource)
+          return nil
         end
 
         # tests first object
