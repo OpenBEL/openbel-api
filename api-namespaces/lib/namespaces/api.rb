@@ -174,6 +174,8 @@ module OpenBEL
         case value
         when OpenBEL::Namespace::NamespaceValue
           value.uri
+        when URI
+          value
         when String
           namespace_uri = find_namespace_rdf_uri(namespace)
           [
