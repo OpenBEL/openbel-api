@@ -6,6 +6,7 @@ require 'sinatra/base'
 require 'sinatra/config_file'
 require 'sinatra/reloader'
 require 'json'
+require 'cgi'
 require_relative 'lib/openbel'
 
 class Namespaces < Sinatra::Base
@@ -53,8 +54,8 @@ class Namespaces < Sinatra::Base
   end
 
   get '/namespaces/:namespace/equivalents/?' do |namespace|
-    values = request.params['values'].split(',')
-    halt 404 unless values and not values.empty?
+    halt 400 unless request.params['value']
+    values = CGI::parse(env["QUERY_STRING"])['value']
 
     options = {}
     if request.params['namespace']
