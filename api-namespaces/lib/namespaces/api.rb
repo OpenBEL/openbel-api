@@ -53,6 +53,7 @@ module OpenBEL
       end
 
       def find_equivalents(namespace, values, options = {})
+        options = {result: :resource}.merge options
         vset = Set.new(values)
 
         namespace_uri = find_namespace_rdf_uri(namespace).to_s
@@ -75,7 +76,7 @@ module OpenBEL
               }.map { |statement| statement.object }
               if matches
                 target_equivalences = matches.map { |match|
-                  namespace_value_by_uri(match)
+                  namespace_value_with_result(match, options[:result])
                 }
                 ValueEquivalence.new(v.to_s, target_equivalences)
               else
@@ -103,7 +104,7 @@ module OpenBEL
               }
               if matches
                 all_equivalences = matches.map { |match|
-                  namespace_value_by_uri(match)
+                  namespace_value_with_result(match, options[:result])
                 }
                 ValueEquivalence.new(v.to_s, all_equivalences)
               else
@@ -252,6 +253,37 @@ module OpenBEL
         }))
       end
 
+      def namespace_value_with_result(uri, result)
+        value_uri = uri.uri
+        case result
+        when :name
+          @storage.statements({
+            subject: uri,
+            predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel')
+          }).map { |statement|
+            label = statement.object.value.to_s
+            NamespaceValue.new({uri: value_uri, prefLabel: label})
+          }.first
+        when :identifier
+          @storage.statements({
+            subject: uri,
+            predicate: URI('http://purl.org/dc/terms/identifier')
+          }).map { |statement|
+            identifier = statement.object.value.to_s
+            NamespaceValue.new({uri: value_uri, identifier: identifier})
+          }.first
+        when :title
+          @storage.statements({
+            subject: uri,
+            predicate: URI('http://purl.org/dc/terms/title')
+          }).map { |statement|
+            title = statement.object.value.to_s
+            NamespaceValue.new({uri: value_uri, title: title})
+          }.first
+        else
+          namespace_value_by_uri(uri)
+        end
+      end
     end
   end
 end

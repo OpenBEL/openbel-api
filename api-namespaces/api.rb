@@ -62,6 +62,12 @@ class Namespaces < Sinatra::Base
       options[:target] = request.params['namespace']
     end
 
+    if request.params['result']
+      result = request.params['result'].to_sym
+      halt 400 unless [:resource, :name, :identifier, :title].include? result
+      options[:result] = result
+    end
+
     value_equivalence = @api.find_equivalents(namespace, values, options)
     render_multiple(request, value_equivalence, "Multiple equivalence for #{namespace} values")
   end

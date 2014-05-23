@@ -52,6 +52,12 @@ module OpenBEL
       attr_accessor :uri, :inScheme, :type, :identifier,
                     :fromSpecies, :prefLabel, :title
 
+      def initialize(attr_values = {})
+        attr_values.each { |k, v|
+          instance_variable_set(:"@#{k}", v)
+        }
+      end
+
       def ==(other)
         return false if other == nil
         @uri == other.uri && @name == other.name && @prefix == other.prefix

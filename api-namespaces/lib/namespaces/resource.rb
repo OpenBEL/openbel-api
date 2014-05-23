@@ -90,7 +90,7 @@ module OpenBEL
       property :prefLabel, as: :name
       property :prefix
       property :type, :getter => lambda { |opts|
-        type.sub(VOCABULARY_RDF, '')
+        type ? type.sub(VOCABULARY_RDF, '') : nil
       }
 
       link :self do |opts|
@@ -107,7 +107,7 @@ module OpenBEL
       property :prefLabel, as: :name
       property :prefix
       property :type, :getter => lambda { |opts|
-        type.sub(VOCABULARY_RDF, '')
+        type ? type.sub(VOCABULARY_RDF, '') : nil
       }
 
       link :self do |opts|
@@ -125,7 +125,7 @@ module OpenBEL
       property :prefLabel, as: :name
       property :prefix
       property :type, :getter => lambda { |opts|
-        type.sub(VOCABULARY_RDF, '')
+        type ? type.sub(VOCABULARY_RDF, '') : nil
       }
 
       link :self do |opts|
@@ -161,7 +161,7 @@ module OpenBEL
 
       property :uri, as: :rdf_uri
       property :type, :getter => lambda { |opts|
-        type.sub(VOCABULARY_RDF, '')
+        type ? type.sub(VOCABULARY_RDF, '') : nil
       }
       property :identifier
       property :prefLabel, as: :name
@@ -193,7 +193,7 @@ module OpenBEL
 
       property :uri, as: :rdf_uri
       property :type, :getter => lambda { |opts|
-        type.sub(VOCABULARY_RDF, '')
+        type ? type.sub(VOCABULARY_RDF, '') : nil
       }
       property :identifier
       property :prefLabel, as: :name
@@ -226,7 +226,7 @@ module OpenBEL
 
       property :uri, as: :rdf_uri
       property :type, :getter => lambda { |opts|
-        type.sub(VOCABULARY_RDF, '')
+        type ? type.sub(VOCABULARY_RDF, '') : nil
       }
       property :identifier
       property :prefLabel, as: :name
