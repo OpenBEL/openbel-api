@@ -72,23 +72,19 @@ module OpenBEL
                 predicate: URI('http://www.w3.org/2004/02/skos/core#exactMatch')
               }).find_all { |statement|
                 statement.object.uri.to_s.include? target_namespace
-              }
+              }.map { |statement| statement.object }
               if matches
                 target_equivalences = matches.map { |match|
-                  eq_pref = @storage.statements({
-                    subject: match.object,
-                    predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
-                  }).first
-                  eq_pref ? eq_pref.object.value : nil
-                }.find_all.to_a
-                [v, target_equivalences.empty? ? nil : target_equivalences]
+                  namespace_value_by_uri(match)
+                }
+                ValueEquivalence.new(v.to_s, target_equivalences)
               else
-                [v, nil]
+                ValueEquivalence.new(v.to_s, nil)
               end
             else
-              [v, nil]
+              ValueEquivalence.new(v.to_s, nil)
             end
-          }.to_h
+          }
         else
           vset.map { |v|
             pref = @storage.statements({
@@ -107,20 +103,16 @@ module OpenBEL
               }
               if matches
                 all_equivalences = matches.map { |match|
-                  eq_pref = @storage.statements({
-                    subject: match,
-                    predicate: URI('http://www.w3.org/2004/02/skos/core#prefLabel'),
-                  }).first
-                  eq_pref ? eq_pref.object.value : nil
-                }.find_all.to_a
-                [v, all_equivalences.empty? ? nil : all_equivalences]
+                  namespace_value_by_uri(match)
+                }
+                ValueEquivalence.new(v.to_s, all_equivalences)
               else
-                [v, nil]
+                ValueEquivalence.new(v.to_s, nil)
               end
             else
-              [v, nil]
+              ValueEquivalence.new(v.to_s, nil)
             end
-          }.to_h
+          }
         end
       end
 

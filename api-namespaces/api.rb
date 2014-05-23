@@ -62,10 +62,8 @@ class Namespaces < Sinatra::Base
       options[:target] = request.params['namespace']
     end
 
-    matches = @api.find_equivalents(namespace, values, options)
-    
-    response.headers['Content-Type'] = 'application/json'
-    JSON.dump(matches, response)
+    value_equivalence = @api.find_equivalents(namespace, values, options)
+    render_multiple(request, value_equivalence, "Multiple equivalence for #{namespace} values")
   end
 
   get '/namespaces/:namespace/:id/?' do |namespace, value|

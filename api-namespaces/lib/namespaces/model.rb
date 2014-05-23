@@ -63,6 +63,27 @@ module OpenBEL
         }
       end
     end
+
+    class ValueEquivalence
+
+      attr_accessor :value, :equivalences
+
+      def initialize(value, equivalences)
+        @value = value
+        @equivalences = equivalences
+      end
+
+      def ==(other)
+        return false if other == nil
+        @value == other.value && @equivalences == other.equivalences
+      end
+
+      def to_hash
+        instance_variables.inject({}) { |res, attr|
+          res.merge({attr[1..-1] => instance_variable_get(attr)})
+        }
+      end
+    end
   end
 end
 # vim: ts=2 sw=2

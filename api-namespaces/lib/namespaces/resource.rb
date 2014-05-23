@@ -34,6 +34,15 @@ module OpenBEL
           when 'text/xml'
             obj.extend(NamespaceValuesResourceXML)
           end
+        when ValueEquivalence
+          case content_type
+          when 'application/json'
+            obj.extend(ValueEquivalencesResourceJSON)
+          when 'text/html'
+            obj.extend(ValueEquivalencesResourceHTML)
+          when 'text/xml'
+            obj.extend(ValueEquivalencesResourceXML)
+          end
         else
           fail NotImplementedError, "Cannot make resource from #{obj.class}."
         end
@@ -56,6 +65,15 @@ module OpenBEL
             obj.extend(NamespaceValueResourceHTML)
           when 'text/xml'
             obj.extend(NamespaceValueResourceXML)
+          end
+        when ValueEquivalence
+          case content_type
+          when 'application/json'
+            obj.extend(ValueEquivalenceResourceJSON)
+          when 'text/html'
+            obj.extend(ValueEquivalenceResourceHTML)
+          when 'text/xml'
+            obj.extend(ValueEquivalenceResourceXML)
           end
         else
           fail NotImplementedError, "Cannot make resource from #{obj.class}."
@@ -253,6 +271,58 @@ module OpenBEL
       items extend: NamespaceValueResourceHTML, class: OpenBEL::Namespace::NamespaceValue
     end
     # -----
+
+    # ValueEquivalenceResource
+    module ValueEquivalenceResourceJSON
+      include Roar::Representer::JSON
+      include Roar::Representer::Feature::Hypermedia
+
+      property :value
+      collection :equivalences,
+        extend: NamespaceValueResourceJSON,
+        class: NamespaceValue
+    end
+
+    module ValueEquivalenceResourceXML
+      include Roar::Representer::XML
+      include Roar::Representer::Feature::Hypermedia
+
+      property :value
+      collection :equivalences,
+        extend: NamespaceValueResourceXML,
+        class: NamespaceValue
+    end
+
+    module ValueEquivalenceResourceHTML
+      include Roar::Representer::JSON
+      include OpenBEL::HTML
+      include Roar::Representer::Feature::Hypermedia
+
+      property :value
+      collection :equivalences,
+        extend: NamespaceValueResourceHTML,
+        class: NamespaceValue
+    end
+
+    # ValueEquivalencesResource
+    module ValueEquivalencesResourceJSON
+      include Representable::JSON::Collection
+      items extend: ValueEquivalenceResourceJSON, class: OpenBEL::Namespace::ValueEquivalence
+    end
+
+    module ValueEquivalencesResourceXML
+      include Representable::JSON::Collection
+      include Roar::Representer::XML
+      items extend: ValueEquivalenceResourceXML, class: OpenBEL::Namespace::ValueEquivalence
+    end
+
+    module ValueEquivalencesResourceHTML
+      include Representable::JSON::Collection
+      include OpenBEL::HTML
+      items extend: ValueEquivalenceResourceHTML, class: OpenBEL::Namespace::ValueEquivalence
+    end
+    # -----
+
   end
 end
 # vim: ts=2 sw=2
