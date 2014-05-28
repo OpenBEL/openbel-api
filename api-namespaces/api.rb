@@ -24,7 +24,7 @@ class Namespaces < Sinatra::Base
   configure :development do
     require 'perftools'
     require 'rack/perftools_profiler'
-    use ::Rack::PerftoolsProfiler, :default_printer => 'callgrind'
+    use ::Rack::PerftoolsProfiler, :default_printer => 'text'
     use ::Rack::Deflater
 
     register Sinatra::Reloader

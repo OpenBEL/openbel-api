@@ -6,10 +6,10 @@ module OpenBEL
     end
 
     module ClassMethods
-      def from_statements(statements)
+      def from(statements)
         obj = self.new
         statements.each do |s|
-          uri = s.predicate.uri
+          uri = s.predicate
           attribute = uri.fragment || uri.path[uri.path.rindex('/')+1..-1]
           if attribute == 'type' and obj.respond_to? :uri=
             obj.send(:uri=, s.subject.value.to_s)
