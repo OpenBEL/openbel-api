@@ -23,8 +23,6 @@ module OpenBEL
         namespace_uri = find_namespace_rdf_uri(namespace)
         return nil unless namespace_uri
 
-        puts namespace_uri.class
-        puts namespace_uri.to_s
         namespace_by_uri(namespace_uri)
       end
 
