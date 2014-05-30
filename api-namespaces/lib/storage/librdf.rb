@@ -1,7 +1,7 @@
 require_relative 'storage.rb'
 require 'rdf/redland'
 
-class StorageRedland
+class StorageLibrdf
   include OpenBEL::Storage
   include Redland
 
