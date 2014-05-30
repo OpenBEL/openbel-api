@@ -145,7 +145,7 @@ module OpenBEL
         case namespace
         when OpenBEL::Namespace::Namespace
           namespace.uri
-        when URI
+        when RDF::URI
           namespace
         when String
           [
@@ -177,7 +177,7 @@ module OpenBEL
             uri = m.call(namespace_uri, value)
             return uri if uri
           end
-          
+
           pref_statement = @storage.statements(
             pattern(nil, RDF::SKOS.prefLabel, value)
           ).find { |statement|
@@ -267,8 +267,7 @@ module OpenBEL
       end
 
       def pattern(*args)
-        @cache ||= {}
-        @cache[args] ||= RDF::Statement.from(args)
+        RDF::Statement.from(args)
       end
     end
   end
