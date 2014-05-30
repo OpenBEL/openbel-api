@@ -25,14 +25,24 @@ module OpenBEL
 
   module Namespace
 
-    class Namespace
+    class RdfResource
       include OpenBEL::Model
 
-      attr_accessor :uri, :type, :prefLabel, :prefix
+      def initialize(attr_values = {})
+        attr_values.each { |k, v|
+          instance_variable_set(:"@#{k}", v)
+        }
+      end
+
+      attr_accessor :uri
 
       def ==(other)
         return false if other == nil
-        @uri == other.uri && @name == other.name && @prefix == other.prefix
+        @uri == other.uri
+      end
+
+      def hash
+        @uri.hash
       end
 
       def to_hash
@@ -46,28 +56,13 @@ module OpenBEL
       end
     end
 
-    class NamespaceValue
-      include OpenBEL::Model
+    class Namespace < RdfResource
+      attr_accessor :type, :prefLabel, :prefix
+    end
 
-      attr_accessor :uri, :inScheme, :type, :identifier,
+    class NamespaceValue < RdfResource
+      attr_accessor :inScheme, :type, :identifier,
                     :fromSpecies, :prefLabel, :title
-
-      def initialize(attr_values = {})
-        attr_values.each { |k, v|
-          instance_variable_set(:"@#{k}", v)
-        }
-      end
-
-      def ==(other)
-        return false if other == nil
-        @uri == other.uri && @name == other.name && @prefix == other.prefix
-      end
-
-      def to_hash
-        instance_variables.inject({}) { |res, attr|
-          res.merge({attr[1..-1] => instance_variable_get(attr).value})
-        }
-      end
     end
 
     class ValueEquivalence
