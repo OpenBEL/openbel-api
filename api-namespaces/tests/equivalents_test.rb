@@ -12,4 +12,7 @@ end
 
 api = OpenBEL::Namespace::API.new(StorageRedlander.new(:name => "../rdf.db"))
 eq = api.find_equivalents(:hgnc, values, :result => :name)
+eq.each do |x|
+  puts "#{x.value}: #{x.equivalences ? x.equivalences.map(&:to_s).join(", ") : "NONE"}"
+end
 puts eq.size

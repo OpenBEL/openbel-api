@@ -1,6 +1,7 @@
 require_relative 'storage.rb'
 require 'rdf'
 require 'redlander'
+require 'pry'
 
 class StorageRedlander
   include OpenBEL::Storage
@@ -62,26 +63,32 @@ class StorageRedlander
     when RDF::Literal
       obj.to_s
     else
-      node_ptr = Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, obj.to_s)
-      Redlander::Node.new(node_ptr)
+      Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, obj.to_s)
     end
   end
 
   def to_rdf(obj)
     return nil unless obj
-    case obj
-    when Redlander::Node
-      if obj.literal?
-        RDF::Literal(obj.value)
-      elsif obj.resource?
-        RDF::URI(obj.to_s[1..-2])
-      end
-    when Redlander::Statement
-      subject = to_rdf(obj.subject)
-      predicate = to_rdf(obj.predicate)
-      object = to_rdf(obj.object)
-      RDF::Statement.new(subject, predicate, object)
+    stmt_ptr = obj.rdf_statement
+
+    sptr = Redland.librdf_statement_get_subject(stmt_ptr)
+    uri = Redland.librdf_node_to_string(sptr)
+    subject = RDF::URI(uri.to_s[1..-2])
+
+    pptr = Redland.librdf_statement_get_predicate(stmt_ptr)
+    uri = Redland.librdf_node_to_string(pptr)
+    predicate = RDF::URI(uri.to_s[1..-2])
+
+    optr = Redland.librdf_statement_get_object(stmt_ptr)
+    if Redland.librdf_node_is_literal(optr) != 0
+      value = Redland.librdf_node_get_literal_value(optr).force_encoding("UTF-8")
+      object = RDF::Literal(value)
+    elsif Redland.librdf_node_is_resource(optr) != 0
+      uri = Redland.librdf_node_to_string(optr)
+      object = RDF::URI(uri.to_s[1..-2])
     end
+
+    RDF::Statement.new(subject, predicate, object)
   end
 end
 # vim: ts=2 sw=2
