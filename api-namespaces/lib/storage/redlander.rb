@@ -41,29 +41,44 @@ class StorageRedlander
 
   def to_redland(obj)
     return nil unless obj
+
     case obj
     when RDF::Statement
       unless obj.respond_to? :to_hash
         fail ArgumentError, "obj expected to respond to 'to_hash'"
       end
       hash = obj.to_hash
-      subject = hash[:subject]
-      if subject
-        hash[:subject] = to_redland(subject)
+      sub = hash[:subject]
+      if sub
+        sub = Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, sub.to_s)
       end
-      predicate = hash[:predicate]
-      if predicate
-        hash[:predicate] = to_redland(predicate)
+      pred = hash[:predicate]
+      if pred
+        pred = Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, pred.to_s)
       end
-      object = hash[:object]
-      if object
-        hash[:object] = to_redland(object)
+      obj = hash[:object]
+      if obj
+        case obj
+        when RDF::URI
+          obj = Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, obj.to_s)
+        when RDF::Literal
+          type_uri = Redland.librdf_new_uri(Redlander.rdf_world, obj.datatype.to_s)
+          obj = Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, obj.to_s, nil, type_uri)
+        else
+          obj = Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, obj.to_s)
+        end
       end
-      hash
+      Redlander::Statement.new(
+        Redland.librdf_new_statement_from_nodes(Redlander.rdf_world, sub, pred, obj)
+      )
     when RDF::Literal
-      obj.to_s
+      type_uri = Redland.librdf_new_uri(Redlander.rdf_world, obj.datatype.to_s)
+      Redlander::Node.new(
+        Redland.librdf_new_node_from_typed_literal(Redlander.rdf_world, obj.to_s, nil, type_uri)
+      )
     else
-      Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, obj.to_s)
+      node_ptr = Redland.librdf_new_node_from_uri_string(Redlander.rdf_world, obj.to_s)
+      Redlander::Node.new(node_ptr)
     end
   end
 
