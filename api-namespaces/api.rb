@@ -37,7 +37,7 @@ class Namespaces < Sinatra::Base
     if not namespaces or namespaces.empty?
       halt 404
     end
-    
+
     render_multiple(request, namespaces.sort { |x,y|
       x.prefLabel.to_s <=> y.prefLabel.to_s
     }, 'All Namespaces')
@@ -86,7 +86,7 @@ class Namespaces < Sinatra::Base
     if not equivalents or equivalents.empty?
       halt 404
     end
-    
+
     render_multiple(request, equivalents, "Equivalents for #{namespace} / #{value}")
   end
 
@@ -97,7 +97,7 @@ class Namespaces < Sinatra::Base
     if not equivalents or equivalents.empty?
       halt 404
     end
-    
+
     render_multiple(request, equivalents, "Equivalents for #{namespace} / #{value} in #{target}")
   end
 
@@ -106,7 +106,7 @@ class Namespaces < Sinatra::Base
     if not orthologs or orthologs.empty?
       halt 404
     end
-    
+
     render_multiple(request, orthologs, "Orthologs for #{namespace} / #{value}")
   end
 
@@ -117,7 +117,7 @@ class Namespaces < Sinatra::Base
     if not orthologs or orthologs.empty?
       halt 404
     end
-    
+
     render_multiple(request, orthologs, "Orthologs for #{namespace} / #{value} in #{target}")
   end
 
