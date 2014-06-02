@@ -15,6 +15,7 @@ group :development do
   gem 'pry'
   gem 'pry-doc'
   gem 'pry-nav'
+  gem 'pry-stack_explorer'
   gem 'perftools.rb'
   gem 'rack-perftools_profiler'
 end
