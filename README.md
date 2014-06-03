@@ -1,4 +1,10 @@
 openbel-server
 ==============
 
-REST API for loading and querying BEL knowledge.
+Provides REST APIs for managing BEL knowledge.
+
+**APIs**
+
+- api-bel
+- api-resources
+- api-completion
