@@ -28,7 +28,8 @@ API_CALLS = [
   api_uri("/namespaces/hgnc/#{URI.encode('v-akt murine thymoma viral oncogene homolog 1')}", nil),
   api_uri('/namespaces/hgnc/AKT1/equivalents', nil),
   api_uri('/namespaces/hgnc/AKT1/orthologs', nil),
-  api_uri("/namespaces/hgnc/equivalents", "resource=name&namespace=egid&#{EQ_VALUE_1000}")
+  api_uri("/namespaces/hgnc/equivalents", "result=name&namespace=egid&#{EQ_VALUE_1000}"),
+  api_uri("/namespaces/hgnc/equivalents", "result=resource&namespace=egid&#{EQ_VALUE_1000}")
 ]
 
 API_CALLS.each do |api_call|
