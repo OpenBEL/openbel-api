@@ -27,8 +27,6 @@ class Namespaces < Sinatra::Base
     use ::Rack::PerftoolsProfiler, :default_printer => 'text'
     use ::Rack::Deflater
 
-    register Sinatra::Reloader
-
     SPOKEN_CONTENT_TYPES = %w[application/json text/html text/xml]
   end
 
