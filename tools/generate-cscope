@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/../
+cd "${DIR}" || exit 1
+
+if [ -f .env ]; then
+    source .env
+fi
+
+STARSCOPE=$(hash starscope > /dev/null 2>&1)
+if [ "$?" == "0" ]; then
+    starscope
+    starscope -e cscope
+fi
