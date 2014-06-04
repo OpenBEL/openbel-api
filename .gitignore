@@ -1,1 +1,6 @@
-app-namespaces/*.db
+*.db
+tags
+cscope.out
+doc/
+.yardoc
+*.swp
