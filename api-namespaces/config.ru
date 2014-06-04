@@ -1,2 +1,2 @@
-require './api.rb'
+require './app/api.rb'
 run Namespaces

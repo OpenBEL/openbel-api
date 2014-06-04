@@ -7,13 +7,14 @@ require 'sinatra/config_file'
 require 'sinatra/reloader'
 require 'json'
 require 'cgi'
-require_relative 'lib/openbel'
+require_relative '../lib/openbel'
 
+# App
 class Namespaces < Sinatra::Base
   include OpenBEL::Namespace
 
   register Sinatra::ConfigFile
-  config_file 'config.yml'
+  config_file '../config.yml'
 
   def initialize
     super
@@ -30,6 +31,10 @@ class Namespaces < Sinatra::Base
     SPOKEN_CONTENT_TYPES = %w[application/json text/html text/xml]
   end
 
+  # @macro [attach] sinatra.get
+  #   @overload get "$1"
+  # @method get_namespaces
+  # Returns all namespaces.
   get '/namespaces/?' do
     namespaces = @api.find_namespaces
     if not namespaces or namespaces.empty?
