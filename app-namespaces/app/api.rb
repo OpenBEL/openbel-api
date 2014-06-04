@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require 'rack'
 require 'set'
 require 'sinatra/base'
