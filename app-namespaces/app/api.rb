@@ -7,18 +7,20 @@ require 'sinatra/config_file'
 require 'sinatra/reloader'
 require 'json'
 require 'cgi'
-require_relative '../lib/openbel'
+
+require_relative 'util'
+require_relative OpenBEL::Util::path(File.dirname(__FILE__), '..', 'lib', 'openbel')
+require_relative OpenBEL::Util::path(File.dirname(__FILE__), '..', 'lib', 'storage', 'redlander')
 
 # App
 class Namespaces < Sinatra::Base
   include OpenBEL::Namespace
 
   register Sinatra::ConfigFile
-  config_file '../config.yml'
+  config_file "#{OPENBEL_ROOT}/config.yml"
 
   def initialize
     super
-    require './lib/storage/redlander.rb'
     @api = API.new StorageRedlander.new(settings.storage)
   end
 
