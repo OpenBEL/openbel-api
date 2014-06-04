@@ -19,5 +19,6 @@ group :development do
   gem 'perftools.rb'
   gem 'rack-perftools_profiler'
   gem 'rerun'
+  gem 'yard'
 end
 # vim: ts=2 sw=2

@@ -99,3 +99,4 @@ DEPENDENCIES
   roar
   sinatra
   sinatra-contrib
+  yard
