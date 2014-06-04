@@ -7,8 +7,10 @@ require 'json'
 require 'cgi'
 
 require_relative 'util'
-require_relative OpenBEL::Util::path(File.dirname(__FILE__), '..', 'lib', 'openbel')
-require_relative OpenBEL::Util::path(File.dirname(__FILE__), '..', 'lib', 'storage', 'redlander')
+APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
+
+require_relative OpenBEL::Util::path(APP_ROOT, 'lib', 'openbel')
+require_relative OpenBEL::Util::path(APP_ROOT, 'lib', 'storage', 'redlander')
 
 # App
 class Namespaces < Sinatra::Base
@@ -150,7 +152,8 @@ class Namespaces < Sinatra::Base
         resource.to_json(base_url: request.base_url, url: request.url)
       when 'text/html'
         response.headers['Content-Type'] = 'text/html'
-        obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
+        template = OpenBEL::Util::path(APP_ROOT, 'views', 'obj.html')
+        obj_doc = Nokogiri::HTML.parse(File.open(template))
         resource.to_html(obj_doc, title,
           base_url: request.base_url,
           url: request.url)
@@ -166,7 +169,8 @@ class Namespaces < Sinatra::Base
       case content_type
       when 'text/html'
         response.headers['Content-Type'] = 'text/html'
-        obj_doc = Nokogiri::HTML.parse(File.open('views/obj.html'))
+        template = OpenBEL::Util::path(APP_ROOT, 'views', 'obj.html')
+        obj_doc = Nokogiri::HTML.parse(File.open(template))
         resource.to_html(obj_doc, title,
           base_url: request.base_url,
           url: request.url)
