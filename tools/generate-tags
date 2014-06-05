@@ -8,6 +8,7 @@ fi
 
 RIPPER_CTAGS=$(hash ripper-tags > /dev/null 2>&1)
 if [ "$?" == "0" ]; then
-    ripper-tags -R --all-files --exclude "$CTAG_EXCLUDES"
+    # includes
+    ripper-tags -R $CTAG_INCLUDES
     exit $?
 fi
