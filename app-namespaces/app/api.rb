@@ -21,7 +21,8 @@ class Namespaces < Sinatra::Base
 
   def initialize
     super
-    @api = API.new StorageRedlander.new(settings.storage)
+    store_cfg = Hash[settings.storage.map {|k,v| [k.to_sym, v]}]
+    @api = API.new StorageRedlander.new(store_cfg)
   end
 
   configure :development do
