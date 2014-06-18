@@ -1,5 +1,5 @@
 module OpenBEL
-  module Storage
+  module StorageRDF
 
     def describe(subject, &block)
       fail NotImplementedError

@@ -1,4 +1,6 @@
-storage:
-  name: 'rdf.db'
-  storage: 'sqlite'
-  synchronous: 'off'
+storage_rdf:
+  extension: 'redland'
+  options:
+    name: 'rdf.db'
+    storage: 'sqlite'
+    synchronous: 'off'

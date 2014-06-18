@@ -3,8 +3,6 @@ module OpenBEL
 
     class Base < Sinatra::Application
 
-      register Sinatra::ConfigFile
-      config_file "config.yml"
 
       SPOKEN_CONTENT_TYPES = %w[application/json text/html text/xml]
 

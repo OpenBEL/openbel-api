@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
 gem 'bel'
-gem 'oj'
 gem 'builder'
+gem 'dot_hash'
 gem 'nokogiri'
+gem 'oj'
 gem 'roar'
 gem 'sinatra'
 gem 'sinatra-contrib'

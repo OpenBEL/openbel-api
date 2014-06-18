@@ -1,19 +1,14 @@
 require 'rack'
-require 'set'
 require 'sinatra/base'
-require 'sinatra/config_file'
 require 'sinatra/reloader'
-require 'json'
 require 'cgi'
 require 'oj'
-require 'pp'
-require 'pry'
 
 APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
-puts APP_ROOT
 
 require 'openbel'
-require 'storage/librdf'
+require 'storage_rdf/api'
+require 'storage_rdf/extensions/redland'
 require 'app/resources/html'
 require 'app/resources/namespace'
 
@@ -25,8 +20,7 @@ module OpenBEL
 
       def initialize(app)
         super
-        store_cfg = Hash[settings.storage.map {|k,v| [k.to_sym, v]}]
-        @api = OpenBEL::Namespace::API.new StorageLibrdf.new(store_cfg)
+        @api = OpenBEL::Namespace::API.new OpenBEL::Settings.storage_rdf
       end
 
       # @macro [attach] sinatra.get
@@ -71,8 +65,7 @@ module OpenBEL
 
         eq_mapping = @api.find_equivalents(namespace, values, options)
         response.headers['Content-Type'] = 'application/json'
-        Oj::dump(eq_mapping, :mode => :strict)
-        #JSON::dump(eq_mapping)
+        Oj::dump eq_mapping
       end
 
       post '/namespaces/:namespace/equivalents/?' do |namespace|

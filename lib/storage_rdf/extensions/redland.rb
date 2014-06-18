@@ -1,13 +1,14 @@
-require_relative 'storage.rb'
-require 'rdf/redland' #redland bindings
+require_relative '../api.rb'
+require 'rdf/redland'
 
-class StorageLibrdf
-  include OpenBEL::Storage
+class StorageRedland
+  include OpenBEL::StorageRDF
 
   STREAM_ACTIVE = 0
 
   def initialize(options = {})
-    cfg = DEFAULTS.merge(options)
+    option_symbols = Hash[options.map {|k,v| [k.to_sym, v]}]
+    cfg = DEFAULTS.merge(option_symbols)
     $world = Redland::World.new
     @model = Redland::Model.new(Redland::TripleStore.new(cfg[:storage], cfg[:name], "synchronous=off"))
 
