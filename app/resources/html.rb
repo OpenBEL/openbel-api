@@ -68,7 +68,7 @@ module OpenBEL
           th = Nokogiri::XML::Node.new('th', doc)
           th.add_child(Nokogiri::XML::Text.new(index.to_s, doc))
           tr.add_child(th)
-          
+
           th = Nokogiri::XML::Node.new('th', doc)
           th.add_child(make_object(doc, item, ''))
           tr.add_child(th)
@@ -104,7 +104,7 @@ module OpenBEL
           tbody.add_child(tr)
         end
       end
-      
+
       table.add_child(tbody)
       div.add_child(h3)
       div.add_child(table)

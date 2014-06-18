@@ -14,6 +14,8 @@ puts APP_ROOT
 
 require 'openbel'
 require 'storage/librdf'
+require 'app/resources/html'
+require 'app/resources/namespace'
 
 module OpenBEL
   module Routes
