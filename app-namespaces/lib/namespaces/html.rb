@@ -37,7 +37,7 @@ module OpenBEL
     def to_html(layout_doc, title, *args)
       obj_hash = to_hash(*args)
       obj_doc = layout_doc.clone
-      body = obj_doc.at('/html/body')
+      body = obj_doc.at('/html/body/div')
       object_div = make_object(obj_doc, obj_hash, title)
       body.add_child(object_div)
       obj_doc.to_html

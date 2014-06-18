@@ -5,12 +5,13 @@ require 'sinatra/config_file'
 require 'sinatra/reloader'
 require 'json'
 require 'cgi'
+require 'oj'
 
 require_relative 'util'
 APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
 
 require_relative OpenBEL::Util::path(APP_ROOT, 'lib', 'openbel')
-require_relative OpenBEL::Util::path(APP_ROOT, 'lib', 'storage', 'redlander')
+require_relative OpenBEL::Util::path(APP_ROOT, 'lib', 'storage', 'librdf')
 
 # App
 class Namespaces < Sinatra::Base
@@ -22,7 +23,7 @@ class Namespaces < Sinatra::Base
   def initialize
     super
     store_cfg = Hash[settings.storage.map {|k,v| [k.to_sym, v]}]
-    @api = API.new StorageRedlander.new(store_cfg)
+    @api = API.new StorageLibrdf.new(store_cfg)
   end
 
   configure :development do
@@ -74,8 +75,36 @@ class Namespaces < Sinatra::Base
       options[:result] = result
     end
 
-    value_equivalence = @api.find_equivalents(namespace, values, options)
-    render_multiple(request, value_equivalence, "Multiple equivalence for #{namespace} values")
+    eq_mapping = @api.find_equivalents(namespace, values, options)
+    response.headers['Content-Type'] = 'application/json'
+    Oj::dump(eq_mapping, :mode => :strict)
+    #JSON::dump(eq_mapping)
+  end
+
+  post '/namespaces/:namespace/equivalents/?' do |namespace|
+    unless request.media_type == 'application/json'
+      halt 400
+    end
+
+    options = {}
+    if request.params['namespace']
+      options[:target] = request.params['namespace']
+    end
+
+    if request.params['result']
+      result = request.params['result'].to_sym
+      halt 400 unless [:resource, :name, :identifier, :title].include? result
+      options[:result] = result
+    end
+
+    request.body.rewind
+    json_body = JSON.parse request.body.read
+    halt 400 unless json_body['values']
+
+    puts json_body['values'].size
+    eq_mapping = @api.find_equivalents(namespace, json_body['values'], options)
+    response.headers['Content-Type'] = 'application/json'
+    Oj::dump(eq_mapping)
   end
 
   get '/namespaces/:namespace/:id/?' do |namespace, value|

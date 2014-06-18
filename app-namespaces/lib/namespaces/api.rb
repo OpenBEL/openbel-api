@@ -1,22 +1,36 @@
 require_relative 'model.rb'
 require_relative 'vocab.rb'
-require 'rdf'
-require 'set'
+require 'gdbm'
 
 module OpenBEL
   module Namespace
     class API
 
+      SKOS_PREF_LABEL = 'http://www.w3.org/2004/02/skos/core#prefLabel'
+      SKOS_EXACT_MATCH = 'http://www.w3.org/2004/02/skos/core#exactMatch'
+      SKOS_IN_SCHEME = 'http://www.w3.org/2004/02/skos/core#inScheme'
+      DC_IDENTIFIER = 'http://purl.org/dc/terms/identifier'
+      DC_TITLE = 'http://purl.org/dc/terms/title'
+      BEL_PREFIX = 'http://www.openbel.org/vocabulary/prefix'
+      BEL_NAMESPACE_CONCEPT_SCHEME = 'http://www.openbel.org/vocabulary/NamespaceConceptScheme'
+      BEL_ORTHOLOGOUS_MATCH = 'http://www.openbel.org/vocabulary/orthologousMatch'
+      RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+
+      attr_reader :storage
+
       def initialize(storage)
         @storage = storage
+        @dbe = GDBM.new('equiv_table_fk.db', 0666, GDBM::READER)
       end
 
       def find_namespaces(options = {})
+        namespaces = []
         @storage.statements(
-          pattern(nil, RDF.type, BELVocabulary.NamespaceConceptScheme)
-        ).map { |statement|
-          namespace_by_uri(statement.subject)
-        }
+          nil, RDF_TYPE, BEL_NAMESPACE_CONCEPT_SCHEME
+        ) do |sub, pred, obj|
+          namespaces << namespace_by_uri(sub)
+        end
+        return namespaces
       end
 
       def find_namespace(namespace, options = {})
@@ -33,71 +47,119 @@ module OpenBEL
         namespace_value_by_uri(value_uri)
       end
 
+      def each_namespace_value(namespace, options = {}, &block)
+        namespace = find_namespace_rdf_uri(namespace)
+        @storage.statements(
+          nil, SKOS_IN_SCHEME, namespace, nil
+        ) do |subject, predicate, object|
+          block.call namespace_value_by_uri(subject)
+        end
+      end
+
       def find_equivalent(namespace, value, options = {})
-        value_uri = find_namespace_value_rdf_uri(namespace, value)
+        if value.is_a? OpenBEL::Namespace::NamespaceValue
+          value_uri = value.uri
+        else
+          value_uri = find_namespace_value_rdf_uri(namespace, value)
+        end
         return nil unless value_uri
 
-        # TODO value_uri needs to be an RDF::Resource
-        equivalences = @storage.statements(
-          pattern(value_uri, RDF::SKOS.exactMatch, nil)
-        )
         if options[:target]
-          equivalences.find_all { |s|
-            s.object.to_s.include? options[:target]
-          }.map { |s|
-            namespace_value_by_uri(s.object)
-          }
-        else
-          equivalences.map { |s| namespace_value_by_uri(s.object) }
+          target_uri = find_namespace_rdf_uri(options[:target])
+          target_ns = namespace_by_uri(target_uri)
+          unless target_ns
+            return nil
+          end
+          matches = []
+          @storage.statements(
+            value_uri, SKOS_EXACT_MATCH
+          ) do |sub, pred, obj|
+            if obj.start_with? target_ns.uri
+              matches << namespace_value_by_uri(obj)
+            end
+          end
+          return matches
         end
+
+        equivalences = []
+        @storage.statements(
+          value_uri, SKOS_EXACT_MATCH
+        ) do |sub, pred, obj|
+          equivalences << namespace_value_by_uri(obj)
+        end
+        equivalences
       end
 
       def find_equivalents(namespace, values, options = {})
         options = {result: :resource}.merge options
-        vset = Set.new(values)
-
         namespace_uri = find_namespace_rdf_uri(namespace).to_s
+
         if options[:target]
           target_namespace = find_namespace_rdf_uri(options[:target]).to_s
-          vset.map { |v|
-            pref = @storage.statements(
-              pattern(nil, RDF::SKOS.prefLabel, v.to_s)
-            ).find { |statement|
-              statement.subject.to_s.include? namespace_uri
-            }
 
-            if pref
-              matches = @storage.statements(
-                pattern(pref.subject, RDF::SKOS.exactMatch, nil)
-              ).find_all { |statement|
-                statement.object.to_s.include? target_namespace
-              }.map { |statement| statement.object }
-              if matches
-                target_equivalences = matches.map { |match|
-                  namespace_value_with_result(match, options[:result])
-                }
-                ValueEquivalence.new(v.to_s, target_equivalences)
-              else
-                ValueEquivalence.new(v.to_s, nil)
-              end
+          values.map { |v|
+            val = @dbe["#{namespace_uri}:#{v}:#{target_namespace}"]
+            if not val
+              [v, nil]
             else
-              ValueEquivalence.new(v.to_s, nil)
+              #prefLabel
+              [v, val.unpack('m*')[0].split('\0')[1]]
             end
-          }
+          }.to_h
+
+          #values.map { |v|
+            #pref = nil
+            #@storage.statements(
+              #nil, SKOS_PREF_LABEL, nil, v.to_s
+            #) do |sub, pred, obj|
+              #if sub.include? namespace_uri
+                #pref = sub
+                #break
+              #end
+            #end
+
+            #if pref
+              #matches = []
+              #@storage.statements(
+                #pref, SKOS_EXACT_MATCH
+              #) do |sub, pred, obj|
+                #if obj.include? target_namespace
+                  #matches << obj
+                #end
+              #end
+
+              #if matches
+                #target_equivalences = matches.map { |match|
+                  #namespace_value_with_result(match, options[:result])
+                #}
+                #ValueEquivalence.new(v.to_s, target_equivalences)
+              #else
+                #ValueEquivalence.new(v.to_s, nil)
+              #end
+            #else
+              #ValueEquivalence.new(v.to_s, nil)
+            #end
+          #}
         else
-          vset.map { |v|
-            pref = @storage.statements(
-              pattern(nil, RDF::SKOS.prefLabel, v.to_s)
-            ).find { |statement|
-              statement.subject.to_s.include? namespace_uri
-            }
+          values.map { |v|
+            pref = nil
+            @storage.statements(
+              nil, SKOS_PREF_LABEL, nil, v.to_s
+            ) do |sub, pred, obj|
+              if sub.include? namespace_uri
+                pref = sub
+                break
+              end
+            end
 
             if pref
-              matches = @storage.statements(
-                pattern(pref.subject, RDF::SKOS.exactMatch, nil)
-              ).map { |statement|
-                statement.object
-              }
+              matches = []
+              @storage.statements(
+                pref, SKOS_EXACT_MATCH
+              ) do |sub, pred, obj|
+                matches << obj
+              end
+
               if matches
                 all_equivalences = matches.map { |match|
                   namespace_value_with_result(match, options[:result])
@@ -114,21 +176,37 @@ module OpenBEL
       end
 
       def find_orthologs(namespace, value, options = {})
-        value_uri = find_namespace_value_rdf_uri(namespace, value)
+        if value.is_a? OpenBEL::Namespace::NamespaceValue
+          value_uri = value.uri
+        else
+          value_uri = find_namespace_value_rdf_uri(namespace, value)
+        end
         return nil unless value_uri
 
-        orthology = @storage.statements(
-          pattern(value_uri, BELVocabulary.orthologousMatch, nil)
-        )
         if options[:target]
-          orthology.find_all { |s|
-            s.object.to_s.include? options[:target]
-          }.map { |s|
-            namespace_value_by_uri(s.object)
-          }
-        else
-          orthology.map { |s| namespace_value_by_uri(s.object) }
+          target_uri = find_namespace_rdf_uri(options[:target])
+          target_ns = namespace_by_uri(target_uri)
+          unless target_ns
+            return nil
+          end
+          matches = []
+          @storage.statements(
+            value_uri, BEL_ORTHOLOGOUS_MATCH
+          ) do |sub, pred, obj|
+            if obj.start_with? target_ns.uri
+              matches << namespace_value_by_uri(obj)
+            end
+          end
+          return matches
         end
+
+        orthologs = []
+        @storage.statements(
+          value_uri, BEL_ORTHOLOGOUS_MATCH
+        ) do |sub, pred, obj|
+          orthologs << namespace_value_by_uri(obj)
+        end
+        orthologs
       end
 
       private
@@ -159,6 +237,7 @@ module OpenBEL
         end
       end
 
+
       def find_namespace_value_rdf_uri(namespace, value)
         return nil unless value
 
@@ -177,97 +256,110 @@ module OpenBEL
             uri = m.call(namespace_uri, value)
             return uri if uri
           end
-
-          pref_statement = @storage.statements(
-            pattern(nil, RDF::SKOS.prefLabel, value)
-          ).find { |statement|
-            statement.subject.to_s.start_with? namespace_uri.to_s
-          }
-          pref_statement ? pref_statement.subject : nil
         end
       end
 
       def namespace_value_by_pref_label(namespace_uri, label)
-        pref_statement = @storage.statements(
-          pattern(nil, RDF::SKOS.prefLabel, label)
-        ).find { |statement|
-          statement.subject.to_s.start_with? namespace_uri.to_s
-        }
-        pref_statement ? pref_statement.subject : nil
+        ns_uri = nil
+        @storage.statements(
+          nil, SKOS_PREF_LABEL, nil, label
+        ) do |sub, pred, obj|
+          if sub.start_with? namespace_uri
+            ns_uri = sub
+            break
+          end
+        end
+        ns_uri
       end
 
       def namespace_value_by_identifier(namespace_uri, id)
-        id_statement = @storage.statements(
-          pattern(nil, RDF::DC.identifier, id)
-        ).find { |statement|
-          statement.subject.to_s.start_with? namespace_uri.to_s
-        }
-        id_statement ? id_statement.subject : nil
+        ns_uri = nil
+        @storage.statements(
+          nil, DC_IDENTIFIER, nil, id
+        ) do |sub, pred, obj|
+          if sub.start_with? namespace_uri
+            ns_uri = sub
+            break
+          end
+        end
+        ns_uri
       end
 
       def namespace_value_by_title(namespace_uri, title)
-        title_statement = @storage.statements(
-          pattern(nil, RDF::DC.title, title)
-        ).find { |statement|
-          statement.subject.to_s.start_with? namespace_uri.to_s
-        }
-        title_statement ? title_statement.subject : nil
+        ns_uri = nil
+        @storage.statements(
+          nil, DC_TITLE, nil, title
+        ) do |sub, pred, obj|
+          if sub.start_with? namespace_uri
+            ns_uri = sub
+            break
+          end
+        end
+        ns_uri
       end
 
       def namespace_by_prefix(prefix)
         @storage.statements(
-          pattern(nil, BELVocabulary.prefix, prefix)
-        ).map { |statement| statement.subject }.first
+          nil, BEL_PREFIX, nil, prefix
+        ) do |sub, pred, obj|
+          return sub
+        end
       end
 
       def namespace_by_pref_label(label)
         @storage.statements(
-          pattern(nil, RDF::SKOS.prefLabel, label)
-        ).map { |statement| statement.subject }.first
+          nil, SKOS_PREF_LABEL, nil, label
+        ) do |sub, pred, obj|
+          return sub
+        end
       end
 
       def namespace_by_uri_part(label)
-        RDF::URI(NAMESPACE_PREFIX + URI.encode(label))
+        NAMESPACE_PREFIX + URI.encode(label)
       end
 
       def namespace_by_uri(uri)
-        Namespace.from(@storage.statements(pattern(uri, nil, nil)))
+        ns_stmts = []
+        @storage.statements(uri) do |sub, pred, obj|
+          ns_stmts << [sub, pred, obj]
+        end
+        Namespace.from(ns_stmts)
       end
 
       def namespace_value_by_uri(uri)
-        NamespaceValue.from(@storage.statements(pattern(uri, nil, nil)))
+        value_statements = []
+        @storage.statements(uri, nil, nil, nil) do |sub, pred, obj|
+          value_statements << [sub, pred, obj]
+        end
+        NamespaceValue.from(value_statements)
       end
 
       def namespace_value_with_result(uri, result)
         case result
         when :name
           @storage.statements(
-            pattern(uri, RDF::SKOS.prefLabel, nil)
-          ).map { |statement|
-            label = statement.object.to_s
-            NamespaceValue.new({uri: uri, prefLabel: label})
-          }.first
+            uri, SKOS_PREF_LABEL
+          ) do |sub, pred, obj|
+            return obj
+            #return NamespaceValue.new({uri: uri, prefLabel: obj})
+          end
         when :identifier
           @storage.statements(
-            pattern(uri, RDF::DC.identifier, nil)
-          ).map { |statement|
-            identifier = statement.object.to_s
-            NamespaceValue.new({uri: uri, identifier: identifier})
-          }.first
+            uri, DC_IDENTIFIER
+          ) do |sub, pred, obj|
+            return obj
+            #return NamespaceValue.new({uri: uri, identifier: obj})
+          end
         when :title
           @storage.statements(
-            pattern(uri, RDF::DC.title, nil)
-          ).map { |statement|
-            title = statement.object.to_s
-            NamespaceValue.new({uri: uri, title: title})
-          }.first
+            uri, DC_TITLE
+          ) do |sub, pred, obj|
+            return obj
+            #return NamespaceValue.new({uri: uri, title: obj})
+          end
         else
           namespace_value_by_uri(uri)
         end
-      end
-
-      def pattern(*args)
-        RDF::Statement.from(args)
       end
     end
   end

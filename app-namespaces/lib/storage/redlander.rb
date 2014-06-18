@@ -6,6 +6,8 @@ require 'pry'
 class StorageRedlander
   include OpenBEL::Storage
 
+  attr_accessor :model
+
   def initialize(options = {})
     storage_configuration = DEFAULTS.merge(options)
     @model = Redlander::Model.new(storage_configuration)

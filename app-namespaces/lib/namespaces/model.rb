@@ -8,17 +8,34 @@ module OpenBEL
     module ClassMethods
       def from(statements)
         obj = self.new
-        statements.each do |s|
-          uri = s.predicate
-          attribute = uri.fragment || uri.path[uri.path.rindex('/')+1..-1]
-          if attribute == 'type' and obj.respond_to? :uri=
-            obj.send(:uri=, s.subject.value.to_s)
-          end
-          if obj.respond_to? :"#{attribute}="
-            obj.send(:"#{attribute}=", s.object.value.to_s)
+        statements.each do |sub, pred, obj_val|
+          index = pred.rindex('#') || pred.rindex('/')
+          if index
+            attribute = pred[index+1..-1]
+            if attribute == 'type' and obj.respond_to? :uri=
+              obj.send(:uri=, sub)
+            end
+            if obj.respond_to? :"#{attribute}="
+              obj.send(:"#{attribute}=", obj_val)
+            end
+          else
+            $stderr.puts "cannot parse local name for #{pred}"
           end
         end
         (obj.respond_to? :uri and obj.uri) ? obj : nil
+
+        #obj = self.new
+        #statements.each do |s|
+          #uri = s.predicate
+          #attribute = uri.fragment || uri.path[uri.path.rindex('/')+1..-1]
+          #if attribute == 'type' and obj.respond_to? :uri=
+            #obj.send(:uri=, s.subject.value.to_s)
+          #end
+          #if obj.respond_to? :"#{attribute}="
+            #obj.send(:"#{attribute}=", s.object.value.to_s)
+          #end
+        #end
+        #(obj.respond_to? :uri and obj.uri) ? obj : nil
       end
     end
   end
@@ -47,7 +64,7 @@ module OpenBEL
 
       def to_hash
         instance_variables.inject({}) { |res, attr|
-          res.merge({attr[1..-1] => instance_variable_get(attr).value})
+          res.merge({attr[1..-1] => instance_variable_get(attr)})
         }
       end
 
