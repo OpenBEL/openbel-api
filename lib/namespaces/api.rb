@@ -1,5 +1,4 @@
 require_relative 'model.rb'
-require_relative 'vocab.rb'
 require 'gdbm'
 
 module OpenBEL
@@ -223,8 +222,6 @@ module OpenBEL
         case namespace
         when OpenBEL::Namespace::Namespace
           namespace.uri
-        when RDF::URI
-          namespace
         when String
           [
             self.method(:namespace_by_prefix),

@@ -1,5 +1,6 @@
 --charset UTF-8
 --markup markdown
 --main README.md
---one-file
-"app-namespaces/{lib,app}/**/*.rb"
+"*.rb"
+"app/**/*.rb"
+"lib/**/*.rb"

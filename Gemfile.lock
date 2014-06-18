@@ -9,10 +9,11 @@ GEM
     celluloid (0.16.0.pre)
       timers (~> 2.0.0)
     coderay (1.1.0)
+    daemons (1.1.9)
     debug_inspector (0.0.2)
+    eventmachine (1.0.3)
     ffi (1.9.3)
     hitimes (1.2.1)
-    json (1.8.1)
     listen (2.7.6)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -22,6 +23,7 @@ GEM
     multi_json (1.9.2)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
+    oj (2.9.4)
     open4 (1.3.3)
     perftools.rb (2.0.1)
     pry (0.9.12.6)
@@ -48,10 +50,6 @@ GEM
     rb-fsevent (0.9.4)
     rb-inotify (0.9.4)
       ffi (>= 0.5.0)
-    rdf (1.1.3)
-    redlander (0.6.1)
-      ffi (~> 1.3)
-      xml_schema (~> 0.2.0)
     representable (1.8.1)
       multi_json
       nokogiri
@@ -72,11 +70,14 @@ GEM
       sinatra (~> 1.4.0)
       tilt (~> 1.3)
     slop (3.5.0)
+    thin (1.6.2)
+      daemons (>= 1.0.9)
+      eventmachine (>= 1.0.0)
+      rack (>= 1.0.0)
     tilt (1.4.1)
     timers (2.0.0)
       hitimes
     uber (0.0.4)
-    xml_schema (0.2.0)
     yard (0.8.7.4)
 
 PLATFORMS
@@ -85,18 +86,17 @@ PLATFORMS
 DEPENDENCIES
   bel
   builder
-  json
   nokogiri
+  oj
   perftools.rb
   pry
   pry-doc
   pry-nav
   pry-stack_explorer
   rack-perftools_profiler
-  rdf (= 1.1.3)
-  redlander
   rerun
   roar
   sinatra
   sinatra-contrib
+  thin
   yard

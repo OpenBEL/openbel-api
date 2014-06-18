@@ -1,12 +1,13 @@
 source 'https://rubygems.org'
 
 gem 'bel'
-gem 'json'
+gem 'oj'
 gem 'builder'
 gem 'nokogiri'
 gem 'roar'
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem 'thin'
 
 group :development do
   gem 'pry'

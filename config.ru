@@ -1,4 +1,3 @@
-OPENBEL_ROOT = File.dirname(__FILE__)
+require './app'
 
-require './app-namespaces/app/api.rb'
-run Namespaces
+run OpenBEL::Server
