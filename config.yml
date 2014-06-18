@@ -1,6 +1,14 @@
+namespace_cache:
+  extension: 'gdbm'
+  options:
+    value_file: 'value.db'
+    equivalence_file: 'equivalence.db'
+    orthology_file: 'orthology.db'
+
 storage_rdf:
   extension: 'redland'
   options:
     name: 'rdf.db'
     storage: 'sqlite'
     synchronous: 'off'
+# vim: ts=2 sts=2 sw=2

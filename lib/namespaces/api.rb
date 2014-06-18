@@ -1,5 +1,6 @@
 require_relative 'model.rb'
-require 'gdbm'
+require_relative 'extensions/cache'
+require_relative 'extensions/gdbm_cache'
 
 module OpenBEL
   module Namespace
@@ -17,9 +18,13 @@ module OpenBEL
 
       attr_reader :storage
 
-      def initialize(storage)
+      def initialize(storage, options = {})
         @storage = storage
-        @dbe = GDBM.new('equiv_table_fk.db', 0666, GDBM::READER)
+        @cache = GdbmCache.new(
+          'value_file' => 'value.db',
+          'equivalence_file' => 'equivalence.db',
+          'orthology_file' => 'orthology.db'
+        )
       end
 
       def find_namespaces(options = {})
@@ -95,50 +100,7 @@ module OpenBEL
 
         if options[:target]
           target_namespace = find_namespace_rdf_uri(options[:target]).to_s
-
-          values.map { |v|
-            val = @dbe["#{namespace_uri}:#{v}:#{target_namespace}"]
-            if not val
-              [v, nil]
-            else
-              #prefLabel
-              [v, val.unpack('m*')[0].split('\0')[1]]
-            end
-          }.to_h
-
-          #values.map { |v|
-            #pref = nil
-            #@storage.statements(
-              #nil, SKOS_PREF_LABEL, nil, v.to_s
-            #) do |sub, pred, obj|
-              #if sub.include? namespace_uri
-                #pref = sub
-                #break
-              #end
-            #end
-
-            #if pref
-              #matches = []
-              #@storage.statements(
-                #pref, SKOS_EXACT_MATCH
-              #) do |sub, pred, obj|
-                #if obj.include? target_namespace
-                  #matches << obj
-                #end
-              #end
-
-              #if matches
-                #target_equivalences = matches.map { |match|
-                  #namespace_value_with_result(match, options[:result])
-                #}
-                #ValueEquivalence.new(v.to_s, target_equivalences)
-              #else
-                #ValueEquivalence.new(v.to_s, nil)
-              #end
-            #else
-              #ValueEquivalence.new(v.to_s, nil)
-            #end
-          #}
+          @cache.fetch_equivalences(namespace_uri, values, target_namespace).to_h
         else
           values.map { |v|
             pref = nil
