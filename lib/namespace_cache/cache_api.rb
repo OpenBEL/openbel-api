@@ -1,6 +1,6 @@
 module OpenBEL
   module Namespace
-    module Cache
+    module CacheAPI
 
       def fetch_all_values(namespace)
         fail NotImplementedError

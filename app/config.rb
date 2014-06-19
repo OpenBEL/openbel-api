@@ -12,6 +12,9 @@ module OpenBEL
       config = {}
       File.open(config_file, 'r:UTF-8') do |cf|
         config = YAML::load(cf)
+        if not config
+          config = {}
+        end
       end
       cfg = Settings.new config, SilentProperties
 
@@ -24,72 +27,94 @@ module OpenBEL
         end
       end
 
-      cfg['storage_rdf'] = self.storage_rdf(cfg)
-      cfg['namespace_cache'] = self.namespace_cache(cfg)
+      if cfg.namespace
+        ns_ext = cfg.namespace.extension
+        require "namespace/extensions/#{ns_ext}"
+
+        storage = self.make_storage(cfg.namespace)
+        cache = self.make_cache(cfg.namespace)
+        namespace_api = OpenBEL::Namespace::Namespace.new(:storage => storage, :cache => cache)
+
+        cfg['namespace'] = true
+        cfg['namespace_api'] = namespace_api
+      else
+        cfg['namespace'] = false
+      end
+
       cfg
     end
 
-    def self.storage_rdf(cfg)
-      return nil unless cfg.storage_rdf or cfg.storage_rdf.extension
+    def self.make_storage(cfg)
+      return nil unless cfg.storage or cfg.storage.extension
 
-      extension = cfg.storage_rdf.extension
-      options = cfg.storage_rdf.options || {}
+      extension = cfg.storage.extension
+      options = cfg.storage.options || {}
       require "storage_rdf/extensions/#{extension}"
-      StorageRedland.new options
+      OpenBEL::Storage.new options
     end
 
-    def self.namespace_cache(cfg)
-      return nil unless cfg.namespace_cache or cfg.namespace_cache.extension
-      extension = cfg.namespace_cache.extension
-      options = cfg.namespace_cache.options || {}
-      require "namespaces/extensions/#{extension}"
-      OpenBEL::Namespace::CacheGDBM.new options
+    def self.make_cache(cfg)
+      return nil unless cfg.cache or cfg.cache.extension
+
+      extension = cfg.cache.extension
+      options = cfg.cache.options || {}
+      require "namespace_cache/extensions/#{extension}"
+      OpenBEL::Namespace::Cache.new options
     end
 
     private
 
     def self.validate(cfg)
-      # validate storage_rdf
-      unless cfg.storage_rdf
-        return [
-          'storage_rdf',
-          'The (storage_rdf) configuration must be defined.'
-        ]
-      end
-      unless cfg.storage_rdf.extension
-        return [
-          'storage_rdf.extension',
-          'An (extension) must be set in (storage_rdf) configuration'
-        ]
-      end
-
-      begin
-        extension = cfg.storage_rdf.extension
-        require "storage_rdf/extensions/#{extension}"
-      rescue LoadError
-        return [
-          'storage_rdf.extension',
-          "The #{extension} extension could not be loaded from storage_rdf/extensions/#{extension}."
-        ]
-      end
-
-      # validate namespace_cache
-      if cfg.namespace_cache
-        unless cfg.namespace_cache.extension
+      if cfg.namespace
+        ncfg = cfg.namespace
+        unless ncfg.extension
           return [
-            'namespace_cache.extension',
-            'An (extension) must be set in (namespace_cache) configuration'
+            'namespace',
+            'An (extension) must be set in (namespace) configuration'
           ]
         end
 
-        begin
-          extension = cfg.namespace_cache.extension
-          require "namespaces/extensions/#{extension}"
-        rescue LoadError
+        unless ncfg.storage or ncfg.cache
           return [
-            'namespace_cache.extension',
-            "The #{extension} extension could not be loaded from namespaces/extensions/#{extension}."
+            'namespace',
+            'The (namespace) configuration must define either storage or cache.'
           ]
+        end
+
+        if ncfg.cache
+          unless ncfg.cache.extension
+            return [
+              'namespace.cache.extension',
+              'An (extension) must be set in (namespace.cache) configuration'
+            ]
+          end
+
+          begin
+            extension = ncfg.cache.extension
+            require "namespace_cache/extensions/#{extension}"
+          rescue LoadError
+            return [
+              'namespace.cache.extension',
+              "The #{extension} extension could not be loaded from namespace_cache/extensions/#{extension}."
+            ]
+          end
+        else
+          unless ncfg.storage.extension
+            return [
+              'namespace.storage.extension',
+              'An (extension) must be set in (namespace.storage) configuration'
+            ]
+          end
+
+          begin
+            extension = ncfg.storage.extension
+            require "storage_rdf/extensions/#{extension}"
+          rescue LoadError
+            return [
+              'namespace.storage.extension',
+              "The #{extension} extension could not be loaded from storage_rdf/extensions/#{extension}."
+            ]
+          end
         end
       end
 

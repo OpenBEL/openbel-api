@@ -16,7 +16,7 @@ module OpenBEL
 
         # tests first object
         case obj.first
-        when Namespace
+        when OpenBEL::Model::Namespace::Namespace
           case content_type
           when 'application/json'
             obj.extend(NamespacesResourceJSON)
@@ -25,7 +25,7 @@ module OpenBEL
           when 'text/xml'
             obj.extend(NamespacesResourceXML)
           end
-        when NamespaceValue
+        when OpenBEL::Model::Namespace::NamespaceValue
           case content_type
           when 'application/json'
             obj.extend(NamespaceValuesResourceJSON)
@@ -34,7 +34,7 @@ module OpenBEL
           when 'text/xml'
             obj.extend(NamespaceValuesResourceXML)
           end
-        when ValueEquivalence
+        when OpenBEL::Model::Namespace::ValueEquivalence
           case content_type
           when 'application/json'
             obj.extend(ValueEquivalencesResourceJSON)
@@ -48,7 +48,7 @@ module OpenBEL
         end
       else
         case obj
-        when Namespace
+        when OpenBEL::Model::Namespace::Namespace
           case content_type
           when 'application/json'
             obj.extend(NamespaceResourceJSON)
@@ -57,7 +57,7 @@ module OpenBEL
           when 'text/xml'
             obj.extend(NamespaceResourceXML)
           end
-        when NamespaceValue
+        when OpenBEL::Model::Namespace::NamespaceValue
           case content_type
           when 'application/json'
             obj.extend(NamespaceValueResourceJSON)
@@ -66,7 +66,7 @@ module OpenBEL
           when 'text/xml'
             obj.extend(NamespaceValueResourceXML)
           end
-        when ValueEquivalence
+        when OpenBEL::Model::Namespace::ValueEquivalence
           case content_type
           when 'application/json'
             obj.extend(ValueEquivalenceResourceJSON)
@@ -256,19 +256,19 @@ module OpenBEL
     # NamespaceValueResource
     module NamespaceValuesResourceJSON
       include Representable::JSON::Collection
-      items extend: NamespaceValueResourceJSON, class: OpenBEL::Namespace::NamespaceValue
+      items extend: NamespaceValueResourceJSON, class: OpenBEL::Model::Namespace::NamespaceValue
     end
 
     module NamespaceValuesResourceXML
       include Representable::JSON::Collection
       include Roar::Representer::XML
-      items extend: NamespaceValueResourceXML, class: OpenBEL::Namespace::NamespaceValue
+      items extend: NamespaceValueResourceXML, class: OpenBEL::Model::Namespace::NamespaceValue
     end
 
     module NamespaceValuesResourceHTML
       include Representable::JSON::Collection
       include OpenBEL::HTML
-      items extend: NamespaceValueResourceHTML, class: OpenBEL::Namespace::NamespaceValue
+      items extend: NamespaceValueResourceHTML, class: OpenBEL::Model::Namespace::NamespaceValue
     end
     # -----
 
@@ -280,7 +280,7 @@ module OpenBEL
       property :value
       collection :equivalences,
         extend: NamespaceValueResourceJSON,
-        class: NamespaceValue
+        class: OpenBEL::Model::Namespace::NamespaceValue
     end
 
     module ValueEquivalenceResourceXML
@@ -290,7 +290,7 @@ module OpenBEL
       property :value
       collection :equivalences,
         extend: NamespaceValueResourceXML,
-        class: NamespaceValue
+        class: OpenBEL::Model::Namespace::NamespaceValue
     end
 
     module ValueEquivalenceResourceHTML
@@ -301,25 +301,25 @@ module OpenBEL
       property :value
       collection :equivalences,
         extend: NamespaceValueResourceHTML,
-        class: NamespaceValue
+        class: OpenBEL::Model::Namespace::NamespaceValue
     end
 
     # ValueEquivalencesResource
     module ValueEquivalencesResourceJSON
       include Representable::JSON::Collection
-      items extend: ValueEquivalenceResourceJSON, class: OpenBEL::Namespace::ValueEquivalence
+      items extend: ValueEquivalenceResourceJSON, class: OpenBEL::Model::Namespace::ValueEquivalence
     end
 
     module ValueEquivalencesResourceXML
       include Representable::JSON::Collection
       include Roar::Representer::XML
-      items extend: ValueEquivalenceResourceXML, class: OpenBEL::Namespace::ValueEquivalence
+      items extend: ValueEquivalenceResourceXML, class: OpenBEL::Model::Namespace::ValueEquivalence
     end
 
     module ValueEquivalencesResourceHTML
       include Representable::JSON::Collection
       include OpenBEL::HTML
-      items extend: ValueEquivalenceResourceHTML, class: OpenBEL::Namespace::ValueEquivalence
+      items extend: ValueEquivalenceResourceHTML, class: OpenBEL::Model::Namespace::ValueEquivalence
     end
     # -----
 

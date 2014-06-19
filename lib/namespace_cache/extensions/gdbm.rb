@@ -1,12 +1,12 @@
-require_relative 'cache.rb'
+require_relative '../cache_api.rb'
 require 'gdbm'
 require 'benchmark'
 
 module OpenBEL
   module Namespace
 
-    class CacheGDBM
-      include Cache
+    class Cache
+      include CacheAPI
 
       def initialize(options = {})
         value_file = options['value_file']

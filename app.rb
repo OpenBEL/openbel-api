@@ -9,7 +9,6 @@ require 'app/config'
 require 'app/util'
 require 'app/routes/base'
 require 'app/routes/bel'
-require 'app/routes/namespaces'
 
 module OpenBEL
 
@@ -32,7 +31,11 @@ module OpenBEL
     end
 
     use Rack::Deflater
-    use OpenBEL::Routes::Namespaces
+
+    if OpenBEL::Settings.namespace == true
+      require 'app/routes/namespaces'
+      use OpenBEL::Routes::Namespaces
+    end
     use OpenBEL::Routes::BEL
   end
 end

@@ -6,9 +6,6 @@ require 'oj'
 
 APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
 
-require 'openbel'
-require 'storage_rdf/api'
-require 'storage_rdf/extensions/redland'
 require 'app/resources/html'
 require 'app/resources/namespace'
 
@@ -21,10 +18,7 @@ module OpenBEL
       def initialize(app)
         super
         options = {}
-        if OpenBEL::Settings.namespace_cache
-          options['namespace_cache'] = OpenBEL::Settings.namespace_cache
-        end
-        @api = OpenBEL::Namespace::API.new OpenBEL::Settings.storage_rdf, options
+        @api = OpenBEL::Settings.namespace_api
       end
 
       # @macro [attach] sinatra.get

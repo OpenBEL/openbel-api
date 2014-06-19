@@ -1,8 +1,10 @@
-require_relative 'model.rb'
+require_relative '../namespace_api'
+require_relative '../model'
 
 module OpenBEL
   module Namespace
-    class API
+    class Namespace
+      include NamespaceAPI
 
       SKOS_PREF_LABEL = 'http://www.w3.org/2004/02/skos/core#prefLabel'
       SKOS_EXACT_MATCH = 'http://www.w3.org/2004/02/skos/core#exactMatch'
@@ -16,7 +18,7 @@ module OpenBEL
 
       attr_reader :storage
 
-      def initialize(storage, options = {})
+      def initialize(options = {})
         @storage = storage
         @cache = options['namespace_cache']
       end
@@ -317,4 +319,5 @@ module OpenBEL
     end
   end
 end
-# vim: ts=2 sw=2
+# vim: ts=2 sts=2 sw=2
+# encoding: utf-8
