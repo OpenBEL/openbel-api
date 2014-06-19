@@ -25,6 +25,7 @@ module OpenBEL
       end
 
       cfg['storage_rdf'] = self.storage_rdf(cfg)
+      cfg['namespace_cache'] = self.namespace_cache(cfg)
       cfg
     end
 
@@ -37,9 +38,18 @@ module OpenBEL
       StorageRedland.new options
     end
 
+    def self.namespace_cache(cfg)
+      return nil unless cfg.namespace_cache or cfg.namespace_cache.extension
+      extension = cfg.namespace_cache.extension
+      options = cfg.namespace_cache.options || {}
+      require "namespaces/extensions/#{extension}"
+      OpenBEL::Namespace::CacheGDBM.new options
+    end
+
     private
 
     def self.validate(cfg)
+      # validate storage_rdf
       unless cfg.storage_rdf
         return [
           'storage_rdf',
@@ -55,7 +65,6 @@ module OpenBEL
 
       begin
         extension = cfg.storage_rdf.extension
-        options = cfg.storage_rdf.options || {}
         require "storage_rdf/extensions/#{extension}"
       rescue LoadError
         return [
@@ -63,6 +72,28 @@ module OpenBEL
           "The #{extension} extension could not be loaded from storage_rdf/extensions/#{extension}."
         ]
       end
+
+      # validate namespace_cache
+      if cfg.namespace_cache
+        unless cfg.namespace_cache.extension
+          return [
+            'namespace_cache.extension',
+            'An (extension) must be set in (namespace_cache) configuration'
+          ]
+        end
+
+        begin
+          extension = cfg.namespace_cache.extension
+          require "namespaces/extensions/#{extension}"
+        rescue LoadError
+          return [
+            'namespace_cache.extension',
+            "The #{extension} extension could not be loaded from namespaces/extensions/#{extension}."
+          ]
+        end
+      end
+
+      nil
     end
 
     class SilentProperties < Properties

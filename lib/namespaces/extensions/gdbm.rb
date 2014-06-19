@@ -1,9 +1,11 @@
+require_relative 'cache.rb'
 require 'gdbm'
+require 'benchmark'
 
 module OpenBEL
   module Namespace
 
-    class GdbmCache
+    class CacheGDBM
       include Cache
 
       def initialize(options = {})
@@ -32,15 +34,19 @@ module OpenBEL
       end
 
       def fetch_equivalences(namespace, values, target_namespace)
-        values.map { |v|
-          val = @e["#{namespace}:#{v}:#{target_namespace}"]
-          if not val
-            [v, nil]
-          else
-            #prefLabel
-            [v, val.unpack('m*')[0].split('\0')[1]]
-          end
+        vals = nil
+        puts Benchmark.measure {
+          vals = values.map { |v|
+            val = @e["#{namespace}:#{v}:#{target_namespace}"]
+            if not val
+              [v, nil]
+            else
+              #prefLabel
+              [v, val.unpack('m*')[0].split('\0')[1]]
+            end
+          }
         }
+        vals
       end
 
       def fetch_orthologs(namespace, values)

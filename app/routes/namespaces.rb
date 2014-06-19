@@ -20,7 +20,11 @@ module OpenBEL
 
       def initialize(app)
         super
-        @api = OpenBEL::Namespace::API.new OpenBEL::Settings.storage_rdf
+        options = {}
+        if OpenBEL::Settings.namespace_cache
+          options['namespace_cache'] = OpenBEL::Settings.namespace_cache
+        end
+        @api = OpenBEL::Namespace::API.new OpenBEL::Settings.storage_rdf, options
       end
 
       # @macro [attach] sinatra.get

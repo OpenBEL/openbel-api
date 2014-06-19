@@ -1,6 +1,4 @@
 require_relative 'model.rb'
-require_relative 'extensions/cache'
-require_relative 'extensions/gdbm_cache'
 
 module OpenBEL
   module Namespace
@@ -20,11 +18,7 @@ module OpenBEL
 
       def initialize(storage, options = {})
         @storage = storage
-        @cache = GdbmCache.new(
-          'value_file' => 'value.db',
-          'equivalence_file' => 'equivalence.db',
-          'orthology_file' => 'orthology.db'
-        )
+        @cache = options['namespace_cache']
       end
 
       def find_namespaces(options = {})
