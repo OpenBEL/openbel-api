@@ -59,7 +59,7 @@ module OpenBEL
       end
 
       def find_equivalent(namespace, value, options = {})
-        if value.is_a? OpenBEL::Namespace::NamespaceValue
+        if value.is_a? OpenBEL::Model::Namespace::NamespaceValue
           value_uri = value.uri
         else
           value_uri = find_namespace_value_rdf_uri(namespace, value)
@@ -135,7 +135,7 @@ module OpenBEL
       end
 
       def find_orthologs(namespace, value, options = {})
-        if value.is_a? OpenBEL::Namespace::NamespaceValue
+        if value.is_a? OpenBEL::Model::Namespace::NamespaceValue
           value_uri = value.uri
         else
           value_uri = find_namespace_value_rdf_uri(namespace, value)
@@ -180,7 +180,7 @@ module OpenBEL
         end
 
         case namespace
-        when OpenBEL::Namespace::Namespace
+        when OpenBEL::Model::Namespace::Namespace
           namespace.uri
         when String
           [
@@ -199,7 +199,7 @@ module OpenBEL
         return nil unless value
 
         case value
-        when OpenBEL::Namespace::NamespaceValue
+        when OpenBEL::Model::Namespace::NamespaceValue
           value.uri
         when URI
           value
@@ -298,21 +298,18 @@ module OpenBEL
             uri, SKOS_PREF_LABEL
           ) do |sub, pred, obj|
             return obj
-            #return NamespaceValue.new({uri: uri, prefLabel: obj})
           end
         when :identifier
           @storage.statements(
             uri, DC_IDENTIFIER
           ) do |sub, pred, obj|
             return obj
-            #return NamespaceValue.new({uri: uri, identifier: obj})
           end
         when :title
           @storage.statements(
             uri, DC_TITLE
           ) do |sub, pred, obj|
             return obj
-            #return NamespaceValue.new({uri: uri, title: obj})
           end
         else
           namespace_value_by_uri(uri)

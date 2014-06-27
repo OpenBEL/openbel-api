@@ -2,6 +2,14 @@ module OpenBEL
   module Namespace
     module CacheAPI
 
+      def fetch_namespaces
+        fail NotImplementedError
+      end
+
+      def fetch_namespace(namespace)
+        fail NotImplementedError
+      end
+
       def fetch_all_values(namespace)
         fail NotImplementedError
       end
