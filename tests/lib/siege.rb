@@ -47,7 +47,15 @@ module SiegeTank
     Benchmark.benchmark(Benchmark::CAPTION, 7, Benchmark::FORMAT, "TOTAL:", "AVG:") do |bm|
       results = []
       samples.times {
-        results << Benchmark.measure { Net::HTTP.get_response(URI(URI.encode(uri))) }
+        results << Benchmark.measure {
+          req_uri = URI(URI.encode(uri))
+          req = Net::HTTP::Get.new(req_uri)
+          req['Accept-Encoding'] = 'identity'
+          res = Net::HTTP.start(req_uri.hostname, req_uri.port) {|http|
+            http.request(req)
+          }
+          #Net::HTTP.get_response(URI(URI.encode(uri)))
+        }
       }
       [results.reduce(&:+), (results.reduce(&:+)) / samples]
     end
