@@ -100,6 +100,8 @@ GEM
       sinatra (~> 1.4.0)
       tilt (~> 1.3)
     slop (3.5.0)
+    term-ansicolor (1.3.0)
+      tins (~> 1.0)
     thin (1.6.2)
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
@@ -107,6 +109,7 @@ GEM
     tilt (1.4.1)
     timers (2.0.0)
       hitimes
+    tins (1.1.0)
     uber (0.0.4)
     yard (0.8.7.4)
 
@@ -127,5 +130,6 @@ DEPENDENCIES
   sinatra
   sinatra-advanced-routes
   sinatra-contrib
+  term-ansicolor
   thin
   yard

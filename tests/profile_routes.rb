@@ -5,7 +5,7 @@ require_relative '../app.rb'
 require_relative '../app/routes/namespaces.rb'
 
 unless ARGV.length == 2
-  $stderr.puts "usage: siege.rb <host> <port>"
+  $stderr.puts "usage: profile_routes.rb <host> <port>"
   exit 1
 end
 
