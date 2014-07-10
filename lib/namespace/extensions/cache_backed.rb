@@ -61,6 +61,7 @@ module OpenBEL
         )
       end
 
+      # FIXME use cache
       def each_namespace_value(namespace, options = {}, &block)
         namespace = find_namespace_rdf_uri(namespace)
         @storage.statements(
@@ -71,27 +72,18 @@ module OpenBEL
       end
 
       def find_equivalent(namespace, value, options = {})
-        if options[:target]
-          match = @cache.fetch_target_equivalences(namespace, value, options[:target])
-          return nil unless match
-
-          return OpenBEL::Model::Namespace::NamespaceValue.new(
-            :uri => match[0],
-            :identifier => match[1],
-            :prefLabel => match[2],
-            :title => match[3]
-          )
-        end
-
-        matches = @cache.fetch_equivalences(namespace, value)
+        matches = options[:target] ?
+          @cache.fetch_target_equivalences(namespace, [value], options[:target]) :
+          @cache.fetch_equivalences(namespace, [value])
         return nil if not matches or matches.empty?
 
-        matches.map { |entry|
+        (_, equivalents) = matches.first
+        equivalents.map { |entry|
           OpenBEL::Model::Namespace::NamespaceValue.new(
             :uri => entry[0],
-            :identifier => entry[1],
-            :prefLabel => entry[2],
-            :title => entry[3]
+            :identifier => entry[2],
+            :prefLabel => entry[3],
+            :title => entry[4]
           )
         }
       end
@@ -160,6 +152,23 @@ module OpenBEL
         end
       end
 
+      def find_ortholog(namespace, value, options = {})
+        matches = options[:target] ?
+          @cache.fetch_target_orthologs(namespace, [value], options[:target]) :
+          @cache.fetch_orthologs(namespace, [value])
+        return nil if not matches or matches.empty?
+
+        (_, orthologs) = matches.first
+        orthologs.map { |entry|
+          OpenBEL::Model::Namespace::NamespaceValue.new(
+            :uri => entry[0],
+            :identifier => entry[2],
+            :prefLabel => entry[3],
+            :title => entry[4]
+          )
+        }
+      end
+
       def find_orthologs(namespace, values, options = {})
         options = {result: :resource}.merge options
 
@@ -220,113 +229,8 @@ module OpenBEL
               map_fx.call(v)
             }
           }
+          binding.pry
           eq_hash
-        end
-      end
-
-      private
-
-      NAMESPACE_PREFIX = 'http://www.openbel.org/bel/namespace/'
-
-      def find_namespace_rdf_uri(namespace)
-        return nil unless namespace
-        ns = @cache.fetch_namespace(namespace)
-        ns ? ns[0] : nil
-      end
-
-      def find_namespace_value_rdf_uri(namespace, value)
-        return nil unless value
-
-        case value
-        when OpenBEL::Namespace::NamespaceValue
-          value.uri
-        when URI
-          value
-        when String
-          namespace_uri = find_namespace_rdf_uri(namespace)
-          [
-            self.method(:namespace_value_by_pref_label),
-            self.method(:namespace_value_by_identifier),
-            self.method(:namespace_value_by_title)
-          ].each do |m|
-            uri = m.call(namespace_uri, value)
-            return uri if uri
-          end
-        end
-      end
-
-      def namespace_value_by_pref_label(namespace_uri, label)
-        ns_uri = nil
-        @storage.statements(
-          nil, SKOS_PREF_LABEL, nil, label
-        ) do |sub, pred, obj|
-          if sub.start_with? namespace_uri
-            ns_uri = sub
-            break
-          end
-        end
-        ns_uri
-      end
-
-      def namespace_value_by_identifier(namespace_uri, id)
-        ns_uri = nil
-        @storage.statements(
-          nil, DC_IDENTIFIER, nil, id
-        ) do |sub, pred, obj|
-          if sub.start_with? namespace_uri
-            ns_uri = sub
-            break
-          end
-        end
-        ns_uri
-      end
-
-      def namespace_value_by_title(namespace_uri, title)
-        ns_uri = nil
-        @storage.statements(
-          nil, DC_TITLE, nil, title
-        ) do |sub, pred, obj|
-          if sub.start_with? namespace_uri
-            ns_uri = sub
-            break
-          end
-        end
-        ns_uri
-      end
-
-      def namespace_value_by_uri(uri)
-        value_statements = []
-        @storage.statements(uri, nil, nil, nil) do |sub, pred, obj|
-          value_statements << [sub, pred, obj]
-        end
-        NamespaceValue.from(value_statements)
-      end
-
-      def namespace_value_with_result(uri, result)
-        case result
-        when :name
-          @storage.statements(
-            uri, SKOS_PREF_LABEL
-          ) do |sub, pred, obj|
-            return obj
-            #return NamespaceValue.new({uri: uri, prefLabel: obj})
-          end
-        when :identifier
-          @storage.statements(
-            uri, DC_IDENTIFIER
-          ) do |sub, pred, obj|
-            return obj
-            #return NamespaceValue.new({uri: uri, identifier: obj})
-          end
-        when :title
-          @storage.statements(
-            uri, DC_TITLE
-          ) do |sub, pred, obj|
-            return obj
-            #return NamespaceValue.new({uri: uri, title: obj})
-          end
-        else
-          namespace_value_by_uri(uri)
         end
       end
     end

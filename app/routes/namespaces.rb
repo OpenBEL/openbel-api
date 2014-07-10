@@ -24,7 +24,6 @@ module OpenBEL
 
       def initialize(app)
         super
-        options = {}
         @api = OpenBEL::Settings.namespace_api
       end
 
@@ -168,7 +167,7 @@ module OpenBEL
       end
 
       get '/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
-        orthologs = @api.find_orthologs(namespace, value)
+        orthologs = @api.find_ortholog(namespace, value)
         if not orthologs or orthologs.empty?
           halt 404
         end
@@ -177,7 +176,7 @@ module OpenBEL
       end
 
       get '/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
-        orthologs = @api.find_orthologs(namespace, value, {
+        orthologs = @api.find_ortholog(namespace, value, {
           target: target
         })
         if not orthologs or orthologs.empty?

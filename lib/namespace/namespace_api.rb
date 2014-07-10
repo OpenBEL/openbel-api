@@ -26,6 +26,10 @@ module OpenBEL
         fail NotImplementedError
       end
 
+      def find_ortholog(namespace, value, options = {})
+        fail NotImplementedError
+      end
+
       def find_orthologs(namespace, value, options = {})
         fail NotImplementedError
       end
