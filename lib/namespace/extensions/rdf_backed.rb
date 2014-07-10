@@ -134,6 +134,40 @@ module OpenBEL
         end
       end
 
+      def find_ortholog(namespace, value, options = {})
+        if value.is_a? OpenBEL::Model::Namespace::NamespaceValue
+          value_uri = value.uri
+        else
+          value_uri = find_namespace_value_rdf_uri(namespace, value)
+        end
+        return nil unless value_uri
+
+        if options[:target]
+          target_uri = find_namespace_rdf_uri(options[:target])
+          target_ns = namespace_by_uri(target_uri)
+          unless target_ns
+            return nil
+          end
+          matches = []
+          @storage.statements(
+            value_uri, BEL_ORTHOLOGOUS_MATCH
+          ) do |sub, pred, obj|
+            if obj.start_with? target_ns.uri
+              matches << namespace_value_by_uri(obj)
+            end
+          end
+          return matches
+        end
+
+        orthologs = []
+        @storage.statements(
+          value_uri, BEL_ORTHOLOGOUS_MATCH
+        ) do |sub, pred, obj|
+          orthologs << namespace_value_by_uri(obj)
+        end
+        orthologs
+      end
+
       def find_orthologs(namespace, value, options = {})
         if value.is_a? OpenBEL::Model::Namespace::NamespaceValue
           value_uri = value.uri
