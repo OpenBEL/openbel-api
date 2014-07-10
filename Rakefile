@@ -3,7 +3,7 @@ PORT = 3000
 
 task :routes do |args|
   require 'net/http'
-  system("thin --daemonize --log /tmp/routes.log --pid thin.pid start")
+  system("thin --daemonize --trace --log /tmp/routes.log --pid thin.pid start")
 
   alive = nil
   5.times do
