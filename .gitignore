@@ -5,3 +5,4 @@ doc/
 .yardoc
 *.swp
 *.pid
+log/

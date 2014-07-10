@@ -1,0 +1,17 @@
+namespace:
+  extension: 'cache_backed'
+  storage: 
+    extension: 'redland'
+    options:
+      name: 'rdf.db'
+      storage: 'sqlite'
+      synchronous: 'off'
+  cache:
+    extension: 'gdbm'
+    options:
+      namespace_file: 'namespace.db'
+      value_file: 'value.db'
+      equivalence_file: 'equivalence.db'
+      orthology_file: 'orthology.db'
+# vim: ts=2 sts=2 sw=2
+# encoding: utf-8

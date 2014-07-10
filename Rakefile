@@ -1,24 +1,21 @@
 HOST = "localhost"
 PORT = 3000
 
-task :routes do |args|
-  require 'net/http'
-  system("thin --daemonize --trace --log /tmp/routes.log --pid thin.pid start")
-
-  alive = nil
-  5.times do
-    begin
-      res = Net::HTTP.get_response(URI("http://#{HOST}:#{PORT}/namespaces"))
-      if res.is_a?(Net::HTTPSuccess)
-        alive = true
-        break
-      end
-    rescue; end
-    sleep 1
+task :routes do
+  require_relative 'tests/lib/test_helper'
+  TestHelper.using_api HOST, PORT do
+    system("bundle exec tests/profile_routes.rb #{HOST} #{PORT}")
   end
-  fail(RuntimeError, "Count not connect to #{HOST}:#{PORT}") unless alive
+end
 
-  system("bundle exec tests/profile_routes.rb #{HOST} #{PORT}")
-  Process.kill 'INT', File.read("thin.pid").to_i
-  sleep 2
+task :run_rdf do
+  require_relative 'app/config'
+  ENV[OpenBEL::Config::CFG_VAR] = 'tests/config/rdf-config.yml'
+  Rake::Task["routes"].invoke
+end
+
+task :run_cache do
+  require_relative 'app/config'
+  ENV[OpenBEL::Config::CFG_VAR] = 'tests/config/cache-config.yml'
+  Rake::Task["routes"].invoke
 end
