@@ -194,13 +194,14 @@ module OpenBEL
             end
 
           target = options[:target]
-          eq_hash = @cache.fetch_target_orthologs(namespace, values, target)
-          eq_hash.each { |key, value|
+          orth_hash = @cache.fetch_target_orthologs(namespace, values, target)
+          orth_hash.each { |key, value|
             next unless value
-            eq_hash[key] = value.map { |v|
+            orth_hash[key] = value.map { |v|
               map_fx.call(v)
             }
           }
+          orth_hash
         else
           map_fx =
             case options[:result]
@@ -222,15 +223,14 @@ module OpenBEL
               }
             end
 
-          eq_hash = @cache.fetch_orthologs(namespace, values)
-          eq_hash.each { |key, value|
+          orth_hash = @cache.fetch_orthologs(namespace, values)
+          orth_hash.each { |key, value|
             next unless value
-            eq_hash[key] = value.map { |v|
+            orth_hash[key] = value.map { |v|
               map_fx.call(v)
             }
           }
-          binding.pry
-          eq_hash
+          orth_hash
         end
       end
     end
