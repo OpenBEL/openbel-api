@@ -9,6 +9,7 @@ gem 'roar'
 gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
+gem 'sinatra-docdsl'
 # gem 'thin'
 
 group :development do
