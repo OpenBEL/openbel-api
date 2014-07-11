@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+require_relative 'helper.rb'
+require 'pry'
+chdir_to_root!
+
+require 'sinatra/advanced_routes'
+require_relative '../app.rb'
+require_relative '../app/routes/namespaces.rb'
+require 'term/ansicolor'
+
+Color = Object.new.extend Term::ANSIColor
+
+def dump_routes app
+  puts Color.red { "Route: #{app}" }
+  app.each_route do |route|
+    puts Color.green { [route.verb, route.path].join("\t") }
+    puts "\t#{Color.color(8) { route.pattern.to_s }}"
+    puts "\t#{Color.color(8) { "#{route.file} (line #{route.line})" }}"
+  end
+end
+
+OpenBEL::Server.middleware.map { |ext| ext.first }.find_all { |obj|
+  obj.respond_to? :routes
+}.each { |obj|
+  dump_routes(obj)
+  puts
+}
+# vim: ts=2 sts=2 sw=2
+# encoding: utf-8
