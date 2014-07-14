@@ -38,7 +38,14 @@ module OpenBEL
 
                       - [GET /namespaces](#get-namespaces)
                       - [GET /namespaces/:namespace](#get-namespacesnamespace)
-                      - [GET /namespaces/:namespace/equivalents?value=...](#get-namespacesnamespaceequivalents)".squeeze(' ')
+                      - [GET /namespaces/:namespace/equivalents?value=...](#get-namespacesnamespaceequivalents)
+                      - [GET /namespaces/:namespace/orthologs?value=...](#get-namespacesnamespaceorthologs)
+                      - [GET /namespaces/:namespace/:id](#get-namespacesnamespaceid)
+                      - [GET /namespaces/:namespace/:id/equivalents](#get-namespacesnamespaceidequivalents)
+                      - [GET /namespaces/:namespace/:id/equivalents/:target](#get-namespacesnamespaceidequivalentstarget)
+                      - [GET /namespaces/:namespace/:id/orthologs](#get-namespacesnamespaceidorthologs)
+                      - [GET /namespaces/:namespace/:id/orthologs/:target](#get-namespacesnamespaceidorthologstarget)
+                      ".squeeze(' ')
         configure_renderer do
           self.render_md
         end
@@ -201,7 +208,8 @@ module OpenBEL
             ]
           }
         status 200, "One namespace exists for :namespace"
-        status 404, "No namespace exists for :namespace"
+        status 400, "No :value parameters provided; target :namespace parameter does not exist; the :result parameter does not match one of #{RESULT_TYPES.keys.join(', ')}"
+        status 404, "No namespace exists for :namespace; One or more :value do not have equivalents"
       end
       get '/namespaces/:namespace/equivalents/?' do |namespace|
         halt 400 unless request.params['value']
@@ -219,6 +227,7 @@ module OpenBEL
         end
 
         eq_mapping = @api.find_equivalents(namespace, values, options)
+        halt 404 if eq_mapping.values.all? { |v| v == nil }
         response.headers['Content-Type'] = 'application/json'
         Oj::dump eq_mapping
       end
@@ -394,8 +403,9 @@ module OpenBEL
               }
             ]
           }
-        status 200, "One namespace exists for :namespace"
-        status 404, "No namespace exists for :namespace"
+        status 200, "Mapping performed for :value parameters"
+        status 400, "No :value parameters provided; target :namespace parameter does not exist; the :result parameter does not match one of #{RESULT_TYPES.keys.join(', ')}"
+        status 404, "No namespace exists for :namespace; One or more :value do not have orthologs"
       end
       get '/namespaces/:namespace/orthologs/?' do |namespace|
         halt 400 unless request.params['value']
@@ -413,6 +423,7 @@ module OpenBEL
         end
 
         orth_mapping = @api.find_orthologs(namespace, values, options)
+        halt 404 if orth_mapping.values.all? { |v| v == nil }
         response.headers['Content-Type'] = 'application/json'
         Oj::dump orth_mapping
       end
@@ -440,7 +451,50 @@ module OpenBEL
         Oj::dump(eq_mapping)
       end
 
-      # WORKS (Most of AFFX missing due to gdbm build)
+      documentation "Retrieve a single namespace value by *name*, *identfier*, or *title*.
+
+                     > example (by identifier): ``curl http://localhost:3000/namespaces/hgnc/391``
+
+                     > [try html](/namespaces/hgnc/391)
+
+                     > example (by name): ``curl http://localhost:3000/namespaces/hgnc/AKT1``
+
+                     > [try html](/namespaces/hgnc/AKT1)
+
+                     > example (by title): ``curl \"http://localhost:3000/namespaces/hgnc/v-akt%20murine%20thymoma%20viral%20oncogene%20homolog%201\"``
+
+                     > [try html](/namespaces/hgnc/v-akt murine thymoma viral oncogene homolog 1)
+                     ".squeeze(' ') do
+        param :namespace, "namespace prefix (e.g. HGNC) or name (e.g. Hgnc Human Genes)"
+        param :id, "namespace value by *name*, *identifier*, or *title*"
+        response "namespace value **object**",
+          {
+            :rdf_uri => "http://www.openbel.org/bel/namespace/hgnc-human-genes/391",
+            :identifier => "391",
+            :name => "AKT1",
+            :title => "v-akt murine thymoma viral oncogene homolog 1",
+            :links => [
+              {
+                :rel => "self",
+                :href => "http://localhost:3000/namespaces/hgnc-human-genes/391"
+              },
+              {
+                :rel => "parent",
+                :href => "http://localhost:3000/namespaces/hgnc-human-genes"
+              },
+              {
+                :rel => "equivalents",
+                :href => "http://localhost:3000/namespaces/hgnc-human-genes/391/equivalents"
+              },
+              {
+                :rel => "orthology",
+                :href => "http://localhost:3000/namespaces/hgnc-human-genes/391/orthologs"
+              }
+            ]
+          }
+        status 200, "The namespace value *:id* exists in *:namespace*"
+        status 404, "The :namespace does not exist or *:id* does not exist in :namespace"
+      end
       get '/namespaces/:namespace/:id/?' do |namespace, value|
         value = @api.find_namespace_value(namespace, value)
 
@@ -450,7 +504,172 @@ module OpenBEL
         render_single(request, value, 'Namespace Value')
       end
 
-      # BROKEN (Equivalent concept uri not saved; add to eq_array and ol_array
+      documentation "Retrieve the equivalents for a single namespace value by *name*, *identfier*, or *title*.
+
+                     > example (by identifier): ``curl http://localhost:3000/namespaces/hgnc/391/equivalents``
+
+                     > [try html](/namespaces/hgnc/391/equivalents)
+
+                     > example (by name): ``curl http://localhost:3000/namespaces/hgnc/AKT1/equivalents``
+
+                     > [try html](/namespaces/hgnc/AKT1/equivalents)
+
+                     > example (by title): ``curl \"http://localhost:3000/namespaces/hgnc/v-akt%20murine%20thymoma%20viral%20oncogene%20homolog%201/equivalents\"``
+
+                     > [try html](/namespaces/hgnc/v-akt murine thymoma viral oncogene homolog 1/equivalents)
+                     ".squeeze(' ') do
+        param :namespace, "namespace prefix (e.g. HGNC) or name (e.g. Hgnc Human Genes)"
+        param :id, "namespace value by *name*, *identifier*, or *title*"
+        response "**array** of equivalent namespace value objects",
+          [
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1564_at",
+              :identifier => "1564_at",
+              :name => "1564_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1564_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1564_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1564_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/entrez-gene/207",
+              :identifier => "207",
+              :name => "207",
+              :title => "v-akt murine thymoma viral oncogene homolog 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/207"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/entrez-gene"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/207/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/207/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/207163_PM_s_at",
+              :identifier => "207163_PM_s_at",
+              :name => "207163_PM_s_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/207163_PM_s_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/207163_PM_s_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/207163_PM_s_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/207163_s_at",
+              :identifier => "207163_s_at",
+              :name => "207163_s_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/207163_s_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/207163_s_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/207163_s_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/swissprot/P31749",
+              :identifier => "Q9BWB6",
+              :name => "AKT1_HUMAN",
+              :title => "RAC-alpha serine/threonine-protein kinase",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/swissprot/P31749"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/swissprot"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/swissprot/P31749/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/swissprot/P31749/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/hgnc-human-genes/391",
+              :identifier => "391",
+              :name => "AKT1",
+              :title => "v-akt murine thymoma viral oncogene homolog 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/hgnc-human-genes/391"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/hgnc-human-genes"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/hgnc-human-genes/391/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/hgnc-human-genes/391/orthologs"
+                }
+              ]
+            }
+          ]
+        status 200, "Equivalents exist for the namespace value *:id* in *:namespace*"
+        status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no equivalents exist for *:id*"
+      end
       get '/namespaces/:namespace/:id/equivalents/?' do |namespace, value|
         equivalents = @api.find_equivalent(namespace, value)
         halt 404 if not equivalents or equivalents.empty?
@@ -458,6 +677,53 @@ module OpenBEL
         render_multiple(request, equivalents, "Equivalents for #{namespace} / #{value}")
       end
 
+      documentation "Retrieve target namespace equivalents for a single namespace value by *name*, *identfier*, or *title*.
+
+                     > example (by identifier): ``curl http://localhost:3000/namespaces/hgnc/391/equivalents/egid``
+
+                     > [try html](/namespaces/hgnc/391/equivalents/egid)
+
+                     > example (by name): ``curl http://localhost:3000/namespaces/hgnc/AKT1/equivalents/Entrez%20Gene``
+
+                     > [try html](/namespaces/hgnc/AKT1/equivalents/Entrez Gene)
+
+                     > example (by title): ``curl \"http://localhost:3000/namespaces/hgnc/v-akt%20murine%20thymoma%20viral%20oncogene%20homolog%201/equivalents/egid\"``
+
+                     > [try html](/namespaces/hgnc/v-akt murine thymoma viral oncogene homolog 1/equivalents/egid)
+                     ".squeeze(' ') do
+        param :namespace, "namespace prefix (e.g. HGNC) or name (e.g. Hgnc Human Genes)"
+        param :id, "namespace value by *name*, *identifier*, or *title*"
+        param :target, "target namespace prefix (e.g. EGID) or name (e.g. Entrez Gene)"
+        response "**array** of target equivalent namespace value objects",
+          [
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/entrez-gene",
+              :identifier => "207",
+              :name => "207",
+              :title => "v-akt murine thymoma viral oncogene homolog 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/entrez-gene"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/orthologs"
+                }
+              ]
+            }
+          ]
+        status 200, "Target equivalents exist for the namespace value *:id* in *:namespace*"
+        status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no :target equivalents exist for *:id*"
+      end
       get '/namespaces/:namespace/:id/equivalents/:target/?' do |namespace, value, target|
         equivalent = @api.find_equivalent(namespace, value, {
           target: target
@@ -468,6 +734,436 @@ module OpenBEL
         render_single(request, equivalent, "Equivalent for #{namespace} / #{value} in #{target}")
       end
 
+      documentation "Retrieve the orthologs for a single namespace value by *name*, *identfier*, or *title*.
+
+                     > example (by identifier): ``curl http://localhost:3000/namespaces/hgnc/391/orthologs``
+
+                     > [try html](/namespaces/hgnc/391/orthologs)
+
+                     > example (by name): ``curl http://localhost:3000/namespaces/hgnc/AKT1/orthologs``
+
+                     > [try html](/namespaces/hgnc/AKT1/orthologs)
+
+                     > example (by title): ``curl \"http://localhost:3000/namespaces/hgnc/v-akt%20murine%20thymoma%20viral%20oncogene%20homolog%201/orthologs\"``
+
+                     > [try html](/namespaces/hgnc/v-akt murine thymoma viral oncogene homolog 1/orthologs)
+                     ".squeeze(' ') do
+        param :namespace, "namespace prefix (e.g. HGNC) or name (e.g. Hgnc Human Genes)"
+        param :id, "namespace value by *name*, *identifier*, or *title*"
+        response "**array** of ortholog namespace value objects",
+          [
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/100970_at",
+              :identifier => "100970_at",
+              :name => "100970_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/100970_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/100970_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/100970_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/entrez-gene/11651",
+              :identifier => "11651",
+              :name => "11651",
+              :title => "thymoma viral proto-oncogene 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/11651"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/entrez-gene"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/11651/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/11651/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1368862_PM_at",
+              :identifier => "1368862_PM_at",
+              :name => "1368862_PM_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1368862_PM_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1368862_PM_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1368862_PM_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/entrez-gene/24185",
+              :identifier => "24185",
+              :name => "24185",
+              :title => "v-akt murine thymoma viral oncogene homolog 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/24185"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/entrez-gene"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/24185/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/entrez-gene/24185/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1368862_at",
+              :identifier => "1368862_at",
+              :name => "1368862_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1368862_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1368862_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1368862_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1375178_PM_at",
+              :identifier => "1375178_PM_at",
+              :name => "1375178_PM_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1375178_PM_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1375178_PM_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1375178_PM_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1375178_at",
+              :identifier => "1375178_at",
+              :name => "1375178_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1375178_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1375178_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1375178_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1383126_PM_at",
+              :identifier => "1383126_PM_at",
+              :name => "1383126_PM_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1383126_PM_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1383126_PM_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1383126_PM_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1383126_at",
+              :identifier => "1383126_at",
+              :name => "1383126_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1383126_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1383126_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1383126_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1416657_at",
+              :identifier => "1416657_at",
+              :name => "1416657_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1416657_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1416657_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1416657_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1425711_a_at",
+              :identifier => "1425711_a_at",
+              :name => "1425711_a_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1425711_a_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1425711_a_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1425711_a_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1440950_at",
+              :identifier => "1440950_at",
+              :name => "1440950_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1440950_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1440950_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1440950_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/affy-probeset/1442759_at",
+              :identifier => "1442759_at",
+              :name => "1442759_at",
+              :title => "",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1442759_at"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/affy-probeset"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1442759_at/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/affy-probeset/1442759_at/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/swissprot/P31750",
+              :identifier => "Q6GSA6",
+              :name => "AKT1_MOUSE",
+              :title => "RAC-alpha serine/threonine-protein kinase",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/swissprot/P31750"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/swissprot"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/swissprot/P31750/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/swissprot/P31750/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/mgi-mouse-genes/87986",
+              :identifier => "87986",
+              :name => "Akt1",
+              :title => "thymoma viral proto-oncogene 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/mgi-mouse-genes/87986"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/mgi-mouse-genes"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/mgi-mouse-genes/87986/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/mgi-mouse-genes/87986/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/swissprot/P47196",
+              :identifier => "P47196",
+              :name => "AKT1_RAT",
+              :title => "RAC-alpha serine/threonine-protein kinase",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/swissprot/P47196"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/swissprot"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/swissprot/P47196/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/swissprot/P47196/orthologs"
+                }
+              ]
+            },
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/rgd-rat-genes/2081",
+              :identifier => "2081",
+              :name => "Akt1",
+              :title => "v-akt murine thymoma viral oncogene homolog 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/rgd-rat-genes/2081"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/rgd-rat-genes"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/rgd-rat-genes/2081/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/rgd-rat-genes/2081/orthologs"
+                }
+              ]
+            }
+          ]
+        status 200, "Orthologs exist for the namespace value *:id* in *:namespace*"
+        status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no orthologs exist for *:id*"
+      end
       get '/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
         orthologs = @api.find_ortholog(namespace, value)
         if not orthologs or orthologs.empty?
@@ -477,6 +1173,53 @@ module OpenBEL
         render_multiple(request, orthologs, "Orthologs for #{namespace} / #{value}")
       end
 
+      documentation "Retrieve target namespace orthologs for a single namespace value by *name*, *identfier*, or *title*.
+
+                     > example (by identifier): ``curl http://localhost:3000/namespaces/hgnc/391/orthologs/rgd``
+
+                     > [try html](/namespaces/hgnc/391/orthologs/rgd)
+
+                     > example (by name): ``curl http://localhost:3000/namespaces/hgnc/AKT1/orthologs/Rgd%20Rat%20Genes``
+
+                     > [try html](/namespaces/hgnc/AKT1/orthologs/Rgd Rat Genes)
+
+                     > example (by title): ``curl \"http://localhost:3000/namespaces/hgnc/v-akt%20murine%20thymoma%20viral%20oncogene%20homolog%201/orthologs/rgd\"``
+
+                     > [try html](/namespaces/hgnc/v-akt murine thymoma viral oncogene homolog 1/orthologs/rgd)
+                     ".squeeze(' ') do
+        param :namespace, "namespace prefix (e.g. HGNC) or name (e.g. Hgnc Human Genes)"
+        param :id, "namespace value by *name*, *identifier*, or *title*"
+        param :target, "target namespace prefix (e.g. EGID) or name (e.g. Entrez Gene)"
+        response "**array** of target ortholog namespace value objects",
+          [
+            {
+              :rdf_uri => "http://www.openbel.org/bel/namespace/rgd-rat-genes",
+              :identifier => "2081",
+              :name => "Akt1",
+              :title => "v-akt murine thymoma viral oncogene homolog 1",
+              :links => [
+                {
+                  :rel => "self",
+                  :href => "http://localhost:3000/namespaces/rgd-rat-genes"
+                },
+                {
+                  :rel => "parent",
+                  :href => "http://localhost:3000/namespaces/"
+                },
+                {
+                  :rel => "equivalents",
+                  :href => "http://localhost:3000/namespaces/rgd-rat-genes/equivalents"
+                },
+                {
+                  :rel => "orthology",
+                  :href => "http://localhost:3000/namespaces/rgd-rat-genes/orthologs"
+                }
+              ]
+            }
+          ]
+        status 200, "Target equivalents exist for the namespace value *:id* in *:namespace*"
+        status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no :target equivalents exist for *:id*"
+      end
       get '/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
         orthologs = @api.find_ortholog(namespace, value, {
           target: target
