@@ -4,6 +4,7 @@ require 'sinatra/reloader'
 require 'docdsl'
 require 'cgi'
 require 'oj'
+require 'uri'
 
 APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
 
@@ -233,24 +234,31 @@ module OpenBEL
       end
 
       post '/namespaces/:namespace/equivalents/?' do |namespace|
-        halt 400 unless request.media_type == 'application/json'
+        halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
+
+        content = request.body.read
+        halt 400 if content.empty?
+
+        params = Hash[
+          URI.decode_www_form(content).group_by(&:first).map{
+            |k,a| [k,a.map(&:last)]
+          }
+        ]
+
+        halt 400 unless params['value']
 
         options = {}
-        if request.params['namespace']
-          options[:target] = request.params['namespace']
+        if params['namespace']
+          options[:target] = params['namespace'].first
         end
 
-        if request.params['result']
-          result = request.params['result'].to_sym
+        if params['result']
+          result = params['result'].first.to_sym
           halt 400 unless RESULT_TYPES.include? result
           options[:result] = RESULT_TYPES[result]
         end
 
-        request.body.rewind
-        json_body = JSON.parse request.body.read
-        halt 400 unless json_body['values']
-
-        eq_mapping = @api.find_equivalents(namespace, json_body['values'], options)
+        eq_mapping = @api.find_equivalents(namespace, params['value'], options)
         response.headers['Content-Type'] = 'application/json'
         Oj::dump(eq_mapping)
       end
@@ -429,26 +437,33 @@ module OpenBEL
       end
 
       post '/namespaces/:namespace/orthologs/?' do |namespace|
-        halt 400 unless request.media_type == 'application/json'
+        halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
+
+        content = request.body.read
+        halt 400 if content.empty?
+
+        params = Hash[
+          URI.decode_www_form(content).group_by(&:first).map{
+            |k,a| [k,a.map(&:last)]
+          }
+        ]
+
+        halt 400 unless params['value']
 
         options = {}
-        if request.params['namespace']
-          options[:target] = request.params['namespace']
+        if params['namespace']
+          options[:target] = params['namespace'].first
         end
 
-        if request.params['result']
-          result = request.params['result'].to_sym
+        if params['result']
+          result = params['result'].first.to_sym
           halt 400 unless RESULT_TYPES.include? result
           options[:result] = RESULT_TYPES[result]
         end
 
-        request.body.rewind
-        json_body = JSON.parse request.body.read
-        halt 400 unless json_body['values']
-
-        eq_mapping = @api.find_orthologs(namespace, json_body['values'], options)
+        orth_mapping = @api.find_orthologs(namespace, params['value'], options)
         response.headers['Content-Type'] = 'application/json'
-        Oj::dump(eq_mapping)
+        Oj::dump(orth_mapping)
       end
 
       documentation "Retrieve a single namespace value by *name*, *identfier*, or *title*.
