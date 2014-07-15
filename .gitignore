@@ -6,3 +6,5 @@ doc/
 *.swp
 *.pid
 log/
+bin/
+vendor/
