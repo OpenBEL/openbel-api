@@ -30,6 +30,10 @@ fi
 echo -e "${GREEN}+ bundler installed${NO_COLOR}"
 
 # install app gems through bundler
-$OB_RUBY_DIR/bin/bundle install
+$OB_RUBY_DIR/bin/bundle install \
+    --deployment \
+    --without development test \
+    --path "$OB_GEM_DIR" \
+    --binstubs "$OB_GEMBIN_DIR"
 
 # vim: ts=4 sts=4 sw=4
