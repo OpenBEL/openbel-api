@@ -17,7 +17,7 @@ current_ruby_version() {
 # install ruby
 if [ "$(current_ruby_version)" != "$OB_RUBY_VERSION" ]; then
     echo -e "${YELLOW}! installing ruby ${OB_RUBY_VERSION}${NO_COLOR}"
-    ruby-build $OPENBEL_RUBY_VERSION $OB_RUBY_DIR || exit 1
+    ruby-build $OB_RUBY_VERSION $OB_RUBY_DIR || exit 1
 fi
 echo -e "${GREEN}+ ruby ${OB_RUBY_VERSION} installed${NO_COLOR}"
 
