@@ -38,10 +38,10 @@ fi
 printf "$GREEN+ bundler installed$NO_COLOR\n"
 
 # install app gems through bundler
-$OB_RUBY_DIR/bin/bundle install \
-    --deployment \
-    --without development test \
+bundle install \
+    --binstubs "$OB_GEMBIN_DIR" \
     --path "$OB_GEM_DIR" \
-    --binstubs "$OB_GEMBIN_DIR"
+    --without "development test" \
+    --deployment
 
 # vim: ts=4 sts=4 sw=4
