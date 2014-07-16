@@ -16,7 +16,11 @@ current_ruby_version() {
 
 # install ruby
 if [ "$(current_ruby_version)" != "$OB_RUBY_VERSION" ]; then
-    echo -e "${YELLOW}! installing ruby ${OB_RUBY_VERSION}${NO_COLOR}"
+    if [ -d "$OB_RUBY_DIR" ]; then
+        echo -e "${YELLOW}! invalid ruby; removing existing dir: ${OB_RUBY_DIR}${NO_COLOR}"
+        rm -fr "${OB_RUBY_DIR}"
+    fi
+    echo -e "${YELLOW}! no local ruby; installing ruby ${OB_RUBY_VERSION}${NO_COLOR}"
     ruby-build $OB_RUBY_VERSION $OB_RUBY_DIR || exit 1
 fi
 echo -e "${GREEN}+ ruby ${OB_RUBY_VERSION} installed${NO_COLOR}"
