@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bel'
+gem 'bel', :git => 'git@github.com:OpenBEL/bel.rb.git'
 gem 'builder'
 gem 'dot_hash'
 gem 'nokogiri'
