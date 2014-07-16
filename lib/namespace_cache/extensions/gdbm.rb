@@ -2,7 +2,6 @@ require_relative '../cache_api.rb'
 require 'gdbm'
 require 'benchmark'
 require 'uri'
-require 'pry'
 
 module OpenBEL
   module Namespace
