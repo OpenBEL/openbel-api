@@ -6,6 +6,10 @@ cd "$DIR" || exit 1
 . env.sh || exit 1
 . tools/term-colors.sh || exit 1
 
+# clear RUBYOPT; set on gentoo to auto require a missing gem
+# (https://groups.google.com/forum/#!topic/linux.gentoo.user/Gp5xhTtYoUA)
+export RUBYOPT=""
+
 current_ruby_version() {
     local res='-1'
     if [ -f "$OB_RUBY_DIR/bin/ruby" ]; then
