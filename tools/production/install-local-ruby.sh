@@ -2,20 +2,15 @@
 
 # move to root, set up environment
 DIR="$(cd "$(dirname "$0")" && pwd)"/../../
-cd "$DIR" || exit 1
-. ./env.sh || exit 1
-. ./tools/term-colors.sh || exit 1
-
-# clear RUBYOPT; set on gentoo to auto require a missing gem
-# (https://groups.google.com/forum/#!topic/linux.gentoo.user/Gp5xhTtYoUA)
-export RUBYOPT=""
+. "$DIR/tools/term-colors.sh" || exit 1
+. "$DIR/tools/production/env.sh" || exit 1
 
 current_ruby_version() {
-    local res='-1'
+    local res="-1"
     if [ -f "$OB_RUBY_DIR/bin/ruby" ]; then
         res="$($OB_RUBY_DIR/bin/ruby -e '$stdout.write RUBY_VERSION')"
     fi
-    printf "$res\n"
+    printf -- "$res"
 }
 
 # install ruby
@@ -36,12 +31,5 @@ if [ $? -eq 1 ]; then
     $OB_RUBY_DIR/bin/gem install bundler
 fi
 printf "$GREEN+ bundler installed$NO_COLOR\n"
-
-# install app gems through bundler
-bundle install \
-    --binstubs "$OB_GEMBIN_DIR" \
-    --path "$OB_GEM_DIR" \
-    --without "development test" \
-    --deployment
 
 # vim: ts=4 sts=4 sw=4
