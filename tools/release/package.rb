@@ -4,9 +4,9 @@
 # causes a 'bundle' subprocess to invoke bundler again...the effect
 # is that git gems can no longer be found when packaging to vendor/cache.
 #
-# require 'rubygems'
-# require 'bundler'
-# Bundler.setup(:development)
+require 'rubygems'
+require 'bundler'
+Bundler.setup(:development)
 
 require 'term/ansicolor'
 require_relative 'tools'
@@ -17,7 +17,9 @@ load 'env.rb'
 Color = Object.new.extend Term::ANSIColor
 
 puts Color.yellow { "! Bundling gem files into vendor/cache." }
-OpenBEL::Tools.sh!('bundle package --all')
+Bundler.with_clean_env {
+  OpenBEL::Tools.sh!('bundle package --all')
+}
 
 (ret, sha) = OpenBEL::Tools.sh('git rev-parse HEAD')
 sha = sha[0, 8]
