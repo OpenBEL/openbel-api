@@ -54,7 +54,7 @@ module OpenBEL
     end
 
     def self.make_cache(cfg)
-      return nil unless cfg.cache or cfg.cache.extension
+      return nil unless cfg.cache
 
       extension = cfg.cache.extension
       options = cfg.cache.options || {}
