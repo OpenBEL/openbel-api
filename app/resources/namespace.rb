@@ -138,19 +138,19 @@ module OpenBEL
     # NamespacesResource
     module NamespacesResourceJSON
       include Representable::JSON::Collection
-      items extend: NamespaceResourceJSON, class: OpenBEL::Namespace::Namespace
+      items extend: NamespaceResourceJSON, class: OpenBEL::Model::Namespace
     end
 
     module NamespacesResourceXML
       include Representable::JSON::Collection
       include Roar::Representer::XML
-      items extend: NamespaceResourceXML, class: OpenBEL::Namespace::Namespace
+      items extend: NamespaceResourceXML, class: OpenBEL::Model::Namespace
     end
 
     module NamespacesResourceHTML
       include Representable::JSON::Collection
       include OpenBEL::HTML
-      items extend: NamespaceResourceHTML, class: OpenBEL::Namespace::Namespace
+      items extend: NamespaceResourceHTML, class: OpenBEL::Model::Namespace
     end
     # -----
 
