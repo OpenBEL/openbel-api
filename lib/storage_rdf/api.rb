@@ -1,11 +1,8 @@
 module OpenBEL
   module StorageAPI
 
-    def describe(subject, &block)
-      fail NotImplementedError
-    end
-
-    def statements(pattern, &block)
+    # TODO Document me
+    def triples(subject, predicate, object, options={})
       fail NotImplementedError
     end
   end

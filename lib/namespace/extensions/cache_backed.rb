@@ -62,7 +62,7 @@ module OpenBEL
       end
 
       # FIXME use cache
-      def each_namespace_value(namespace, options = {}, &block)
+      def find_namespace_values(namespace, options = {}, &block)
         namespace = find_namespace_rdf_uri(namespace)
         @storage.statements(
           nil, SKOS_IN_SCHEME, namespace, nil

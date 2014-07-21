@@ -14,7 +14,7 @@ module OpenBEL
         fail NotImplementedError
       end
 
-      def each_namespace_value(namespace, options = {}, &block)
+      def find_namespace_values(namespace, options = {}, &block)
         fail NotImplementedError
       end
 
