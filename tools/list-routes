@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
 require_relative 'helper.rb'
-require 'pry'
 chdir_to_root!
 
 require 'sinatra/advanced_routes'
 require_relative '../app.rb'
-require_relative '../app/routes/namespaces.rb'
 require 'term/ansicolor'
+require_relative '../app/routes/namespaces.rb'
 
 Color = Object.new.extend Term::ANSIColor
 

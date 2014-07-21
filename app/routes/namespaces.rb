@@ -8,6 +8,7 @@ require 'uri'
 
 APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
 
+require 'namespace/model'
 require 'app/resources/html'
 require 'app/resources/namespace'
 
@@ -128,8 +129,6 @@ module OpenBEL
       end
       get '/namespaces/:namespace/?' do |namespace|
         ns = @api.find_namespace(namespace)
-
-        puts env
 
         halt 404 unless ns
 

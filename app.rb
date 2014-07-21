@@ -1,14 +1,17 @@
 require 'rubygems'
 require 'bundler'
 
-Bundler.require
+Bundler.setup
 $: << File.expand_path('../', __FILE__)
 $: << File.expand_path('../lib', __FILE__)
 
 require 'app/config'
 require 'app/util'
+
+require 'sinatra/base'
 require 'app/routes/base'
 require 'app/routes/bel'
+require 'app/routes/namespaces'
 
 module OpenBEL
 
