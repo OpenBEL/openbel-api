@@ -25,6 +25,7 @@ group :development do
   gem 'perftools.rb'
   gem 'rack-perftools_profiler'
   gem 'rerun'
+  gem 'seeing_is_believing'
   gem 'term-ansicolor'
   gem 'yard'
   gem 'POpen4'
