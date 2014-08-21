@@ -92,10 +92,10 @@ module OpenBEL
           begin
             extension = ncfg.cache.extension
             require "namespace_cache/extensions/#{extension}"
-          rescue LoadError
+          rescue LoadError => e
             return [
               'namespace.cache.extension',
-              "The #{extension} extension could not be loaded from namespace_cache/extensions/#{extension}."
+              "The #{extension} extension could not be loaded from namespace_cache/extensions/#{extension}.\n reason: #{e}"
             ]
           end
         else
@@ -109,10 +109,10 @@ module OpenBEL
           begin
             extension = ncfg.storage.extension
             require "storage_rdf/extensions/#{extension}"
-          rescue LoadError
+          rescue LoadError => e
             return [
               'namespace.storage.extension',
-              "The #{extension} extension could not be loaded from storage_rdf/extensions/#{extension}."
+              "The #{extension} extension could not be loaded from storage_rdf/extensions/#{extension}.\n  reason: #{e}"
             ]
           end
         end
