@@ -62,30 +62,18 @@ module OpenBEL
     def each
       fail if not @librdf_stream
       if block_given?
-        while not stream_end?(@librdf_stream)
-          stmt = stream_current_statement(@librdf_stream)
+        while not (Redland.librdf_stream_end(@librdf_stream) != 0)
+          stmt = Redland.librdf_stream_get_object(@librdf_stream)
           s_node = Redland.librdf_statement_get_subject(stmt)
           p_node = Redland.librdf_statement_get_predicate(stmt)
           o_node = Redland.librdf_statement_get_object(stmt)
           yield @triple_map_method.call(s_node, p_node, o_node)
-          stream_next(@librdf_stream)
+          Redland.librdf_stream_next(@librdf_stream)
         end
       else
         new_enum = enum_for(:each)
         new_enum.respond_to?(:lazy) ? new_enum.lazy : new_enum
       end
-    end
-
-    def stream_end?(librdf_stream)
-      Redland.librdf_stream_end(librdf_stream) != 0
-    end
-
-    def stream_current_statement(librdf_stream)
-      Redland.librdf_stream_get_object(librdf_stream)
-    end
-
-    def stream_next(librdf_stream)
-      Redland.librdf_stream_next(librdf_stream)
     end
   end
 end
