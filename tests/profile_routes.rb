@@ -24,7 +24,7 @@ puts %Q{Configured route profiler as:
   host: #{HOST}:#{PORT}
   samples: #{SAMPLES}}
 
-SiegeTank.on_routes(OpenBEL::Routes::Namespaces, HOST, PORT, true, SAMPLES) do |path_examples|
+SiegeTank.on_routes(OpenBEL::Routes::Namespaces, HOST, PORT, SAMPLES) do |path_examples|
   path_examples << { :namespace => 'hgnc', :id => '391', :target => 'egid' }
   path_examples << { :namespace => 'hgnc-human-genes', :id => 'AKT1', :target => 'sp' }
   path_examples << { :namespace => 'Hgnc Human Genes', :id => 'AKT1', :target => 'sp' }
