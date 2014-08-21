@@ -3,6 +3,9 @@ require_relative '../model'
 
 module OpenBEL
   module Namespace
+
+    # XXX Methods that return multiple elements are buffered to Arrays. I chose this
+    # approach over leaking Enumerator::Lazy to namespace resource layer.
     class Namespace
       include NamespaceAPI
 
@@ -26,13 +29,11 @@ module OpenBEL
       end
 
       def find_namespaces(options = {})
-        namespaces = []
         @storage.triples(
           nil, RDF_TYPE, BEL_NAMESPACE_CONCEPT_SCHEME, :only => :subject
-        ).each do |concept|
-          namespaces << namespace_by_uri(concept)
-        end
-        return namespaces
+        ).map { |concept|
+          namespace_by_uri(concept)
+        }.to_a
       end
 
       def find_namespace(namespace, options = {})
@@ -64,7 +65,7 @@ module OpenBEL
         else
           values.map { |subject|
             result_func.call(subject)
-          }
+          }.to_a
         end
       end
 
@@ -87,13 +88,13 @@ module OpenBEL
             object.start_with? target_uri
           }.map { |object|
             namespace_value_by_uri(object)
-          }
+          }.to_a
         else
           @storage.triples(
             value_uri, SKOS_EXACT_MATCH, nil, :only => :object
           ).map { |object|
             namespace_value_by_uri(object)
-          }
+          }.to_a
         end
       end
 
@@ -119,7 +120,7 @@ module OpenBEL
                 object.start_with? target_uri
               }.map { |object|
                 result_func.call(object)
-              }
+              }.to_a
             end
             hash
           }
@@ -134,7 +135,7 @@ module OpenBEL
                 concept_uri, SKOS_EXACT_MATCH, nil, :only => :object
               ).map { |object|
                 result_func.call(object)
-              }
+              }.to_a
             end
             hash
           }
@@ -160,13 +161,13 @@ module OpenBEL
             object.start_with? target_uri
           }.map { |object|
             namespace_value_by_uri(object)
-          }
+          }.to_a
         else
           @storage.triples(
             value_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
           ).map { |object|
             namespace_value_by_uri(object)
-          }
+          }.to_a
         end
       end
 
@@ -192,7 +193,7 @@ module OpenBEL
                 object.start_with? target_uri
               }.map { |object|
                 result_func.call(object)
-              }
+              }.to_a
             end
             hash
           }
@@ -207,7 +208,7 @@ module OpenBEL
                 concept_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
               ).map { |object|
                 result_func.call(object)
-              }
+              }.to_a
             end
             hash
           }

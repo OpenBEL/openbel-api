@@ -1,7 +1,7 @@
 namespace:
   extension: 'rdf_backed'
   storage: 
-    extension: 'redland'
+    extension: 'redland/redland'
     options:
       name: 'rdf.db'
       storage: 'sqlite'
