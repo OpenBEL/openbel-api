@@ -1,12 +1,42 @@
 require_relative '../../api.rb'
 
 module Kernel
+  def include_redland_extension
+    # by configuration
+    if ENV[OpenBEL::REDLAND_IMPLEMENTATION]
+      value = ENV[OpenBEL::REDLAND_IMPLEMENTATION]
+      if value == 'librdf'
+        puts "loading librdf by configuration"
+        fail(RuntimeError, "The librdf implementation could not be loaded!") unless librdf?
+        include OpenBEL::LibRdfStorage
+      elsif value == 'redlander'
+        puts "loading redlander by configuration"
+        fail(RuntimeError, "The redlander implementation could not be loaded!") unless redlander?
+        include OpenBEL::RedlanderStorage
+      else
+        fail RuntimeError, "The #{value} implementation is incorrect"
+      end
+      return
+    end
+
+    # by preference
+    if redlander?
+      puts "loading redlander by preference"
+      include OpenBEL::RedlanderStorage
+    elsif librdf?
+      puts "loading librdf by preference"
+      include OpenBEL::LibRdfStorage
+    else
+      fail RuntimeError, "Redland implementation not found (e.g. librdf or redlander)."
+    end
+  end
+
   def redlander?
     begin
       require 'redlander'
       require_relative 'redlander/storage'
       return true
-    rescue LoadError
+    rescue
       return false
     end
   end
@@ -23,15 +53,12 @@ module Kernel
 end
 
 module OpenBEL
+
+  REDLAND_IMPLEMENTATION = 'OPENBEL_REDLAND_IMPLEMENTATION'
+
   class Storage
     include OpenBEL::StorageAPI
-    if redlander?
-      include OpenBEL::RedlanderStorage
-    elsif librdf?
-      include OpenBEL::LibRdfStorage
-    else
-      fail RuntimeError, "Redland implementation not found (e.g. librdf or redlander)."
-    end
+    include_redland_extension
 
     DEFAULTS = {
       storage: 'sqlite',
