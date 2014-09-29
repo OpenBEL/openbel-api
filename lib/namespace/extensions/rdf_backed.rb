@@ -287,6 +287,7 @@ module OpenBEL
       end
 
       def namespace_by_prefix(prefix)
+        prefix = prefix.downcase
         @storage.triples(
           nil, BEL_PREFIX, prefix, :object_literal => true, :only => :subject
         ).first
