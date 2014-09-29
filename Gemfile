@@ -4,35 +4,26 @@ gem 'bel', :git => 'git@github.com:OpenBEL/bel.rb.git'
 gem 'builder'
 gem 'dot_hash'
 gem 'nokogiri'
-gem 'oj'
+
 gem 'rack'
 gem 'rack-handlers'
+gem 'redlander', :git => 'git@github.com:abargnesi/redlander.git', :branch => 'rubies_support'
 gem 'roar'
 gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
 gem 'sinatra-docdsl'
 
+gem 'multi_json', '~> 1.10'
+gem 'jrjackson', '~> 0.2', :platforms => :jruby
+gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
+
 group :development do
-  gem 'bond'
-  gem 'jist'
   gem 'pry', '~> 0.9.12'
-  gem 'pry-byebug', '~> 1.3.2.0'
-  gem 'pry-doc'
-  gem 'pry-docmore'
-  gem 'pry-rescue'
-  gem 'pry-stack_explorer'
-  gem 'perftools.rb'
-  gem 'rack-perftools_profiler'
-  gem 'rerun'
-  gem 'seeing_is_believing'
-  gem 'term-ansicolor'
-  gem 'yard'
-  gem 'POpen4'
 end
 
 group :test do
-  gem 'thin'
-  gem 'unicorn'
+  gem 'puma', :platforms => :jruby
+  gem 'thin', :platforms => [:ruby, :rbx]
 end
 # vim: ts=2 sw=2

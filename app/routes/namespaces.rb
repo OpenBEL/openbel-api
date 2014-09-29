@@ -3,7 +3,7 @@ require 'sinatra/base'
 require 'sinatra/reloader'
 require 'docdsl'
 require 'cgi'
-require 'oj'
+require 'multi_json'
 require 'uri'
 
 APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
@@ -229,7 +229,7 @@ module OpenBEL
         eq_mapping = @api.find_equivalents(namespace, values, options)
         halt 404 if eq_mapping.values.all? { |v| v == nil }
         response.headers['Content-Type'] = 'application/json'
-        Oj::dump eq_mapping
+        MultiJson.dump eq_mapping
       end
 
       post '/namespaces/:namespace/equivalents/?' do |namespace|
@@ -259,7 +259,7 @@ module OpenBEL
 
         eq_mapping = @api.find_equivalents(namespace, params['value'], options)
         response.headers['Content-Type'] = 'application/json'
-        Oj::dump(eq_mapping)
+        MultiJson.dump eq_mapping
       end
 
       documentation "Retrieve orthologs for some namespace values.
@@ -432,7 +432,7 @@ module OpenBEL
         orth_mapping = @api.find_orthologs(namespace, values, options)
         halt 404 if orth_mapping.values.all? { |v| v == nil }
         response.headers['Content-Type'] = 'application/json'
-        Oj::dump orth_mapping
+        MultiJson.dump orth_mapping
       end
 
       post '/namespaces/:namespace/orthologs/?' do |namespace|
@@ -462,7 +462,7 @@ module OpenBEL
 
         orth_mapping = @api.find_orthologs(namespace, params['value'], options)
         response.headers['Content-Type'] = 'application/json'
-        Oj::dump(orth_mapping)
+        MultiJson.dump orth_mapping
       end
 
       documentation "Retrieve a single namespace value by *name*, *identfier*, or *title*.

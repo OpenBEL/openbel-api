@@ -6,11 +6,9 @@ module Kernel
     if ENV[OpenBEL::REDLAND_IMPLEMENTATION]
       value = ENV[OpenBEL::REDLAND_IMPLEMENTATION]
       if value == 'librdf'
-        puts "loading librdf by configuration"
         fail(RuntimeError, "The librdf implementation could not be loaded!") unless librdf?
         include OpenBEL::LibRdfStorage
       elsif value == 'redlander'
-        puts "loading redlander by configuration"
         fail(RuntimeError, "The redlander implementation could not be loaded!") unless redlander?
         include OpenBEL::RedlanderStorage
       else
@@ -21,10 +19,8 @@ module Kernel
 
     # by preference
     if redlander?
-      puts "loading redlander by preference"
       include OpenBEL::RedlanderStorage
     elsif librdf?
-      puts "loading librdf by preference"
       include OpenBEL::LibRdfStorage
     else
       fail RuntimeError, "Redland implementation not found (e.g. librdf or redlander)."
@@ -36,7 +32,7 @@ module Kernel
       require 'redlander'
       require_relative 'redlander/storage'
       return true
-    rescue
+    rescue LoadError => e
       return false
     end
   end
@@ -68,11 +64,12 @@ module OpenBEL
 
     def initialize(options = {})
       options = Hash[options.map {|k,v| [k.to_sym, v]}]
-      options = DEFAULTS.merge(options)
-      model(options)
+      @model_options = DEFAULTS.merge(options)
     end
 
     def triples(subject, predicate, object, options={})
+      rdf_model = model(@model_options)
+
       # option "only": subsets each triple as desired
       map_method = options[:only]
       if map_method && self.respond_to?(map_method)
@@ -80,7 +77,7 @@ module OpenBEL
       end
       map_method ||= self.method(:all)
 
-      enum = statement_enumerator(subject, predicate, object, options).each
+      enum = statement_enumerator(rdf_model, subject, predicate, object, options).each
       if block_given?
         enum.each { |triple| yield map_method.call(triple) }
       else

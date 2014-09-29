@@ -19,10 +19,7 @@ module OpenBEL
     include DotHash
 
     configure :development do
-      require 'perftools'
-      require 'pry'
-      require 'rack/perftools_profiler'
-      use ::Rack::PerftoolsProfiler, :default_printer => 'text'
+      # pass
     end
 
     configure do
