@@ -68,8 +68,6 @@ module OpenBEL
     end
 
     def triples(subject, predicate, object, options={})
-      rdf_model = model(@model_options)
-
       # option "only": subsets each triple as desired
       map_method = options[:only]
       if map_method && self.respond_to?(map_method)
@@ -77,7 +75,7 @@ module OpenBEL
       end
       map_method ||= self.method(:all)
 
-      enum = statement_enumerator(rdf_model, subject, predicate, object, options).each
+      enum = statement_enumerator(subject, predicate, object, options).each
       if block_given?
         enum.each { |triple| yield map_method.call(triple) }
       else
