@@ -1,10 +1,23 @@
+storage:
+  plugin: 'redland'
+  name:   'rdf-storage'
+  options:
+    storage:     'sqlite'
+    name:        'rdf.db'
+    synchronous: 'off'
+
+cache:
+  plugin: 'kyotocabinet'
+  name:   'file-cache'
+  options:
+    type:  'file-hash'
+    file:  '/tmp/namespace-db.kch'
+    mode:
+      - 'writer'
+      - 'create'
+
 namespace:
-  extension: 'rdf_backed'
-  storage: 
-    extension: 'redland/redland'
-    options:
-      name: 'rdf.db'
-      storage: 'sqlite'
-      synchronous: 'off'
+  storage: 'rdf-storage'
+  cache:   'file-cache'
 # vim: ts=2 sts=2 sw=2
 # encoding: utf-8
