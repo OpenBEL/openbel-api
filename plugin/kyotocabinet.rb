@@ -1,6 +1,7 @@
 module OpenBEL::Plugin::Cache
   include OpenBEL::Plugin
 
+  ABBR = 'kc'
   NAME = 'KyotoCabinet Cache'
   DESC = 'Cache implementation using KyotoCabinet over FFI.'
   MEMR_TYPES = [ :"memory-hash" ]
@@ -11,6 +12,10 @@ module OpenBEL::Plugin::Cache
     :type => :protohash,
     :mode => [:writer, :create]
   }
+
+  def abbreviation
+    ABBR
+  end
 
   def name
     NAME
