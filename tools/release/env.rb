@@ -1,4 +1,4 @@
-Dir.chdir File.expand_path('..', __FILE__)
+Dir.chdir File.expand_path('../../..', __FILE__)
 
 if File.exists? 'env_custom.rb'
   load 'env_custom.rb'

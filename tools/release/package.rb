@@ -9,10 +9,8 @@ require 'bundler'
 Bundler.setup
 
 require 'term/ansicolor'
+require_relative 'env.rb'
 require_relative 'tools'
-
-Dir.chdir File.join(File.expand_path('..', __FILE__), '..', '..')
-load 'env.rb'
 
 Color = Object.new.extend Term::ANSIColor
 
