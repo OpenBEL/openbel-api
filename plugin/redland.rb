@@ -17,7 +17,7 @@ module OpenBEL::Plugin::Storage
   end
 
   def on_load
-    require 'redlander'
+    require_relative '../lib/storage/redland'
   end
 
   def create_instance(options = {})

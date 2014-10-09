@@ -6,7 +6,7 @@
 #
 require 'rubygems'
 require 'bundler'
-Bundler.setup(:development)
+Bundler.setup
 
 require 'term/ansicolor'
 require_relative 'tools'

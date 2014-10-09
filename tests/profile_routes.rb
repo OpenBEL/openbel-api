@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 Dir.chdir File.expand_path('../../', __FILE__)
+require 'rubygems'
+require 'bundler'
+Bundler.setup
+
 require 'sinatra/advanced_routes'
 require_relative 'lib/siege'
 require_relative '../app.rb'

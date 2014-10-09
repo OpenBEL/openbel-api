@@ -1,5 +1,5 @@
 module OpenBEL::Cache
-  class Cache
+  module Cache
 
     def [](key)
       read(key)

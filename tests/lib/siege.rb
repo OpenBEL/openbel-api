@@ -1,4 +1,3 @@
-require 'pry'
 require 'uri'
 require 'net/http'
 require 'benchmark'
@@ -57,7 +56,7 @@ module SiegeTank
       samples.times {
         results << Benchmark.measure {
           req_uri = URI(URI.encode(uri))
-          req = Net::HTTP::Get.new(req_uri)
+          req = Net::HTTP::Get.new(req_uri.to_s)
           req['Accept-Encoding'] = 'identity'
           res = Net::HTTP.start(req_uri.hostname, req_uri.port) {|http|
             http.request(req)

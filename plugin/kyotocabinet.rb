@@ -21,7 +21,7 @@ module OpenBEL::Plugin::Cache
   end
 
   def on_load
-    require 'kyotocabinet'
+    require_relative '../lib/cache/kyotocabinet'
   end
 
   def create_instance(options = {})
