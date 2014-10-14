@@ -1,4 +1,4 @@
-require_relative '../lib/plugin_descriptor'
+require_relative '../plugin_descriptor'
 
 module OpenBEL
   module Plugin
@@ -23,17 +23,21 @@ module OpenBEL
           DESC
         end
 
-        def validate(options = {})
+        def validate(extensions = {}, options = {})
           if not jruby?
             return ValidationError.new(self, :plugin, "Option is only supported on the JRuby ruby engine.")
           end
           validation_successful
         end
 
+        def configure(extensions = {}, options = {})
+          @options = options
+        end
+
         def on_load
         end
 
-        def create_instance(options = {})
+        def create_instance
         end
       end
     end

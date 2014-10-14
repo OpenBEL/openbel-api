@@ -1,28 +1,35 @@
-plugin_paths:
+plugin_descriptor_paths:
   - 'lib/plugin/cache'
+  - 'lib/plugin/namespace'
   - 'lib/plugin/storage'
 
-storage:
-  id:     'rdf-storage'
-  plugin: 'redland'
-  options:
-    storage:     'sqlite'
-    name:        'rdf.db'
-    synchronous: 'off'
-
-cache:
-  id:     'namespace-cache'
+namespace-cache:
+  type:   'cache'
   plugin: 'kyotocabinet'
-  name:   'file-cache'
+
   options:
-    type:  'file-hash'
-    file:  '/tmp/namespace-db.kch'
+    type: 'file-hash'
+    file: '/tmp/namespace-db.kch'
     mode:
       - 'writer'
       - 'create'
 
-namespace:
-  storage: 'rdf-storage'
-  cache:   'namespace-cache'
+namespace-storage:
+  type:   'storage'
+  plugin: 'redland'
+
+  options:
+    storage:     'sqlite'
+    name:        'rdf.db'
+    new:         'no'
+    synchronous: 'no'
+
+namespace-api:
+  type:   'namespace'
+  plugin: 'namespace'
+  extensions:
+    storage: 'namespace-storage'
+    # cache:   'namespace-cache'
+
 # vim: ts=2 sts=2 sw=2
 # encoding: utf-8

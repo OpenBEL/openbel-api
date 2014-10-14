@@ -3,12 +3,11 @@ require_relative 'storage'
 
 module OpenBEL::Storage
 
-  class Redlander
+  class StorageRedland
     include Storage
 
     def initialize(options = {})
-      options = Hash[options.map {|k,v| [k.to_sym, v]}]
-      @model_options = DEFAULTS.merge(options)
+      @model_options = Hash[options.map {|k,v| [k.to_sym, v]}]
     end
 
     def triples(subject, predicate, object, options={})

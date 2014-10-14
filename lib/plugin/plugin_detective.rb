@@ -16,16 +16,16 @@ module OpenBEL
 
       def find_plugin_descriptors
         # guard if there are no plugin classes defined
-        return [] unless OpenBEL::const_defined? :Plugin
+        return {} unless OpenBEL::const_defined? :Plugin
 
-        plugin_descriptor_hash = Hash.new {|hash, key| hash[key] = Hash.new(&hash.default_proc)}
+        plugin_descriptor_hash = Hash.new {|hash, key| hash[key] = []}
         OpenBEL::Plugin.constants.inject(plugin_descriptor_hash) { |hash, const|
           const = OpenBEL::Plugin::const_get(const)
-          level = const.to_s.split('::').last.to_sym
+          level = const.to_s.split('::').last.downcase.to_sym
           const.constants.each do |plugin_const|
             plugin_klass = const.const_get(plugin_const)
             if plugin_klass.respond_to?(:ancestors) and plugin_klass.ancestors.include?(OpenBEL::PluginDescriptor)
-              hash[level][plugin_klass.name.split('::').last] = plugin_klass
+              hash[level] << plugin_klass.new
             end
           end
 
@@ -36,3 +36,5 @@ module OpenBEL
     end
   end
 end
+# vim: ts=2 sts=2 sw=2 expandtab
+# encoding: utf-8

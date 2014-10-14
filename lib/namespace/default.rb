@@ -1,5 +1,5 @@
-require_relative '../namespace_api'
-require_relative '../model'
+require_relative 'api'
+require_relative 'model'
 
 module OpenBEL
   module Namespace
@@ -7,7 +7,7 @@ module OpenBEL
     # XXX Methods that return multiple elements are buffered to Arrays. I chose this
     # approach over leaking Enumerator::Lazy to namespace resource layer.
     class Namespace
-      include NamespaceAPI
+      include API
 
       SKOS_PREF_LABEL = 'http://www.w3.org/2004/02/skos/core#prefLabel'
       SKOS_EXACT_MATCH = 'http://www.w3.org/2004/02/skos/core#exactMatch'
@@ -19,13 +19,11 @@ module OpenBEL
       BEL_ORTHOLOGOUS_MATCH = 'http://www.openbel.org/vocabulary/orthologousMatch'
       RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 
-      attr_reader :storage
+      # attr_reader :storage
 
-      def initialize(options = {})
-        @storage = options[:storage]
-        unless @storage
-          fail ArgumentError, "storage not provided in options"
-        end
+      def initialize(storage)
+        fail(ArgumentError, "storage is invalid") unless storage
+        @storage = storage
       end
 
       def find_namespaces(options = {})

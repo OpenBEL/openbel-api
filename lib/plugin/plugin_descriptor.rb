@@ -15,15 +15,25 @@ module OpenBEL
       fail NotImplementedError.new("#{__method__} not implemented")
     end
 
-    def validate(options = {})
+    def required_extensions
+      []
+    end
+
+    def optional_extensions
+      []
+    end
+
+    def validate(extensions = {}, options = {})
       validation_successful
     end
 
-    def on_load ; end
+    def on_load; end
 
-    def create_instance(options = {}) ; end
+    def configure(extensions = {}, options = {}); end
 
-    def on_unload ; end
+    def create_instance; end
+
+    def on_unload; end
 
     protected
 
@@ -46,7 +56,7 @@ module OpenBEL
     ValidationError = Struct.new(:plugin, :field, :error) do
 
       def to_s
-        "Error with #{field} field of #{plugin}: #{error}"
+        "Error with #{field} field of #{plugin.abbreviation} (#{plugin.name}): #{error}"
       end
     end
   end

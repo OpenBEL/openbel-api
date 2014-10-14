@@ -5,7 +5,7 @@ Bundler.setup
 $: << File.expand_path('../', __FILE__)
 $: << File.expand_path('../lib', __FILE__)
 
-require 'app/config'
+require 'config/config'
 require 'app/util'
 
 require 'sinatra/base'
@@ -16,23 +16,20 @@ require 'app/routes/namespaces'
 module OpenBEL
 
   class Server < Sinatra::Application
-    include DotHash
 
     configure :development do
       # pass
     end
 
     configure do
-      config = Config::load! do |failure|
-        $stderr.puts failure
-        exit!
-      end
+      config = OpenBEL::Config::load('config.yml')
       OpenBEL.const_set :Settings, config
     end
 
     use Rack::Deflater
 
-    if OpenBEL::Settings.namespace == true
+    puts OpenBEL::Settings
+    if OpenBEL::Settings[:"namespace-api"]
       require 'app/routes/namespaces'
       use OpenBEL::Routes::Namespaces
     end

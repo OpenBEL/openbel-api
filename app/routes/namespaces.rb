@@ -55,7 +55,7 @@ module OpenBEL
 
       def initialize(app)
         super
-        @api = OpenBEL::Settings.namespace_api
+        @api = OpenBEL::Settings[:"namespace-api"].create_instance
       end
 
       documentation "Retrieve all namespaces.

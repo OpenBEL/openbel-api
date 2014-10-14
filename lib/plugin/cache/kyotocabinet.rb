@@ -1,4 +1,4 @@
-require_relative '../lib/plugin_descriptor'
+require_relative '../plugin_descriptor'
 
 module OpenBEL
   module Plugin
@@ -28,14 +28,15 @@ module OpenBEL
         end
 
         def on_load
-          require_relative '../lib/cache/kyotocabinet'
+          require_relative '../../../lib/cache/kyotocabinet'
         end
 
-        def validate(options = {})
+        def validate(extensions = {}, options = {})
           type = options.delete(:type)
           if not type
             return ValidationError.new(self, :type, "Option is missing. Options are one of [#{TYPE_OPTION_VALUES.join(', ')}].")
           end
+          type = type.to_sym
           if not TYPE_OPTION_VALUES.include?(type)
             return ValidationError.new(self, :type, "Value not supported. Options are one of [#{TYPE_OPTION_VALUES.join(', ')}].")
           end
@@ -44,6 +45,7 @@ module OpenBEL
           if not mode
             return ValidationError.new(self, :mode, "Option is missing. Options are one of [#{MODE_OPTION_VALUES.join(', ')}].")
           end
+          mode = mode.map { |v| v.to_s.to_sym }
 
           file = options.delete(:file)
           if not file and FILE_TYPES.include?(type)
@@ -53,8 +55,12 @@ module OpenBEL
           validation_successful
         end
 
-        def create_instance(options = {})
-          type = options.delete(:type)
+        def configure(extensions = {}, options = {})
+          @options = options
+        end
+
+        def create_instance
+          type = @options[:type]
 
           case type
           when :"memory-hash"

@@ -1,4 +1,4 @@
-require_relative '../lib/plugin_descriptor'
+require_relative '../plugin_descriptor'
 
 module OpenBEL
   module Plugin
@@ -10,7 +10,7 @@ module OpenBEL
         ABBR = 'redland'
         NAME = 'Redland RDF Storage'
         DESC = 'Storage of RDF using the Redland libraries over FFI.'
-        STORAGE_OPTION_VALUES = [ :memory, :sqlite ]
+        STORAGE_OPTION_VALUES = [ 'memory', 'sqlite' ]
 
         def abbreviation
           ABBR
@@ -24,7 +24,7 @@ module OpenBEL
           DESC
         end
 
-        def validate(options = {})
+        def validate(extensions = {}, options = {})
           storage = options.delete(:storage)
           if not storage
             return ValidationError.new(self, :storage, "Option is missing. Options are one of [#{STORAGE_OPTION_VALUES.join(', ')}].")
@@ -41,12 +41,16 @@ module OpenBEL
           validation_successful
         end
 
-        def on_load
-          require_relative '../lib/storage/redland'
+        def configure(extensions = {}, options = {})
+          @options = options
         end
 
-        def create_instance(options = {})
-          OpenBEL::Storage::Redlander.new(options)
+        def on_load
+          require_relative '../../../lib/storage/redland'
+        end
+
+        def create_instance
+          OpenBEL::Storage::StorageRedland.new(@options)
         end
       end
     end
