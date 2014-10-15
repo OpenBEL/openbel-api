@@ -14,10 +14,11 @@ module OpenBEL::Storage
       model = (Thread.current[:model] ||= Redlander::Model.new @model_options)
 
       map_method = options[:only]
-      if map_method && self.respond_to?(map_method)
-        map_method = self.method(map_method)
-      end
-      map_method ||= self.method(:all)
+      map_method = if map_method && self.respond_to?(map_method, true)
+                     self.method(map_method)
+                   else
+                     self.method(:all)
+                   end
 
       triples = model.statements.each(
         :subject => uri_node(subject),
@@ -28,7 +29,7 @@ module OpenBEL::Storage
         triples.each { |triple| yield map_method.call(triple) }
       else
         triples = triples.respond_to?(:lazy) ? triples.lazy : triples
-        triples.map(&map_method)
+        triples.map { |triple| map_method.call(triple) }
       end
     end
 

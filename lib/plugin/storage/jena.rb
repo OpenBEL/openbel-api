@@ -1,44 +1,46 @@
-require_relative '../plugin_descriptor'
+require_relative '../plugin'
 
 module OpenBEL
   module Plugin
-    module Storage
 
-      class StorageJena
-        include OpenBEL::PluginDescriptor
+    class StorageJena
+      include OpenBEL::Plugin
 
-        ABBR = 'jena'
-        NAME = 'Apache Jena RDF Storage'
-        DESC = 'Storage of RDF using the Apache Jena libraries.'
+      ID = 'jena'
+      NAME = 'Apache Jena RDF Storage'
+      DESC = 'Storage of RDF using the Apache Jena libraries.'
 
-        def abbreviation
-          ABBR
+      def id
+        ID
+      end
+
+      def name
+        NAME
+      end
+
+      def description
+        DESC
+      end
+
+      def type
+        :storage
+      end
+
+      def validate(extensions = {}, options = {})
+        if not jruby?
+          return ValidationError.new(self, :plugin, "Option is only supported on the JRuby ruby engine.")
         end
+        validation_successful
+      end
 
-        def name
-          NAME
-        end
+      def configure(extensions = {}, options = {})
+        @options = options
+      end
 
-        def description
-          DESC
-        end
+      def on_load
+      end
 
-        def validate(extensions = {}, options = {})
-          if not jruby?
-            return ValidationError.new(self, :plugin, "Option is only supported on the JRuby ruby engine.")
-          end
-          validation_successful
-        end
-
-        def configure(extensions = {}, options = {})
-          @options = options
-        end
-
-        def on_load
-        end
-
-        def create_instance
-        end
+      def create_instance
       end
     end
   end

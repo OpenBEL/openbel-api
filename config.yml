@@ -1,4 +1,4 @@
-plugin_descriptor_paths:
+plugin_paths:
   - 'lib/plugin/cache'
   - 'lib/plugin/namespace'
   - 'lib/plugin/storage'

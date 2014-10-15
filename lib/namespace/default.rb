@@ -19,8 +19,6 @@ module OpenBEL
       BEL_ORTHOLOGOUS_MATCH = 'http://www.openbel.org/vocabulary/orthologousMatch'
       RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 
-      # attr_reader :storage
-
       def initialize(storage)
         fail(ArgumentError, "storage is invalid") unless storage
         @storage = storage

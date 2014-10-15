@@ -28,8 +28,7 @@ module OpenBEL
 
     use Rack::Deflater
 
-    puts OpenBEL::Settings
-    if OpenBEL::Settings[:"namespace-api"]
+    if OpenBEL::Settings["namespace-api"]
       require 'app/routes/namespaces'
       use OpenBEL::Routes::Namespaces
     end
