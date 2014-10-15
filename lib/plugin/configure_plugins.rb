@@ -89,7 +89,7 @@ module OpenBEL
       config.keys.each do |plugin_key|
         block = config[plugin_key]
         dependencies = (block['extensions'] || {}).each_value.to_a.map { |v| v.to_s.to_sym }
-        dependency_graph.add_dependencies(plugin_key.to_s.to_sym, dependencies)
+        dependency_graph.add_dependencies(plugin_key.to_s, dependencies)
       end
       dependency_graph.tsort
     end

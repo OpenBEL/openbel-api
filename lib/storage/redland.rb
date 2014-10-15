@@ -1,10 +1,10 @@
 require 'redlander'
-require_relative 'storage'
+require_relative 'triple_storage'
 
 module OpenBEL::Storage
 
   class StorageRedland
-    include Storage
+    include TripleStorage
 
     def initialize(options = {})
       @model_options = Hash[options.map {|k,v| [k.to_sym, v]}]
@@ -45,21 +45,6 @@ module OpenBEL::Storage
       else
         statement
       end
-    end
-
-    def subject(statement)
-      return statement.subject.to_s[1..-2] if statement.respond_to? :subject
-      statement[0]
-    end
-
-    def predicate(statement)
-      return statement.predicate.to_s[1..-2] if statement.respond_to? :predicate
-      statement[1]
-    end
-
-    def object(statement)
-      return statement.object.value if statement.respond_to? :object
-      statement[2]
     end
 
     def uri_node(obj)

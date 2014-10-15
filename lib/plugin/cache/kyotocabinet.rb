@@ -1,3 +1,4 @@
+require 'pp'
 require_relative '../plugin'
 
 module OpenBEL
@@ -31,7 +32,7 @@ module OpenBEL
       end
 
       def on_load
-        require_relative '../../../lib/cache/kyotocabinet'
+        require 'kyotocabinet'
       end
 
       def validate(extensions = {}, options = {})
@@ -63,13 +64,15 @@ module OpenBEL
       end
 
       def create_instance
-        type = @options[:type]
+        type = @options[:type].to_sym
+        mode = @options[:mode].map { |v| v.to_s.to_sym }
 
         case type
         when :"memory-hash"
           KyotoCabinet::Db::MemoryHash.new mode
         when :"file-hash"
-          KyotoCabinet::Db::FileHash.new file, mode
+          file = @options[:file]
+          KyotoCabinet::Db::FileHash.new file, *mode
         end
       end
     end

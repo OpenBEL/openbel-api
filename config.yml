@@ -6,7 +6,6 @@ plugin_paths:
 namespace-cache:
   type:   'cache'
   plugin: 'kyotocabinet'
-
   options:
     type: 'file-hash'
     file: '/tmp/namespace-db.kch'
@@ -17,7 +16,8 @@ namespace-cache:
 namespace-storage:
   type:   'storage'
   plugin: 'redland'
-
+  extensions:
+  #   cache: 'namespace-cache'
   options:
     storage:     'sqlite'
     name:        'rdf.db'
@@ -29,7 +29,6 @@ namespace-api:
   plugin: 'namespace'
   extensions:
     storage: 'namespace-storage'
-    # cache:   'namespace-cache'
 
 # vim: ts=2 sts=2 sw=2
 # encoding: utf-8

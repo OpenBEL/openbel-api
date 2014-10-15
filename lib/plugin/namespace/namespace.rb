@@ -43,22 +43,16 @@ module OpenBEL
         if not @storage_plugin
           return ValidationError.new(self, :storage, "The storage extension is missing.")
         end
-        @cache_plugin = extensions.delete(:cache)
         validation_successful
       end
 
       def configure(extensions = {}, options = {})
         @storage_plugin = extensions.delete(:storage)
-        @cache_plugin = extensions.delete(:cache)
         @options = options
       end
 
       def create_instance
-        if @cache_plugin
-          fail NotImplementedError, "cache plugin not implemented yet."
-        else
-          OpenBEL::Namespace::Namespace.new(@storage_plugin.create_instance)
-        end
+        OpenBEL::Namespace::Namespace.new(@storage_plugin.create_instance)
       end
     end
   end

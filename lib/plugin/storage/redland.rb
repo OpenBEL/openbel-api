@@ -27,6 +27,10 @@ module OpenBEL
         :storage
       end
 
+      def optional_extensions
+        [:cache]
+      end
+
       def validate(extensions = {}, options = {})
         storage = options.delete(:storage)
         if not storage
@@ -45,15 +49,24 @@ module OpenBEL
       end
 
       def configure(extensions = {}, options = {})
+        @cache_plugin = extensions[:cache]
         @options = options
       end
 
       def on_load
         require_relative '../../../lib/storage/redland'
+        require_relative '../../../lib/storage/cache_proxy'
       end
 
       def create_instance
-        OpenBEL::Storage::StorageRedland.new(@options)
+        storage = OpenBEL::Storage::StorageRedland.new(@options)
+
+        if @cache_plugin
+          cache = @cache_plugin.create_instance
+          OpenBEL::Storage::CacheProxy.new(storage, cache)
+        else
+          storage
+        end
       end
     end
   end
