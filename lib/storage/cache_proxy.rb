@@ -20,9 +20,10 @@ module OpenBEL
       def triples(subject, predicate, object, options={})
         pattern_key = key(subject, predicate, object)
         rdf_value = @cache[pattern_key]
+        map_method = options.delete(:only)
         if rdf_value
           return [] if rdf_value == ""
-          unpack(rdf_value).each_slice(3)
+          triples = unpack(rdf_value).each_slice(3)
         else
           triples = @real_storage.triples(subject, predicate, object, options).to_a
           if triples.empty?
@@ -34,6 +35,18 @@ module OpenBEL
             @cache[pattern_key] = pack(rdf_value)
           end
           triples
+        end
+
+        map_method = if map_method && @real_storage.respond_to?(map_method)
+                       @real_storage.method(map_method)
+                     else
+                       @real_storage.method(:all)
+                     end
+        if block_given?
+          triples.each { |triple| yield map_method.call(triple) }
+        else
+          triples = triples.respond_to?(:lazy) ? triples.lazy : triples
+          triples.map { |triple| map_method.call(triple) }
         end
       end
 

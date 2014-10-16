@@ -35,18 +35,6 @@ module OpenBEL::Storage
 
     private
 
-    def all(statement)
-      if statement.respond_to? :subject
-        [
-          statement.subject.to_s[1..-2],
-          statement.predicate.to_s[1..-2],
-          statement.object.to_s[1..-2]
-        ]
-      else
-        statement
-      end
-    end
-
     def uri_node(obj)
       return nil unless obj
       Redlander::Node.new(obj.to_s, :resource => true)

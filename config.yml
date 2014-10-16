@@ -17,7 +17,7 @@ namespace-storage:
   type:   'storage'
   plugin: 'redland'
   extensions:
-  #   cache: 'namespace-cache'
+    cache: 'namespace-cache'
   options:
     storage:     'sqlite'
     name:        'rdf.db'
