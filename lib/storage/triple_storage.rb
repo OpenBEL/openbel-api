@@ -2,7 +2,7 @@ module OpenBEL
   module Storage
     module TripleStorage
 
-      def triples_filter(subject, predicate, object, options={})
+      def triples(subject, predicate, object, options={})
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
@@ -29,7 +29,7 @@ module OpenBEL
       end
 
       def object(statement)
-        return statement.object.value if statement.respond_to? :object
+        return statement.object.value.to_s if statement.respond_to? :object
         statement[2]
       end
     end
