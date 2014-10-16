@@ -15,6 +15,8 @@ module OpenBEL
       TYPE_OPTION_VALUES = [ MEMR_TYPES, FILE_TYPES ].flatten
       MODE_OPTION_VALUES = [ :reader, :writer, :create ]
 
+      CREATE_MUTEX = Mutex.new
+
       def id
         ID
       end
@@ -64,16 +66,26 @@ module OpenBEL
       end
 
       def create_instance
-        type = @options[:type].to_sym
-        mode = @options[:mode].map { |v| v.to_s.to_sym }
+        CREATE_MUTEX.lock
+        begin
+          unless @instance
+            type = @options[:type].to_sym
+            mode = @options[:mode].map { |v| v.to_s.to_sym }
 
-        case type
-        when :"memory-hash"
-          KyotoCabinet::Db::MemoryHash.new mode
-        when :"file-hash"
-          file = @options[:file]
-          KyotoCabinet::Db::FileHash.new file, *mode
+            @instance = case type
+                        when :"memory-hash"
+                          KyotoCabinet::Db::MemoryHash.new mode
+                        when :"file-hash"
+                          file = @options[:file]
+                          KyotoCabinet::Db::FileHash.new file, *mode
+                        end
+            puts "cache instance: #{@instance.object_id}"
+          end
+        ensure
+          CREATE_MUTEX.unlock
         end
+
+        @instance
       end
     end
   end
