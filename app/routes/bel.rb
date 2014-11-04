@@ -8,6 +8,8 @@ module OpenBEL
 
       get '/bel/completer/?' do
         input = params[:input]
+        halt 400 unless input
+
         result = BEL::Completion.complete(input).map { |r|
           hash = r.to_h
           hash[:type] = r.class.name.split('::')[-1].downcase
