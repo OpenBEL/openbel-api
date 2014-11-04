@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bel', :git => 'git@github.com:OpenBEL/bel.rb.git'
+gem 'bel', :git => 'git@github.com:OpenBEL/bel.rb.git', :branch => 'bel_completion'
 gem 'builder'
 gem 'dot_hash'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby

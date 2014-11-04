@@ -1,8 +1,21 @@
+require 'bel'
+
 module OpenBEL
   module Routes
 
     # App
-    class BEL < Base
+    class BELApp < Base
+
+      get '/bel/completer/?' do
+        input = params[:input]
+        result = BEL::Completion.complete(input).map { |r|
+          hash = r.to_h
+          hash[:type] = r.class.name.split('::')[-1].downcase
+          hash
+        }
+        response.headers['Content-Type'] = 'application/json'
+        MultiJson.dump result
+      end
 
     end
   end

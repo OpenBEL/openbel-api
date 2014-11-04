@@ -32,7 +32,7 @@ module OpenBEL
       require 'app/routes/namespaces'
       use OpenBEL::Routes::Namespaces
     end
-    use OpenBEL::Routes::BEL
+    use OpenBEL::Routes::BELApp
   end
 end
 # vim: ts=2 sts=2 sw=2
