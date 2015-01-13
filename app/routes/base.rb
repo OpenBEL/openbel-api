@@ -3,8 +3,8 @@ module OpenBEL
 
     class Base < Sinatra::Application
 
-
-      SPOKEN_CONTENT_TYPES = %w[application/json text/html text/xml]
+      SPOKEN_CONTENT_TYPES = %w[application/json application/hal+json text/html text/xml]
+      disable :protection
 
       before do
         unless request.preferred_type(SPOKEN_CONTENT_TYPES)

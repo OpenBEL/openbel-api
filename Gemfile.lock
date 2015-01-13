@@ -1,14 +1,10 @@
-GIT
-  remote: git@github.com:OpenBEL/bel.rb.git
-  revision: 7bb899303ec2a40a332b69f4c263cdb712444785
-  branch: bel_completion
+PATH
+  remote: ../bel.rb
   specs:
     bel (0.3.0)
 
-GIT
-  remote: git@github.com:abargnesi/redlander.git
-  revision: 711a0de91d6aed6be80a0134acdf4f7aeb04a021
-  branch: rubies_support
+PATH
+  remote: ../redlander
   specs:
     redlander (0.6.2)
       ffi (~> 1.3)
@@ -21,50 +17,53 @@ GEM
       Platform (>= 0.4.0)
       open4
     Platform (0.4.0)
-    backports (3.6.3)
+    backports (3.6.4)
     builder (3.2.2)
+    celluloid (0.16.0)
+      timers (~> 4.0.0)
     coderay (1.1.0)
     daemons (1.1.9)
     dot_hash (0.5.9)
-    eventmachine (1.0.3)
+    eventmachine (1.0.4)
     ffi (1.9.6)
-    ffi (1.9.6-java)
-    jrjackson (0.2.7)
+    hitimes (1.2.2)
     kramdown (1.5.0)
     kyotocabinet-ffi (0.0.1)
       ffi (~> 1.9)
+    listen (2.8.5)
+      celluloid (>= 0.15.2)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
     method_source (0.8.2)
-    mini_portile (0.6.0)
+    mini_portile (0.6.2)
     multi_json (1.10.1)
-    nokogiri (1.6.3.1)
-      mini_portile (= 0.6.0)
-    nokogiri (1.6.3.1-java)
-    oj (2.11.0)
+    nokogiri (1.6.5)
+      mini_portile (~> 0.6.0)
+    oj (2.11.1)
     open4 (1.3.4)
     pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
-    pry (0.9.12.6-java)
-      coderay (~> 1.0)
-      method_source (~> 0.8)
-      slop (~> 3.4)
-      spoon (~> 0.0)
-    puma (2.9.2-java)
-      rack (>= 1.1, < 2.0)
-    rack (1.5.2)
+    rack (1.6.0)
+    rack-cors (0.3.1)
     rack-handlers (0.7.0)
       rack
     rack-protection (1.5.3)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    representable (1.8.5)
+    rb-fsevent (0.9.4)
+    rb-inotify (0.9.5)
+      ffi (>= 0.5.0)
+    representable (2.1.3)
       multi_json
       nokogiri
-      uber
-    roar (0.12.9)
-      representable (>= 1.6.0, < 2.0.0)
+      uber (~> 0.0.7)
+    rerun (0.10.0)
+      listen (~> 2.7, >= 2.7.3)
+    roar (1.0.0)
+      representable (>= 2.0.1, <= 3.0.0)
     sinatra (1.4.5)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -81,8 +80,6 @@ GEM
     sinatra-docdsl (0.8.6)
       kramdown
     slop (3.6.0)
-    spoon (0.0.4)
-      ffi
     term-ansicolor (1.3.0)
       tins (~> 1.0)
     thin (1.6.3)
@@ -90,12 +87,13 @@ GEM
       eventmachine (~> 1.0)
       rack (~> 1.0)
     tilt (1.4.1)
+    timers (4.0.1)
+      hitimes
     tins (1.3.3)
-    uber (0.0.10)
+    uber (0.0.12)
     xml_schema (0.2.0)
 
 PLATFORMS
-  java
   ruby
 
 DEPENDENCIES
@@ -111,8 +109,10 @@ DEPENDENCIES
   pry (~> 0.9.12)
   puma
   rack
+  rack-cors
   rack-handlers
   redlander!
+  rerun
   roar
   sinatra
   sinatra-advanced-routes

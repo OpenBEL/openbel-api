@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bel', :git => 'git@github.com:OpenBEL/bel.rb.git', :branch => 'bel_completion'
+gem 'bel', :path => '../bel.rb'
 gem 'builder'
 gem 'dot_hash'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby
@@ -9,8 +9,9 @@ gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
 gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
 gem 'rack'
+gem 'rack-cors'
 gem 'rack-handlers'
-gem 'redlander', :git => 'git@github.com:abargnesi/redlander.git', :branch => 'rubies_support'
+gem 'redlander', :path => '../redlander'
 gem 'roar'
 gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
@@ -20,6 +21,7 @@ gem 'sinatra-docdsl'
 group :development do
   gem 'POpen4'
   gem 'pry', '~> 0.9.12'
+  gem 'rerun'
   gem 'term-ansicolor'
 end
 

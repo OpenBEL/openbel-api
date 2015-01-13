@@ -1,6 +1,6 @@
 require 'roar/decorator'
-require 'roar/representer/json'
-require 'roar/representer/xml'
+require 'roar/json'
+require 'roar/xml'
 require 'representable/json/collection'
 
 module OpenBEL
@@ -83,8 +83,8 @@ module OpenBEL
 
     # NamespaceResource
     module NamespaceResourceJSON
-      include Roar::Representer::JSON
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::JSON
+      include Roar::Hypermedia
 
       property :uri, as: :rdf_uri
       property :prefLabel, as: :name
@@ -100,8 +100,8 @@ module OpenBEL
     end
 
     module NamespaceResourceXML
-      include Roar::Representer::XML
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::XML
+      include Roar::Hypermedia
 
       property :uri, as: :rdf_uri
       property :prefLabel, as: :name
@@ -117,9 +117,9 @@ module OpenBEL
     end
 
     module NamespaceResourceHTML
-      include Roar::Representer::JSON
+      include Roar::JSON
       include OpenBEL::HTML
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::Hypermedia
 
       property :uri, as: :rdf_uri
       property :prefLabel, as: :name
@@ -143,7 +143,7 @@ module OpenBEL
 
     module NamespacesResourceXML
       include Representable::JSON::Collection
-      include Roar::Representer::XML
+      include Roar::XML
       items extend: NamespaceResourceXML, class: OpenBEL::Model::Namespace
     end
 
@@ -156,8 +156,8 @@ module OpenBEL
 
     # NamespaceValueResource
     module NamespaceValueResourceJSON
-      include Roar::Representer::JSON
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::JSON
+      include Roar::Hypermedia
 
       property :uri, as: :rdf_uri
       property :type, :getter => lambda { |opts|
@@ -188,8 +188,8 @@ module OpenBEL
     end
 
     module NamespaceValueResourceXML
-      include Roar::Representer::XML
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::XML
+      include Roar::Hypermedia
 
       property :uri, as: :rdf_uri
       property :type, :getter => lambda { |opts|
@@ -220,9 +220,9 @@ module OpenBEL
     end
 
     module NamespaceValueResourceHTML
-      include Roar::Representer::JSON
+      include Roar::JSON
       include OpenBEL::HTML
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::Hypermedia
 
       property :uri, as: :rdf_uri
       property :type, :getter => lambda { |opts|
@@ -261,7 +261,7 @@ module OpenBEL
 
     module NamespaceValuesResourceXML
       include Representable::JSON::Collection
-      include Roar::Representer::XML
+      include Roar::XML
       items extend: NamespaceValueResourceXML, class: OpenBEL::Model::Namespace::NamespaceValue
     end
 
@@ -274,8 +274,8 @@ module OpenBEL
 
     # ValueEquivalenceResource
     module ValueEquivalenceResourceJSON
-      include Roar::Representer::JSON
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::JSON
+      include Roar::Hypermedia
 
       property :value
       collection :equivalences,
@@ -284,8 +284,8 @@ module OpenBEL
     end
 
     module ValueEquivalenceResourceXML
-      include Roar::Representer::XML
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::XML
+      include Roar::Hypermedia
 
       property :value
       collection :equivalences,
@@ -294,9 +294,9 @@ module OpenBEL
     end
 
     module ValueEquivalenceResourceHTML
-      include Roar::Representer::JSON
+      include Roar::JSON
       include OpenBEL::HTML
-      include Roar::Representer::Feature::Hypermedia
+      include Roar::Hypermedia
 
       property :value
       collection :equivalences,
@@ -312,7 +312,7 @@ module OpenBEL
 
     module ValueEquivalencesResourceXML
       include Representable::JSON::Collection
-      include Roar::Representer::XML
+      include Roar::XML
       items extend: ValueEquivalenceResourceXML, class: OpenBEL::Model::Namespace::ValueEquivalence
     end
 

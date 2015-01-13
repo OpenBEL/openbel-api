@@ -8,6 +8,8 @@ $: << File.expand_path('../lib', __FILE__)
 require 'config/config'
 require 'app/util'
 
+require 'rack/cors'
+
 require 'sinatra/base'
 require 'app/routes/base'
 require 'app/routes/bel'
@@ -27,6 +29,14 @@ module OpenBEL
     end
 
     use Rack::Deflater
+    use Rack::Cors do
+      allow do
+        origins '*'
+        resource '/bel/*'
+        resource '/namespaces/*'
+      end
+    end
+    disable :protection
 
     if OpenBEL::Settings["namespace-api"]
       require 'app/routes/namespaces'
