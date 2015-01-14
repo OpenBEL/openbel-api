@@ -9,7 +9,7 @@ module OpenBEL
       get '/bel/functions' do
         collection = {
           :_links => {
-            :item => FUNCTIONS.keys.map { |fx|
+            :item => FUNCTIONS.keys.sort.map { |fx|
               {
                 :href => "#{proxy_url}/#{fx}"
               }
