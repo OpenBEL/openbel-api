@@ -13,6 +13,20 @@ module OpenBEL
       end
 
       helpers do
+        def request_headers
+          env.inject({}) { |hdrs, (k,v)|
+            hdrs[$1.downcase] = v if k =~ /^http_(.*)/i
+            hdrs
+          }
+        end
+
+        def proxy_base_url
+          env['HTTP_X_REAL_BASE_URL']
+        end
+
+        def proxy_url
+          env['HTTP_X_REAL_URL']
+        end
 
         def resolve_supported_content_type(request)
           preferred = request.preferred_type.to_str
