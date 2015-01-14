@@ -33,7 +33,7 @@ module OpenBEL
             :href => proxy_url
           },
           :collection => {
-            :href => "#{proxy_url}/bel/functions"
+            :href => "#{proxy_base_url}/bel/functions"
           }
         }
         response.headers['Content-Type'] = 'application/json'
