@@ -7,7 +7,7 @@ module OpenBEL
 
       get '/api/expressions/:bel/completions/?' do
         bel = params[:bel]
-        cursor_position = params[:cursor_position].to_i
+        cursor_position = (params[:cursor_position] || bel.length).to_i
         halt 400 unless bel and cursor_position
 
         completions = BEL::Completion.complete(bel, cursor_position)
