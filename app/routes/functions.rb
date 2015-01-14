@@ -6,7 +6,7 @@ module OpenBEL
     class Functions < Base
       include BEL::Language
 
-      get '/bel/functions' do
+      get '/api/bel/functions' do
         collection = {
           :_links => {
             :item => FUNCTIONS.keys.sort.map { |fx|
@@ -24,7 +24,7 @@ module OpenBEL
       end
 
       # BEL Completion
-      get '/bel/functions/:fx' do
+      get '/api/bel/functions/:fx' do
         fx_match = FUNCTIONS[params[:fx].to_sym]
         halt 404 unless fx_match
 

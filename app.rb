@@ -12,7 +12,7 @@ require 'rack/cors'
 
 require 'sinatra/base'
 require 'app/routes/base'
-require 'app/routes/completions'
+require 'app/routes/expressions'
 require 'app/routes/functions'
 require 'app/routes/namespaces'
 
@@ -33,13 +33,12 @@ module OpenBEL
     use Rack::Cors do
       allow do
         origins '*'
-        resource '/bel/*'
-        resource '/namespaces/*'
+        resource '/api/*'
       end
     end
     disable :protection
 
-    use OpenBEL::Routes::Completions
+    use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Functions
     use OpenBEL::Routes::Namespaces
   end

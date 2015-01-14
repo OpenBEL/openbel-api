@@ -3,9 +3,9 @@ require 'bel'
 module OpenBEL
   module Routes
 
-    class Completions < Base
+    class Expressions < Base
 
-      get '/bel/expressions/:bel/completions/?' do
+      get '/api/expressions/:bel/completions/?' do
         bel = params[:bel]
         cursor_position = params[:cursor_position].to_i
         halt 400 unless bel and cursor_position
@@ -17,7 +17,7 @@ module OpenBEL
 
       # BEL Syntax Validation
       # TODO Move out to a separate route.
-      get '/bel/expressions/:bel/syntax-validations/?' do
+      get '/api/expressions/:bel/syntax-validations/?' do
         bel = params[:bel]
         halt 400 unless bel
 
@@ -34,7 +34,7 @@ module OpenBEL
 
       # BEL Semantic Validations
       # TODO Move out to a separate route.
-      get '/bel/expressions/:bel/semantic-validations/?' do
+      get '/api/expressions/:bel/semantic-validations/?' do
         bel = params[:bel]
         halt 400 unless bel
 

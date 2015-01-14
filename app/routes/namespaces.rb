@@ -94,7 +94,7 @@ module OpenBEL
         status 200, "One ore more namespace exist"
         status 404, "No namespaces exist"
       end
-      get '/namespaces/?' do
+      get '/api/namespaces/?' do
         namespaces = @api.find_namespaces
 
         halt 404 if not namespaces or namespaces.empty?
@@ -127,7 +127,7 @@ module OpenBEL
         status 200, "One namespace exists for :namespace"
         status 404, "No namespace exists for :namespace"
       end
-      get '/namespaces/:namespace/?' do |namespace|
+      get '/api/namespaces/:namespace/?' do |namespace|
         ns = @api.find_namespace(namespace)
 
         halt 404 unless ns
@@ -211,7 +211,7 @@ module OpenBEL
         status 400, "No :value parameters provided; target :namespace parameter does not exist; the :result parameter does not match one of #{RESULT_TYPES.keys.join(', ')}"
         status 404, "No namespace exists for :namespace; One or more :value do not have equivalents"
       end
-      get '/namespaces/:namespace/equivalents/?' do |namespace|
+      get '/api/namespaces/:namespace/equivalents/?' do |namespace|
         halt 400 unless request.params['value']
 
         values = CGI::parse(env["QUERY_STRING"])['value']
@@ -232,7 +232,7 @@ module OpenBEL
         MultiJson.dump eq_mapping
       end
 
-      post '/namespaces/:namespace/equivalents/?' do |namespace|
+      post '/api/namespaces/:namespace/equivalents/?' do |namespace|
         halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
 
         content = request.body.read
@@ -414,7 +414,7 @@ module OpenBEL
         status 400, "No :value parameters provided; target :namespace parameter does not exist; the :result parameter does not match one of #{RESULT_TYPES.keys.join(', ')}"
         status 404, "No namespace exists for :namespace; One or more :value do not have orthologs"
       end
-      get '/namespaces/:namespace/orthologs/?' do |namespace|
+      get '/api/namespaces/:namespace/orthologs/?' do |namespace|
         halt 400 unless request.params['value']
 
         values = CGI::parse(env["QUERY_STRING"])['value']
@@ -435,7 +435,7 @@ module OpenBEL
         MultiJson.dump orth_mapping
       end
 
-      post '/namespaces/:namespace/orthologs/?' do |namespace|
+      post '/api/namespaces/:namespace/orthologs/?' do |namespace|
         halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
 
         content = request.body.read
@@ -509,7 +509,7 @@ module OpenBEL
         status 200, "The namespace value *:id* exists in *:namespace*"
         status 404, "The :namespace does not exist or *:id* does not exist in :namespace"
       end
-      get '/namespaces/:namespace/:id/?' do |namespace, value|
+      get '/api/namespaces/:namespace/:id/?' do |namespace, value|
         value = @api.find_namespace_value(namespace, value)
 
         halt 404 unless value
@@ -684,7 +684,7 @@ module OpenBEL
         status 200, "Equivalents exist for the namespace value *:id* in *:namespace*"
         status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no equivalents exist for *:id*"
       end
-      get '/namespaces/:namespace/:id/equivalents/?' do |namespace, value|
+      get '/api/namespaces/:namespace/:id/equivalents/?' do |namespace, value|
         equivalents = @api.find_equivalent(namespace, value)
         halt 404 if not equivalents or equivalents.empty?
 
@@ -738,7 +738,7 @@ module OpenBEL
         status 200, "Target equivalents exist for the namespace value *:id* in *:namespace*"
         status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no :target equivalents exist for *:id*"
       end
-      get '/namespaces/:namespace/:id/equivalents/:target/?' do |namespace, value, target|
+      get '/api/namespaces/:namespace/:id/equivalents/:target/?' do |namespace, value, target|
         equivalent = @api.find_equivalent(namespace, value, {
           target: target
         })
@@ -1178,7 +1178,7 @@ module OpenBEL
         status 200, "Orthologs exist for the namespace value *:id* in *:namespace*"
         status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no orthologs exist for *:id*"
       end
-      get '/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
+      get '/api/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
         orthologs = @api.find_ortholog(namespace, value)
         if not orthologs or orthologs.empty?
           halt 404
@@ -1234,7 +1234,7 @@ module OpenBEL
         status 200, "Target equivalents exist for the namespace value *:id* in *:namespace*"
         status 404, ":namespace does not exist, *:id* does not exist in :namespace, or no :target equivalents exist for *:id*"
       end
-      get '/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
+      get '/api/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
         orthologs = @api.find_ortholog(namespace, value, {
           target: target
         })
