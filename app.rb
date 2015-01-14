@@ -38,6 +38,7 @@ module OpenBEL
     end
     disable :protection
 
+    use OpenBEL::Routes::Root
     use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Functions
     use OpenBEL::Routes::Namespaces
