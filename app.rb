@@ -12,6 +12,7 @@ require 'rack/cors'
 
 require 'sinatra/base'
 require 'app/routes/base'
+require 'app/routes/root'
 require 'app/routes/expressions'
 require 'app/routes/functions'
 require 'app/routes/namespaces'
