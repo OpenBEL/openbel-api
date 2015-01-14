@@ -13,7 +13,6 @@ module OpenBEL
         halt 400 unless bel and cursor_position
 
         completions = BEL::Completion.complete(bel, cursor_position)
-        puts completions
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump completions
       end
