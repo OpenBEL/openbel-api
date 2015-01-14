@@ -11,6 +11,7 @@ module OpenBEL
         halt 400 unless bel and cursor_position
 
         completions = BEL::Completion.complete(bel, cursor_position)
+        halt 404 if completions.empty?
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump completions
       end
