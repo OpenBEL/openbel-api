@@ -6,16 +6,36 @@ module OpenBEL
     class Functions < Base
       include BEL::Language
 
+      get '/bel/functions' do
+        collection = {
+          :_links => {
+            :item => FUNCTIONS.map { |fx|
+              {
+                :href => "#{proxy_url}/#{fx}"
+              }
+            }
+          }
+        }
+
+        response.headers['Content-Type'] = 'application/json'
+        MultiJson.dump { :functions => collection }
+      end
+
       # BEL Completion
-      get '/bel/functions/:fx/?' do
+      get '/bel/functions/:fx' do
         fx_match = FUNCTIONS[params[:fx].to_sym]
         halt 404 unless fx_match
 
         fx_match[:_links] = {
-          :self => proxy_url
+          :self => {
+            :href => proxy_url
+          },
+          :collection => {
+            :href => "#{proxy_url}/bel/functions"
+          }
         }
         response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump fx_match
+        MultiJson.dump { :function => fx_match }
       end
     end
   end
