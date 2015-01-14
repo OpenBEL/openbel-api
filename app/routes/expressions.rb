@@ -5,8 +5,8 @@ module OpenBEL
 
     class Expressions < Base
 
-      get '/api/expressions/:bel/completions/?' do
-        bel = params[:bel]
+      get '/api/expressions/*/completions/?' do
+        bel = params[:splat].first
         cursor_position = (params[:cursor_position] || bel.length).to_i
         halt 400 unless bel and cursor_position
 
@@ -17,8 +17,8 @@ module OpenBEL
 
       # BEL Syntax Validation
       # TODO Move out to a separate route.
-      get '/api/expressions/:bel/syntax-validations/?' do
-        bel = params[:bel]
+      get '/api/expressions/*/syntax-validations/?' do
+        bel = params[:splat].first
         halt 400 unless bel
 
         response.headers['Content-Type'] = 'application/json'
@@ -34,8 +34,8 @@ module OpenBEL
 
       # BEL Semantic Validations
       # TODO Move out to a separate route.
-      get '/api/expressions/:bel/semantic-validations/?' do
-        bel = params[:bel]
+      get '/api/expressions/*/semantic-validations/?' do
+        bel = params[:splat].first
         halt 400 unless bel
 
         response.headers['Content-Type'] = 'application/json'
