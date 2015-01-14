@@ -9,7 +9,7 @@ module OpenBEL
       get '/bel/functions' do
         collection = {
           :_links => {
-            :item => FUNCTIONS.map { |fx|
+            :item => FUNCTIONS.keys.map { |fx|
               {
                 :href => "#{proxy_url}/#{fx}"
               }
@@ -18,7 +18,9 @@ module OpenBEL
         }
 
         response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump { :functions => collection }
+        MultiJson.dump({
+          :functions => collection
+        })
       end
 
       # BEL Completion
@@ -35,7 +37,9 @@ module OpenBEL
           }
         }
         response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump { :function => fx_match }
+        MultiJson.dump({
+          :function => fx_match
+        })
       end
     end
   end
