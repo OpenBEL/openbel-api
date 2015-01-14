@@ -12,7 +12,8 @@ require 'rack/cors'
 
 require 'sinatra/base'
 require 'app/routes/base'
-require 'app/routes/bel'
+require 'app/routes/completions'
+require 'app/routes/functions'
 require 'app/routes/namespaces'
 
 module OpenBEL
@@ -38,11 +39,9 @@ module OpenBEL
     end
     disable :protection
 
-    if OpenBEL::Settings["namespace-api"]
-      require 'app/routes/namespaces'
-      use OpenBEL::Routes::Namespaces
-    end
-    use OpenBEL::Routes::BELApp
+    use OpenBEL::Routes::Completions
+    use OpenBEL::Routes::Functions
+    use OpenBEL::Routes::Namespaces
   end
 end
 # vim: ts=2 sts=2 sw=2
