@@ -34,7 +34,11 @@ module OpenBEL
     use Rack::Cors do
       allow do
         origins '*'
-        resource '/api*'
+        resource '*',
+          :headers     => :any,
+          :methods     => [ :get, :post, :put, :options ],
+          :max_age     => 1,
+          :credentials => false
       end
     end
     disable :protection
