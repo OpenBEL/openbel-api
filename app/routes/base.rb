@@ -50,7 +50,7 @@ module OpenBEL
             :base_url => base_url
           }
 
-          if obj.respond_to? :each
+          if obj.kind_of?(Array)
             # multiple
             case type
             when :completion
