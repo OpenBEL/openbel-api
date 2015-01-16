@@ -11,7 +11,7 @@ module OpenBEL
           :_links => {
             :item => FUNCTIONS.keys.sort.map { |fx|
               {
-                :href => "#{proxy_url}/#{fx}"
+                :href => "#{url}/#{fx}"
               }
             }
           }
