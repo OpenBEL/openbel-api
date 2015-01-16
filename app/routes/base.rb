@@ -7,7 +7,7 @@ module OpenBEL
 
     class Base < Sinatra::Application
 
-      DEFAULT_CONTENT_TYPE = 'application/hal+json'
+      DEFAULT_CONTENT_TYPE = 'application/json'
       SPOKEN_CONTENT_TYPES = %w[application/json application/hal+json text/html text/xml]
       disable :protection
 
@@ -70,6 +70,14 @@ module OpenBEL
                   }
                 }
                 MultiJson.dump(collection)
+              else
+                response.headers['Content-Type'] = 'application/json'
+                collection = obj.map { |resource|
+                  {
+                    :completion => CompletionJsonSerializer.new(resource, resource_context).to_hash
+                  }
+                }
+                MultiJson.dump(collection)
               end
             else
               raise NotImplementedError.new("Cannot render type, #{type}")
@@ -85,6 +93,11 @@ module OpenBEL
               response.headers['Content-Type'] = 'application/hal+json'
               MultiJson.dump(
                 CompletionSerializer.new(resource, resource_context, Oat::Adapters::HAL).to_hash
+              )
+            else
+              response.headers['Content-Type'] = 'application/json'
+              MultiJson.dump(
+                CompletionSerializer.new(resource, resource_context).to_hash
               )
             end
           end
@@ -110,6 +123,9 @@ module OpenBEL
           when 'text/xml'
             response.headers['Content-Type'] = 'text/xml'
             resource.to_xml(base_url: request.base_url, url: request.url)
+          else
+            response.headers['Content-Type'] = 'application/json'
+            resource.to_json(base_url: request.base_url, url: request.url)
           end
         end
 
@@ -133,6 +149,9 @@ module OpenBEL
           when 'text/xml'
             response.headers['Content-Type'] = 'text/xml'
             resource.to_xml(base_url: request.base_url, url: request.url)
+          else
+            response.headers['Content-Type'] = 'application/json'
+            resource.to_json(base_url: request.base_url, url: request.url)
           end
         end
 
