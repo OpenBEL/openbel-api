@@ -7,6 +7,7 @@ gem 'jrjackson', '~> 0.2', :platforms => :jruby
 gem 'kyotocabinet-ffi'
 gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
+gem 'oat'
 gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
 gem 'rack'
 gem 'rack-cors'

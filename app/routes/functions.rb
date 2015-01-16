@@ -30,10 +30,10 @@ module OpenBEL
 
         fx_match[:_links] = {
           :self => {
-            :href => proxy_url
+            :href => url
           },
           :collection => {
-            :href => "#{proxy_base_url}/api/functions"
+            :href => "#{base_url}/api/functions"
           }
         }
         response.headers['Content-Type'] = 'application/json'

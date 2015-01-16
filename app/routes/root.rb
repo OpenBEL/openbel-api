@@ -9,13 +9,13 @@ module OpenBEL
           :_links => {
             :item => [
               {
-                :href => "#{proxy_base_url}/api/expressions"
+                :href => "#{base_url}/api/expressions"
               },
               {
-                :href => "#{proxy_base_url}/api/functions"
+                :href => "#{base_url}/api/functions"
               },
               {
-                :href => "#{proxy_base_url}/api/namespaces"
+                :href => "#{base_url}/api/namespaces"
               }
             ]
           }

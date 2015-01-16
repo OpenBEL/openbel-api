@@ -20,6 +20,8 @@ module OpenBEL
           case content_type
           when 'application/json'
             obj.extend(NamespacesResourceJSON)
+          when 'application/hal+json'
+            obj.extend(NamespacesResourceJSON)
           when 'text/html'
             obj.extend(NamespacesResourceHTML)
           when 'text/xml'
@@ -29,6 +31,8 @@ module OpenBEL
           case content_type
           when 'application/json'
             obj.extend(NamespaceValuesResourceJSON)
+          when 'application/hal+json'
+            obj.extend(NamespaceValuesResourceJSON)
           when 'text/html'
             obj.extend(NamespaceValuesResourceHTML)
           when 'text/xml'
@@ -37,6 +41,8 @@ module OpenBEL
         when OpenBEL::Model::Namespace::ValueEquivalence
           case content_type
           when 'application/json'
+            obj.extend(ValueEquivalencesResourceJSON)
+          when 'application/hal+json'
             obj.extend(ValueEquivalencesResourceJSON)
           when 'text/html'
             obj.extend(ValueEquivalencesResourceHTML)
@@ -52,6 +58,8 @@ module OpenBEL
           case content_type
           when 'application/json'
             obj.extend(NamespaceResourceJSON)
+          when 'application/hal+json'
+            obj.extend(NamespaceResourceJSON)
           when 'text/html'
             obj.extend(NamespaceResourceHTML)
           when 'text/xml'
@@ -61,6 +69,8 @@ module OpenBEL
           case content_type
           when 'application/json'
             obj.extend(NamespaceValueResourceJSON)
+          when 'application/hal+json'
+            obj.extend(NamespaceValueResourceJSON)
           when 'text/html'
             obj.extend(NamespaceValueResourceHTML)
           when 'text/xml'
@@ -69,6 +79,8 @@ module OpenBEL
         when OpenBEL::Model::Namespace::ValueEquivalence
           case content_type
           when 'application/json'
+            obj.extend(ValueEquivalenceResourceJSON)
+          when 'application/hal+json'
             obj.extend(ValueEquivalenceResourceJSON)
           when 'text/html'
             obj.extend(ValueEquivalenceResourceHTML)
