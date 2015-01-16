@@ -1,6 +1,7 @@
 require 'oat'
 require 'oat/adapters/hal'
 require 'app/resources/completion'
+require 'app/resources/function'
 
 module OpenBEL
   module Routes
@@ -79,26 +80,65 @@ module OpenBEL
                 }
                 MultiJson.dump(collection)
               end
+            when :function
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  FunctionCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  FunctionCollectionHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  FunctionCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
             else
               raise NotImplementedError.new("Cannot render type, #{type}")
             end
           else
             # single
-            if media_type == 'application/json'
-              response.headers['Content-Type'] = 'application/json'
-              MultiJson.dump(
-                CompletionSerializer.new(resource, resource_context).to_hash
-              )
-            elsif media_type == 'application/hal+json'
-              response.headers['Content-Type'] = 'application/hal+json'
-              MultiJson.dump(
-                CompletionSerializer.new(resource, resource_context, Oat::Adapters::HAL).to_hash
-              )
+            case type
+            when :completion
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  CompletionSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  CompletionSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  CompletionSerializer.new(obj, resource_context).to_hash
+                )
+              end
+            when :function
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  FunctionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  FunctionHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  FunctionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
             else
-              response.headers['Content-Type'] = 'application/json'
-              MultiJson.dump(
-                CompletionSerializer.new(resource, resource_context).to_hash
-              )
+              raise NotImplementedError.new("Cannot render type, #{type}")
             end
           end
         end

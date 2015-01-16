@@ -6,21 +6,12 @@ module OpenBEL
     class Functions < Base
       include BEL::Language
 
-      get '/api/functions' do
-        collection = {
-          :_links => {
-            :item => FUNCTIONS.keys.sort.map { |fx|
-              {
-                :href => "#{url}/#{fx}"
-              }
-            }
-          }
-        }
+      SORTED_FUNCTIONS = FUNCTIONS.values.uniq.sort_by { |fx|
+        fx[:short_form]
+      }
 
-        response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump({
-          :functions => collection
-        })
+      get '/api/functions' do
+        render(SORTED_FUNCTIONS, :function)
       end
 
       # BEL Completion
@@ -28,18 +19,7 @@ module OpenBEL
         fx_match = FUNCTIONS[params[:fx].to_sym]
         halt 404 unless fx_match
 
-        fx_match[:_links] = {
-          :self => {
-            :href => url
-          },
-          :collection => {
-            :href => "#{base_url}/api/functions"
-          }
-        }
-        response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump({
-          :function => fx_match
-        })
+        render(fx_match, :function)
       end
     end
   end
