@@ -7,10 +7,10 @@ module OpenBEL
 
       get '/api/expressions/*/completions/?' do
         bel = params[:splat].first
-        cursor_position = (params[:cursor_position] || bel.length).to_i
-        halt 400 unless bel and cursor_position
+        caret_position = (params[:caret_position] || bel.length).to_i
+        halt 400 unless bel and caret_position
 
-        completions = BEL::Completion.complete(bel, cursor_position)
+        completions = BEL::Completion.complete(bel, caret_position)
         halt 404 if completions.empty?
         render(completions, :completion)
       end
