@@ -37,7 +37,7 @@ module OpenBEL
         end
 
         def resolve_supported_content_type(request)
-          preferred = request.preferred_type.to_str
+          preferred = (request.preferred_type || '*/*').to_str
           if preferred == '*/*'
             DEFAULT_CONTENT_TYPE
           else
