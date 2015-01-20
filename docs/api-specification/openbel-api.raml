@@ -1,7 +1,7 @@
 #%RAML 0.8
 title: OpenBEL API
 version: 0.0.2
-baseUri: http://localhost:3000
+baseUri: http://next.belframework.org
 /api:
   /expressions/{bel}/completions:
     uriParameters:
@@ -63,10 +63,10 @@ baseUri: http://localhost:3000
                     "required": [
                       "completion"
                     ],
-                    "additionalProperties": false,
                     "properties": {
                       "completion": {
                         "type": "object",
+                        "additionalProperties": false,
                         "required": [
                           "type",
                           "label",
@@ -74,7 +74,6 @@ baseUri: http://localhost:3000
                           "highlight",
                           "actions"
                         ],
-                        "additionalProperties": false,
                         "properties": {
                           "type": {
                             "enum": [
@@ -202,3 +201,17 @@ baseUri: http://localhost:3000
                     }
                   }
                 }
+  /functions:
+    get:
+      headers:
+        Accept:
+          displayName: Accept
+      responses:
+        200:
+  /functions/{fx}:
+    get:
+      headers:
+        Accept:
+          displayName: Accept
+      responses:
+        200:

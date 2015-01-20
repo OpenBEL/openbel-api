@@ -1,0 +1,14 @@
+{
+  "name": "openbel-platform-docs",
+  "title": "openbel-platform-docs",
+  "description": "Documentation for OpenBEL Platform.",
+  "version": "0.0.2",
+  "private": true,
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/OpenBEL/openbel-server"
+  },
+  "dependencies": {
+    "raml2html": "~1.1.0"
+  }
+}
