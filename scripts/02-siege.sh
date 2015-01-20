@@ -10,5 +10,5 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/../
 source "$DIR"/env.sh || exit 1
 
 # just wrap siege.sh
-"$DIR"/scripts/siege.sh
+"$SCRIPTS"/siege.sh
 

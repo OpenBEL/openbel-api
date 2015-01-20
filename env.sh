@@ -10,6 +10,9 @@ assert_source "$CUSTOM_ENV_SH" || return 1
 default DIR             "$DIR"
 default CUSTOM_ENV_SH   "$DIR/env.sh.custom"
 
+### PATHS ###
+default SCRIPTS         "$DIR"/scripts
+
 ### THE GO SHELL ###
 default GOSH_SCRIPTS    "$DIR"/scripts
 
