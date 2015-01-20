@@ -3,11 +3,37 @@ title: OpenBEL API
 version: 0.0.2
 baseUri: http://next.belframework.org
 /api:
+  description: The root resource collection.
+  get:
+    headers:
+        Accept:
+          displayName: Accept
+    responses:
+      200:
+        body:
+          application/hal+json:
+            example: |
+              {
+                "_links": {
+                  "item": [
+                    {
+                      "href": "http://next.belframework.org/api/expressions"
+                    },
+                    {
+                      "href": "http://next.belframework.org/api/functions"
+                    },
+                    {
+                      "href": "http://next.belframework.org/api/namespaces"
+                    }
+                  ]
+                }
+              }
   /expressions/{bel}/completions:
+    description: Retrieve completions for the *BEL* expression fragment.
     uriParameters:
       bel:
         type: string
-        description: BEL statement; Completions will be provided for this input.
+        description: BEL statement fragment; Completions will be provided for this input.
         required: false
     get:
       headers:
@@ -201,7 +227,39 @@ baseUri: http://next.belframework.org
                     }
                   }
                 }
+  /evidence:
+    description: Operate on the evidence resource collection.
+    get:
+      description: Retrieve the evidence resource collection. The evidence resources can be traversed by using the *start*.
+      headers:
+        Accept:
+          displayName: Accept
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "total": 100,
+                  "_links": {
+                    "start": {
+                        "href": "http://next.belframework.org/evidence/1334788813903791767"
+                    }
+                  }
+                }
+    delete:
+      description: Delete the evidence resource collection.
+  /evidence/{identifier}:
+    description: 
+    get:
+    put:
+    patch:
+    delete:
+  /evidence/{identifier}/statement:
+  /evidence/{identifier}/citation:
+  /evidence/{identifier}/biological-context:
   /functions:
+    description: Retrieve the BEL function resource collection.
     get:
       headers:
         Accept:
@@ -215,3 +273,15 @@ baseUri: http://next.belframework.org
           displayName: Accept
       responses:
         200:
+  /namespaces:
+  /namespaces/{namespace}:
+
+  /namespaces/{namespace}/equivalents:
+    post:
+  /namespaces/{namespace}/orthologs:
+    post:
+  /namespaces/{namespace}/{value}:
+  /namespaces/{namespace}/{value}/equivalents/namespaces/{target}:
+  /namespaces/{namespace}/{value}/orthologs/namespaces/{target}:
+  /statements/{belstatement}:
+  
