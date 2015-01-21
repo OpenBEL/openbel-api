@@ -4,7 +4,7 @@ gem 'bel', :path => '../bel.rb'
 gem 'builder'
 gem 'dot_hash'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby
-gem 'kyotocabinet-ffi'
+gem 'kyotocabinet-ffi', :path => '../kyotocabinet-ffi'
 gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
 gem 'oat'
