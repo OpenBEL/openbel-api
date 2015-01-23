@@ -1,12 +1,17 @@
 require 'oat'
 require 'oat/adapters/hal'
+require 'namespace/model'
 require 'app/resources/completion'
 require 'app/resources/function'
+require 'app/resources/namespace'
 
 module OpenBEL
   module Routes
 
     class Base < Sinatra::Application
+      include OpenBEL::Resource::Expressions
+      include OpenBEL::Resource::Functions
+      include OpenBEL::Resource::Namespaces
 
       DEFAULT_CONTENT_TYPE = 'application/json'
       SPOKEN_CONTENT_TYPES = %w[application/json application/hal+json text/html text/xml]
@@ -97,6 +102,40 @@ module OpenBEL
                   FunctionCollectionJsonSerializer.new(obj, resource_context).to_hash
                 )
               end
+            when :namespace
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  NamespaceCollectionHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
+            when :"namespace-value"
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceValueCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  NamespaceValueCollectionHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceValueCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
             else
               raise NotImplementedError.new("Cannot render type, #{type}")
             end
@@ -137,61 +176,43 @@ module OpenBEL
                   FunctionJsonSerializer.new(obj, resource_context).to_hash
                 )
               end
+            when :namespace
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  NamespaceHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
+            when :"namespace-value"
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceValueJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  NamespaceValueHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  NamespaceValueJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
             else
               raise NotImplementedError.new("Cannot render type, #{type}")
             end
-          end
-        end
-
-        def render_single(request, obj, title)
-          content_type = resolve_supported_content_type(request)
-          resource = OpenBEL::Namespace.resource_for(obj, content_type)
-          case content_type
-          when 'application/json'
-            response.headers['Content-Type'] = 'application/json'
-            resource.to_json(base_url: request.base_url, url: request.url)
-          when 'application/hal+json'
-            response.headers['Content-Type'] = 'application/hal+json'
-            resource.to_json(base_url: request.base_url, url: request.url)
-          when 'text/html'
-            response.headers['Content-Type'] = 'text/html'
-            template = OpenBEL::Util::path(APP_ROOT, 'views', 'obj.html')
-            obj_doc = Nokogiri::HTML.parse(File.open(template))
-            resource.to_html(obj_doc, title,
-              base_url: request.base_url,
-              url: request.url)
-          when 'text/xml'
-            response.headers['Content-Type'] = 'text/xml'
-            resource.to_xml(base_url: request.base_url, url: request.url)
-          else
-            response.headers['Content-Type'] = 'application/json'
-            resource.to_json(base_url: request.base_url, url: request.url)
-          end
-        end
-
-        def render_multiple(request, obj, title)
-          content_type = resolve_supported_content_type(request)
-          resource = OpenBEL::Namespace.resource_for(obj, content_type)
-          case content_type
-          when 'application/json'
-            response.headers['Content-Type'] = 'application/json'
-            resource.to_json(base_url: request.base_url, url: request.url)
-          when 'application/hal+json'
-            response.headers['Content-Type'] = 'application/hal+json'
-            resource.to_json(base_url: request.base_url, url: request.url)
-          when 'text/html'
-            response.headers['Content-Type'] = 'text/html'
-            template = OpenBEL::Util::path(APP_ROOT, 'views', 'obj.html')
-            obj_doc = Nokogiri::HTML.parse(File.open(template))
-            resource.to_html(obj_doc, title,
-              base_url: request.base_url,
-              url: request.url)
-          when 'text/xml'
-            response.headers['Content-Type'] = 'text/xml'
-            resource.to_xml(base_url: request.base_url, url: request.url)
-          else
-            response.headers['Content-Type'] = 'application/json'
-            resource.to_json(base_url: request.base_url, url: request.url)
           end
         end
 

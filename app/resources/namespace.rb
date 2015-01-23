@@ -1,340 +1,194 @@
-require 'roar/decorator'
-require 'roar/json'
-require 'roar/xml'
-require 'representable/json/collection'
+require_relative 'base'
 
 module OpenBEL
-  module Namespace
+  module Resource
+    module Namespaces
 
-    VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
+      VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
-    def self.resource_for(obj, content_type)
-      if obj.respond_to? :each
-        if not obj or obj.empty?
-          return nil
-        end
-
-        # tests first object
-        case obj.first
-        when OpenBEL::Model::Namespace::Namespace
-          case content_type
-          when 'application/json'
-            obj.extend(NamespacesResourceJSON)
-          when 'application/hal+json'
-            obj.extend(NamespacesResourceJSON)
-          when 'text/html'
-            obj.extend(NamespacesResourceHTML)
-          when 'text/xml'
-            obj.extend(NamespacesResourceXML)
+      class NamespaceJsonSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :namespace
+          properties do |p|
+            p.rdf_uri   item.uri
+            p.name      item.prefLabel
+            p.prefix    item.prefix
+            p.type      item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
           end
-        when OpenBEL::Model::Namespace::NamespaceValue
-          case content_type
-          when 'application/json'
-            obj.extend(NamespaceValuesResourceJSON)
-          when 'application/hal+json'
-            obj.extend(NamespaceValuesResourceJSON)
-          when 'text/html'
-            obj.extend(NamespaceValuesResourceHTML)
-          when 'text/xml'
-            obj.extend(NamespaceValuesResourceXML)
-          end
-        when OpenBEL::Model::Namespace::ValueEquivalence
-          case content_type
-          when 'application/json'
-            obj.extend(ValueEquivalencesResourceJSON)
-          when 'application/hal+json'
-            obj.extend(ValueEquivalencesResourceJSON)
-          when 'text/html'
-            obj.extend(ValueEquivalencesResourceHTML)
-          when 'text/xml'
-            obj.extend(ValueEquivalencesResourceXML)
-          end
-        else
-          fail NotImplementedError, "Cannot make resource from #{obj.class}."
-        end
-      else
-        case obj
-        when OpenBEL::Model::Namespace::Namespace
-          case content_type
-          when 'application/json'
-            obj.extend(NamespaceResourceJSON)
-          when 'application/hal+json'
-            obj.extend(NamespaceResourceJSON)
-          when 'text/html'
-            obj.extend(NamespaceResourceHTML)
-          when 'text/xml'
-            obj.extend(NamespaceResourceXML)
-          end
-        when OpenBEL::Model::Namespace::NamespaceValue
-          case content_type
-          when 'application/json'
-            obj.extend(NamespaceValueResourceJSON)
-          when 'application/hal+json'
-            obj.extend(NamespaceValueResourceJSON)
-          when 'text/html'
-            obj.extend(NamespaceValueResourceHTML)
-          when 'text/xml'
-            obj.extend(NamespaceValueResourceXML)
-          end
-        when OpenBEL::Model::Namespace::ValueEquivalence
-          case content_type
-          when 'application/json'
-            obj.extend(ValueEquivalenceResourceJSON)
-          when 'application/hal+json'
-            obj.extend(ValueEquivalenceResourceJSON)
-          when 'text/html'
-            obj.extend(ValueEquivalenceResourceHTML)
-          when 'text/xml'
-            obj.extend(ValueEquivalenceResourceXML)
-          end
-        else
-          fail NotImplementedError, "Cannot make resource from #{obj.class}."
         end
       end
-    end
 
-    # NamespaceResource
-    module NamespaceResourceJSON
-      include Roar::JSON
-      include Roar::Hypermedia
+      class NamespaceHALSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :namespace
+          properties do |p|
+            p.rdf_uri   item.uri
+            p.name      item.prefLabel
+            p.prefix    item.prefix
+            p.type      item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+          end
 
-      property :uri, as: :rdf_uri
-      property :prefLabel, as: :name
-      property :prefix
-      property :type, :getter => lambda { |opts|
-        type ? type.sub(VOCABULARY_RDF, '') : nil
-      }
+          link :self,     link_self(item.prefix)
+        end
 
-      link :self do |opts|
-        resource_name = uri[uri.rindex('/')+1..-1]
-        "#{opts[:base_url]}/namespaces/#{resource_name}"
+        private
+
+        def link_self(id)
+          {
+            :type => :namespace,
+            :href => "#{base_url}/api/namespaces/#{id}"
+          }
+        end
+      end
+
+      class NamespaceCollectionJsonSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'namespace-collection'
+          entities :namespaces, item, NamespaceJsonSerializer
+        end
+      end
+
+      class NamespaceCollectionHALSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'namespace-collection'
+          entities :namespaces, item, NamespaceHALSerializer
+
+          link :self,       link_self
+          link :start,      link_start(item[0][:short_form])
+        end
+
+        private
+
+        def link_self
+          {
+            :type => :'namespace-collection',
+            :href => "#{base_url}/api/namespaces"
+          }
+        end
+      end
+
+      class NamespaceValueJsonSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'namespace-value'
+          properties do |p|
+            p.rdf_uri       item.uri
+            p.type          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+            p.identifier    item.identifier
+            p.title         item.title
+            p.species       item.fromSpecies
+            p.namespace_uri item.inScheme
+          end
+        end
+      end
+
+      class NamespaceValueHALSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'namespace-value'
+          parts = URI(item.uri).path.split('/')[3..-1]
+          namespace_id = parts[0]
+          namespace_value_id = parts.join('/')
+          properties do |p|
+            p.rdf_uri       item.uri
+            p.type          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+            p.identifier    item.identifier
+            p.title         item.title
+            p.species       item.fromSpecies
+            p.namespace_uri item.inScheme
+          end
+
+          link :self,       link_self(namespace_value_id)
+          link :collection, link_namespace(namespace_id)
+          link :item,       link_equivalents(namespace_value_id)
+          link :item,       link_orthologs(namespace_value_id)
+        end
+
+        private
+
+        def link_self(id)
+          {
+            :type => :'namespace-value',
+            :href => "#{base_url}/api/namespaces/#{id}"
+          }
+        end
+
+        def link_namespace(id)
+          {
+            :type => :namespace,
+            :href => "#{base_url}/api/namespaces/#{id}"
+          }
+        end
+
+        def link_equivalents(id)
+          {
+            :type => :'namespace-value-collection',
+            :href => "#{base_url}/api/namespaces/#{id}/equivalents"
+          }
+        end
+
+        def link_orthologs(id)
+          {
+            :type => :'namespace-value-collection',
+            :href => "#{base_url}/api/namespaces/#{id}/orthologs"
+          }
+        end
+      end
+
+      class NamespaceValueCollectionJsonSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'namespace-value-collection'
+          entities :'namespace-values', item, NamespaceValueJsonSerializer
+        end
+      end
+
+      class NamespaceValueCollectionHALSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'namespace-value-collection'
+          entities :'namespace-values', item, NamespaceValueHALSerializer
+        end
+      end
+
+      class ValueEquivalenceJsonSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'value-equivalence'
+          properties do |p|
+            p.value         item.value
+            p.type          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+            p.identifier    item.identifier
+            p.title         item.title
+            p.species       item.fromSpecies
+            p.namespace_uri item.inScheme
+          end
+
+          entities :equivalences, item.equivalences, NamespaceValueJsonSerializer
+        end
+      end
+
+      class ValueEquivalenceHALSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'value-equivalence'
+          properties do |p|
+            p.value         item.value
+            p.type          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+            p.identifier    item.identifier
+            p.title         item.title
+            p.species       item.fromSpecies
+            p.namespace_uri item.inScheme
+          end
+
+          entities :equivalences, item.equivalences, NamespaceValueHALSerializer
+        end
       end
     end
-
-    module NamespaceResourceXML
-      include Roar::XML
-      include Roar::Hypermedia
-
-      property :uri, as: :rdf_uri
-      property :prefLabel, as: :name
-      property :prefix
-      property :type, :getter => lambda { |opts|
-        type ? type.sub(VOCABULARY_RDF, '') : nil
-      }
-
-      link :self do |opts|
-        resource_name = uri[uri.rindex('/')+1..-1]
-        "#{opts[:base_url]}/namespaces/#{resource_name}"
-      end
-    end
-
-    module NamespaceResourceHTML
-      include Roar::JSON
-      include OpenBEL::HTML
-      include Roar::Hypermedia
-
-      property :uri, as: :rdf_uri
-      property :prefLabel, as: :name
-      property :prefix
-      property :type, :getter => lambda { |opts|
-        type ? type.sub(VOCABULARY_RDF, '') : nil
-      }
-
-      link :self do |opts|
-        resource_name = uri[uri.rindex('/')+1..-1]
-        "#{opts[:base_url]}/namespaces/#{resource_name}"
-      end
-    end
-    # -----
-
-    # NamespacesResource
-    module NamespacesResourceJSON
-      include Representable::JSON::Collection
-      items extend: NamespaceResourceJSON, class: OpenBEL::Model::Namespace
-    end
-
-    module NamespacesResourceXML
-      include Representable::JSON::Collection
-      include Roar::XML
-      items extend: NamespaceResourceXML, class: OpenBEL::Model::Namespace
-    end
-
-    module NamespacesResourceHTML
-      include Representable::JSON::Collection
-      include OpenBEL::HTML
-      items extend: NamespaceResourceHTML, class: OpenBEL::Model::Namespace
-    end
-    # -----
-
-    # NamespaceValueResource
-    module NamespaceValueResourceJSON
-      include Roar::JSON
-      include Roar::Hypermedia
-
-      property :uri, as: :rdf_uri
-      property :type, :getter => lambda { |opts|
-        type ? type.sub(VOCABULARY_RDF, '') : nil
-      }
-      property :identifier
-      property :prefLabel, as: :name
-      property :title
-      property :fromSpecies, as: :species
-      property :inScheme, as: :namespace_uri
-
-      link :self do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
-      end
-      link :parent do |opts|
-        parts = URI(uri).path.split('/')[3...-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
-      end
-      link(:rel => :equivalents) do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalents"
-      end
-      link(:rel => :orthology) do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/orthologs"
-      end
-    end
-
-    module NamespaceValueResourceXML
-      include Roar::XML
-      include Roar::Hypermedia
-
-      property :uri, as: :rdf_uri
-      property :type, :getter => lambda { |opts|
-        type ? type.sub(VOCABULARY_RDF, '') : nil
-      }
-      property :identifier
-      property :prefLabel, as: :name
-      property :title
-      property :fromSpecies, as: :species
-      property :inScheme, as: :namespace_uri
-
-      link :self do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
-      end
-      link :parent do |opts|
-        parts = URI(uri).path.split('/')[3...-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
-      end
-      link(:rel => :equivalents) do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalents"
-      end
-      link(:rel => :orthology) do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/orthologs"
-      end
-    end
-
-    module NamespaceValueResourceHTML
-      include Roar::JSON
-      include OpenBEL::HTML
-      include Roar::Hypermedia
-
-      property :uri, as: :rdf_uri
-      property :type, :getter => lambda { |opts|
-        type ? type.sub(VOCABULARY_RDF, '') : nil
-      }
-      property :identifier
-      property :prefLabel, as: :name
-      property :title
-      property :fromSpecies, as: :species
-      property :inScheme, as: :namespace_uri
-
-      link :self do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
-      end
-      link :parent do |opts|
-        parts = URI(uri).path.split('/')[3...-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}"
-      end
-      link(:rel => :equivalents) do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/equivalents"
-      end
-      link(:rel => :orthology) do |opts|
-        parts = URI(uri).path.split('/')[3..-1]
-        "#{opts[:base_url]}/namespaces/#{parts.join('/')}/orthologs"
-      end
-    end
-    # -----
-
-    # NamespaceValueResource
-    module NamespaceValuesResourceJSON
-      include Representable::JSON::Collection
-      items extend: NamespaceValueResourceJSON, class: OpenBEL::Model::Namespace::NamespaceValue
-    end
-
-    module NamespaceValuesResourceXML
-      include Representable::JSON::Collection
-      include Roar::XML
-      items extend: NamespaceValueResourceXML, class: OpenBEL::Model::Namespace::NamespaceValue
-    end
-
-    module NamespaceValuesResourceHTML
-      include Representable::JSON::Collection
-      include OpenBEL::HTML
-      items extend: NamespaceValueResourceHTML, class: OpenBEL::Model::Namespace::NamespaceValue
-    end
-    # -----
-
-    # ValueEquivalenceResource
-    module ValueEquivalenceResourceJSON
-      include Roar::JSON
-      include Roar::Hypermedia
-
-      property :value
-      collection :equivalences,
-        extend: NamespaceValueResourceJSON,
-        class: OpenBEL::Model::Namespace::NamespaceValue
-    end
-
-    module ValueEquivalenceResourceXML
-      include Roar::XML
-      include Roar::Hypermedia
-
-      property :value
-      collection :equivalences,
-        extend: NamespaceValueResourceXML,
-        class: OpenBEL::Model::Namespace::NamespaceValue
-    end
-
-    module ValueEquivalenceResourceHTML
-      include Roar::JSON
-      include OpenBEL::HTML
-      include Roar::Hypermedia
-
-      property :value
-      collection :equivalences,
-        extend: NamespaceValueResourceHTML,
-        class: OpenBEL::Model::Namespace::NamespaceValue
-    end
-
-    # ValueEquivalencesResource
-    module ValueEquivalencesResourceJSON
-      include Representable::JSON::Collection
-      items extend: ValueEquivalenceResourceJSON, class: OpenBEL::Model::Namespace::ValueEquivalence
-    end
-
-    module ValueEquivalencesResourceXML
-      include Representable::JSON::Collection
-      include Roar::XML
-      items extend: ValueEquivalenceResourceXML, class: OpenBEL::Model::Namespace::ValueEquivalence
-    end
-
-    module ValueEquivalencesResourceHTML
-      include Representable::JSON::Collection
-      include OpenBEL::HTML
-      items extend: ValueEquivalenceResourceHTML, class: OpenBEL::Model::Namespace::ValueEquivalence
-    end
-    # -----
-
   end
 end
 # vim: ts=2 sw=2

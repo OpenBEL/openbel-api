@@ -14,11 +14,9 @@ gem 'rack'
 gem 'rack-cors'
 gem 'rack-handlers'
 gem 'redlander', :path => '../redlander'
-gem 'roar'
 gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
-gem 'sinatra-docdsl'
 
 group :development do
   gem 'POpen4'
