@@ -9,6 +9,7 @@ gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
 gem 'oat'
 gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
+gem 'puma'
 gem 'rack'
 gem 'rack-cors'
 gem 'rack-handlers'
@@ -24,10 +25,5 @@ group :development do
   gem 'pry', '~> 0.9.12'
   gem 'rerun'
   gem 'term-ansicolor'
-end
-
-group :test do
-  gem 'puma', :platforms => :jruby
-  gem 'thin', :platforms => [:ruby, :rbx]
 end
 # vim: ts=2 sw=2
