@@ -21,12 +21,8 @@ while [ $EC -ne 0 ]; do
   EC=$?
 done
 
-# lay siege
-siege \
-  --benchmark \
-  --concurrent=10 \
-  --time=10s \
-  --file="$TEST_URLS_FILE"
+# call for siege tank
+. "$SCRIPTS"/benchmark.sh
 
 # stop api
 "$SCRIPTS"/api-stop.sh
