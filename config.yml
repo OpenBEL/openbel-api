@@ -3,21 +3,21 @@ plugin_paths:
   - 'lib/plugin/namespace'
   - 'lib/plugin/storage'
 
-namespace-cache:
-  type:   'cache'
-  plugin: 'kyotocabinet'
-  options:
-    type: 'file-hash'
-    file: '/tmp/namespace-db.kch'
-    mode:
-      - 'writer'
-      - 'create'
+# namespace-cache:
+#   type:   'cache'
+#   plugin: 'kyotocabinet'
+#   options:
+#     type: 'file-hash'
+#     file: '/tmp/namespace-db.kch'
+#     mode:
+#       - 'writer'
+#       - 'create'
 
 namespace-storage:
   type:   'storage'
   plugin: 'redland'
-  extensions:
-    cache: 'namespace-cache'
+  # extensions:
+  #   cache: 'namespace-cache'
   options:
     storage:     'sqlite'
     name:        'rdf.db'
