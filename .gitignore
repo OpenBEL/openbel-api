@@ -4,10 +4,9 @@
 /*.pid
 /.bundle
 /.yardoc
-/bin
 /cscope.out
 /distribution
 /doc
-/log
+/out
 /tags
-/vendor
+node_modules
