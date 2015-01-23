@@ -6,9 +6,9 @@ http://localhost:9000/api/expressions/p(HGNC:AKT1/completions
 http://localhost:9000/api/functions
 http://localhost:9000/api/functions/bp
 http://localhost:9000/api/functions/biologicalProcess
-http://localhost:9000/namespaces
-http://localhost:9000/namespaces/hgnc
-http://localhost:9000/namespaces/hgnc/AKT1
-http://localhost:9000/namespaces/hgnc/391
-http://localhost:9000/namespaces/hgnc/391/equivalents
-http://localhost:9000/namespaces/hgnc/391/orthologs
+http://localhost:9000/api/namespaces
+http://localhost:9000/api/namespaces/hgnc
+http://localhost:9000/api/namespaces/hgnc/AKT1
+http://localhost:9000/api/namespaces/hgnc/391
+http://localhost:9000/api/namespaces/hgnc/391/equivalents
+http://localhost:9000/api/namespaces/hgnc/391/orthologs
