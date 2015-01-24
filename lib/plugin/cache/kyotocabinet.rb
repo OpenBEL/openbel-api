@@ -53,11 +53,6 @@ module OpenBEL
         end
         mode = mode.map { |v| v.to_s.to_sym }
 
-        file = options.delete(:file)
-        if not file and FILE_TYPES.include?(type)
-          return ValidationError.new(self, :mode, "Option is required for file database types.")
-        end
-
         validation_successful
       end
 
@@ -76,8 +71,7 @@ module OpenBEL
                         when :"memory-hash"
                           KyotoCabinet::Db::MemoryHash.new mode
                         when :"file-hash"
-                          file = @options[:file]
-                          KyotoCabinet::Db::FileHash.new file, *mode
+                          KyotoCabinet::Db::PolymorphicDb::tmp_filedb(KyotoCabinet::FILE_HASH)
                         end
             puts "cache instance: #{@instance.object_id}"
           end
