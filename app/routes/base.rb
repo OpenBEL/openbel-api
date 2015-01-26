@@ -1,9 +1,12 @@
+require 'json_schema'
+require 'multi_json'
 require 'oat'
 require 'oat/adapters/hal'
 require 'namespace/model'
 require 'app/resources/completion'
 require 'app/resources/function'
 require 'app/resources/namespace'
+require 'app/schemas'
 
 module OpenBEL
   module Routes
@@ -12,6 +15,7 @@ module OpenBEL
       include OpenBEL::Resource::Expressions
       include OpenBEL::Resource::Functions
       include OpenBEL::Resource::Namespaces
+      include OpenBEL::Schemas
 
       DEFAULT_CONTENT_TYPE = 'application/json'
       SPOKEN_CONTENT_TYPES = %w[application/json application/hal+json text/html text/xml]
@@ -48,6 +52,15 @@ module OpenBEL
           else
             preferred
           end
+        end
+
+        def read_json
+          request.body.rewind
+          MultiJson.load request.body.read
+        end
+
+        def validate_schema(data, type)
+          self.validate(data, type)
         end
 
         def render(obj, type)

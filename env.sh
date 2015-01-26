@@ -33,6 +33,7 @@ default OUT_SERVER_STDERR       "$OUT"/api-stderr.log
 
 ### DOC PARAMETERS ###
 default DOC_API_SPEC            "$DOCS/openbel-api.raml"
+default DOC_SCHEMAS             "$DOCS/schemas"
 
 ### TEST PARAMETERS ###
 default ABAO_TEST_REPORTER      "min"
