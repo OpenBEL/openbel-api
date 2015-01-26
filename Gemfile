@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'bel', :path => '../bel.rb'
+gem 'bson', '1.12.0.rc2'
 gem 'builder'
 gem 'dot_hash'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby

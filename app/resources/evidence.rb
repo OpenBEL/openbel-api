@@ -5,53 +5,6 @@ module OpenBEL
   module Resource
     module Evidence
 
-      class Evidence
-
-        def initialize(statement_or_hash, options = {})
-          if statement_or_hash.kind_of?(String)
-            @bel_statement = statement_or_hash
-          elsif statement_or_hash.kind_of?(Hash)
-            statement_or_hash.each { |k,v|
-              send("#{k}=",v)
-            }
-          else
-            fail ArgumentError.new("statement_or_hash must be one of String or Hash")
-          end
-        end
-
-        def bel_statement
-          @bel_statement
-        end
-
-        def bel_statement= statement
-          @bel_statement = statement.to_s
-        end
-
-        def citation
-          @citation
-        end
-
-        def citation= citation
-          @citation = citation
-        end
-
-        def biological_context
-          @biological_context
-        end
-
-        def biological_context= biological_context
-          @biological_context = biological_context
-        end
-
-        def summary_text
-          @summary_text
-        end
-
-        def summary_text= summary_text
-          @summary_text = summary_text.to_s
-        end
-      end
-
       class EvidenceJsonSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
@@ -66,7 +19,7 @@ module OpenBEL
         end
       end
 
-      class FunctionHALSerializer < BaseSerializer
+      class EvidenceHALSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
@@ -114,7 +67,7 @@ module OpenBEL
         end
       end
 
-      class FunctionCollectionJsonSerializer < BaseSerializer
+      class EvidenceCollectionJsonSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
@@ -125,7 +78,7 @@ module OpenBEL
         end
       end
 
-      class FunctionCollectionHALSerializer < BaseSerializer
+      class EvidenceCollectionHALSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do

@@ -136,6 +136,7 @@ PLATFORMS
 DEPENDENCIES
   POpen4
   bel!
+  bson (= 1.12.0.rc2)
   builder
   dot_hash
   jrjackson (~> 0.2)
