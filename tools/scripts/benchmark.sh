@@ -11,5 +11,6 @@ siege \
   --benchmark \
   --concurrent=100 \
   --time=30s \
+  --log="$OUT"/benchmark.log \
   --file="$TEST_URLS_FILE"
 
