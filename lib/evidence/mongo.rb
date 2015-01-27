@@ -25,6 +25,12 @@ module OpenBEL
         OpenBEL::Model::Evidence::EvidenceMongo.new(@evidence.find_one(to_id(value)))
       end
 
+      def update_evidence_by_id(value, evidence)
+        evidence_h = evidence.to_h
+        evidence_h[:_id] = value
+        @evidence.save(evidence_h)
+      end
+
       private
 
       def to_id(value)

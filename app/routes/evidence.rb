@@ -34,6 +34,21 @@ module OpenBEL
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump ev.to_h
       end
+
+      put '/api/evidence/:id' do
+        id = params[:id]
+        ev = @api.find_evidence_by_id(id)
+        halt 404 unless ev
+
+        evidence_obj = read_json
+        schema_validation = validate_schema(evidence_obj, :evidence)
+        unless schema_validation[0]
+          halt 400, schema_validation[1].join("\n")
+        end
+
+        @api.update_evidence_by_id(id, evidence_obj['evidence'])
+        status 202
+      end
     end
   end
 end
