@@ -1,11 +1,6 @@
-require 'rack'
-require 'sinatra/base'
-require 'sinatra/reloader'
 require 'cgi'
 require 'multi_json'
 require 'uri'
-
-APP_ROOT = OpenBEL::Util::path(File.dirname(__FILE__), '..')
 
 module OpenBEL
   module Routes

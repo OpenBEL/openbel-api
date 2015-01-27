@@ -73,7 +73,6 @@ module OpenBEL
                         when :"file-hash"
                           KyotoCabinet::Db::PolymorphicDb::tmp_filedb(KyotoCabinet::FILE_HASH)
                         end
-            puts "cache instance: #{@instance.object_id}"
           end
         ensure
           CREATE_MUTEX.unlock

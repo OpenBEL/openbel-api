@@ -31,6 +31,10 @@ GEM
       tzinfo (~> 1.1)
     ast (2.0.0)
     backports (3.6.4)
+    bson (1.12.0.rc2)
+    bson (1.12.0.rc2-java)
+    bson_ext (1.12.0.rc2)
+      bson (~> 1.12.0.rc2)
     builder (3.2.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
@@ -44,6 +48,7 @@ GEM
     jrjackson (0.2.8)
     json (1.8.2)
     json (1.8.2-java)
+    json_schema (0.4.0)
     listen (2.8.5)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -51,6 +56,8 @@ GEM
     method_source (0.8.2)
     mini_portile (0.6.2)
     minitest (5.5.1)
+    mongo (1.12.0.rc2)
+      bson (= 1.12.0.rc2)
     multi_json (1.10.1)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
@@ -131,10 +138,14 @@ PLATFORMS
 DEPENDENCIES
   POpen4
   bel!
+  bson (= 1.12.0.rc2)
+  bson_ext (= 1.12.0.rc2)
   builder
   dot_hash
   jrjackson (~> 0.2)
+  json_schema
   kyotocabinet-ffi!
+  mongo (= 1.12.0.rc2)
   multi_json (~> 1.10)
   nokogiri
   oat

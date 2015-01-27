@@ -1,5 +1,6 @@
 plugin_paths:
   - 'lib/plugin/cache'
+  - 'lib/plugin/evidence'
   - 'lib/plugin/namespace'
   - 'lib/plugin/storage'
 
@@ -28,6 +29,14 @@ namespace-api:
   plugin: 'namespace'
   extensions:
     storage: 'namespace-storage'
+
+evidence-api:
+  type:   'evidence'
+  plugin: 'evidence'
+  options:
+    host:     'localhost'
+    port:     27017
+    database: 'openbel'
 
 # vim: ts=2 sts=2 sw=2
 # encoding: utf-8
