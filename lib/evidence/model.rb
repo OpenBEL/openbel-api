@@ -86,6 +86,19 @@ module OpenBEL
           self.pretty_inspect
         end
       end
+
+      class EvidenceMongo < Evidence
+
+        private
+
+        def _id
+          metadata[:_id]
+        end
+
+        def _id=(_id)
+          metadata[:_id] = _id
+        end
+      end
     end
   end
 end
