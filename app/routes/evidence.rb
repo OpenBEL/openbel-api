@@ -49,6 +49,15 @@ module OpenBEL
         @api.update_evidence_by_id(id, evidence_obj['evidence'])
         status 202
       end
+
+      delete '/api/evidence/:id' do
+        id = params[:id]
+        ev = @api.find_evidence_by_id(id)
+        halt 404 unless ev
+
+        @api.delete_evidence_by_id(id)
+        status 202
+      end
     end
   end
 end

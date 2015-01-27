@@ -22,7 +22,7 @@ module OpenBEL
       end
 
       def find_evidence_by_id(value)
-        OpenBEL::Model::Evidence::EvidenceMongo.new(@evidence.find_one(to_id(value)))
+        convert_evidence(@evidence.find_one(to_id(value)))
       end
 
       def update_evidence_by_id(value, evidence)
@@ -31,7 +31,21 @@ module OpenBEL
         @evidence.save(evidence_h)
       end
 
+      def delete_evidence_by_id(value)
+        @evidence.remove({
+          :_id => to_id(value)
+        })
+      end
+
       private
+
+      def convert_evidence(evidence)
+        if evidence
+          OpenBEL::Model::Evidence::EvidenceMongo.new(evidence)
+        else
+          nil
+        end
+      end
 
       def to_id(value)
         BSON::ObjectId(value.to_s)

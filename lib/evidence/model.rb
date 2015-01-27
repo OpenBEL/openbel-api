@@ -10,7 +10,9 @@ module OpenBEL
         attr_reader :bel_statement, :citation, :context, :summary_text
 
         def initialize(evidence_object, options = {})
-          return nil unless evidence_object
+          unless evidence_object
+            fail ArgumentError.new("evidence_object is nil")
+          end
 
           if [:to_h, :to_hash].any? { |m| evidence_object.respond_to?(m) }
             evidence_object.each { |k,v|
@@ -21,7 +23,7 @@ module OpenBEL
           end
 
           unless @bel_statement
-            fail ArgumentError.new("bel_statement is not set")
+            fail ArgumentError.new("bel_statement is nil")
           end
         end
 
