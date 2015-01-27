@@ -14,17 +14,12 @@ module OpenBEL
         @hash[key]
       end
 
-      def add_dependencies(key1, keys)
-        keys.each do |k|
-          add_dependency(key1, k)
+      def add_dependency(first, *dependency_requirements)
+        @hash[first] ||= []
+        (dependency_requirements || []).flatten.each do |dep|
+          _add_dependency(first, dep)
         end
-        keys
-      end
-
-      def add_dependency(key1, key2)
-        @hash[key1] << key2
-        @hash[key2] = []
-        key2
+        @hash[first]
       end
 
       def delete(key)
@@ -41,6 +36,14 @@ module OpenBEL
 
       def tsort_each_node(&block)
         @hash.each_key(&block)
+      end
+
+      private
+
+      def _add_dependency(key1, key2)
+        @hash[key1] << key2
+        @hash[key2] = []
+        key2
       end
     end
   end
