@@ -33,6 +33,8 @@ GEM
     backports (3.6.4)
     bson (1.12.0.rc2)
     bson (1.12.0.rc2-java)
+    bson_ext (1.12.0.rc2)
+      bson (~> 1.12.0.rc2)
     builder (3.2.2)
     celluloid (0.16.0)
       timers (~> 4.0.0)
@@ -137,6 +139,7 @@ DEPENDENCIES
   POpen4
   bel!
   bson (= 1.12.0.rc2)
+  bson_ext (= 1.12.0.rc2)
   builder
   dot_hash
   jrjackson (~> 0.2)
