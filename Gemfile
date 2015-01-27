@@ -22,6 +22,8 @@ group :development do
   gem 'POpen4'
   gem 'pry', '~> 0.9.12'
   gem 'rerun'
+  gem 'ripper-tags'
+  gem 'starscope'
   gem 'term-ansicolor'
 end
 # vim: ts=2 sw=2

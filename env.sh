@@ -9,6 +9,7 @@ assert_source "$CUSTOM_ENV_SH" || return 1
 ### GENERAL ENV VARS ###
 default DIR                     "$DIR"
 default CUSTOM_ENV_SH           "$DIR/env.sh.custom"
+default CTAG_INCLUDES           "Gemfile Rakefile app/ lib/"
 
 ### PATHS ###
 default CONFIGS                 "$DIR"/config
