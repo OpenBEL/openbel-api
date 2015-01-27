@@ -10,14 +10,25 @@ module OpenBEL
       include Mongo
 
       def initialize(options = {})
-        host     = options.delete(:host)
-        port     = options.delete(:port)
-        db       = options.delete(:database)
-        @db      = MongoClient.new(host, port).db(db)
+        host      = options.delete(:host)
+        port      = options.delete(:port)
+        db        = options.delete(:database)
+        @db       = MongoClient.new(host, port).db(db)
+        @evidence = @db.collection(:evidence)
       end
 
       def create_evidence(evidence)
-        @db.insert(evidence.to_h)
+        @evidence.insert(evidence.to_h)
+      end
+
+      def find_evidence_by_id(value)
+        OpenBEL::Model::Evidence::EvidenceMongo.new(@evidence.find_one(to_id(value)))
+      end
+
+      private
+
+      def to_id(value)
+        BSON::ObjectId(value.to_s)
       end
     end
   end
