@@ -7,6 +7,7 @@ module OpenBEL
 
     class Evidence
       include API
+      include Mongo
 
       def initialize(options = {})
         host     = options.delete(:host)
