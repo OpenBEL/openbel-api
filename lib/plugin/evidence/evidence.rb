@@ -39,7 +39,6 @@ module OpenBEL
       end
 
       def validate(extensions = {}, options = {})
-        puts "HI!!!"
         [:host, :port, :database].map { |setting|
           unless options[setting]
             ValidationError.new(self, :storage, "The #{setting} setting is missing.")
