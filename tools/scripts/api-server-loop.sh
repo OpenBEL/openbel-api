@@ -7,8 +7,6 @@ cd "$DIR" || exit 1
 # requirements
 require_cmd python3
 
-echo "requirements done"
-
 # start server if down
 curl -s "$TEST_API_ROOT_URL" 2>&1 > /dev/null
 EC=$?
