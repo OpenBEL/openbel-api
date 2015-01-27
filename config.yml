@@ -1,5 +1,6 @@
 plugin_paths:
   - 'lib/plugin/cache'
+  - 'lib/plugin/evidence'
   - 'lib/plugin/namespace'
   - 'lib/plugin/storage'
 
