@@ -1,10 +1,13 @@
 require 'bel'
 require 'multi_json'
+require 'cgi'
 
 module OpenBEL
   module Routes
 
     class Evidence < Base
+
+      PAGE_SIZES = 1..1000
 
       def initialize(app)
         super
@@ -24,6 +27,45 @@ module OpenBEL
       end
 
       get '/api/evidence' do
+        offset = (params[:offset] || 0).to_i
+        length = (params[:length]  || 100).to_i
+        halt 400 unless PAGE_SIZES.include?(length)
+
+        filter_hash = {}
+        CGI::parse(env["QUERY_STRING"])['filter'].each do |filter|
+          puts filter
+          filter = MultiJson.load(filter)
+          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
+          category = filter['category']
+          if category == 'context'
+              category = 'biological_context'
+          end
+          filter_hash["#{category}.#{filter['name']}"] = filter['value']
+        end
+
+        puts filter_hash
+        evidence, facets = @api.find_evidence_by_query(filter_hash, offset, length)
+
+        facet_objects = facets.map do |facet|
+          filter = MultiJson.load(facet['_id'])
+          {
+            :category => filter['category'].to_sym,
+            :name     => filter['name'].to_sym,
+            :value    => filter['value'],
+            :filter   => facet['_id'],
+            :count    => facet['count']
+          }
+        end
+
+        response.headers['Content-Type'] = 'application/json'
+        MultiJson.dump({
+          :evidence => evidence.map { |doc|
+            doc.delete('_id')
+            doc.delete('facets')
+            doc.to_h
+          },
+          :facets => facet_objects
+        })
       end
 
       get '/api/evidence/:id' do
