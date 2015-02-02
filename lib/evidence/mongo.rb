@@ -61,28 +61,28 @@ module OpenBEL
       def facets(query)
         @evidence.aggregate([
           {
-            '$match': query
+            :'$match' => query
           },
           {
-            '$project': {
-              _id: 0,
-              facets: 1
+            :'$project' => {
+              :_id => 0,
+              :facets => 1
             }
           },
           {
-            '$unwind': '$facets'
+            :'$unwind' => '$facets'
           },
           {
-            '$group': {
-              _id: '$facets.filter',
-              count: {
-                '$sum': '$facets.count'
+            :'$group' => {
+              :_id => '$facets.filter',
+              :count => {
+                :'$sum' => '$facets.count'
               }
             }
           },
           {
-            '$sort' => {
-              count: -1
+            :'$sort' => {
+              :count => -1
             }
           }
         ])
