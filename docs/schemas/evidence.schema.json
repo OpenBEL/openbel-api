@@ -73,6 +73,12 @@
             "type": "string",
             "title": "Summary Text",
             "description": "Abstract from source text to provide support for this evidence"
+        },
+        "metadata": {
+            "type": "object",
+            "title": "Evidence resource metadata",
+            "description": "Metadata that describes the evidence resource.",
+            "additionalProperties": true
         }
       }
     }

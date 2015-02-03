@@ -33,7 +33,8 @@ module OpenBEL
 
       def update_evidence_by_id(value, evidence)
         evidence_h = evidence.to_h
-        evidence_h[:_id] = value
+        evidence_h[:_id] = BSON::ObjectId(value)
+        puts evidence_h
         @evidence.save(evidence_h)
       end
 

@@ -1,11 +1,13 @@
 require 'bel'
 require 'multi_json'
 require 'cgi'
+require 'lib/evidence/facet_filter'
 
 module OpenBEL
   module Routes
 
     class Evidence < Base
+      include OpenBEL::Evidence::FacetFilter
 
       PAGE_SIZES = 1..1000
 
@@ -21,7 +23,10 @@ module OpenBEL
           halt 400, schema_validation[1].join("\n")
         end
 
-        _id = @api.create_evidence(evidence_obj['evidence'])
+        evidence = evidence_obj['evidence']
+        evidence[:facets] = map_evidence_facets(evidence)
+        _id = @api.create_evidence(evidence)
+
         status 201
         headers "Link" => "#{base_url}/api/evidence/#{_id}"
       end
@@ -36,11 +41,7 @@ module OpenBEL
         filter_params.each do |filter|
           filter = MultiJson.load(filter)
           halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-          category = filter['category']
-          if category == 'context'
-              category = 'biological_context'
-          end
-          filter_hash["#{category}.#{filter['name']}"] = filter['value']
+          filter_hash["#{filter['category']}.#{filter['name']}"] = filter['value']
         end
 
         evidence, facets = @api.find_evidence_by_query(filter_hash, offset, length)
@@ -85,7 +86,10 @@ module OpenBEL
           halt 400, schema_validation[1].join("\n")
         end
 
-        @api.update_evidence_by_id(id, evidence_obj['evidence'])
+        evidence = evidence_obj['evidence']
+        evidence[:facets] = map_evidence_facets(evidence)
+        @api.update_evidence_by_id(id, evidence)
+
         status 202
       end
 
