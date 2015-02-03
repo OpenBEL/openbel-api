@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "description": "DESCRIBE EVIDENCE COLLECTION",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence",
+    "facets"
+  ],
+  "properties": {
+    "evidence": {
+      "type": "array",
+      "minItems": 0,
+      "title": "",
+      "description": "",
+      "items": {
+        "$ref":"http://next.belframework.org/schema/evidence.schema.json#/properties/evidence"
+      }
+    },
+    "facets": {
+      "type": "array",
+      "minItems": 0,
+      "title": "",
+      "description": "",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "name",
+          "value",
+          "filter",
+          "count"
+        ],
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "filter": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
