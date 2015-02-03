@@ -8,13 +8,12 @@ module OpenBEL
       class EvidenceJsonSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :function
+          type :evidence
           properties do |p|
-            p.short_form  item[:short_form]
-            p.long_form   item[:long_form]
-            p.description item[:description]
-            p.return_type item[:return_type]
-            p.signatures  item[:signatures]
+            p.bel_statement      item['bel_statement']
+            p.citation           item['citation']
+            p.biological_context item['biological_context']
+            p.metadata           item['metadata']
           end
         end
       end
@@ -23,46 +22,31 @@ module OpenBEL
         adapter Oat::Adapters::HAL
 
         schema do
-          type :function
+          type :'evidence-collection'
           properties do |p|
-            p.short_form  item[:short_form]
-            p.long_form   item[:long_form]
-            p.description item[:description]
-            p.return_type item[:return_type]
-            p.signatures  item[:signatures]
+            p.bel_statement      item['bel_statement']
+            p.citation           item['citation']
+            p.biological_context item['biological_context']
+            p.metadata           item['metadata']
           end
 
-          link :self,        link_self(item[:short_form])
-          link :next,        link_next
-          link :collection,  link_collection
+          link :self,         link_self(item['_id'])
+          link :collection,   link_collection
         end
 
         private
 
         def link_self(id)
           {
-            :type => :function,
-            :href => "#{base_url}/api/functions/#{id}"
+            :type => :evidence,
+            :href => "#{base_url}/api/evidence/#{id}"
           }
         end
 
         def link_collection
           {
-            :type => :'function-collection',
-            :href => "#{base_url}/api/functions"
-          }
-        end
-
-        def link_next
-          fx_values = FUNCTIONS.values.uniq.sort_by { |fx|
-            fx[:short_form]
-          }
-          next_fx = fx_values[fx_values.index(item) + 1]
-          {
-            :type => :function,
-            :href => next_fx ?
-                       "#{base_url}/api/functions/#{next_fx[:short_form]}" :
-                       nil
+            :type => :'evidence-collection',
+            :href => "#{base_url}/api/evidence"
           }
         end
       end
@@ -71,9 +55,10 @@ module OpenBEL
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'function-collection'
+          type :'evidence-collection'
           properties do |p|
-            collection :functions, item, FunctionJsonSerializer
+            collection :evidence, item, EvidenceJsonSerializer
+            p.facets   context[:facets]
           end
         end
       end
@@ -82,28 +67,50 @@ module OpenBEL
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'function-collection'
+          type :'evidence-collection'
           properties do |p|
-            collection :functions, item, FunctionJsonSerializer
+            collection :evidence, item, EvidenceHALSerializer
+            p.facets   context[:facets]
           end
 
           link :self,       link_self
-          link :start,      link_start(item[0][:short_form])
+          link :start,      link_start
+          link :next,       link_next
         end
 
         private
 
         def link_self
+          offset  = context[:offset]
+          length  = context[:length]
           {
-            :type => :'function-collection',
-            :href => "#{base_url}/api/functions"
+            :type => :'evidence-collection',
+            :href => "#{base_url}/api/evidence?offset=#{offset}&length=#{length}&#{filter_query_params.join('&')}"
           }
         end
 
-        def link_start(first_function)
+        def link_start
+          length = context[:length]
           {
-            :type => :function,
-            :href => "#{base_url}/api/functions/#{first_function}"
+            :type => :'evidence-collection',
+            :href => "#{base_url}/api/evidence?offset=0&length=#{length}&#{filter_query_params.join('&')}"
+          }
+        end
+
+        def link_next
+          offset  = context[:offset]
+          length  = context[:length]
+          {
+            :type => :'evidence-collection',
+            :href => context[:last] ?
+                       nil :
+                       "#{base_url}/api/evidence?offset=#{offset+length}&length=#{length}&#{filter_query_params.join('&')}"
+          }
+        end
+
+        def filter_query_params
+          context[:filters].map { |filter|
+            "filter=#{filter}"
           }
         end
       end

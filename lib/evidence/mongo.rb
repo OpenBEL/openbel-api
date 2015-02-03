@@ -1,5 +1,4 @@
 require_relative 'api'
-require_relative 'model'
 require 'mongo'
 
 module OpenBEL
@@ -22,7 +21,7 @@ module OpenBEL
       end
 
       def find_evidence_by_id(value)
-        convert_evidence(@evidence.find_one(to_id(value)))
+        @evidence.find_one(to_id(value))
       end
 
       def find_evidence_by_query(query, offset = 0, length = 100)
@@ -45,14 +44,6 @@ module OpenBEL
       end
 
       private
-
-      def convert_evidence(evidence)
-        if evidence
-          OpenBEL::Model::Evidence::EvidenceMongo.new(evidence)
-        else
-          nil
-        end
-      end
 
       def to_id(value)
         BSON::ObjectId(value.to_s)

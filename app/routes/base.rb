@@ -4,6 +4,7 @@ require 'oat'
 require 'oat/adapters/hal'
 require 'namespace/model'
 require 'app/resources/completion'
+require 'app/resources/evidence'
 require 'app/resources/function'
 require 'app/resources/namespace'
 require 'app/schemas'
@@ -12,6 +13,7 @@ module OpenBEL
   module Routes
 
     class Base < Sinatra::Application
+      include OpenBEL::Resource::Evidence
       include OpenBEL::Resource::Expressions
       include OpenBEL::Resource::Functions
       include OpenBEL::Resource::Namespaces
@@ -63,11 +65,12 @@ module OpenBEL
           self.validate(data, type)
         end
 
-        def render(obj, type)
+        def render(obj, type, options = {})
           media_type = resolve_supported_content_type(request)
           resource_context = {
-            :base_url => base_url
-          }
+            :base_url => base_url,
+            :url      => url
+          }.merge(options)
 
           if obj.kind_of?(Array)
             # multiple
@@ -149,6 +152,23 @@ module OpenBEL
                   NamespaceValueCollectionJsonSerializer.new(obj, resource_context).to_hash
                 )
               end
+            when :evidence
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  EvidenceCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  EvidenceCollectionHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  EvidenceCollectionJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
             else
               raise NotImplementedError.new("Cannot render type, #{type}")
             end
@@ -221,6 +241,23 @@ module OpenBEL
                 response.headers['Content-Type'] = 'application/json'
                 MultiJson.dump(
                   NamespaceValueJsonSerializer.new(obj, resource_context).to_hash
+                )
+              end
+            when :evidence
+              if media_type == 'application/json'
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  EvidenceJsonSerializer.new(obj, resource_context).to_hash
+                )
+              elsif media_type == 'application/hal+json'
+                response.headers['Content-Type'] = 'application/hal+json'
+                MultiJson.dump(
+                  EvidenceHALSerializer.new(obj, resource_context).to_hash
+                )
+              else
+                response.headers['Content-Type'] = 'application/json'
+                MultiJson.dump(
+                  EvidenceJsonSerializer.new(obj, resource_context).to_hash
                 )
               end
             else

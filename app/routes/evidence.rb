@@ -32,8 +32,8 @@ module OpenBEL
         halt 400 unless PAGE_SIZES.include?(length)
 
         filter_hash = {}
-        CGI::parse(env["QUERY_STRING"])['filter'].each do |filter|
-          puts filter
+        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
+        filter_params.each do |filter|
           filter = MultiJson.load(filter)
           halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
           category = filter['category']
@@ -43,8 +43,10 @@ module OpenBEL
           filter_hash["#{category}.#{filter['name']}"] = filter['value']
         end
 
-        puts filter_hash
         evidence, facets = @api.find_evidence_by_query(filter_hash, offset, length)
+        evidence_array = evidence.to_a
+
+        halt 404 if evidence_array.empty?
 
         facet_objects = facets.map do |facet|
           filter = MultiJson.load(facet['_id'])
@@ -57,24 +59,19 @@ module OpenBEL
           }
         end
 
-        response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump({
-          :evidence => evidence.map { |doc|
-            doc.delete('_id')
-            doc.delete('facets')
-            doc.to_h
-          },
-          :facets => facet_objects
-        })
+        render(evidence_array, :evidence,
+          :offset  => offset,
+          :length  => length,
+          :filters => filter_params,
+          :facets  => facet_objects,
+          :last    => (evidence_array.count < length)
+        )
       end
 
       get '/api/evidence/:id' do
-        ev = @api.find_evidence_by_id(params[:id])
-        halt 404 unless ev
-
-        status 200
-        response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump ev.to_h
+        evidence = @api.find_evidence_by_id(params[:id])
+        halt 404 unless evidence
+        render(evidence, :evidence)
       end
 
       put '/api/evidence/:id' do
