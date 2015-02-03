@@ -87,6 +87,27 @@ schemas:
       body:
         application/json:
           schema: evidence
+          example: |
+            {
+              "evidence": {
+                "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
+                "citation": {
+                  "type": "PubMed",
+                  "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
+                  "id": "10699758"
+                },
+                "biological_context": {
+                  "Species": "9606",
+                  "CellLine": "LNCAP cell",
+                  "Anatomy": "prostate gland",
+                  "Cell": "fibroblast",
+                  "Disease": "leukemia"
+                },
+                "metadata": {
+                  "status": "Approved"
+                }
+              }
+            }
     get:
       description: |
         Retrieve the evidence resource collection.
@@ -238,6 +259,27 @@ schemas:
         body:
           application/json:
             schema: evidence
+            example: |
+              {
+                "evidence": {
+                  "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
+                  "citation": {
+                    "type": "PubMed",
+                    "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
+                    "id": "10699758"
+                  },
+                  "biological_context": {
+                    "Species": "9606",
+                    "CellLine": "LNCAP cell",
+                    "Anatomy": "prostate gland",
+                    "Cell": "fibroblast",
+                    "Disease": "leukemia"
+                  },
+                  "metadata": {
+                    "status": "Approved"
+                  }
+                }
+              }
         responses:
           202:
             description: |
