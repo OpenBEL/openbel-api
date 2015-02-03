@@ -3,7 +3,8 @@ title: OpenBEL API
 version: 0.0.2
 baseUri: http://next.belframework.org
 schemas:
-  - evidence: !include http://next.belframework.org/schema/evidence.schema.json
+  - evidence-collection: !include http://next.belframework.org/schema/evidence-collection.schema.json
+  - evidence:            !include http://next.belframework.org/schema/evidence.schema.json
 /api:
   description: The root resource collection.
   get:
@@ -165,6 +166,7 @@ schemas:
             An example path for this resource might be `http://next.belframework.org/api/evidence?offset=0&length=1&filter={%22category%22:%22context%22,%22name%22:%22Anatomy%22,%22value%22:%22prostate%20gland%22}`.
           body:
             application/json:
+              schema: evidence-collection
               example: |
                 {
                   "_embedded": {
