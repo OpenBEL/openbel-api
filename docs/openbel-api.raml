@@ -17,6 +17,12 @@ baseUri: http://next.belframework.org
                 "_links": {
                   "item": [
                     {
+                      "href": "http://next.belframework.org/api/annotations"
+                    },
+                    {
+                      "href": "http://next.belframework.org/api/evidence"
+                    },
+                    {
                       "href": "http://next.belframework.org/api/expressions"
                     },
                     {
@@ -28,14 +34,215 @@ baseUri: http://next.belframework.org
                   ]
                 }
               }
+  /annotations:
+    description: Represents the annotation resource collection.
+    get:
+      description: Retrieves all annotation resources.
+    /{annotation}:
+      description: Represents a single annotation resource.
+      get:
+        description: Retrieves an annotation resource.
+      /{annotation}/values:
+        description: Represents all annotation value resources available on the annotation resource identified by *{annotation}*.
+        /{value}:
+          description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
+          get:
+            description:
+  /evidence:
+    description: |
+      Operate on the evidence resource collection.
+
+      *Operations*
+
+      - Filter the evidence resource collection using `GET /evidence` with query parameters.
+      - Retrieve an evidence resource using `GET /evidence/{id}`.
+      - Create a new evidence resource using `POST /evidence` with a supported content type.
+      - Update an existing evidence resource using `PUT /evidence/{id}` with a supported content type.
+      - Delete an existing evidence resource using `DELETE /evidence/{id}`.
+
+    post:
+      description: Create an evidence resource.
+    get:
+      description: |
+        Retrieve the evidence resource collection.
+
+        This collection must be paged using *offset* (defaults to `0`) as the start index and *length* (defaults to `100`) as the number of evidence resources to return.
+
+        This collection can be filtered by specifying one or more *filter* query parameters. A filter query parameter specifies the *category*, *name*, and *value* of the filter and is encoded as a JSON object. For example the citation id filter might be encoded as:
+
+        ```json
+          {
+            "category": "citation",
+            "name": "id",
+            "value": "133785101"
+          }
+        ```
+
+        This collection includes a *facets* array where each facet value is captured individually. For example for the citation id filter the facet object would be encoded as:
+
+        ```json
+          {
+            "category": "citation",
+            "name": "id",
+            "value": "133785101",
+            "filter": "{\"category\": \"citation\", \"name\": \"id\", \"value\": \"133785101\"}",
+            "count": 25
+          }
+        ```
+
+        The *filter* property value has the same form as the *filter* query parameter. This is intended to support filtering the evidence resource collection by selected facets.
+      headers:
+        Accept:
+          displayName: Accept
+          description: |
+            The Accept header informs the server which media types the client accepts.
+      queryParameters:
+        offset:
+          type: integer
+          description: The evidence resource index that starts a page of the evidence resource collection.
+          example: 0
+          required: false
+        length:
+          type: integer
+          description: The length of the evidence resource collection to retrieve.
+          example: 100
+          required: false
+        filter:
+          type: string
+          description: A filter to apply to the evidence resource collection to narrow the resources retrieved.
+          example: |
+            {"category":"context","name":"Anatomy","value":"prostate gland"}
+          required: false
+      responses:
+        200:
+          description: |
+            An example path for this resource might be `http://next.belframework.org/api/evidence?offset=0&length=1&filter={%22category%22:%22context%22,%22name%22:%22Anatomy%22,%22value%22:%22prostate%20gland%22}`.
+          body:
+            application/json:
+              example: |
+                {
+                  "_embedded": {
+                    "evidence": [
+                      {
+                        "bel_statement": "p(HGNC:CDH1) decreases cat(complex(p(HGNC:ITGAV),p(HGNC:ITGB5)))",
+                        "citation": {
+                          "type": "Other",
+                          "name": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer",
+                          "id": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer"
+                        },
+                        "biological_context": {
+                          "Species": "9606"
+                        },
+                        "metadata": {
+                          "status": "Review"
+                        }
+                      }
+                    ]
+                  },
+                  "facets": [
+                    {
+                      "category": "context",
+                      "name": "Species",
+                      "value": "9606",
+                      "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"9606\"}",
+                      "count": 49071
+                    },
+                    {
+                      "category": "context",
+                      "name": "Species",
+                      "value": "10090",
+                      "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10090\"}",
+                      "count": 19416
+                    },
+                    {
+                      "category": "metadata",
+                      "name": "status",
+                      "value": "Review",
+                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Review\"}",
+                      "count": 18954
+                    },
+                    {
+                      "category": "metadata",
+                      "name": "status",
+                      "value": "Approved",
+                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Approved\"}",
+                      "count": 18947
+                    },
+                    {
+                      "category": "metadata",
+                      "name": "status",
+                      "value": "Rejected",
+                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Rejected\"}",
+                      "count": 18896
+                    },
+                    {
+                      "category": "metadata",
+                      "name": "status",
+                      "value": "Draft",
+                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Draft\"}",
+                      "count": 18784
+                    },
+                    {
+                      "category": "context",
+                      "name": "Species",
+                      "value": "10116",
+                      "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10116\"}",
+                      "count": 7091
+                    },
+                    {
+                      "category": "context",
+                      "name": "Anatomy",
+                      "value": "liver",
+                      "filter": "{\"category\":\"context\",\"name\":\"Anatomy\",\"value\":\"liver\"}",
+                      "count": 2357
+                    }
+                  ]
+                }
+    /{identifier}:
+      description:
+      get:
+      put:
+      patch:
+      delete:
   /expressions/{bel}/completions:
-    description: Retrieve completions for the *BEL* expression fragment.
+    description: |
+      Retrieve completions for the *BEL* expression fragment. The caret position to complete from defaults to the end of *BEL* expression fragment.
+
+      Examples:
+
+        - *aabund* yields functions *microRNAAbundance* and *rnaAbundance*
+        - *p(H* yields functions *chaperoneActivity*, *pathology*, *phosphataseActivity* and namespace prefixes *CHEBI*, *CHEBIID*, *HGNC*, *MESHCS*, *MESHD*, *MESHPP*, *SCHEM*
+        - *tscript(p(HGNC:* yields namespace values *AKT1*, *AKT2*, etc.
+
+      Custom Caret Position:
+
+      The caret position can be provided to indicate where to complete from.
+
+      Examples:
+
+        - *pro(HGNC:*, *caret_position*: `2` yields functions *biologicalProcess*, *products*, *proteinAbundance*, and *proteinModification*
     uriParameters:
       bel:
         type: string
         description: BEL statement fragment; Completions will be provided for this input.
         required: false
     get:
+      description: |
+        Retrieve completions for the *BEL* expression fragment. The caret position to complete from defaults to the end of *BEL* expression fragment.
+
+        Examples:
+
+        - *aabund* yields functions *microRNAAbundance* and *rnaAbundance*
+        - *p(H* yields functions *chaperoneActivity*, *pathology*, *phosphataseActivity* and namespace prefixes *CHEBI*, *CHEBIID*, *HGNC*, *MESHCS*, *MESHD*, *MESHPP*, *SCHEM*
+        - *tscript(p(HGNC:* yields namespace values *AKT1*, *AKT2*, etc.
+
+        Custom Caret Position:
+
+        The caret position can be provided to indicate where to complete from.
+
+        Examples:
+
+        - *pro(HGNC:*, *caret_position*: `2` yields functions *biologicalProcess*, *products*, *proteinAbundance*, and *proteinModification*
       headers:
         Accept:
           displayName: Accept
@@ -227,37 +434,6 @@ baseUri: http://next.belframework.org
                     }
                   }
                 }
-  /evidence:
-    description: Operate on the evidence resource collection.
-    get:
-      description: Retrieve the evidence resource collection. The evidence resources can be traversed by using the *start*.
-      headers:
-        Accept:
-          displayName: Accept
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "total": 100,
-                  "_links": {
-                    "start": {
-                        "href": "http://next.belframework.org/evidence/1334788813903791767"
-                    }
-                  }
-                }
-    delete:
-      description: Delete the evidence resource collection.
-  /evidence/{identifier}:
-    description: 
-    get:
-    put:
-    patch:
-    delete:
-  /evidence/{identifier}/statement:
-  /evidence/{identifier}/citation:
-  /evidence/{identifier}/biological-context:
   /functions:
     description: Retrieve the BEL function resource collection.
     get:
@@ -283,5 +459,4 @@ baseUri: http://next.belframework.org
   /namespaces/{namespace}/{value}:
   /namespaces/{namespace}/{value}/equivalents/namespaces/{target}:
   /namespaces/{namespace}/{value}/orthologs/namespaces/{target}:
-  /statements/{belstatement}:
-  
+# vim: ft=yaml sw=2 ts=2 sts=2 expandtab:
