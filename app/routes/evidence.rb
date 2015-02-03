@@ -17,6 +17,8 @@ module OpenBEL
       end
 
       post '/api/evidence' do
+        validate_media_type! "application/json", :profile => schema_url('evidence')
+
         evidence_obj = read_json
         schema_validation = validate_schema(evidence_obj, :evidence)
         unless schema_validation[0]
@@ -76,6 +78,8 @@ module OpenBEL
       end
 
       put '/api/evidence/:id' do
+        validate_media_type! "application/json", :profile => schema_url('evidence')
+
         id = params[:id]
         ev = @api.find_evidence_by_id(id)
         halt 404 unless ev

@@ -21,6 +21,7 @@ module OpenBEL
 
       DEFAULT_CONTENT_TYPE = 'application/json'
       SPOKEN_CONTENT_TYPES = %w[application/json application/hal+json text/html text/xml]
+      SCHEMA_BASE_URL      = 'http://next.belframework.org/schema/'
       disable :protection
 
       before do
@@ -45,6 +46,20 @@ module OpenBEL
         def url
           env['HTTP_X_REAL_URL'] ||
             "#{env['rack.url_scheme']}://#{env['SERVER_NAME']}:#{env['SERVER_PORT']}/#{env['PATH_INFO']}"
+        end
+
+        def schema_url(name)
+          SCHEMA_BASE_URL + "#{name}.schema.json"
+        end
+
+        def validate_media_type!(content_type, options = {})
+          ctype = request.content_type
+          valid = ctype.start_with? content_type
+          if options[:profile]
+            valid &= (%r{profile=#{options[:profile]}} =~ ctype)
+          end
+
+          halt 415 unless valid
         end
 
         def resolve_supported_content_type(request)
