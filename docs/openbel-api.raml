@@ -2,6 +2,8 @@
 title: OpenBEL API
 version: 0.0.2
 baseUri: http://next.belframework.org
+schemas:
+  - evidence: !include http://next.belframework.org/schema/evidence.schema.json
 /api:
   description: The root resource collection.
   get:
@@ -61,7 +63,30 @@ baseUri: http://next.belframework.org
       - Delete an existing evidence resource using `DELETE /evidence/{id}`.
 
     post:
-      description: Create an evidence resource.
+      description: |
+        Create an evidence resource.
+
+        Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
+
+        *Example*:
+
+        - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence.schema.json`
+      responses:
+        201:
+          description: |
+            *201 Created*
+
+            The evidence resource was created.
+
+            The link to the evidence resource is conveyed is the *Link* header.
+        415:
+          description: |
+            *415 Unsupported Media Type*
+
+            The evidence resource body was not a supported media type..
+      body:
+        application/json:
+          schema: evidence
     get:
       description: |
         Retrieve the evidence resource collection.
@@ -202,6 +227,33 @@ baseUri: http://next.belframework.org
       description:
       get:
       put:
+        description: |
+          Replaces an evidence resource identified by *{identifier}*.
+
+          Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
+
+          *Example*:
+
+          - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence.schema.json`
+        body:
+          application/json:
+            schema: evidence
+        responses:
+          202:
+            description: |
+              *202 Accepted*
+
+              The replacement for the evidence resource will be applied.
+          404:
+            description: |
+              *404 Not Found*
+
+              An evidence resource, identified by *{identifier}*, does not exist.
+          415:
+            description: |
+              *415 Unsupported Media Type*
+
+              The evidence resource body was not a supported media type.
       patch:
       delete:
   /expressions/{bel}/completions:
