@@ -30,7 +30,7 @@ module OpenBEL
         _id = @api.create_evidence(evidence)
 
         status 201
-        headers "Link" => "#{base_url}/api/evidence/#{_id}"
+        headers "Location" => "#{base_url}/api/evidence/#{_id}"
       end
 
       get '/api/evidence' do
