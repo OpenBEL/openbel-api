@@ -1,4 +1,6 @@
 require 'oat'
+require 'oat/adapters/hal'
+require_relative 'adapters/basic_json'
 
 class BaseSerializer < Oat::Serializer
 

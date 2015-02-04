@@ -6,7 +6,7 @@ module OpenBEL
     module Evidence
 
       class EvidenceJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type :evidence
           properties do |p|
@@ -52,7 +52,7 @@ module OpenBEL
       end
 
       class EvidenceCollectionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
 
         schema do
           type :'evidence-collection'

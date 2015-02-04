@@ -5,7 +5,7 @@ module OpenBEL
     module Expressions
 
       class CompletionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type "completion"
           properties do |p|

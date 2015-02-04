@@ -6,7 +6,7 @@ module OpenBEL
     module Functions
 
       class FunctionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type :function
           properties do |p|
@@ -68,7 +68,7 @@ module OpenBEL
       end
 
       class FunctionCollectionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
 
         schema do
           type :'function-collection'

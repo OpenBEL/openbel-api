@@ -1,7 +1,5 @@
 require 'json_schema'
 require 'multi_json'
-require 'oat'
-require 'oat/adapters/hal'
 require 'namespace/model'
 require 'app/resources/completion'
 require 'app/resources/evidence'

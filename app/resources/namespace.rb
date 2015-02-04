@@ -7,7 +7,7 @@ module OpenBEL
       VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
       class NamespaceJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type :namespace
           properties do |p|
@@ -44,7 +44,7 @@ module OpenBEL
       end
 
       class NamespaceCollectionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type :'namespace-collection'
           entities :namespaces, item, NamespaceJsonSerializer
@@ -72,7 +72,7 @@ module OpenBEL
       end
 
       class NamespaceValueJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type :'namespace-value'
           properties do |p|
@@ -140,7 +140,7 @@ module OpenBEL
       end
 
       class NamespaceValueCollectionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type :'namespace-value-collection'
           entities :'namespace-values', item, NamespaceValueJsonSerializer
@@ -156,7 +156,7 @@ module OpenBEL
       end
 
       class ValueEquivalenceJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        adapter Oat::Adapters::BasicJson
         schema do
           type :'value-equivalence'
           properties do |p|
