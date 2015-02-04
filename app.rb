@@ -37,9 +37,19 @@ module OpenBEL
         origins '*'
         resource '*',
           :headers     => :any,
-          :methods     => [ :get, :post, :put, :options ],
+          :methods     => [ :get, :post, :put, :delete, :options ],
           :max_age     => 1,
-          :credentials => false
+          :credentials => false,
+          :expose      => [
+            'Allow',
+            'Content-Type',
+            'Content-Encoding',
+            'Content-Length',
+            'ETag',
+            'Last-Modified',
+            'Link',
+            'Location'
+          ]
       end
     end
     disable :protection
