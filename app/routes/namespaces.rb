@@ -32,9 +32,12 @@ module OpenBEL
 
         halt 404 if not namespaces or namespaces.empty?
 
-        render(namespaces.sort { |x,y|
-          x.prefLabel.to_s <=> y.prefLabel.to_s
-        }, :namespace)
+        render(
+          namespaces.sort { |x,y|
+            x.prefLabel.to_s <=> y.prefLabel.to_s
+          },
+          :namespace_collection
+        )
       end
 
       get '/api/namespaces/:namespace/?' do |namespace|
@@ -43,7 +46,10 @@ module OpenBEL
         halt 404 unless ns
 
         status 200
-        render(ns, :namespace)
+        render(
+          [ns],
+          :namespace
+        )
       end
 
       get '/api/namespaces/:namespace/equivalents/?' do |namespace|
@@ -154,14 +160,20 @@ module OpenBEL
         halt 404 unless value
 
         status 200
-        render(value, :"namespace-value")
+        render(
+          [value],
+          :"namespace_value"
+        )
       end
 
       get '/api/namespaces/:namespace/:id/equivalents/?' do |namespace, value|
         equivalents = @api.find_equivalent(namespace, value)
         halt 404 if not equivalents or equivalents.empty?
 
-        render(equivalents, :"namespace-value")
+        render(
+          equivalents,
+          :"namespace_value"
+        )
       end
 
       get '/api/namespaces/:namespace/:id/equivalents/:target/?' do |namespace, value, target|
@@ -171,7 +183,10 @@ module OpenBEL
 
         halt 404 unless equivalent
 
-        render(equivalent, :"namespace-value")
+        render(
+          equivalent,
+          :"namespace_value"
+        )
       end
 
       get '/api/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
@@ -180,7 +195,10 @@ module OpenBEL
           halt 404
         end
 
-        render(orthologs, :"namespace-value")
+        render(
+          orthologs,
+          :"namespace_value"
+        )
       end
 
       get '/api/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
@@ -191,7 +209,10 @@ module OpenBEL
           halt 404
         end
 
-        render(orthologs, :"namespace-value")
+        render(
+          orthologs,
+          :"namespace_value"
+        )
       end
     end
   end

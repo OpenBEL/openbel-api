@@ -5,24 +5,11 @@ module OpenBEL
   module Resource
     module Evidence
 
-      class EvidenceJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::BasicJson
-        schema do
-          type :evidence
-          properties do |p|
-            p.bel_statement      item['bel_statement']
-            p.citation           item['citation']
-            p.biological_context item['biological_context']
-            p.metadata           item['metadata']
-          end
-        end
-      end
-
-      class EvidenceHALSerializer < BaseSerializer
+      class EvidenceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'evidence-collection'
+          type :'evidence'
           properties do |p|
             p.bel_statement      item['bel_statement']
             p.citation           item['citation']
@@ -51,25 +38,43 @@ module OpenBEL
         end
       end
 
-      class EvidenceCollectionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::BasicJson
+      class EvidenceResourceSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
 
         schema do
-          type :'evidence-collection'
+          type :'evidence'
           properties do |p|
-            collection :evidence, item, EvidenceJsonSerializer
-            p.facets   context[:facets]
+            collection :evidence, item, EvidenceSerializer
           end
+
+          link :self,         link_self(item.first['_id'])
+          link :collection,   link_collection
+        end
+
+        private
+
+        def link_self(id)
+          {
+            :type => :evidence,
+            :href => "#{base_url}/api/evidence/#{id}"
+          }
+        end
+
+        def link_collection
+          {
+            :type => :'evidence-collection',
+            :href => "#{base_url}/api/evidence"
+          }
         end
       end
 
-      class EvidenceCollectionHALSerializer < BaseSerializer
+      class EvidenceCollectionSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
           type :'evidence-collection'
           properties do |p|
-            collection :evidence, item, EvidenceHALSerializer
+            collection :evidence, item, EvidenceSerializer
             p.facets   context[:facets]
           end
 

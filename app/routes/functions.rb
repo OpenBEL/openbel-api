@@ -11,7 +11,7 @@ module OpenBEL
       }
 
       get '/api/functions' do
-        render(SORTED_FUNCTIONS, :function)
+        render(SORTED_FUNCTIONS, :function_collection)
       end
 
       # BEL Completion
@@ -19,7 +19,10 @@ module OpenBEL
         fx_match = FUNCTIONS[params[:fx].to_sym]
         halt 404 unless fx_match
 
-        render(fx_match, :function)
+        render(
+          [fx_match],
+          :function_collection
+        )
       end
     end
   end

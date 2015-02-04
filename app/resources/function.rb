@@ -5,8 +5,9 @@ module OpenBEL
   module Resource
     module Functions
 
-      class FunctionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::BasicJson
+      class FunctionSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+
         schema do
           type :function
           properties do |p|
@@ -19,20 +20,16 @@ module OpenBEL
         end
       end
 
-      class FunctionHALSerializer < BaseSerializer
+      class FunctionResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
-          type :function
+          type :'function'
           properties do |p|
-            p.short_form  item[:short_form]
-            p.long_form   item[:long_form]
-            p.description item[:description]
-            p.return_type item[:return_type]
-            p.signatures  item[:signatures]
+            collection :functions, item, FunctionResourceSerializer
           end
 
-          link :self,        link_self(item[:short_form])
+          link :self,        link_self(item.first[:short_form])
           link :next,        link_next
           link :collection,  link_collection
         end
@@ -48,7 +45,7 @@ module OpenBEL
 
         def link_collection
           {
-            :type => :'function-collection',
+            :type => :'function_collection',
             :href => "#{base_url}/api/functions"
           }
         end
@@ -67,24 +64,13 @@ module OpenBEL
         end
       end
 
-      class FunctionCollectionJsonSerializer < BaseSerializer
-        adapter Oat::Adapters::BasicJson
-
-        schema do
-          type :'function-collection'
-          properties do |p|
-            collection :functions, item, FunctionJsonSerializer
-          end
-        end
-      end
-
-      class FunctionCollectionHALSerializer < BaseSerializer
+      class FunctionCollectionSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'function-collection'
+          type :'function_collection'
           properties do |p|
-            collection :functions, item, FunctionJsonSerializer
+            collection :functions, item, FunctionSerializer
           end
 
           link :self,       link_self
@@ -95,7 +81,7 @@ module OpenBEL
 
         def link_self
           {
-            :type => :'function-collection',
+            :type => :'function_collection',
             :href => "#{base_url}/api/functions"
           }
         end

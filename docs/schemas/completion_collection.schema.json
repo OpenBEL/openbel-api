@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "description": "DESCRIBE EVIDENCE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "completions"
+  ],
+  "properties": {
+    "completions": {
+      "type": "array",
+      "minItems": 0,
+      "title": "",
+      "description": "",
+      "items": {
+        "$ref":"http://next.belframework.org/schema/completion.schema.json#/properties/completion"
+      }
+    }
+  }
+}

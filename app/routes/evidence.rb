@@ -62,7 +62,9 @@ module OpenBEL
           }
         end
 
-        render(evidence_array, :evidence,
+        render(
+          evidence_array,
+          :evidence_collection,
           :offset  => offset,
           :length  => length,
           :filters => filter_params,
@@ -74,7 +76,10 @@ module OpenBEL
       get '/api/evidence/:id' do
         evidence = @api.find_evidence_by_id(params[:id])
         halt 404 unless evidence
-        render(evidence, :evidence)
+        render(
+          [evidence],
+          :evidence
+        )
       end
 
       put '/api/evidence/:id' do

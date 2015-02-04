@@ -3,8 +3,9 @@ title: OpenBEL API
 version: 0.0.2
 baseUri: http://next.belframework.org
 schemas:
-  - evidence-collection: !include http://next.belframework.org/schema/evidence-collection.schema.json
-  - evidence:            !include http://next.belframework.org/schema/evidence.schema.json
+  - completion_collection: !include http://next.belframework.org/schema/completion_collection.schema.json
+  - evidence_collection:   !include http://next.belframework.org/schema/evidence_collection.schema.json
+  - evidence:              !include http://next.belframework.org/schema/evidence.schema.json
 /api:
   description: The root resource collection.
   get:
@@ -19,9 +20,6 @@ schemas:
               {
                 "_links": {
                   "item": [
-                    {
-                      "href": "http://next.belframework.org/api/annotations"
-                    },
                     {
                       "href": "http://next.belframework.org/api/evidence"
                     },
@@ -166,7 +164,7 @@ schemas:
             An example path for this resource might be `http://next.belframework.org/api/evidence?offset=0&length=1&filter={%22category%22:%22context%22,%22name%22:%22Anatomy%22,%22value%22:%22prostate%20gland%22}`.
           body:
             application/json:
-              schema: evidence-collection
+              schema: evidence_collection
               example: |
                 {
                   "evidence": [
@@ -261,24 +259,26 @@ schemas:
             schema: evidence
             example: |
               {
-                "evidence": {
-                  "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
-                  "citation": {
-                    "type": "PubMed",
-                    "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
-                    "id": "10699758"
-                  },
-                  "biological_context": {
-                    "Species": "9606",
-                    "CellLine": "LNCAP cell",
-                    "Anatomy": "prostate gland",
-                    "Cell": "fibroblast",
-                    "Disease": "leukemia"
-                  },
-                  "metadata": {
-                    "status": "Approved"
+                "evidence": [
+                  {
+                    "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
+                    "citation": {
+                      "type": "PubMed",
+                      "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
+                      "id": "10699758"
+                    },
+                    "biological_context": {
+                      "Species": "9606",
+                      "CellLine": "LNCAP cell",
+                      "Anatomy": "prostate gland",
+                      "Cell": "fibroblast",
+                      "Disease": "leukemia"
+                    },
+                    "metadata": {
+                      "status": "Approved"
+                    }
                   }
-                }
+                ]
               }
         responses:
           202:
@@ -351,9 +351,9 @@ schemas:
           body:
             application/json:
               example: |
-                [
-                  {
-                    "completion": {
+                {
+                  "completions": [
+                    {
                       "type": "namespace_prefix",
                       "label": "HGNC",
                       "value": "HGNC:",
@@ -379,9 +379,9 @@ schemas:
                         }
                       ]
                     }
-                  }
-                ]
-              schema: |
+                  ]
+                }
+              schema: completion_collection
                 {
                   "$schema": "http://json-schema.org/draft-04/schema",
                   "type": "array",

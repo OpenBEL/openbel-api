@@ -17,9 +17,22 @@ module OpenBEL
       include OpenBEL::Resource::Namespaces
       include OpenBEL::Schemas
 
-      DEFAULT_CONTENT_TYPE = 'application/json'
-      SPOKEN_CONTENT_TYPES = %w[application/json application/hal+json text/html text/xml]
-      SCHEMA_BASE_URL      = 'http://next.belframework.org/schema/'
+      DEFAULT_CONTENT_TYPE   = 'application/json'
+      SPOKEN_CONTENT_TYPES   = %w[application/json application/hal+json text/html text/xml]
+      SCHEMA_BASE_URL        = 'http://next.belframework.org/schema/'
+      RESOURCE_SERIALIZERS   = {
+        :completion                 => CompletionResourceSerializer,
+        :completion_collection      => CompletionCollectionSerializer,
+        :function                   => FunctionResourceSerializer,
+        :function_collection        => FunctionCollectionSerializer,
+        :namespace                  => NamespaceResourceSerializer,
+        :namespace_collection       => NamespaceCollectionSerializer,
+        :namespace_value            => NamespaceValueResourceSerializer,
+        :namespace_value_collection => NamespaceValueCollectionSerializer,
+        :evidence                   => EvidenceResourceSerializer,
+        :evidence_collection        => EvidenceCollectionSerializer
+      }
+
       disable :protection
 
       before do
@@ -74,6 +87,17 @@ module OpenBEL
           MultiJson.load request.body.read
         end
 
+        def render_json(obj, media_type = 'application/json', profile = nil)
+          ctype =
+            if profile
+              "#{media_type}; profile=#{profile}"
+            else
+              media_type
+            end
+          response.headers['Content-Type'] = ctype
+          MultiJson.dump obj
+        end
+
         def validate_schema(data, type)
           self.validate(data, type)
         end
@@ -85,198 +109,24 @@ module OpenBEL
             :url      => url
           }.merge(options)
 
-          if obj.kind_of?(Array)
-            # multiple
-            case type
-            when :completion
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                collection = obj.map { |resource|
-                  {
-                    :completion => CompletionJsonSerializer.new(resource, resource_context).to_hash
-                  }
-                }
-                MultiJson.dump(collection)
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                collection = obj.map { |resource|
-                  {
-                    :completion => CompletionHALSerializer.new(resource, resource_context).to_hash
-                  }
-                }
-                MultiJson.dump(collection)
-              else
-                response.headers['Content-Type'] = 'application/json'
-                collection = obj.map { |resource|
-                  {
-                    :completion => CompletionJsonSerializer.new(resource, resource_context).to_hash
-                  }
-                }
-                MultiJson.dump(collection)
-              end
-            when :function
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  FunctionCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  FunctionCollectionHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  FunctionCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            when :namespace
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  NamespaceCollectionHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            when :"namespace-value"
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceValueCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  NamespaceValueCollectionHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceValueCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            when :evidence
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  EvidenceCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  EvidenceCollectionHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  EvidenceCollectionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            else
-              raise NotImplementedError.new("Cannot render type, #{type}")
-            end
-          else
-            # single
-            case type
-            when :completion
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  CompletionSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  CompletionSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  CompletionSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            when :function
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  FunctionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  FunctionHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  FunctionJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            when :namespace
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  NamespaceHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            when :"namespace-value"
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceValueJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  NamespaceValueHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  NamespaceValueJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            when :evidence
-              if media_type == 'application/json'
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  EvidenceJsonSerializer.new(obj, resource_context).to_hash
-                )
-              elsif media_type == 'application/hal+json'
-                response.headers['Content-Type'] = 'application/hal+json'
-                MultiJson.dump(
-                  EvidenceHALSerializer.new(obj, resource_context).to_hash
-                )
-              else
-                response.headers['Content-Type'] = 'application/json'
-                MultiJson.dump(
-                  EvidenceJsonSerializer.new(obj, resource_context).to_hash
-                )
-              end
-            else
-              raise NotImplementedError.new("Cannot render type, #{type}")
-            end
+          serializer_class = RESOURCE_SERIALIZERS[type]
+          if not serializer_class
+            raise NotImplementedError.new("Cannot serialize the #{type} resource.")
           end
+
+          adapter =
+            case media_type
+            when 'application/hal+json'
+              Oat::Adapters::HAL
+            else
+              media_type = 'application/json'
+              Oat::Adapters::BasicJson
+            end
+
+          render_json(
+            serializer_class.new(obj, resource_context, adapter).to_hash,
+            media_type
+          )
         end
 
         def path(*args)

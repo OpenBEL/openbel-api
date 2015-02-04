@@ -4,10 +4,13 @@ module OpenBEL
     class Root < Base
 
       get '/api' do
-        response.headers['Content-Type'] = 'application/json'
+        response.headers['Content-Type'] = 'application/hal+json'
         MultiJson.dump({
           :_links => {
             :item => [
+              {
+                :href => "#{base_url}/api/evidence"
+              },
               {
                 :href => "#{base_url}/api/expressions"
               },

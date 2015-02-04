@@ -12,7 +12,12 @@ module OpenBEL
 
         completions = BEL::Completion.complete(bel, caret_position)
         halt 404 if completions.empty?
-        render(completions, :completion)
+        render(
+          completions,
+          :completion_collection,
+          :bel => bel,
+          :caret_position => caret_position
+        )
       end
 
       # BEL Syntax Validation
