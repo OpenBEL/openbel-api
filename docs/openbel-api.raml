@@ -169,24 +169,22 @@ schemas:
               schema: evidence-collection
               example: |
                 {
-                  "_embedded": {
-                    "evidence": [
-                      {
-                        "bel_statement": "p(HGNC:CDH1) decreases cat(complex(p(HGNC:ITGAV),p(HGNC:ITGB5)))",
-                        "citation": {
-                          "type": "Other",
-                          "name": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer",
-                          "id": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer"
-                        },
-                        "biological_context": {
-                          "Species": "9606"
-                        },
-                        "metadata": {
-                          "status": "Review"
-                        }
+                  "evidence": [
+                    {
+                      "bel_statement": "p(HGNC:CDH1) decreases cat(complex(p(HGNC:ITGAV),p(HGNC:ITGB5)))",
+                      "citation": {
+                        "type": "Other",
+                        "name": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer",
+                        "id": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer"
+                      },
+                      "biological_context": {
+                        "Species": "9606"
+                      },
+                      "metadata": {
+                        "status": "Review"
                       }
-                    ]
-                  },
+                    }
+                  ]
                   "facets": [
                     {
                       "category": "context",
