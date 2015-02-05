@@ -54,7 +54,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       description: Retrieves all annotation resources.
     /{annotation}:
@@ -67,7 +66,6 @@ schemas:
               Accept:
                 description: Allowable HTTP methods.
                 type:        string
-                enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
       get:
         description: Retrieves an annotation resource.
       /{annotation}/values:
@@ -80,7 +78,6 @@ schemas:
                 Accept:
                   description: Allowable HTTP methods.
                   type:        string
-                  enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
         /{value}:
           description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
           options:
@@ -91,7 +88,6 @@ schemas:
                   Accept:
                     description: Allowable HTTP methods.
                     type:        string
-                    enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
           get:
             description:
   /evidence:
@@ -114,7 +110,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     post:
       description: |
         Create an evidence resource.
@@ -306,7 +301,6 @@ schemas:
               Accept:
                 description: Allowable HTTP methods.
                 type:        string
-                enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
       get:
       put:
         description: |
@@ -391,7 +385,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       description: |
         Retrieve completions for the *BEL* expression fragment. The caret position to complete from defaults to the end of *BEL* expression fragment.
@@ -464,7 +457,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       headers:
         Accept:
@@ -481,7 +473,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       headers:
         Accept:
@@ -497,7 +488,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
   /namespaces/{namespace}:
     options:
       description: Returns allowable HTTP methods.
@@ -507,7 +497,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
   /namespaces/{namespace}/equivalents:
     options:
       description: Returns allowable HTTP methods.
@@ -517,7 +506,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     post:
   /namespaces/{namespace}/orthologs:
     options:
@@ -528,7 +516,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     post:
   /namespaces/{namespace}/{value}:
     options:
@@ -539,7 +526,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
   /namespaces/{namespace}/{value}/equivalents/{target}:
     options:
       description: Returns allowable HTTP methods.
@@ -549,7 +535,6 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
   /namespaces/{namespace}/{value}/orthologs/{target}:
     options:
       description: Returns allowable HTTP methods.
@@ -559,5 +544,4 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
 # vim: ft=yaml sw=2 ts=2 sts=2 expandtab:
