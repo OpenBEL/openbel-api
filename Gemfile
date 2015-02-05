@@ -11,7 +11,7 @@ gem 'kyotocabinet-ffi', :path => '../kyotocabinet-ffi'
 gem 'mongo', '1.12.0.rc2'
 gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
-gem 'oat'
+gem 'oat', :git => 'git@github.com:abargnesi/oat.git', :branch => 'hal_link_object_array_issue_58'
 gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
 gem 'puma'
 gem 'rack'

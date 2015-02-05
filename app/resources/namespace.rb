@@ -99,8 +99,10 @@ module OpenBEL
 
           link :self,       link_self(namespace_value_id)
           link :collection, link_namespace(namespace_id)
-          link :item,       link_equivalents(namespace_value_id)
-          link :item,       link_orthologs(namespace_value_id)
+          link :item,       [
+            link_equivalents(namespace_value_id),
+            link_orthologs(namespace_value_id)
+          ]
         end
 
         private
