@@ -27,6 +27,51 @@ module OpenBEL
         @api = OpenBEL::Settings["namespace-api"].create_instance
       end
 
+      options '/api/namespaces' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace/equivalents' do
+        response.headers['Allow'] = 'OPTIONS,POST,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace/orthologs' do
+        response.headers['Allow'] = 'OPTIONS,POST,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace/:id' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace/:id/equivalents' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace/:id/equivalents/:target' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace/:id/orthologs' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/namespaces/:namespace/:id/orthologs/:target' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
       get '/api/namespaces/?' do
         namespaces = @api.find_namespaces
 

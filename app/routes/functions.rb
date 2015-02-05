@@ -10,6 +10,16 @@ module OpenBEL
         fx[:short_form]
       }
 
+      options '/api/functions' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/functions/:fx' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
       get '/api/functions' do
         render(SORTED_FUNCTIONS, :function_collection)
       end

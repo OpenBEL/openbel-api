@@ -5,6 +5,11 @@ module OpenBEL
 
     class Expressions < Base
 
+      options '/api/expressions/*/completions' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
       get '/api/expressions/*/completions/?' do
         bel = params[:splat].first
         caret_position = (params[:caret_position] || bel.length).to_i

@@ -16,6 +16,16 @@ module OpenBEL
         @api = OpenBEL::Settings["evidence-api"].create_instance
       end
 
+      options '/api/evidence' do
+        response.headers['Allow'] = 'OPTIONS,POST,GET'
+        status 200
+      end
+
+      options '/api/evidence/:id' do
+        response.headers['Allow'] = 'OPTIONS,GET,PUT,DELETE'
+        status 200
+      end
+
       post '/api/evidence' do
         validate_media_type! "application/json", :profile => schema_url('evidence')
 

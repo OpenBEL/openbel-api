@@ -3,6 +3,11 @@ module OpenBEL
 
     class Root < Base
 
+      options '/api' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
       get '/api' do
         response.headers['Content-Type'] = 'application/hal+json'
         MultiJson.dump({
