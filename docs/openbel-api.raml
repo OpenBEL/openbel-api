@@ -8,6 +8,15 @@ schemas:
   - evidence:              !include http://next.belframework.org/schema/evidence.schema.json
 /api:
   description: The root resource collection.
+  options:
+    description: Returns allowable HTTP methods.
+    responses:
+      200:
+        headers:
+          Accept:
+            description: Allowable HTTP methods.
+            type:        string
+            enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
   get:
     headers:
         Accept:
@@ -37,16 +46,52 @@ schemas:
               }
   /annotations:
     description: Represents the annotation resource collection.
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       description: Retrieves all annotation resources.
     /{annotation}:
       description: Represents a single annotation resource.
+      options:
+        description: Returns allowable HTTP methods.
+        responses:
+          200:
+            headers:
+              Accept:
+                description: Allowable HTTP methods.
+                type:        string
+                enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
       get:
         description: Retrieves an annotation resource.
       /{annotation}/values:
         description: Represents all annotation value resources available on the annotation resource identified by *{annotation}*.
+        options:
+          description: Returns allowable HTTP methods.
+          responses:
+            200:
+              headers:
+                Accept:
+                  description: Allowable HTTP methods.
+                  type:        string
+                  enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
         /{value}:
           description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
+          options:
+            description: Returns allowable HTTP methods.
+            responses:
+              200:
+                headers:
+                  Accept:
+                    description: Allowable HTTP methods.
+                    type:        string
+                    enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
           get:
             description:
   /evidence:
@@ -61,6 +106,15 @@ schemas:
       - Update an existing evidence resource using `PUT /evidence/{id}` with a supported content type.
       - Delete an existing evidence resource using `DELETE /evidence/{id}`.
 
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     post:
       description: |
         Create an evidence resource.
@@ -244,6 +298,15 @@ schemas:
                 }
     /{identifier}:
       description:
+      options:
+        description: Returns allowable HTTP methods.
+        responses:
+          200:
+            headers:
+              Accept:
+                description: Allowable HTTP methods.
+                type:        string
+                enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
       get:
       put:
         description: |
@@ -320,6 +383,15 @@ schemas:
         type: string
         description: BEL statement fragment; Completions will be provided for this input.
         required: false
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       description: |
         Retrieve completions for the *BEL* expression fragment. The caret position to complete from defaults to the end of *BEL* expression fragment.
@@ -384,6 +456,15 @@ schemas:
               schema: completion_collection
   /functions:
     description: Retrieve the BEL function resource collection.
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       headers:
         Accept:
@@ -391,6 +472,16 @@ schemas:
       responses:
         200:
   /functions/{fx}:
+    description: Retrieve a BEL function resource.
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     get:
       headers:
         Accept:
@@ -398,13 +489,75 @@ schemas:
       responses:
         200:
   /namespaces:
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
   /namespaces/{namespace}:
-
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
   /namespaces/{namespace}/equivalents:
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     post:
   /namespaces/{namespace}/orthologs:
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
     post:
   /namespaces/{namespace}/{value}:
-  /namespaces/{namespace}/{value}/equivalents/namespaces/{target}:
-  /namespaces/{namespace}/{value}/orthologs/namespaces/{target}:
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
+  /namespaces/{namespace}/{value}/equivalents/{target}:
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
+  /namespaces/{namespace}/{value}/orthologs/{target}:
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
 # vim: ft=yaml sw=2 ts=2 sts=2 expandtab:
