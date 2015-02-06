@@ -9,8 +9,6 @@ module OpenBEL
     class Evidence < Base
       include OpenBEL::Evidence::FacetFilter
 
-      PAGE_SIZES = 1..1000
-
       def initialize(app)
         super
         @api = OpenBEL::Settings["evidence-api"].create_instance
@@ -44,9 +42,9 @@ module OpenBEL
       end
 
       get '/api/evidence' do
-        offset = (params[:offset] || 0).to_i
-        length = (params[:length]  || 100).to_i
-        halt 400 unless PAGE_SIZES.include?(length)
+        start    = (params[:start]  || 0).to_i
+        size     = (params[:size]   || 0).to_i
+        faceted  = as_bool(params[:faceted])
 
         filter_hash = {}
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
@@ -56,31 +54,19 @@ module OpenBEL
           filter_hash["#{filter['category']}.#{filter['name']}"] = filter['value']
         end
 
-        evidence, facets = @api.find_evidence_by_query(filter_hash, offset, length)
-        evidence_array = evidence.to_a
+        results  = @api.find_evidence_by_query(filter_hash, start, size, faceted)
+        evidence = results[:cursor]
+        facets   = results[:facets]
 
-        halt 404 if evidence_array.empty?
+        halt 404 unless evidence.has_next?
 
-        facet_objects = facets.map do |facet|
-          filter = MultiJson.load(facet['_id'])
-          {
-            :category => filter['category'].to_sym,
-            :name     => filter['name'].to_sym,
-            :value    => filter['value'],
-            :filter   => facet['_id'],
-            :count    => facet['count']
-          }
-        end
-
-        render(
-          evidence_array,
-          :evidence_collection,
-          :offset  => offset,
-          :length  => length,
+        stream_resource_collection(:evidence, evidence, facets,
+          :start   => start,
+          :size    => size,
           :filters => filter_params,
-          :facets  => facet_objects,
-          :last    => (evidence_array.count < length)
+          :facets  => facets
         )
+        status 200
       end
 
       get '/api/evidence/:id' do
@@ -88,7 +74,7 @@ module OpenBEL
         halt 404 unless evidence
         render(
           [evidence],
-          :evidence
+          :evidence_resource
         )
       end
 

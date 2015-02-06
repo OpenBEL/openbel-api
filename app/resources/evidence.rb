@@ -86,30 +86,28 @@ module OpenBEL
         private
 
         def link_self
-          offset  = context[:offset]
-          length  = context[:length]
+          start  = context[:start]
+          size   = context[:size]
           {
             :type => :'evidence-collection',
-            :href => "#{base_url}/api/evidence?offset=#{offset}&length=#{length}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/evidence?start=#{start}&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
 
         def link_start
-          length = context[:length]
+          size = context[:size]
           {
             :type => :'evidence-collection',
-            :href => "#{base_url}/api/evidence?offset=0&length=#{length}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/evidence?start=0&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
 
         def link_next
-          offset  = context[:offset]
-          length  = context[:length]
+          start  = context[:start]
+          size   = context[:size]
           {
             :type => :'evidence-collection',
-            :href => context[:last] ?
-                       nil :
-                       "#{base_url}/api/evidence?offset=#{offset+length}&length=#{length}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/evidence?start=#{start + size}&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
 

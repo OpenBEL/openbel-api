@@ -24,17 +24,20 @@ module OpenBEL
         @evidence.find_one(to_id(value))
       end
 
-      def find_evidence_by_query(query, offset = 0, length = 100)
-        [
-          @evidence.find(query, :skip => offset, :limit => length),
-          facets(query)
-        ]
+      def find_evidence_by_query(query, offset = 0, length = 0, facet = false)
+        results = {
+          :cursor => @evidence.find(query, :skip => offset, :limit => length)
+        }
+        if facet
+          results[:facets] = facets(query)
+        end
+
+        results
       end
 
       def update_evidence_by_id(value, evidence)
         evidence_h = evidence.to_h
         evidence_h[:_id] = BSON::ObjectId(value)
-        puts evidence_h
         @evidence.save(evidence_h)
       end
 

@@ -29,7 +29,8 @@ module OpenBEL
         :namespace_collection       => NamespaceCollectionSerializer,
         :namespace_value            => NamespaceValueResourceSerializer,
         :namespace_value_collection => NamespaceValueCollectionSerializer,
-        :evidence                   => EvidenceResourceSerializer,
+        :evidence                   => EvidenceSerializer,
+        :evidence_resource          => EvidenceResourceSerializer,
         :evidence_collection        => EvidenceCollectionSerializer
       }
 
@@ -42,6 +43,17 @@ module OpenBEL
       end
 
       helpers do
+
+        def as_bool(value)
+          value == nil ? false : value.to_s =~ (/^(true|t|yes|y|1|on)$/i)
+        end
+
+        def path(*args)
+          return nil if args.empty?
+          tokens = args.flatten
+          tokens.reduce(Pathname(tokens.shift)) { |path, t| path += t }
+        end
+
         def request_headers
           env.inject({}) { |hdrs, (k,v)|
             hdrs[$1.downcase] = v if k =~ /^http_(.*)/i
@@ -129,11 +141,83 @@ module OpenBEL
           )
         end
 
-        def path(*args)
-          return nil if args.empty?
-          tokens = args.flatten
-          tokens.reduce(Pathname(tokens.shift)) { |path, t| path += t }
+        def stream_resource_collection(type, collection, facets, options = {})
+          serializer_class = RESOURCE_SERIALIZERS[type]
+          if not serializer_class
+            raise NotImplementedError.new("Cannot serialize the #{type} resource collection.")
+          end
+
+          media_type = resolve_supported_content_type(request)
+          resource_context = {
+            :base_url => base_url,
+            :url      => url
+          }.merge(options)
+          adapter =
+            case media_type
+            when 'application/hal+json'
+              Oat::Adapters::HAL
+            else
+              media_type = 'application/json'
+              Oat::Adapters::BasicJson
+            end
+
+          collection_enum = collection.to_enum
+
+          stream do |response|
+            response << %Q({"#{type}": [)
+            item = collection_enum.next
+            response << render_json(
+              serializer_class.new(item, resource_context, adapter).to_hash,
+              media_type
+            )
+            while true
+              begin
+                item = collection_enum.next
+                response << (',' + render_json(
+                  serializer_class.new(item, resource_context, adapter).to_hash,
+                  media_type
+                ))
+              rescue StopIteration
+                break
+              end
+            end
+            response << ']'
+
+            if facets
+              response << ',"facets": ['
+
+              facet_enum = facets.to_enum
+              facet_item = facet_enum.next
+              filter = MultiJson.load(facet_item['_id'])
+              response << MultiJson.dump({
+                :category => filter['category'].to_sym,
+                :name     => filter['name'].to_sym,
+                :value    => filter['value'],
+                :filter   => facet_item['_id'],
+                :count    => facet_item['count']
+              })
+              while true
+                begin
+                  facet_item = facet_enum.next
+                  filter = MultiJson.load(facet_item['_id'])
+                  response << (',' + MultiJson.dump({
+                    :category => filter['category'].to_sym,
+                    :name     => filter['name'].to_sym,
+                    :value    => filter['value'],
+                    :filter   => facet_item['_id'],
+                    :count    => facet_item['count']
+                  }))
+                rescue StopIteration
+                  break
+                end
+              end
+              response << ']'
+            end
+
+            response << '}'
+          end
         end
+
       end
     end
   end

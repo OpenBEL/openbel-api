@@ -160,57 +160,83 @@ schemas:
       description: |
         Retrieve the evidence resource collection.
 
-        This collection must be paged using *offset* (defaults to `0`) as the start index and *length* (defaults to `100`) as the number of evidence resources to return.
+        All evidence resources will be returned by default.
 
-        This collection can be filtered by specifying one or more *filter* query parameters. A filter query parameter specifies the *category*, *name*, and *value* of the filter and is encoded as a JSON object. For example the citation id filter might be encoded as:
+        The collection can be returned page by page by providing a *start* (defaults to `0`) index and *size* (defaults to no size limit) to return.
 
-        ```json
-          {
-            "category": "citation",
-            "name": "id",
-            "value": "133785101"
-          }
-        ```
-
-        This collection includes a *facets* array where each facet value is captured individually. For example for the citation id filter the facet object would be encoded as:
+        This collection can be filtered by providing one or more *filter* options. A filter specifies the *category*, *name*, and *value* of the filter and is encoded as a JSON object. For example an evidence metadata filter might be encoded as:
 
         ```json
           {
-            "category": "citation",
-            "name": "id",
-            "value": "133785101",
-            "filter": "{\"category\": \"citation\", \"name\": \"id\", \"value\": \"133785101\"}",
-            "count": 25
+            "category": "metadata",
+            "name": "status",
+            "value": "Approved"
           }
         ```
 
-        The *filter* property value has the same form as the *filter* query parameter. This is intended to support filtering the evidence resource collection by selected facets.
+        This collection can specify the *faceted* boolean option. Facets will reflect all (possibly filtered) evidence resources irrespective of *start* and *size* paging.
+        
+        Facts are an array of facet objects that are composed of a *filter* and *count*. For example for the evidence metadata filter the facet object would be encoded as:
+
+        ```json
+          {
+            "category": "metadata",
+            "name": "status",
+            "value": "Approved",
+            "filter": "{\"category\": \"metadata\", \"name\": \"status\", \"value\": \"Approved \"}",
+            "count": 10200
+          }
+        ```
+
+        The *filter* property value can be used as a *filter* option. This is intended to support filtering the evidence resource collection by selected facets.
       headers:
         Accept:
           displayName: Accept
           description: |
             The Accept header informs the server which media types the client accepts.
       queryParameters:
-        offset:
+        start:
           type: integer
-          description: The evidence resource index that starts a page of the evidence resource collection.
-          example: 0
+          description: |
+            The evidence resource to start from for paging purposes.
+          example: 100
           required: false
-        length:
+        size:
           type: integer
-          description: The length of the evidence resource collection to retrieve.
+          description: |
+            The size of the evidence resource collection to retrieve. This will return a clice of the evidence resource collection relative to *start*.
           example: 100
           required: false
         filter:
           type: string
-          description: A filter to apply to the evidence resource collection to narrow the resources retrieved.
+          description: |
+            A filter to apply to the evidence resource collection to narrow the resources retrieved.
           example: |
             {"category":"context","name":"Anatomy","value":"prostate gland"}
           required: false
+        faceted:
+          type: string
+          description: |
+            The boolean indicator to provided faceted results for the evidence resource collection. The default is to not facet.
+          enum: [ 'true', 'yes', '1', 'on' ]
+          example: yes
       responses:
         200:
           description: |
-            An example path for this resource might be `http://next.belframework.org/api/evidence?offset=0&length=1&filter={%22category%22:%22context%22,%22name%22:%22Anatomy%22,%22value%22:%22prostate%20gland%22}`.
+            An example request for this resource might be:
+            - Path: `/api/evidence`
+            - Query parameters:
+              - `start=0`
+              - `size=1`
+              - `faceted=yes`
+              - `filter`
+              ```json
+              {
+                "category":"biological_context",
+                "name":"Anatomy",
+                "value":"prostate gland"
+              }
+              ```
           body:
             application/json:
               schema: evidence_collection
