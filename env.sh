@@ -43,4 +43,5 @@ default TEST_URLS_FILE          "$TESTS/urls"
 
 ### THE GO SHELL ###
 default GOSH_SCRIPTS            "$DIR"/tools/scripts
+default GOSH_CONTRIB            "$SCRIPTS"/gosh-contrib
 
