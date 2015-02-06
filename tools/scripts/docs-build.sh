@@ -17,7 +17,9 @@ export PATH="$GOSH_CONTRIB_NODE_NPM_MODPATH/node_modules/.bin":$PATH
 echo -en "Generating RAML page... "
 OUT=$(mktemp)
 # raml2html treats stdout as stderr if failures occur, hence the temp file
-raml2html "$DOCS"/openbel-api.raml > "$OUT"
+raml2html \
+  --template "$DOCS/templates/template.handlebars" \
+  "$DOCS"/openbel-api.raml > "$OUT"
 EC=$?
 if [ $EC -ne 0 ]; then
     echo FAIL
