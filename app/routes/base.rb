@@ -161,6 +161,7 @@ module OpenBEL
               Oat::Adapters::BasicJson
             end
 
+          response.headers['Content-Type'] = media_type
           collection_enum = collection.to_enum
 
           stream do |response|
