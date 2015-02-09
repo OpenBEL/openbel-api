@@ -30,7 +30,11 @@ module OpenBEL
         evidence_obj = read_json
         schema_validation = validate_schema(evidence_obj, :evidence)
         unless schema_validation[0]
-          halt 400, schema_validation[1].join("\n")
+          halt(
+            400,
+            { 'Content-Type' => 'application/json' },
+            render_json({ :status => 400, :msg => schema_validation[1].join("\n") })
+          )
         end
 
         evidence = evidence_obj['evidence']
@@ -88,7 +92,11 @@ module OpenBEL
         evidence_obj = read_json
         schema_validation = validate_schema(evidence_obj, :evidence)
         unless schema_validation[0]
-          halt 400, schema_validation[1].join("\n")
+          halt(
+            400,
+            { 'Content-Type' => 'application/json' },
+            render_json({ :status => 400, :msg => schema_validation[1].join("\n") })
+          )
         end
 
         evidence = evidence_obj['evidence']
