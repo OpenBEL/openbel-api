@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bel', :path => '../bel.rb'
+gem 'bel'
 gem 'bson', '1.12.0.rc2'
 gem 'bson_ext', '1.12.0.rc2'
 gem 'builder'

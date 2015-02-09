@@ -1,10 +1,4 @@
 PATH
-  remote: ../bel.rb
-  specs:
-    bel (0.3.0)
-      ffi (~> 1.9)
-
-PATH
   remote: ../kyotocabinet-ffi
   specs:
     kyotocabinet-ffi (0.0.1)
@@ -32,6 +26,8 @@ GEM
       tzinfo (~> 1.1)
     ast (2.0.0)
     backports (3.6.4)
+    bel (0.3.0)
+      ffi (~> 1.9)
     bson (1.12.0.rc2)
     bson (1.12.0.rc2-java)
     bson_ext (1.12.0.rc2)
@@ -138,7 +134,7 @@ PLATFORMS
 
 DEPENDENCIES
   POpen4
-  bel!
+  bel
   bson (= 1.12.0.rc2)
   bson_ext (= 1.12.0.rc2)
   builder
