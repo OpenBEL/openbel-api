@@ -96,7 +96,21 @@ module OpenBEL
 
         def read_json
           request.body.rewind
-          MultiJson.load request.body.read
+          begin
+            MultiJson.load request.body.read
+          rescue MultiJson::ParseError => ex
+            halt(
+              400,
+              {
+                'Content-Type' => 'application/json'
+              },
+              render_json({
+                :status => 400,
+                :msg => 'Invalid JSON body.',
+                :detail => ex.cause.to_s
+              })
+            )
+          end
         end
 
         def render_json(obj, media_type = 'application/json', profile = nil)
