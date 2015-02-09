@@ -222,23 +222,20 @@ module OpenBEL
       end
 
       get '/api/namespaces/:namespace/:id/equivalents/:target/?' do |namespace, value, target|
-        equivalent = @api.find_equivalent(namespace, value, {
+        equivalents = @api.find_equivalent(namespace, value, {
           target: target
         })
-
-        halt 404 unless equivalent
+        halt 404 if not equivalents or equivalents.empty?
 
         render(
-          equivalent,
+          equivalents,
           :"namespace_value"
         )
       end
 
       get '/api/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
         orthologs = @api.find_ortholog(namespace, value)
-        if not orthologs or orthologs.empty?
-          halt 404
-        end
+        halt 404 if not orthologs or orthologs.empty?
 
         render(
           orthologs,
@@ -250,9 +247,7 @@ module OpenBEL
         orthologs = @api.find_ortholog(namespace, value, {
           target: target
         })
-        if not orthologs or orthologs.empty?
-          halt 404
-        end
+        halt 404 if not orthologs or orthologs.empty?
 
         render(
           orthologs,
