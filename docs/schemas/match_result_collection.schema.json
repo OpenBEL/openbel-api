@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "description": "DESCRIBE MATCH RESULTS",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "match_results"
+  ],
+  "properties": {
+    "match_results": {
+      "type": "array",
+      "minItems": 0,
+      "title": "",
+      "description": "",
+      "items": {
+        "$ref":"http://next.belframework.org/schema/match_result.schema.json#/properties/match_result"
+      }
+    }
+  }
+}
