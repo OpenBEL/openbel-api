@@ -1,6 +1,9 @@
 require_relative 'api'
 require_relative 'model'
 
+# XXX platform-dependency
+require_relative '../model/rdf_resource'
+
 module OpenBEL
   module Namespace
 
