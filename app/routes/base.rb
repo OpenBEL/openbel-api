@@ -4,6 +4,7 @@ require 'namespace/model'
 require 'app/resources/completion'
 require 'app/resources/evidence'
 require 'app/resources/function'
+require 'app/resources/match_result'
 require 'app/resources/namespace'
 require 'app/schemas'
 
@@ -14,6 +15,7 @@ module OpenBEL
       include OpenBEL::Resource::Evidence
       include OpenBEL::Resource::Expressions
       include OpenBEL::Resource::Functions
+      include OpenBEL::Resource::MatchResults
       include OpenBEL::Resource::Namespaces
       include OpenBEL::Schemas
 
@@ -25,6 +27,8 @@ module OpenBEL
         :completion_collection      => CompletionCollectionSerializer,
         :function                   => FunctionResourceSerializer,
         :function_collection        => FunctionCollectionSerializer,
+        :match_result               => MatchResultResourceSerializer,
+        :match_result_collection    => MatchResultCollectionSerializer,
         :namespace                  => NamespaceResourceSerializer,
         :namespace_collection       => NamespaceCollectionSerializer,
         :namespace_value            => NamespaceValueResourceSerializer,

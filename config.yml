@@ -2,6 +2,7 @@ plugin_paths:
   - 'lib/plugin/cache'
   - 'lib/plugin/evidence'
   - 'lib/plugin/namespace'
+  - 'lib/plugin/search'
   - 'lib/plugin/storage'
 
 namespace-cache:
@@ -29,6 +30,7 @@ namespace-api:
   plugin: 'namespace'
   extensions:
     storage: 'namespace-storage'
+    search:  'search-api'
 
 evidence-api:
   type:   'evidence'
@@ -37,6 +39,12 @@ evidence-api:
     host:     'localhost'
     port:     27017
     database: 'openbel'
+
+search-api:
+  type:   'search'
+  plugin: 'belrb_search'
+  options:
+    file: 'rdf.db'
 
 # vim: ts=2 sts=2 sw=2
 # encoding: utf-8

@@ -14,10 +14,6 @@ module OpenBEL
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def find_namespace_values_by_match(namespace, match, options = {})
-        fail NotImplementedError, "#{__method__} is not implemented"
-      end
-
       def find_namespace_values(namespace, options = {}, &block)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
@@ -35,6 +31,14 @@ module OpenBEL
       end
 
       def find_orthologs(namespace, value, options = {})
+        fail NotImplementedError, "#{__method__} is not implemented"
+      end
+
+      def search(match, options = {})
+        fail NotImplementedError, "#{__method__} is not implemented"
+      end
+
+      def search_namespace(namespace, match, options = {})
         fail NotImplementedError, "#{__method__} is not implemented"
       end
     end

@@ -21,6 +21,7 @@ gem 'redlander', :path => '../redlander'
 gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
+gem 'sqlite3'
 
 group :development do
   gem 'POpen4'

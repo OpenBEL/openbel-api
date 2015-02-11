@@ -19,9 +19,11 @@ module OpenBEL
       BEL_ORTHOLOGOUS_MATCH = 'http://www.openbel.org/vocabulary/orthologousMatch'
       RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 
-      def initialize(storage)
+      def initialize(storage, search)
         fail(ArgumentError, "storage is invalid") unless storage
+        fail(ArgumentError, "search is invalid") unless search
         @storage = storage
+        @search  = search
       end
 
       def find_namespaces(options = {})
@@ -209,6 +211,28 @@ module OpenBEL
             hash
           }
         end
+      end
+
+      def search(match, options = {})
+        if (match || '').empty?
+          fail ArgumentError, "match cannot be empty"
+        end
+
+        @search.search(
+          match,
+          :type => 'namespace_value'
+        )
+      end
+
+      def search_namespace(namespace, match, options = {})
+        namespace_uri = find_namespace_rdf_uri(namespace)
+        return nil unless namespace_uri
+
+        @search.search(
+          match,
+          :type => 'namespace_value',
+          :scheme_uri => namespace_uri
+        )
       end
 
       private

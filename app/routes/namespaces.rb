@@ -85,6 +85,26 @@ module OpenBEL
         )
       end
 
+      get '/api/namespaces/values/match-results/:match' do |match|
+        start    = (params[:start]  || 0).to_i
+        size     = (params[:size]   || 0).to_i
+
+        faceted  = as_bool(params[:faceted])
+        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
+        halt 501 if faceted or not filter_params.empty?
+
+        match_results = @api.search(match,
+          :start => start,
+          :size => size
+        ).to_a
+
+        halt 404 if not match_results or match_results.empty?
+        render(
+          match_results,
+          :match_result_collection
+        )
+      end
+
       get '/api/namespaces/:namespace/?' do |namespace|
         ns = @api.find_namespace(namespace)
 
@@ -94,6 +114,26 @@ module OpenBEL
         render(
           [ns],
           :namespace
+        )
+      end
+
+      get '/api/namespaces/:namespace/values/match-results/:match' do |namespace, match|
+        start    = (params[:start]  || 0).to_i
+        size     = (params[:size]   || 0).to_i
+
+        faceted  = as_bool(params[:faceted])
+        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
+        halt 501 if faceted or not filter_params.empty?
+
+        match_results = @api.search_namespace(namespace, match,
+          :start => start,
+          :size => size
+        ).to_a
+
+        halt 404 if not match_results or match_results.empty?
+        render(
+          match_results,
+          :match_result_collection
         )
       end
 

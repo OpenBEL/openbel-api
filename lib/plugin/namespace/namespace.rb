@@ -27,7 +27,7 @@ module OpenBEL
       end
 
       def required_extensions
-        [:storage]
+        [:storage, :search]
       end
 
       def optional_extensions
@@ -43,16 +43,24 @@ module OpenBEL
         if not @storage_plugin
           return ValidationError.new(self, :storage, "The storage extension is missing.")
         end
+        @search_plugin  = extensions.delete(:search)
+        if not @search_plugin
+          return ValidationError.new(self, :search, "The search extension is missing.")
+        end
+
         validation_successful
       end
 
       def configure(extensions = {}, options = {})
         @storage_plugin = extensions.delete(:storage)
+        @search_plugin  = extensions.delete(:search)
         @options = options
       end
 
       def create_instance
-        OpenBEL::Namespace::Namespace.new(@storage_plugin.create_instance)
+        storage = @storage_plugin.create_instance
+        search  = @search_plugin.create_instance
+        OpenBEL::Namespace::Namespace.new(storage, search)
       end
     end
   end
