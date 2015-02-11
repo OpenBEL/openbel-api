@@ -14,6 +14,9 @@ module OpenBEL
           :_links => {
             :item => [
               {
+                :href => "#{base_url}/api/annotations"
+              },
+              {
                 :href => "#{base_url}/api/evidence"
               },
               {

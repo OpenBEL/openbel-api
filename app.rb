@@ -13,6 +13,7 @@ require 'rack/cors'
 require 'sinatra/base'
 require 'app/routes/base'
 require 'app/routes/root'
+require 'app/routes/annotations'
 require 'app/routes/evidence'
 require 'app/routes/expressions'
 require 'app/routes/functions'
@@ -55,6 +56,7 @@ module OpenBEL
     disable :protection
 
     use OpenBEL::Routes::Root
+    use OpenBEL::Routes::Annotations
     use OpenBEL::Routes::Evidence
     use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Functions
