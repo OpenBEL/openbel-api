@@ -1,8 +1,0 @@
-{
-    "annotation": {
-            "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
-            "name": "Disease Ontology",
-            "prefix": "do",
-            "domain": "disease"
-    }
-}

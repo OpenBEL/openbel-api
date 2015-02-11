@@ -69,6 +69,11 @@ schemas:
               example: !include http://next.belframework.org/example/annotation_collection.example.json
     /{annotation}:
       description: Represents a single annotation resource.
+      uriParameters:
+        annotation:
+          type: string
+          description: An identifier string for an annotation. This is either the annotation name or prefix.
+          required: true
       options:
         description: Returns allowable HTTP methods.
         responses:
@@ -79,6 +84,12 @@ schemas:
                 type:        string
       get:
         description: Retrieves an annotation resource.
+        responses:
+          200:
+            body:
+              application/json:
+                schema:  annotation_collection
+                example: !include http://next.belframework.org/example/annotation_resource.example.json
       /values:
         description: Represents all annotation value resources available on the annotation resource identified by *{annotation}*.
         options:

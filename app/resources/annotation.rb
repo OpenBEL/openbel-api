@@ -72,6 +72,60 @@ module OpenBEL
           }
         end
       end
+
+      class AnnotationValueSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'annotation_value'
+          properties do |p|
+            p.rdf_uri        item.uri
+            p.type           item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+            p.identifier     item.identifier
+            p.name           item.prefLabel
+            p.title          item.title
+            p.species        item.fromSpecies
+            p.annotation_uri item.inScheme
+          end
+        end
+      end
+
+      class AnnotationValueResourceSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'annotation_value'
+          parts = URI(item.first.uri).path.split('/')[3..-1]
+          annotation_id = parts[0]
+          annotation_value_id = parts.join('/')
+          entities :'annotation_values', item, AnnotationValueSerializer
+
+          link :self,       link_self(annotation_value_id)
+          link :collection, link_annotation(annotation_id)
+        end
+
+        private
+
+        def link_self(id)
+          {
+            :type => :'annotation_value',
+            :href => "#{base_url}/api/annotations/#{id}"
+          }
+        end
+
+        def link_annotation(id)
+          {
+            :type => :annotation,
+            :href => "#{base_url}/api/annotations/#{id}"
+          }
+        end
+      end
+
+      class AnnotationValueCollectionSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :'annotation_value_collection'
+          entities :'annotation_values', item, AnnotationValueSerializer
+        end
+      end
     end
   end
 end

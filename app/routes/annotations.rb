@@ -48,13 +48,59 @@ module OpenBEL
         )
       end
 
-      get '/api/annotations/:annotation' do |annotation|
+      get '/api/annotations/values/match-results/:match' do |match|
+        start    = (params[:start]  || 0).to_i
+        size     = (params[:size]   || 0).to_i
+
+        faceted  = as_bool(params[:faceted])
+        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
+        halt 501 if faceted or not filter_params.empty?
+
+        match_results = @api.search(match,
+          :start => start,
+          :size => size
+        ).to_a
+
+        halt 404 if not match_results or match_results.empty?
+        render(
+          match_results,
+          :match_result_collection
+        )
       end
 
-      get '/api/annotations/values/match-results/:match' do |match|
+      get '/api/annotations/:annotation' do |annotation|
+        annotation = @api.find_annotation(annotation)
+
+        halt 404 unless annotation
+
+        status 200
+        render(
+          [annotation],
+          :annotation
+        )
       end
 
       get '/api/annotations/:annotation/values/match-results/:match' do |annotation, match|
+        start    = (params[:start]  || 0).to_i
+        size     = (params[:size]   || 0).to_i
+
+        faceted  = as_bool(params[:faceted])
+        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
+        halt 501 if faceted or not filter_params.empty?
+
+        match_results = @api.search_namespace(annotation, match,
+          :start => start,
+          :size => size
+        ).to_a
+
+        halt 404 if not match_results or match_results.empty?
+        render(
+          match_results,
+          :match_result_collection
+        )
+      end
+
+      get '/api/annotations/:annotation/values/:value' do |annotation, value|
       end
     end
   end
