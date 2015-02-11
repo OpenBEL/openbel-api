@@ -6,7 +6,7 @@ module OpenBEL
     module Namespace
 
       class Namespace < OpenBEL::Model::RdfResource
-        attr_accessor :type, :prefLabel, :prefix
+        attr_accessor :type, :prefLabel, :prefix, :domain
       end
 
       class NamespaceValue < OpenBEL::Model::RdfResource

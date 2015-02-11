@@ -14,7 +14,7 @@ module OpenBEL
             p.rdf_uri   item.uri
             p.name      item.prefLabel
             p.prefix    item.prefix
-            p.type      item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+            p.domain    item.domain
           end
         end
       end
