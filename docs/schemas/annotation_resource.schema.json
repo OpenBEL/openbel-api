@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "description": "DESCRIBE ANNOTATION RESOURCE",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "annotations"
+  ],
+  "properties": {
+    "annotations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "title": "",
+      "description": "",
+      "items": {
+        "$ref":"http://next.belframework.org/schema/annotation.schema.json#/properties/annotation"
+      }
+    }
+  }
+}

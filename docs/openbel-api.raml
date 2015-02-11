@@ -4,6 +4,7 @@ version: 0.0.2
 baseUri: http://next.belframework.org
 schemas:
   - annotation:                            !include http://next.belframework.org/schema/annotation.schema.json
+  - annotation_resource:                   !include http://next.belframework.org/schema/annotation_resource.schema.json
   - annotation_collection:                 !include http://next.belframework.org/schema/annotation_collection.schema.json
   - completion:                            !include http://next.belframework.org/schema/completion.schema.json
   - completion_collection:                 !include http://next.belframework.org/schema/completion_collection.schema.json
@@ -88,7 +89,7 @@ schemas:
           200:
             body:
               application/json:
-                schema:  annotation_collection
+                schema:  annotation_resource
                 example: !include http://next.belframework.org/example/annotation_resource.example.json
       /values:
         description: Represents all annotation value resources available on the annotation resource identified by *{annotation}*.
