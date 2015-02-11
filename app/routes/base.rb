@@ -1,6 +1,7 @@
 require 'json_schema'
 require 'multi_json'
 require 'namespace/model'
+require 'app/resources/annotation'
 require 'app/resources/completion'
 require 'app/resources/evidence'
 require 'app/resources/function'
@@ -12,6 +13,7 @@ module OpenBEL
   module Routes
 
     class Base < Sinatra::Application
+      include OpenBEL::Resource::Annotations
       include OpenBEL::Resource::Evidence
       include OpenBEL::Resource::Expressions
       include OpenBEL::Resource::Functions
@@ -23,6 +25,8 @@ module OpenBEL
       SPOKEN_CONTENT_TYPES   = %w[application/json application/hal+json text/html text/xml]
       SCHEMA_BASE_URL        = 'http://next.belframework.org/schema/'
       RESOURCE_SERIALIZERS   = {
+        :annotation                 => AnnotationResourceSerializer,
+        :annotation_collection      => AnnotationCollectionSerializer,
         :completion                 => CompletionResourceSerializer,
         :completion_collection      => CompletionCollectionSerializer,
         :function                   => FunctionResourceSerializer,
