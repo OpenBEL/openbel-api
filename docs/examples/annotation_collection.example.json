@@ -1,0 +1,28 @@
+{
+    "annotations": [
+        {
+            "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+            "name": "Disease Ontology",
+            "prefix": "do",
+            "domain": "disease"
+        },
+        {
+            "rdf_uri": "http://www.openbel.org/bel/namespace/mesh-anatomy",
+            "name": "Mesh Anatomy",
+            "prefix": "mesha",
+            "domain": "anatomy"
+        },
+        {
+            "rdf_uri": "http://www.openbel.org/bel/namespace/mesh-cellular-structures",
+            "name": "Mesh Cellular Structures",
+            "prefix": "meshcs",
+            "domain": "location"
+        },
+        {
+            "rdf_uri": "http://www.openbel.org/bel/namespace/mesh-diseases",
+            "name": "Mesh Diseases",
+            "prefix": "meshd",
+            "domain": "disease"
+        }
+    ]
+}
