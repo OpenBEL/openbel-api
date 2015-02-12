@@ -88,7 +88,7 @@ module OpenBEL
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
         halt 501 if faceted or not filter_params.empty?
 
-        match_results = @api.search_namespace(annotation, match,
+        match_results = @api.search_annotation(annotation, match,
           :start => start,
           :size => size
         ).to_a
