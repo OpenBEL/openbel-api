@@ -47,9 +47,7 @@
                     "title": "Citation Name",
                     "description": "Name or citation string for the reference."
                 }
-            },
-            "title": "Citation for Edge Evidence",
-            "description": "Citation to support the evidence presented for the Edge"
+            }
         },
         "biological_context": {
             "type": "object",
