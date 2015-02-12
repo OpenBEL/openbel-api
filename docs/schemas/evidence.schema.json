@@ -74,15 +74,10 @@
             "description": "A biological context specifies the experiment's parameters where this interaction was observed.",
             "additionalProperties": true,
             "properties": {
-                "ncbi_tax_id": {
-                    "type": "integer",
-                    "title": "NCBI Taxonomy ID",
-                    "description": "NCBI taxonomy id - e.g. 9606 is the id for Homo sapien"
-                },
-                "species_common_name": {
+                "species": {
                     "type": "string",
-                    "title": "Species common name",
-                    "description": "Common name for species like human, mouse or rat"
+                    "title": "Species from NCBI Taxonomy",
+                    "description": "The id (i.e. 9606), scientific name (i.e. Homo sapiens), and common name (i.e. man, human) are allowed values."
                 }
             }
         },
