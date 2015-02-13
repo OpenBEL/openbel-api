@@ -82,8 +82,6 @@ module OpenBEL
             p.type           item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
             p.identifier     item.identifier
             p.name           item.prefLabel
-            p.title          item.title
-            p.species        item.fromSpecies
             p.annotation_uri item.inScheme
           end
         end

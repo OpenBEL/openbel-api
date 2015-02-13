@@ -15,6 +15,10 @@ module OpenBEL
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
+      def find_annotation_values(annotation, options = {})
+        fail NotImplementedError, "#{__method__} is not implemented"
+      end
+
       def search(match, options = {})
         fail NotImplementedError, "#{__method__} is not implemented"
       end

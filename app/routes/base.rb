@@ -27,6 +27,7 @@ module OpenBEL
       RESOURCE_SERIALIZERS   = {
         :annotation                 => AnnotationResourceSerializer,
         :annotation_collection      => AnnotationCollectionSerializer,
+        :annotation_value           => AnnotationValueSerializer,
         :completion                 => CompletionResourceSerializer,
         :completion_collection      => CompletionCollectionSerializer,
         :function                   => FunctionResourceSerializer,

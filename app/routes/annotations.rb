@@ -101,6 +101,16 @@ module OpenBEL
       end
 
       get '/api/annotations/:annotation/values/:value' do |annotation, value|
+        value = @api.find_annotation_value(annotation, value)
+
+        halt 404 unless value
+
+        status 200
+        render(
+          value,
+          :"annotation_value",
+          :as_array => true
+        )
       end
     end
   end

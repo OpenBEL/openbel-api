@@ -10,8 +10,7 @@ module OpenBEL
       end
 
       class AnnotationValue < OpenBEL::Model::RdfResource
-        attr_accessor :inScheme, :type, :identifier,
-                      :fromSpecies, :prefLabel, :title
+        attr_accessor :inScheme, :type, :identifier, :prefLabel, :title
       end
     end
   end

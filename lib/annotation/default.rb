@@ -40,6 +40,13 @@ module OpenBEL
       end
 
       def find_annotation_value(annotation, value, options = {})
+        value_uri = find_annotation_value_rdf_uri(annotation, value)
+        return nil unless value_uri
+
+        annotation_value_by_uri(value_uri)
+      end
+
+      def find_annotation_values(annotation, options = {})
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
@@ -66,12 +73,6 @@ module OpenBEL
       end
 
       private
-
-      def annotation_by_uri(scheme_uri)
-        OpenBEL::Model::Annotation::Annotation.from(
-          @storage.triples(scheme_uri, nil, nil).to_a
-        )
-      end
 
       def find_annotation_rdf_uri(annotation)
         return nil unless annotation
@@ -111,12 +112,69 @@ module OpenBEL
         }
       end
 
+      def annotation_by_uri(scheme_uri)
+        OpenBEL::Model::Annotation::Annotation.from(
+          @storage.triples(scheme_uri, nil, nil).to_a
+        )
+      end
+
       def annotation_concept_scheme?(subject)
         @storage.triples(
           subject,
           RDF_TYPE,
           BEL_ANNOTATION_CONCEPT_SCHEME
         ).count() == 1
+      end
+
+      def find_annotation_value_rdf_uri(annotation, value)
+        return nil unless value
+
+        case value
+        when OpenBEL::Model::Namespace::NamespaceValue
+          value.uri
+        when URI
+          value
+        when String
+          annotation_uri = find_annotation_rdf_uri(annotation)
+          [
+            self.method(:annotation_value_by_pref_label),
+            self.method(:annotation_value_by_identifier),
+            self.method(:annotation_value_by_title)
+          ].each do |m|
+            uri = m.call(annotation_uri, value)
+            return uri if uri
+          end
+        end
+      end
+
+      def annotation_value_by_pref_label(annotation_uri, label)
+        @storage.triples(
+          nil, SKOS_PREF_LABEL, label, :object_literal => true, :only => :subject
+        ).find { |subject|
+          subject.start_with? annotation_uri
+        }
+      end
+
+      def annotation_value_by_identifier(annotation_uri, id)
+        @storage.triples(
+          nil, DC_IDENTIFIER, id, :object_literal => true, :only => :subject
+        ).find { |subject|
+          subject.start_with? annotation_uri
+        }
+      end
+
+      def annotation_value_by_title(annotation_uri, title)
+        @storage.triples(
+          nil, DC_TITLE, title, :object_literal => true, :only => :subject
+        ).find { |subject|
+          subject.start_with? annotation_uri
+        }
+      end
+
+      def annotation_value_by_uri(uri)
+        OpenBEL::Model::Annotation::AnnotationValue.from(
+          @storage.triples(uri, nil, nil).to_a
+        )
       end
     end
   end
