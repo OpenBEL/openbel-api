@@ -223,7 +223,7 @@ module OpenBEL
 
         @search.search(
           match,
-          :type => 'namespace_value'
+          :type => :namespace_value
         )
       end
 
@@ -233,7 +233,7 @@ module OpenBEL
 
         @search.search(
           match,
-          :type => 'namespace_value',
+          :type => :namespace_value,
           :scheme_uri => namespace_uri
         )
       end

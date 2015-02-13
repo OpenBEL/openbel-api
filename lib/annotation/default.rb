@@ -50,7 +50,7 @@ module OpenBEL
 
         @search.search(
           match,
-          :type => 'annotation_value'
+          :type => :annotation_value
         )
       end
 
@@ -60,7 +60,7 @@ module OpenBEL
 
         @search.search(
           match,
-          :type => 'annotation_value',
+          :type => :annotation_value,
           :scheme_uri => annotation_uri
         )
       end
