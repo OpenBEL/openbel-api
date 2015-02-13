@@ -76,9 +76,12 @@ module OpenBEL
       get '/api/evidence/:id' do
         evidence = @api.find_evidence_by_id(params[:id])
         halt 404 unless evidence
+        # XXX Hack to return single resource wrapped as json array
+        # XXX Need to better support evidence resource arrays in base.rb
         render(
-          [evidence],
-          :evidence_resource
+          evidence,
+          :evidence,
+          :as_array => true
         )
       end
 

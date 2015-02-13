@@ -157,10 +157,20 @@ module OpenBEL
               Oat::Adapters::BasicJson
             end
 
-          render_json(
-            serializer_class.new(obj, resource_context, adapter).to_hash,
-            media_type
-          )
+          # XXX hack to fix OpenBEL/openbel-server#33
+          if options[:as_array]
+            render_json(
+              {
+                type => [serializer_class.new(obj, resource_context, adapter).to_hash]
+              },
+              media_type
+            )
+          else
+            render_json(
+              serializer_class.new(obj, resource_context, adapter).to_hash,
+              media_type
+            )
+          end
         end
 
         def stream_resource_collection(type, collection, facets, options = {})
