@@ -16,7 +16,9 @@ module OpenBEL
             p.rdf_scheme_uri item.scheme_uri
             p.identifier     item.identifier
             p.name           item.pref_label
-            p.synonyms       item.alt_labels
+
+            # Do not have alt_labels property from FTS index.
+            # p.synonyms       item.alt_labels
           end
         end
       end
