@@ -15,7 +15,15 @@ module OpenBEL
         caret_position = (params[:caret_position] || bel.length).to_i
         halt 400 unless bel and caret_position
 
-        completions = BEL::Completion.complete(bel, caret_position)
+        begin
+          completions = BEL::Completion.complete(bel, caret_position)
+        rescue IndexError => ex
+          halt(
+            400,
+            { 'Content-Type' => 'application/json' },
+            render_json({ :status => 400, :msg => ex.to_s })
+          )
+        end
         halt 404 if completions.empty?
         render(
           completions,
