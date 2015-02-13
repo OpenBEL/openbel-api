@@ -5,6 +5,11 @@ module OpenBEL
 
     class Expressions < Base
 
+      def initialize(app)
+        super
+        @search = BEL::Search.use(:sqlite3, :db_file => 'rdf.db')
+      end
+
       options '/api/expressions/*/completions' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
@@ -16,7 +21,7 @@ module OpenBEL
         halt 400 unless bel and caret_position
 
         begin
-          completions = BEL::Completion.complete(bel, caret_position)
+          completions = BEL::Completion.complete(bel, @search, caret_position)
         rescue IndexError => ex
           halt(
             400,
