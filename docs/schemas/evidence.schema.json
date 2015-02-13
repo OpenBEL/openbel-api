@@ -57,9 +57,13 @@
                     "description": "The citation date of the reference."
                 },
                 "authors": {
-                    "type": "string",
+                    "type": "array",
                     "title": "Citation Authors",
-                    "description": "The citation authors of the reference."
+                    "description": "The citation authors of the reference.",
+                    "items": {
+                      "type": "string",
+                      "minItems": 0
+                    }
                 },
                 "comment": {
                     "type": "string",
