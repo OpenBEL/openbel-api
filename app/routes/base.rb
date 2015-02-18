@@ -27,7 +27,7 @@ module OpenBEL
       RESOURCE_SERIALIZERS   = {
         :annotation                 => AnnotationResourceSerializer,
         :annotation_collection      => AnnotationCollectionSerializer,
-        :annotation_value           => AnnotationValueSerializer,
+        :annotation_value           => AnnotationValueResourceSerializer,
         :completion                 => CompletionResourceSerializer,
         :completion_collection      => CompletionCollectionSerializer,
         :function                   => FunctionResourceSerializer,
@@ -135,6 +135,68 @@ module OpenBEL
 
         def validate_schema(data, type)
           self.validate(data, type)
+        end
+
+        def render_resource(obj, type, options = {})
+          media_type = resolve_supported_content_type(request)
+          resource_context = {
+            :base_url => base_url,
+            :url      => url
+          }.merge(options)
+
+          type_class = type.to_s.split('_').map(&:capitalize).join
+          type_serializer     = self.class.const_get("#{type_class}Serializer")
+          resource_serializer = self.class.const_get("#{type_class}ResourceSerializer")
+
+          adapter =
+            case media_type
+            when 'application/hal+json'
+              Oat::Adapters::HAL
+            else
+              media_type = 'application/json'
+              Oat::Adapters::BasicJson
+            end
+
+          resource = resource_serializer.new(
+            [
+              type_serializer.new(obj, resource_context, adapter).to_hash
+            ],
+            resource_context,
+            adapter
+          ).to_hash
+
+          render_json(resource.to_hash, media_type)
+        end
+
+        def render_collection(collection, type, options = {})
+          media_type = resolve_supported_content_type(request)
+          resource_context = {
+            :base_url => base_url,
+            :url      => url
+          }.merge(options)
+
+          type_class = type.to_s.split('_').map(&:capitalize).join
+          type_serializer     = self.class.const_get("#{type_class}Serializer")
+          resource_serializer = self.class.const_get("#{type_class}CollectionSerializer")
+
+          adapter =
+            case media_type
+            when 'application/hal+json'
+              Oat::Adapters::HAL
+            else
+              media_type = 'application/json'
+              Oat::Adapters::BasicJson
+            end
+
+          resource = resource_serializer.new(
+            collection.map { |obj|
+              type_serializer.new(obj, resource_context, adapter).to_hash
+            },
+            resource_context,
+            adapter
+          ).to_hash
+
+          render_json(resource.to_hash, media_type)
         end
 
         def render(obj, type, options = {})

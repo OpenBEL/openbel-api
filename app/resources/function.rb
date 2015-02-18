@@ -24,9 +24,9 @@ module OpenBEL
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'function'
+          type :function
           properties do |p|
-            collection :functions, item, FunctionResourceSerializer
+            p.functions      item
           end
 
           link :self,        link_self(item.first[:short_form])
@@ -70,11 +70,11 @@ module OpenBEL
         schema do
           type :'function_collection'
           properties do |p|
-            collection :functions, item, FunctionSerializer
+            p.functions      item
           end
 
           link :self,       link_self
-          link :start,      link_start(item[0][:short_form])
+          link :start,      link_start(item.first[:short_form])
         end
 
         private

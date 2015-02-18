@@ -11,21 +11,12 @@ module OpenBEL
         schema do
           type :annotation
           properties do |p|
-            p.rdf_uri   item.uri
             p.name      item.prefLabel
             p.prefix    item.prefix
             p.domain    item.domain
           end
-        end
-      end
 
-      class AnnotationResourceSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
-        schema do
-          type :annotation
-          entities :annotations, item, AnnotationSerializer
-
-          link :self,       link_self(item.first.prefix)
+          link :self,       link_self(item.prefix)
           link :collection, link_collection
         end
 
@@ -46,14 +37,26 @@ module OpenBEL
         end
       end
 
+      class AnnotationResourceSerializer < BaseSerializer
+        adapter Oat::Adapters::HAL
+        schema do
+          type :annotation
+          properties do |p|
+            p.annotations   item
+          end
+        end
+      end
+
       class AnnotationCollectionSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
           type :'annotation_collection'
-          entities :annotations, item, AnnotationSerializer
+          properties do |p|
+            p.annotations   item
+          end
 
           link :self,       link_self
-          link :start,      link_start(item.first.prefix)
+          link :start,      link_start(item.first[:prefix])
         end
 
         private
@@ -76,52 +79,59 @@ module OpenBEL
       class AnnotationValueSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'annotation_value'
+          type :annotation_value
+
           properties do |p|
-            p.rdf_uri        item.uri
             p.type           item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
             p.identifier     item.identifier
             p.name           item.prefLabel
-            p.annotation_uri item.inScheme
           end
+
+          setup(item)
+          link :self,           link_self
+          link :collection,     link_annotation
+        end
+
+        private
+
+        def setup(item)
+          parts = URI(item.uri).path.split('/')[3..-1]
+          @annotation_id = parts[0]
+          @annotation_value_id = parts.join('/')
+        end
+
+        def link_self
+          {
+            :type => :annotation_value,
+            :href => "#{base_url}/api/annotations/#{@annotation_value_id}"
+          }
+        end
+
+        def link_annotation
+          {
+            :type => :annotation,
+            :href => "#{base_url}/api/annotations/#{@annotation_id}"
+          }
         end
       end
 
       class AnnotationValueResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'annotation_value'
-          parts = URI(item.first.uri).path.split('/')[3..-1]
-          annotation_id = parts[0]
-          annotation_value_id = parts.join('/')
-          entities :'annotation_values', item, AnnotationValueSerializer
-
-          link :self,       link_self(annotation_value_id)
-          link :collection, link_annotation(annotation_id)
-        end
-
-        private
-
-        def link_self(id)
-          {
-            :type => :'annotation_value',
-            :href => "#{base_url}/api/annotations/#{id}"
-          }
-        end
-
-        def link_annotation(id)
-          {
-            :type => :annotation,
-            :href => "#{base_url}/api/annotations/#{id}"
-          }
+          type :annotation_value
+          properties do |p|
+            p.annotation_values item
+          end
         end
       end
 
       class AnnotationValueCollectionSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'annotation_value_collection'
-          entities :'annotation_values', item, AnnotationValueSerializer
+          type :annotation_value_collection
+          properties do |p|
+            p.annotation_values item
+          end
         end
       end
     end

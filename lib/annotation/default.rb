@@ -58,7 +58,10 @@ module OpenBEL
         @search.search(
           match,
           :type => :annotation_value
-        )
+        ).map { |result|
+          # XXX temp work-around for bad data
+          annotation_value_by_uri(result.uri[1...-1])
+        }
       end
 
       def search_annotation(annotation, match, options = {})
@@ -69,7 +72,10 @@ module OpenBEL
           match,
           :type => :annotation_value,
           :scheme_uri => annotation_uri
-        )
+        ).map { |result|
+          # XXX temp work-around for bad data
+          annotation_value_by_uri(result.uri[1...-1])
+        }
       end
 
       private

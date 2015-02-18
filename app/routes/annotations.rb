@@ -40,21 +40,31 @@ module OpenBEL
 
         halt 404 if not annotations or annotations.empty?
 
-        render(
+        render_collection(
           annotations.sort { |x,y|
             x.prefLabel.to_s <=> y.prefLabel.to_s
           },
-          :annotation_collection
+          :annotation
         )
       end
 
-      get '/api/annotations/values/match-results/:match' do |match|
+      get '/api/annotations/values' do
         start    = (params[:start]  || 0).to_i
         size     = (params[:size]   || 0).to_i
-
         faceted  = as_bool(params[:faceted])
+        halt 501 if faceted
+
+        filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        halt 501 if faceted or not filter_params.empty?
+        filter_params.each do |filter|
+          filter = MultiJson.load(filter)
+          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
+          filter_hash[filter['category']][filter['name']] = filter['value']
+        end
+
+        halt 404 unless filter_hash['fts']['search']
+
+        match = filter_hash['fts']['search']
 
         match_results = @api.search(match,
           :start => start,
@@ -62,9 +72,9 @@ module OpenBEL
         ).to_a
 
         halt 404 if not match_results or match_results.empty?
-        render(
+        render_collection(
           match_results,
-          :match_result_collection
+          :annotation_value
         )
       end
 
@@ -74,19 +84,26 @@ module OpenBEL
         halt 404 unless annotation
 
         status 200
-        render(
-          [annotation],
-          :annotation
-        )
+        render_resource(annotation, :annotation)
       end
 
-      get '/api/annotations/:annotation/values/match-results/:match' do |annotation, match|
+      get '/api/annotations/:annotation/values' do |annotation|
         start    = (params[:start]  || 0).to_i
         size     = (params[:size]   || 0).to_i
-
         faceted  = as_bool(params[:faceted])
+        halt 501 if faceted
+
+        filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        halt 501 if faceted or not filter_params.empty?
+        filter_params.each do |filter|
+          filter = MultiJson.load(filter)
+          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
+          filter_hash[filter['category']][filter['name']] = filter['value']
+        end
+
+        halt 404 unless filter_hash['fts']['search']
+
+        match = filter_hash['fts']['search']
 
         match_results = @api.search_annotation(annotation, match,
           :start => start,
@@ -94,9 +111,9 @@ module OpenBEL
         ).to_a
 
         halt 404 if not match_results or match_results.empty?
-        render(
+        render_collection(
           match_results,
-          :match_result_collection
+          :annotation_value
         )
       end
 
@@ -106,11 +123,7 @@ module OpenBEL
         halt 404 unless value
 
         status 200
-        render(
-          value,
-          :"annotation_value",
-          :as_array => true
-        )
+        render_resource(value, :annotation_value)
       end
     end
   end
