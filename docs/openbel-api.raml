@@ -279,6 +279,24 @@ schemas:
           }
         ```
 
+        This collection can be filtered using by a full-text search filter such as:
+
+        ```json
+          {
+            "category": "fts",
+            "name": "search",
+            "value": "lung liver pancreas"
+          }
+        ```
+
+        ```json
+          {
+            "category": "fts",
+            "name": "search",
+            "value": "\"subdural hematoma\""
+          }
+        ```
+
         This collection can specify the *faceted* boolean option. Facets will reflect all (possibly filtered) evidence resources irrespective of *start* and *size* paging.
         
         Facts are an array of facet objects that are composed of a *filter* and *count*. For example for the evidence metadata filter the facet object would be encoded as:
@@ -317,7 +335,9 @@ schemas:
           description: |
             A filter to apply to the evidence resource collection to narrow the resources retrieved.
           example: |
-            {"category":"context","name":"Anatomy","value":"prostate gland"}
+            {"category":"biological_context","name":"Anatomy","value":"prostate gland"}
+            {"category":"fts","name":"search","value":"\"subdural hematoma\" carcinoma"}
+            {"category":"fts","name":"search","value":"homatoma -carcinoma"}
           required: false
         faceted:
           type: string
@@ -367,14 +387,14 @@ schemas:
                   ]
                   "facets": [
                     {
-                      "category": "context",
+                      "category": "biological_context",
                       "name": "Species",
                       "value": "9606",
                       "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"9606\"}",
                       "count": 49071
                     },
                     {
-                      "category": "context",
+                      "category": "biological_context",
                       "name": "Species",
                       "value": "10090",
                       "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10090\"}",
@@ -409,14 +429,14 @@ schemas:
                       "count": 18784
                     },
                     {
-                      "category": "context",
+                      "category": "biological_context",
                       "name": "Species",
                       "value": "10116",
                       "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10116\"}",
                       "count": 7091
                     },
                     {
-                      "category": "context",
+                      "category": "biological_context",
                       "name": "Anatomy",
                       "value": "liver",
                       "filter": "{\"category\":\"context\",\"name\":\"Anatomy\",\"value\":\"liver\"}",

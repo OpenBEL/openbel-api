@@ -58,6 +58,13 @@ module OpenBEL
           filter_hash["#{filter['category']}.#{filter['name']}"] = filter['value']
         end
 
+        fts_search_value = filter_hash.delete("fts.search")
+        if fts_search_value
+          filter_hash[:$text] = {
+            :$search => fts_search_value
+          }
+        end
+
         results  = @api.find_evidence_by_query(filter_hash, start, size, faceted)
         evidence = results[:cursor]
         facets   = results[:facets]
