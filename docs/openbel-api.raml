@@ -94,6 +94,8 @@ schemas:
             type: integer
             description: |
               The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
+
+              A size of zero or less will return all values.
             example: 100
             required: false
           filter:
@@ -161,6 +163,8 @@ schemas:
               type: integer
               description: |
                 The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
+
+                A size of zero or less will return all values.
               example: 100
               required: false
             filter:

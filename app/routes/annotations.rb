@@ -54,8 +54,9 @@ module OpenBEL
       end
 
       get '/api/annotations/values' do
-        start    = (params[:start]  || 0).to_i
-        size     = (params[:size]   || 0).to_i
+        start    = (params[:start]  ||  0).to_i
+        size     = (params[:size]   || -1).to_i
+        size     = -1 if size <= 0
         faceted  = as_bool(params[:faceted])
         halt 501 if faceted
 
@@ -93,8 +94,10 @@ module OpenBEL
       end
 
       get '/api/annotations/:annotation/values' do |annotation|
-        start    = (params[:start]  || 0).to_i
-        size     = (params[:size]   || 0).to_i
+        start    = (params[:start]  ||  0).to_i
+        size     = (params[:size]   || -1).to_i
+        size     = -1 if size <= 0
+
         faceted  = as_bool(params[:faceted])
         halt 501 if faceted
 
