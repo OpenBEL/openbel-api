@@ -1,25 +1,21 @@
 {
     "annotation_values": [
         {
-
             "type": "BiologicalProcessConcept",
             "identifier": "0050481",
             "name": "endemic typhus"
         },
         {
-
             "type": "BiologicalProcessConcept",
             "identifier": "11258",
             "name": "cat-scratch disease"
         },
         {
-
             "type": "BiologicalProcessConcept",
             "identifier": "D002372",
             "name": "Cat-Scratch Disease"
         },
         {
-
             "type": "BiologicalProcessConcept",
             "identifier": "D003410",
             "name": "Cri-du-Chat Syndrome"
