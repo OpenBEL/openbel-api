@@ -6,6 +6,9 @@ schemas:
   - annotation:                            !include http://next.belframework.org/schema/annotation.schema.json
   - annotation_resource:                   !include http://next.belframework.org/schema/annotation_resource.schema.json
   - annotation_collection:                 !include http://next.belframework.org/schema/annotation_collection.schema.json
+  - annotation_value:                      !include http://next.belframework.org/schema/annotation_value.schema.json
+  - annotation_value_resource:             !include http://next.belframework.org/schema/annotation_value_resource.schema.json
+  - annotation_value_collection:           !include http://next.belframework.org/schema/annotation_value_collection.schema.json
   - completion:                            !include http://next.belframework.org/schema/completion.schema.json
   - completion_collection:                 !include http://next.belframework.org/schema/completion_collection.schema.json
   - evidence:                              !include http://next.belframework.org/schema/evidence.schema.json
@@ -68,6 +71,50 @@ schemas:
             application/json:
               schema:  annotation_collection
               example: !include http://next.belframework.org/example/annotation_collection.example.json
+    /values:
+      description: Represents the annotation values resource collection for all annotation resources.
+      options:
+        description: Returns allowable HTTP methods.
+        responses:
+          200:
+            headers:
+              Accept:
+                description: Allowable HTTP methods.
+                type:        string
+      get:
+        description: Retrieve the annotation values resource collection for all annotation resources.
+        queryParameters:
+          start:
+            type: integer
+            description: |
+              The annotation value resource to start from for paging purposes.
+            example: 100
+            required: false
+          size:
+            type: integer
+            description: |
+              The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
+            example: 100
+            required: false
+          filter:
+            type: string
+            description: |
+              A filter to apply to the annotation value resource collection to narrow the resources retrieved.
+            example: |
+              {"category":"fts","name":"search","value":"cat"}
+            required: false
+          faceted:
+            type: string
+            description: |
+              The boolean indicator to provided faceted results for the annotation value resource collection. The default is to not facet.
+            enum: [ 'true', 'yes', '1', 'on' ]
+            example: yes
+        responses:
+          200:
+            body:
+              application/json:
+                schema:  annotation_value_collection
+                example: !include http://next.belframework.org/example/annotation_value_collection.example.json
     /{annotation}:
       description: Represents a single annotation resource.
       uriParameters:
@@ -92,7 +139,7 @@ schemas:
                 schema:  annotation_resource
                 example: !include http://next.belframework.org/example/annotation_resource.example.json
       /values:
-        description: Represents all annotation value resources available on the annotation resource identified by *{annotation}*.
+        description: Represents a resource collection of annotation values available on the annotation resource identified by *{annotation}*.
         options:
           description: Returns allowable HTTP methods.
           responses:
@@ -101,6 +148,40 @@ schemas:
                 Accept:
                   description: Allowable HTTP methods.
                   type:        string
+        get:
+          description: Retrieve the annotation values resource collection for all annotation resources.
+          queryParameters:
+            start:
+              type: integer
+              description: |
+                The annotation value resource to start from for paging purposes.
+              example: 100
+              required: false
+            size:
+              type: integer
+              description: |
+                The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
+              example: 100
+              required: false
+            filter:
+              type: string
+              description: |
+                A filter to apply to the annotation value resource collection to narrow the resources retrieved.
+              example: |
+                {"category":"fts","name":"search","value":"cat"}
+              required: false
+            faceted:
+              type: string
+              description: |
+                The boolean indicator to provided faceted results for the annotation value resource collection. The default is to not facet.
+              enum: [ 'true', 'yes', '1', 'on' ]
+              example: yes
+          responses:
+            200:
+              body:
+                application/json:
+                  schema:  annotation_value_collection
+                  example: !include http://next.belframework.org/example/annotation_value_collection.example.json
         /{value}:
           description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
           options:

@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "description": "DESCRIBE ANNOTATION VALUE COLLECTION",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "annotation_values"
+  ],
+  "properties": {
+    "annotation_values": {
+      "type": "array",
+      "minItems": 0,
+      "title": "",
+      "description": "",
+      "items": {
+        "$ref":"http://next.belframework.org/schema/annotation.schema.json#/properties/annotation_value"
+      }
+    }
+  }
+}
