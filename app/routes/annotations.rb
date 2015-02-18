@@ -20,17 +20,22 @@ module OpenBEL
         status 200
       end
 
+      options '/api/annotations/values' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
       options '/api/annotations/:annotation' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/annotations/values/match-results/:match' do
+      options '/api/annotations/:annotation/values' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/annotations/:annotation/values/match-results/:match' do
+      options '/api/annotations/:annotation/values/:value' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
