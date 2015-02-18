@@ -62,7 +62,7 @@ module OpenBEL
           filter_hash[filter['category']][filter['name']] = filter['value']
         end
 
-        halt 404 unless filter_hash['fts']['search']
+        halt 404 unless filter_hash['fts']['search'].is_a?(String)
 
         match = filter_hash['fts']['search']
 
@@ -101,7 +101,7 @@ module OpenBEL
           filter_hash[filter['category']][filter['name']] = filter['value']
         end
 
-        halt 404 unless filter_hash['fts']['search']
+        halt 404 unless filter_hash['fts']['search'].is_a?(String)
 
         match = filter_hash['fts']['search']
 
