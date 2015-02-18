@@ -57,7 +57,7 @@ module OpenBEL
 
         options = (options || {}).merge({:type => :annotation_value})
         @search.search(match, options).map { |result|
-          annotation_value_by_uri(result.uri[1...-1])
+          annotation_value_by_uri(result.uri)
         }
       end
 
@@ -70,7 +70,7 @@ module OpenBEL
           :scheme_uri => annotation_uri
         })
         @search.search(match, options).map { |result|
-          annotation_value_by_uri(result.uri[1...-1])
+          annotation_value_by_uri(result.uri)
         }
       end
 
