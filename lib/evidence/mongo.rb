@@ -74,7 +74,7 @@ module OpenBEL
             :'$group' => {
               :_id => '$facets.filter',
               :count => {
-                :'$sum' => '$facets.count'
+                :'$sum' => 1
               }
             }
           },
