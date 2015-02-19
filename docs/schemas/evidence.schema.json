@@ -97,11 +97,16 @@
                         }
                     },
                     {
-                        "type": ["string", "array"],
-                        "title": "Annotation URI's",
-                        "description": "URI's for Annotations",
-                        "items": {
-                            "type": "string"
+                        "type": "object",
+                        "title": "Annotation URI(s)",
+                        "description": "URI(s) for Annotations",
+                        "properties": {
+                            "uri": {
+                                "type": ["string", "array"],
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 ]
