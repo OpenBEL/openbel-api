@@ -73,16 +73,38 @@
             }
         },
         "biological_context": {
-            "type": "object",
+            "type": "array",
             "title": "Biological Context",
             "description": "A biological context specifies the experiment's parameters where this interaction was observed.",
-            "additionalProperties": true,
-            "properties": {
-                "species": {
-                    "type": "string",
-                    "title": "Species from NCBI Taxonomy",
-                    "description": "The id (i.e. 9606), scientific name (i.e. Homo sapiens), and common name (i.e. man, human) are allowed values."
-                }
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "Annotation Type",
+                                "description": ""
+                            },
+                            "value": {
+                                "type": ["string", "array"],
+                                "title": "Annotations",
+                                "description": "Annotations such as Homo sapiens, cancer, epithelial tissue",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "type": ["string", "array"],
+                        "title": "Annotation URI's",
+                        "description": "URI's for Annotations",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ]
             }
         },
         "summary_text": {
