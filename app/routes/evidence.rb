@@ -66,18 +66,31 @@ module OpenBEL
         end
 
         results  = @api.find_evidence_by_query(filter_hash, start, size, faceted)
-        evidence = results[:cursor]
+        evidence = results[:cursor].to_a
         facets   = results[:facets]
 
-        halt 404 unless evidence.has_next?
+        halt 404 if evidence.empty?
 
-        stream_resource_collection(:evidence, evidence, facets,
+        options = {
           :start   => start,
           :size    => size,
-          :filters => filter_params,
-          :facets  => facets
-        )
-        status 200
+          :filters => filter_params
+        }
+        if facets
+          facet_hashes = facets.map { |facet|
+            filter = MultiJson.load(facet['_id'])
+            {
+              :category => filter['category'].to_sym,
+              :name     => filter['name'].to_sym,
+              :value    => filter['value'],
+              :filter   => facet['_id'],
+              :count    => facet['count']
+            }
+          }
+          options[:facets] = facet_hashes
+        end
+
+        render_collection(evidence, :evidence, options)
       end
 
       get '/api/evidence/:id' do

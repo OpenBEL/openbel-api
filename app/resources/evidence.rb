@@ -74,7 +74,7 @@ module OpenBEL
         schema do
           type :'evidence-collection'
           properties do |p|
-            collection :evidence, item, EvidenceSerializer
+            p.evidence item
             p.facets   context[:facets]
           end
 
