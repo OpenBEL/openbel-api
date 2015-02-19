@@ -77,6 +77,8 @@ module OpenBEL
 
       private
 
+      NAMESPACE_PREFIX = 'http://www.openbel.org/bel/namespace/'
+
       def find_annotation_rdf_uri(annotation)
         return nil unless annotation
 
@@ -90,7 +92,8 @@ module OpenBEL
         when String
           [
             self.method(:annotation_by_prefix),
-            self.method(:annotation_by_pref_label)
+            self.method(:annotation_by_pref_label),
+            self.method(:annotation_by_uri_part)
           ].each do |m|
             uri = m.call(annotation)
             return uri if uri
@@ -117,6 +120,10 @@ module OpenBEL
         }
       end
 
+      def annotation_by_uri_part(label)
+        NAMESPACE_PREFIX + URI.encode(label)
+      end
+
       def annotation_by_uri(scheme_uri)
         OpenBEL::Model::Annotation::Annotation.from(
           @storage.triples(scheme_uri, nil, nil).to_a
@@ -141,6 +148,8 @@ module OpenBEL
           return value
         when String
           annotation_uri = find_annotation_rdf_uri(annotation)
+          return nil unless annotation_uri
+
           [
             self.method(:annotation_value_by_pref_label),
             self.method(:annotation_value_by_identifier),
