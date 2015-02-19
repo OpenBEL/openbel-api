@@ -42,7 +42,6 @@ module OpenBEL
 
       get '/api/annotations' do
         annotations = @api.find_annotations
-
         halt 404 if not annotations or annotations.empty?
 
         render_collection(
@@ -86,7 +85,6 @@ module OpenBEL
 
       get '/api/annotations/:annotation' do |annotation|
         annotation = @api.find_annotation(annotation)
-
         halt 404 unless annotation
 
         status 200
@@ -94,6 +92,9 @@ module OpenBEL
       end
 
       get '/api/annotations/:annotation/values' do |annotation|
+        annotation = @api.find_annotation(annotation)
+        halt 404 unless annotation
+
         start    = (params[:start]  ||  0).to_i
         size     = (params[:size]   || -1).to_i
         size     = -1 if size <= 0
@@ -127,7 +128,6 @@ module OpenBEL
 
       get '/api/annotations/:annotation/values/:value' do |annotation, value|
         value = @api.find_annotation_value(annotation, value)
-
         halt 404 unless value
 
         status 200
