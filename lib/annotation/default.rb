@@ -13,6 +13,7 @@ module OpenBEL
       BEL_ANNOTATION_CONCEPT_SCHEME = 'http://www.openbel.org/vocabulary/AnnotationConceptScheme'
       BEL_PREFIX = 'http://www.openbel.org/vocabulary/prefix'
       DC_IDENTIFIER = 'http://purl.org/dc/terms/identifier'
+      DC_TITLE = 'http://purl.org/dc/terms/title'
       RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
       SKOS_PREF_LABEL = 'http://www.w3.org/2004/02/skos/core#prefLabel'
       SKOS_IN_SCHEME = 'http://www.w3.org/2004/02/skos/core#inScheme'
