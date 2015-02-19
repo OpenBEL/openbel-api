@@ -251,7 +251,7 @@ module OpenBEL
 
         case namespace
         when OpenBEL::Model::Namespace::Namespace
-          namespace.uri
+          return namespace.uri
         when String
           [
             self.method(:namespace_by_prefix),
@@ -262,6 +262,8 @@ module OpenBEL
             return uri if uri
           end
         end
+
+        nil
       end
 
       def find_namespace_value_rdf_uri(namespace, value)
@@ -269,11 +271,13 @@ module OpenBEL
 
         case value
         when OpenBEL::Model::Namespace::NamespaceValue
-          value.uri
+          return value.uri
         when URI
-          value
+          return value
         when String
           namespace_uri = find_namespace_rdf_uri(namespace)
+          return nil unless namespace_uri
+
           [
             self.method(:namespace_value_by_pref_label),
             self.method(:namespace_value_by_identifier),
@@ -283,6 +287,8 @@ module OpenBEL
             return uri if uri
           end
         end
+
+        nil
       end
 
       def namespace_value_by_pref_label(namespace_uri, label)

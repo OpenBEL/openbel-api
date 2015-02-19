@@ -86,7 +86,7 @@ module OpenBEL
 
         case annotation
         when OpenBEL::Model::Annotation::Annotation
-          annotation.uri
+          return annotation.uri
         when String
           [
             self.method(:annotation_by_prefix),
@@ -96,6 +96,8 @@ module OpenBEL
             return uri if uri
           end
         end
+
+        nil
       end
 
       def annotation_by_prefix(prefix)
@@ -134,9 +136,9 @@ module OpenBEL
 
         case value
         when OpenBEL::Model::Namespace::NamespaceValue
-          value.uri
+          return value.uri
         when URI
-          value
+          return value
         when String
           annotation_uri = find_annotation_rdf_uri(annotation)
           [
@@ -148,6 +150,8 @@ module OpenBEL
             return uri if uri
           end
         end
+
+        nil
       end
 
       def annotation_value_by_pref_label(annotation_uri, label)
