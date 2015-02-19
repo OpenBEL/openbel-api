@@ -95,15 +95,13 @@ module OpenBEL
         private
 
         def setup(item)
-          parts = URI(item.uri).path.split('/')[3..-1]
-          @annotation_id = parts[0]
-          @annotation_value_id = parts.join('/')
+          @annotation_id, @annotation_value_id = URI(item.uri).path.split('/')[3..-1]
         end
 
         def link_self
           {
             :type => :annotation_value,
-            :href => "#{base_url}/api/annotations/#{@annotation_value_id}"
+            :href => "#{base_url}/api/annotations/#{@annotation_id}/values/#{@annotation_value_id}"
           }
         end
 
