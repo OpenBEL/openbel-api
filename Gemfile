@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'activesupport', '~> 4.2.0'
 gem 'bel'
 gem 'bson', '1.12.0.rc2'
 gem 'bson_ext', '1.12.0.rc2'

@@ -135,6 +135,7 @@ PLATFORMS
 
 DEPENDENCIES
   POpen4
+  activesupport (~> 4.2.0)
   bel
   bson (= 1.12.0.rc2)
   bson_ext (= 1.12.0.rc2)

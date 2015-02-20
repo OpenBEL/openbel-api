@@ -4,11 +4,15 @@ require_relative 'model'
 # XXX platform-dependency
 require_relative '../model/rdf_resource'
 
+require 'active_support'
+require 'active_support/inflector/transliterate'
+
 module OpenBEL
   module Annotation
 
     class Annotation
       include API
+      include ActiveSupport::Inflector
 
       BEL_ANNOTATION_CONCEPT_SCHEME = 'http://www.openbel.org/vocabulary/AnnotationConceptScheme'
       BEL_PREFIX = 'http://www.openbel.org/vocabulary/prefix'
@@ -48,7 +52,35 @@ module OpenBEL
       end
 
       def find_annotation_values(annotation, options = {})
-        fail NotImplementedError, "#{__method__} is not implemented"
+        namespace = find_annotation_rdf_uri(annotation)
+        values = @storage.triples(
+          nil, SKOS_IN_SCHEME, namespace, :only => :subject
+        ).drop((options[:offset] || 0).to_i)
+        values = values.take(options[:size]) if options[:size]
+
+        if block_given?
+          values.each do |subject|
+            yield annotation_value_by_uri(subject)
+          end
+        else
+          values.map { |subject|
+            annotation_value_by_uri(subject)
+          }.to_a
+        end
+      end
+
+      def normalize_annotation_name(name, options = {})
+        name_s = name.to_s
+
+        if name_s.empty?
+          nil
+        else
+          transliterate(name_s).
+            gsub(%r{[^a-zA-Z0-9]}, ' ').
+            split(' ').
+            map(&:capitalize).
+            join
+        end
       end
 
       def search(match, options = {})
