@@ -13,6 +13,7 @@ module OpenBEL
           properties do |p|
             p.bel_statement      item['bel_statement']
             p.citation           item['citation']
+            p.summary_text       item['summary_text']
             p.biological_context item['biological_context']
             p.metadata           item['metadata']
           end
