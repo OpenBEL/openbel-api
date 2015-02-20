@@ -42,7 +42,7 @@
                     "description": "The citation type of the reference."
                 },
                 "id": {
-                    "type": "string",
+                    "type": ["string", "number"],
                     "title": "Citation ID",
                     "description": "The citation identifier (PubMed ID, ISBN, DOI, URL) of the reference."
                 },
@@ -73,7 +73,7 @@
             }
         },
         "biological_context": {
-            "type": "array",
+            "type": ["array", "null"],
             "title": "Biological Context",
             "description": "A biological context specifies the experiment's parameters where this interaction was observed.",
             "items": {
@@ -88,11 +88,11 @@
                                 "description": "Annotation type listing - sourced from the BEL Annotation resource names"
                             },
                             "value": {
-                                "type": ["string", "number", "array"],
+                                "type": ["string", "number", "boolean", "array"],
                                 "title": "Annotations",
                                 "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
                                 "items": {
-                                    "type": ["string", "number"]
+                                    "type": ["string", "number", "boolean"]
                                 }
                             }
                         }
@@ -115,12 +115,12 @@
             }
         },
         "summary_text": {
-            "type": "string",
+            "type": ["string", "null"],
             "title": "Summary Text",
             "description": "Abstract from source text to provide support for this evidence"
         },
         "metadata": {
-            "type": "object",
+            "type": ["object", "null"],
             "title": "Evidence resource metadata",
             "description": "Metadata that describes the evidence resource.",
             "additionalProperties": true
