@@ -77,39 +77,28 @@
             "title": "Biological Context",
             "description": "A biological context specifies the experiment's parameters where this interaction was observed.",
             "items": {
-                "oneOf": [
-                    {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "title": "Annotation Type",
-                                "description": ""
-                            },
-                            "value": {
-                                "type": ["string", "array"],
-                                "title": "Annotations",
-                                "description": "Annotations such as Homo sapiens, cancer, epithelial tissue",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Annotation Type",
+                        "description": ""
+                    },
+                    "value": {
+                        "type": ["string", "number", "array"],
+                        "title": "Annotations",
+                        "description": "Annotations such as Homo sapiens, cancer, epithelial tissue",
+                        "items": {
+                            "type": ["string", "number"]
                         }
                     },
-                    {
-                        "type": "object",
-                        "title": "Annotation URI(s)",
-                        "description": "URI(s) for Annotations",
-                        "properties": {
-                            "uri": {
-                                "type": ["string", "array"],
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
+                    "uri": {
+                        "type": ["string", "array"],
+                        "items": {
+                            "type": "string"
                         }
                     }
-                ]
+                }
             }
         },
         "summary_text": {
