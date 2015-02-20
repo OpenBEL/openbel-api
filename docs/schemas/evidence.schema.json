@@ -77,28 +77,41 @@
             "title": "Biological Context",
             "description": "A biological context specifies the experiment's parameters where this interaction was observed.",
             "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "title": "Annotation Type",
-                        "description": ""
-                    },
-                    "value": {
-                        "type": ["string", "number", "array"],
-                        "title": "Annotations",
-                        "description": "Annotations such as Homo sapiens, cancer, epithelial tissue",
-                        "items": {
-                            "type": ["string", "number"]
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "required": ["name", "value"],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "Annotation Type",
+                                "description": "Annotation type listing - sourced from the BEL Annotation resource names"
+                            },
+                            "value": {
+                                "type": ["string", "number", "array"],
+                                "title": "Annotations",
+                                "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
+                                "items": {
+                                    "type": ["string", "number"]
+                                }
+                            }
                         }
                     },
-                    "uri": {
-                        "type": ["string", "array"],
-                        "items": {
-                            "type": "string"
+                    {
+                        "type": "object",
+                        "required": ["uri"],
+                        "title": "Annotation URI(s)",
+                        "description": "URI(s) for Annotations",
+                        "properties": {
+                            "uri": {
+                                "type": ["string", "array"],
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
-                }
+                ]
             }
         },
         "summary_text": {
