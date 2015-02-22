@@ -105,8 +105,10 @@
                         "properties": {
                             "uri": {
                                 "type": ["string", "array"],
+                                "format": "uri",
                                 "items": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "format": "uri"
                                 }
                             }
                         }
