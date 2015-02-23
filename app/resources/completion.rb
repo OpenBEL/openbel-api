@@ -23,7 +23,7 @@ module OpenBEL
         schema do
           type :completion
           properties do |p|
-            collection :completions, item, CompletionSerializer
+            p.completions item
           end
 
           link :self,        link_self(item.first[:id])
@@ -68,7 +68,7 @@ module OpenBEL
         schema do
           type :completion_collection
           properties do |p|
-            collection :completions, item, CompletionSerializer
+            p.completions item
           end
 
           link :self,       link_self

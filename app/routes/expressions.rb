@@ -30,9 +30,10 @@ module OpenBEL
           )
         end
         halt 404 if completions.empty?
-        render(
+
+        render_collection(
           completions,
-          :completion_collection,
+          :completion,
           :bel => bel,
           :caret_position => caret_position
         )
