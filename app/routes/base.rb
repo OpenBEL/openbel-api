@@ -21,8 +21,8 @@ module OpenBEL
       include OpenBEL::Resource::Namespaces
       include OpenBEL::Schemas
 
-      DEFAULT_CONTENT_TYPE   = 'application/json'
-      SPOKEN_CONTENT_TYPES   = %w[application/json application/hal+json text/html text/xml]
+      DEFAULT_CONTENT_TYPE   = 'application/hal+json'
+      SPOKEN_CONTENT_TYPES   = %w[application/hal+json application/json]
       SCHEMA_BASE_URL        = 'http://next.belframework.org/schema/'
       RESOURCE_SERIALIZERS   = {
         :annotation                 => AnnotationResourceSerializer,
@@ -95,12 +95,10 @@ module OpenBEL
         end
 
         def resolve_supported_content_type(request)
-          preferred = (request.preferred_type || '*/*').to_str
-          if preferred == '*/*'
-            DEFAULT_CONTENT_TYPE
-          else
-            preferred
-          end
+          accept_match = request.accept.find { |accept_entry|
+            SPOKEN_CONTENT_TYPES.include?(accept_entry.to_s)
+          }
+          accept_match || DEFAULT_CONTENT_TYPE
         end
 
         def read_json
@@ -122,7 +120,7 @@ module OpenBEL
           end
         end
 
-        def render_json(obj, media_type = 'application/json', profile = nil)
+        def render_json(obj, media_type = 'application/hal+json', profile = nil)
           ctype =
             if profile
               "#{media_type}; profile=#{profile}"
@@ -148,14 +146,7 @@ module OpenBEL
           type_serializer     = self.class.const_get("#{type_class}Serializer")
           resource_serializer = self.class.const_get("#{type_class}ResourceSerializer")
 
-          adapter =
-            case media_type
-            when 'application/hal+json'
-              Oat::Adapters::HAL
-            else
-              media_type = 'application/json'
-              Oat::Adapters::BasicJson
-            end
+          adapter = Oat::Adapters::HAL
 
           resource = resource_serializer.new(
             [
@@ -179,14 +170,7 @@ module OpenBEL
           type_serializer     = self.class.const_get("#{type_class}Serializer")
           resource_serializer = self.class.const_get("#{type_class}CollectionSerializer")
 
-          adapter =
-            case media_type
-            when 'application/hal+json'
-              Oat::Adapters::HAL
-            else
-              media_type = 'application/json'
-              Oat::Adapters::BasicJson
-            end
+          adapter = Oat::Adapters::HAL
 
           resource = resource_serializer.new(
             collection.map { |obj|
@@ -211,14 +195,7 @@ module OpenBEL
             raise NotImplementedError.new("Cannot serialize the #{type} resource.")
           end
 
-          adapter =
-            case media_type
-            when 'application/hal+json'
-              Oat::Adapters::HAL
-            else
-              media_type = 'application/json'
-              Oat::Adapters::BasicJson
-            end
+          adapter = Oat::Adapters::HAL
 
           # XXX hack to fix OpenBEL/openbel-server#33
           if options[:as_array]
@@ -247,14 +224,8 @@ module OpenBEL
             :base_url => base_url,
             :url      => url
           }.merge(options)
-          adapter =
-            case media_type
-            when 'application/hal+json'
-              Oat::Adapters::HAL
-            else
-              media_type = 'application/json'
-              Oat::Adapters::BasicJson
-            end
+
+          adapter = Oat::Adapters::HAL
 
           response.headers['Content-Type'] = media_type
           collection_enum = collection.to_enum
