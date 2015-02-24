@@ -19,10 +19,6 @@ module OpenBEL
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def normalize_annotation_name(name, options = {})
-        fail NotImplementedError, "#{__method__} is not implemented"
-      end
-
       def search(match, options = {})
         fail NotImplementedError, "#{__method__} is not implemented"
       end
