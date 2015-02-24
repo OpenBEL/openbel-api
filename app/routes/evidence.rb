@@ -2,16 +2,20 @@ require 'bel'
 require 'multi_json'
 require 'cgi'
 require 'lib/evidence/facet_filter'
+require 'app/resources/evidence_transform'
 
 module OpenBEL
   module Routes
 
     class Evidence < Base
       include OpenBEL::Evidence::FacetFilter
+      include OpenBEL::Resource::Evidence
 
       def initialize(app)
         super
         @api = OpenBEL::Settings["evidence-api"].create_instance
+        annotation_api = OpenBEL::Settings["annotation-api"].create_instance
+        @annotation_transform = AnnotationTransform.new(annotation_api)
       end
 
       options '/api/evidence' do
@@ -37,8 +41,11 @@ module OpenBEL
           )
         end
 
+        # transformation
         evidence = evidence_obj['evidence']
+        evidence = @annotation_transform.transform_evidence(evidence)
         evidence[:facets] = map_evidence_facets(evidence)
+
         _id = @api.create_evidence(evidence)
 
         status 201
@@ -122,8 +129,11 @@ module OpenBEL
           )
         end
 
+        # transformation
         evidence = evidence_obj['evidence']
+        evidence = @annotation_transform.transform_evidence(evidence)
         evidence[:facets] = map_evidence_facets(evidence)
+
         @api.update_evidence_by_id(id, evidence)
 
         status 202

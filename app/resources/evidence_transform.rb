@@ -22,11 +22,13 @@ module OpenBEL
             nil
           else
             context = evidence['biological_context']
-            if context.respond_to?(:each)
-              evidence['biological_context'] = context.map! { |annotation|
+            if context != nil
+              context.map! { |annotation|
                 transform_annotation(annotation)
               }
             end
+
+            evidence
           end
         end
 
@@ -34,8 +36,8 @@ module OpenBEL
           if annotation['uri']
             transform_uri(annotation['uri'])
           elsif annotation['name'] && annotation['value']
-            name  = annotation_obj['name']
-            value = annotation_obj['value']
+            name  = annotation['name']
+            value = annotation['value']
             transform_name_value(name, value)
           else
             nil
