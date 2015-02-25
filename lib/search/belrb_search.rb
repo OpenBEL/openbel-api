@@ -18,6 +18,8 @@ module OpenBEL
         type       = options.delete(:type)
         scheme_uri = options.delete(:scheme_uri)
 
+        query_expression = wildcard_pattern(query_expression)
+
         case type
         when :annotation_value
           @search.search_annotations(query_expression, scheme_uri, options)
@@ -26,6 +28,12 @@ module OpenBEL
         else
           @search.search(query_expression, scheme_uri, options)
         end
+      end
+
+      private
+
+      def wildcard_pattern(query_expression)
+        query_expression.gsub(%r{([^\s]+)}, '*\1*')
       end
     end
   end
