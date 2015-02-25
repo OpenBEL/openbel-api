@@ -1,5 +1,4 @@
 require 'bel'
-require 'multi_json'
 require 'cgi'
 require 'lib/evidence/facet_filter'
 require 'app/resources/evidence_transform'
@@ -60,7 +59,7 @@ module OpenBEL
         filter_hash = {}
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
         filter_params.each do |filter|
-          filter = MultiJson.load(filter)
+          filter = read_filter(filter)
           halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
           filter_hash["#{filter['category']}.#{filter['name']}"] = filter['value']
         end
@@ -85,7 +84,7 @@ module OpenBEL
         }
         if facets
           facet_hashes = facets.map { |facet|
-            filter = MultiJson.load(facet['_id'])
+            filter = read_filter(facet['_id'])
             {
               :category => filter['category'].to_sym,
               :name     => filter['name'].to_sym,

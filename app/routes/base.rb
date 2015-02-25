@@ -120,6 +120,24 @@ module OpenBEL
           end
         end
 
+        def read_filter(filter_json)
+          begin
+            MultiJson.load filter_json
+          rescue MultiJson::ParseError => ex
+            halt(
+              400,
+              {
+                'Content-Type' => 'application/json'
+              },
+              render_json({
+                :status => 400,
+                :msg => "Invalid JSON filter: #{filter_json}.",
+                :detail => ex.cause.to_s
+              })
+            )
+          end
+        end
+
         def render_json(obj, media_type = 'application/hal+json', profile = nil)
           ctype =
             if profile

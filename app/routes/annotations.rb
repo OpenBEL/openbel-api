@@ -62,7 +62,7 @@ module OpenBEL
         filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
         filter_params.each do |filter|
-          filter = MultiJson.load(filter)
+          filter = read_filter(filter)
           halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
           filter_hash[filter['category']][filter['name']] = filter['value']
         end
@@ -105,7 +105,7 @@ module OpenBEL
         filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
         filter_params.each do |filter|
-          filter = MultiJson.load(filter)
+          filter = read_filter(filter)
           halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
           filter_hash[filter['category']][filter['name']] = filter['value']
         end
