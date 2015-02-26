@@ -68,8 +68,8 @@ module OpenBEL
         end
 
         halt 404 unless filter_hash['fts']['search'].is_a?(String)
-
         match = filter_hash['fts']['search']
+        halt 404 unless match.length > 1
 
         match_results = @api.search(match,
           :start => start,
@@ -111,8 +111,8 @@ module OpenBEL
         end
 
         halt 404 unless filter_hash['fts']['search'].is_a?(String)
-
         match = filter_hash['fts']['search']
+        halt 404 unless match.length > 1
 
         match_results = @api.search_annotation(annotation, match,
           :start => start,

@@ -66,6 +66,7 @@ module OpenBEL
 
         fts_search_value = filter_hash.delete("fts.search")
         if fts_search_value
+          halt 404 unless fts_search_value.length > 1
           filter_hash[:$text] = {
             :$search => fts_search_value
           }
