@@ -88,9 +88,8 @@ module OpenBEL
             nil
           else
             transliterate(name_s).
-              gsub(%r{[^a-zA-Z0-9]}, ' ').
-              split(' ').
-              map(&:capitalize).
+              split(%r{[^a-zA-Z0-9]+}).
+              map { |word| word[0].upcase + word[1..-1] }.
               join
           end
         end
