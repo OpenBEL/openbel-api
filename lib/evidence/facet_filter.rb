@@ -26,8 +26,16 @@ module OpenBEL
 
       def map_biological_context_facets(biological_context)
         if biological_context
-          biological_context.map { |name, value|
-            self.make_filter(:biological_context, name, value)
+          biological_context.flat_map { |annotation|
+            name  = annotation[:name]
+            value = annotation[:value]
+            if value.respond_to?(:each)
+              value.map { |v|
+                self.make_filter(:biological_context, name, v)
+              }
+            else
+              self.make_filter(:biological_context, name, value)
+            end
           }
         else
           EMPTY

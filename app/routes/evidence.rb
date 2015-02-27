@@ -15,6 +15,7 @@ module OpenBEL
         @api = OpenBEL::Settings["evidence-api"].create_instance
         annotation_api = OpenBEL::Settings["annotation-api"].create_instance
         @annotation_transform = AnnotationTransform.new(annotation_api)
+        @annotation_grouping_transform = AnnotationGroupingTransform.new
       end
 
       options '/api/evidence' do
@@ -42,7 +43,10 @@ module OpenBEL
 
         # transformation
         evidence = evidence_obj['evidence']
-        evidence = @annotation_transform.transform_evidence(evidence)
+        evidence = @annotation_grouping_transform.transform_evidence(
+          @annotation_transform.transform_evidence(evidence)
+        )
+
         evidence[:facets] = map_evidence_facets(evidence)
 
         _id = @api.create_evidence(evidence)

@@ -95,6 +95,27 @@ module OpenBEL
           end
         end
       end
+
+      class AnnotationGroupingTransform
+
+        def transform_evidence(evidence)
+          context = evidence['biological_context']
+          if context != nil
+            evidence['biological_context'] = context.group_by { |annotation|
+              annotation[:name]
+            }.values.map do |grouped_annotation|
+              {
+                :name  => grouped_annotation.first[:name],
+                :value => grouped_annotation.map { |annotation|
+                  annotation[:value]
+                }
+              }
+            end
+          end
+
+          evidence
+        end
+      end
     end
   end
 end
