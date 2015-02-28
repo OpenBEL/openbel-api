@@ -27,6 +27,8 @@ gem 'sqlite3'
 group :development do
   gem 'POpen4'
   gem 'pry', '~> 0.9.12'
+  gem 'pry-stack_explorer'
+  gem 'pry-nav'
   gem 'rerun'
   gem 'ripper-tags'
   gem 'starscope'
