@@ -62,16 +62,34 @@ module OpenBEL
         def structured_annotation(name, value)
           annotation = @annotation_api.find_annotation(name)
           if annotation
-            annotation_value = @annotation_api.find_annotation_value(annotation, value)
-            if annotation_value
-              return {
+            if value.respond_to?(:each)
+              {
                 :name  => annotation.prefLabel,
-                :value => annotation_value.prefLabel
+                :value => value.map { |v|
+                  mapped = @annotation_api.find_annotation_value(annotation, v)
+                  mapped ? mapped.prefLabel : v
+                }
               }
+            else
+              annotation_value = @annotation_api.find_annotation_value(annotation, value)
+              if annotation_value
+                {
+                  :name  => annotation.prefLabel,
+                  :value => annotation_value.prefLabel
+                }
+              else
+                {
+                  :name  => annotation.prefLabel,
+                  :value => value
+                }
+              end
             end
+          else
+            {
+              :name  => name,
+              :value => value
+            }
           end
-
-          nil
         end
 
         def free_annotation(name, value)
@@ -105,7 +123,7 @@ module OpenBEL
             }.values.map do |grouped_annotation|
               {
                 :name  => grouped_annotation.first[:name],
-                :value => grouped_annotation.map { |annotation|
+                :value => grouped_annotation.flat_map { |annotation|
                   annotation[:value]
                 }
               }
