@@ -2,6 +2,7 @@ require 'bel'
 require 'cgi'
 require 'lib/evidence/facet_filter'
 require 'app/resources/evidence_transform'
+require 'mongo'
 
 module OpenBEL
   module Routes
@@ -105,8 +106,12 @@ module OpenBEL
       end
 
       get '/api/evidence/:id' do
-        evidence = @api.find_evidence_by_id(params[:id])
+        object_id = params[:id]
+        halt 404 unless BSON::ObjectId.legal?(object_id)
+
+        evidence = @api.find_evidence_by_id(object_id)
         halt 404 unless evidence
+
         # XXX Hack to return single resource wrapped as json array
         # XXX Need to better support evidence resource arrays in base.rb
         render(
@@ -117,10 +122,12 @@ module OpenBEL
       end
 
       put '/api/evidence/:id' do
+        object_id = params[:id]
+        halt 404 unless BSON::ObjectId.legal?(object_id)
+
         validate_media_type! "application/json", :profile => schema_url('evidence')
 
-        id = params[:id]
-        ev = @api.find_evidence_by_id(id)
+        ev = @api.find_evidence_by_id(object_id)
         halt 404 unless ev
 
         evidence_obj = read_json
@@ -138,17 +145,19 @@ module OpenBEL
         evidence = @annotation_transform.transform_evidence(evidence)
         evidence[:facets] = map_evidence_facets(evidence)
 
-        @api.update_evidence_by_id(id, evidence)
+        @api.update_evidence_by_id(object_id, evidence)
 
         status 202
       end
 
       delete '/api/evidence/:id' do
-        id = params[:id]
-        ev = @api.find_evidence_by_id(id)
+        object_id = params[:id]
+        halt 404 unless BSON::ObjectId.legal?(object_id)
+
+        ev = @api.find_evidence_by_id(object_id)
         halt 404 unless ev
 
-        @api.delete_evidence_by_id(id)
+        @api.delete_evidence_by_id(object_id)
         status 202
       end
     end
