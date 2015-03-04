@@ -20,7 +20,7 @@ module OpenBEL
       end
 
       def create_evidence(evidence)
-        @evidence.insert(evidence.to_h)
+        @evidence.insert(evidence.to_h, :j => true)
       end
 
       def find_evidence_by_id(value)
@@ -41,13 +41,16 @@ module OpenBEL
       def update_evidence_by_id(value, evidence)
         evidence_h = evidence.to_h
         evidence_h[:_id] = BSON::ObjectId(value)
-        @evidence.save(evidence_h)
+        @evidence.save(evidence_h, :j => true)
       end
 
       def delete_evidence_by_id(value)
-        @evidence.remove({
-          :_id => to_id(value)
-        })
+        @evidence.remove(
+          {
+            :_id => to_id(value)
+          },
+          :j => true
+        )
       end
 
       private
