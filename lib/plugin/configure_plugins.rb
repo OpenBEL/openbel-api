@@ -6,7 +6,7 @@ module OpenBEL
     def check_configuration(plugins, config)
       sorted_plugin_config_ids = build_dependency_graph(config)
 
-      errors = []
+      all_errors = []
       valid_plugins = {}
       sorted_plugin_config_ids.each do |plugin_config_id|
         # validate plugin configuration...
@@ -33,11 +33,11 @@ module OpenBEL
 
         # ...check plugin extensions
         extensions = plugin_config['extensions'] || {}
-        errors.concat(extensions.values.find_all { |ext|
+        extensions.values.find_all { |ext|
           not valid_plugins.has_key? ext.to_s
-        }.map { |ext|
-          errors << %Q{The "#{ext}" extension (defined in "#{plugin_config_id}") is not valid.}
-        })
+        }.each do |ext|
+          all_errors << %Q{The "#{ext}" extension (defined in "#{plugin_config_id}") is not valid.}
+        end
 
         # ...prepare extensions/options for plugin validation
         extensions = Hash[extensions.map { |ext_type, ext_id|
@@ -52,11 +52,11 @@ module OpenBEL
         if plugin_errors.empty?
           valid_plugins[plugin_config_id.to_s] = plugin
         else
-          errors.concat(plugin_errors)
+          all_errors.concat(plugin_errors)
         end
         # TODO Log successful plugin check if verbose.
       end
-      errors
+      all_errors
     end
 
     def configure_plugins(plugins, config)

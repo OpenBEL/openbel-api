@@ -21,7 +21,9 @@ module OpenBEL
 
       errors = plugin_manager.check_configuration(plugins, config)
 
-      fail errors.join("\n") if not errors.empty?
+      if !errors.empty?
+        fail RuntimeError.new(errors.join("\n"))
+      end
 
       plugin_manager.configure_plugins(plugins.dup, config.dup)
     end
