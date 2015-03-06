@@ -7,7 +7,7 @@ module OpenBEL
 
       def initialize(app)
         super
-        @search = BEL::Search.use(:sqlite3, :db_file => 'rdf.db')
+        @namespace_api = OpenBEL::Settings["namespace-api"].create_instance
       end
 
       options '/api/expressions/*/completions' do
@@ -21,7 +21,7 @@ module OpenBEL
         halt 400 unless bel and caret_position
 
         begin
-          completions = BEL::Completion.complete(bel, @search, caret_position)
+          completions = BEL::Completion.complete(bel, @namespace_api, caret_position)
         rescue IndexError => ex
           halt(
             400,

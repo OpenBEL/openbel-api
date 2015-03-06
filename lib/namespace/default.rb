@@ -221,21 +221,14 @@ module OpenBEL
           fail ArgumentError, "match cannot be empty"
         end
 
-        @search.search(
-          match,
-          :type => :namespace_value
-        )
+        @search.search(match, :namespace_concept, nil, nil, options)
       end
 
       def search_namespace(namespace, match, options = {})
         namespace_uri = find_namespace_rdf_uri(namespace)
         return nil unless namespace_uri
 
-        @search.search(
-          match,
-          :type => :namespace_value,
-          :scheme_uri => namespace_uri
-        )
+        @search.search(match, :namespace_concept, namespace_uri, nil, options)
       end
 
       private
@@ -252,6 +245,8 @@ module OpenBEL
         case namespace
         when OpenBEL::Model::Namespace::Namespace
           return namespace.uri
+        when URI
+          return namespace
         when String
           [
             self.method(:namespace_by_prefix),

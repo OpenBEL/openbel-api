@@ -98,6 +98,8 @@ module OpenBEL
         case annotation
         when OpenBEL::Model::Annotation::Annotation
           return annotation.uri
+        when URI
+          return annotation
         when String
           [
             self.method(:annotation_by_prefix),
