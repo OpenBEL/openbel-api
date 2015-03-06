@@ -66,7 +66,7 @@ module OpenBEL
         filter_params.each do |filter|
           filter = read_filter(filter)
           halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-          filter_hash["#{filter['category']}.#{filter['name']}"] = filter['value']
+          filter_hash["#{filter['category']}.#{filter['name']}"] = filter['value'].to_s
         end
 
         fts_search_value = filter_hash.delete("fts.search")
