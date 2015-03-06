@@ -28,7 +28,7 @@ rdf-storage:
 
 rdf-search:
   type:   'search'
-  plugin: 'belrb_search'
+  plugin: 'sqlite3_search'
   options:
     file: 'rdf.db'
 

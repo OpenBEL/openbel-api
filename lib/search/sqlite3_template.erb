@@ -1,0 +1,23 @@
+SELECT
+  distinct uri, scheme_uri, species, identifier, pref_label, title, alt_labels,
+  snippet(concepts_fts, '<<', '>>', 4) AS snippet_species,
+  snippet(concepts_fts, '<<', '>>', 5) AS snippet_identifier,
+  snippet(concepts_fts, '<<', '>>', 6) AS snippet_pref_label,
+  snippet(concepts_fts, '<<', '>>', 7) AS snippet_title,
+  snippet(concepts_fts, '<<', '>>', 8) AS snippet_alt_labels
+FROM
+  concepts_fts
+WHERE
+  concepts_fts MATCH :match
+<% [:concept_type, :scheme_type, :scheme_uri, :species].each do |column| %>
+  <% if options[column] %>
+
+  AND <%= column %> = <%= ":#{column}" %>
+
+  <% end %>
+<% end %>
+ORDER BY
+  length(pref_label) ASC,
+  <%= RANK_FUNCTION %>(matchinfo(concepts_fts)) DESC
+LIMIT  :size
+OFFSET :start

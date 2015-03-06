@@ -70,8 +70,7 @@ module OpenBEL
           fail ArgumentError, "match cannot be empty"
         end
 
-        options = (options || {}).merge({:type => :annotation_value})
-        @search.search(match, options).map { |result|
+        @search.search(match, :annotation_concept, nil, nil, options).map { |result|
           annotation_value_by_uri(result.uri)
         }
       end
@@ -80,11 +79,7 @@ module OpenBEL
         annotation_uri = find_annotation_rdf_uri(annotation)
         return nil unless annotation_uri
 
-        options = (options || {}).merge({
-          :type => :annotation_value,
-          :scheme_uri => annotation_uri
-        })
-        @search.search(match, options).map { |result|
+        @search.search(match, :annotation_concept, annotation_uri, nil, options).map { |result|
           annotation_value_by_uri(result.uri)
         }
       end

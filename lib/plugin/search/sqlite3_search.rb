@@ -6,9 +6,9 @@ module OpenBEL
     class BELrbSearch
       include OpenBEL::Plugin
 
-      ID   = 'belrb_search'
-      NAME = 'BEL search using bel.rb'
-      DESC = 'Search BEL identifiers using facilities in the bel.rb library.'
+      ID   = 'sqlite3_search'
+      NAME = 'Identifier search (SQLite3)'
+      DESC = 'Search BEL identifiers using SQLite3 and FTS4.'
 
       def id
         ID
@@ -48,11 +48,11 @@ module OpenBEL
       end
 
       def on_load
-        require_relative '../../../lib/search/belrb_search.rb'
+        require_relative '../../../lib/search/sqlite3.rb'
       end
 
       def create_instance
-        OpenBEL::Search::BELrbSearch.new(@options)
+        OpenBEL::Search::Sqlite3FTS.new(@options)
       end
     end
   end
