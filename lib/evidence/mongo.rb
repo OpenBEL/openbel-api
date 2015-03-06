@@ -34,6 +34,27 @@ module OpenBEL
           fail ArgumentError.new("query_hash is not of type nil or Hash")
         end
 
+        query_hash.keys.each do |key|
+          if key.start_with?('biological_context.')
+            # split into two parts
+            _, name = key.split('.', 2)
+
+            # lookup value
+            value   = query_hash[key]
+
+            # add elemMatch query on name/value
+            query_hash['biological_context'] = {
+              :$elemMatch => {
+                :name  => name,
+                :value => value
+              }
+            }
+
+            # delete previous "category.name" key
+            query_hash.delete(key)
+          end
+        end
+
         results = {
           :cursor => @collection.find(query_hash, :skip => offset, :limit => length)
         }
