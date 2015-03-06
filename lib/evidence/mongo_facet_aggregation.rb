@@ -7,7 +7,7 @@ module OpenBEL
       def evidence_facets(query_hash = nil)
         pipeline =
           if query_hash.is_a?(Hash) && !query_hash.empty?
-            pipeline = [{'$match': query_hash}] + AGGREGATION_PIPELINE
+            pipeline = [{:'$match' => query_hash}] + AGGREGATION_PIPELINE
           else
             AGGREGATION_PIPELINE
           end
