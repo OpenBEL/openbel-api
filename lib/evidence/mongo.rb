@@ -35,7 +35,7 @@ module OpenBEL
         end
 
         query_hash.keys.each do |key|
-          if key.start_with?('biological_context.')
+          if key.to_s.start_with?('biological_context.')
             # split into two parts
             _, name = key.split('.', 2)
 
