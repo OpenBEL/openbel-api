@@ -15,10 +15,33 @@ module OpenBEL
         port      = options.delete(:port)
         db        = options.delete(:database)
         @db       = MongoClient.new(host, port).db(db)
-        @collection = @db.collection(:evidence)
-        @collection.ensure_index(
-          :"$**" => "text"
-        )
+        @collection = @db[:evidence]
+#        if @collection.index_information['TextIndex'].nil?
+#          @collection.ensure_index(
+#            {
+#              "bel_statement"            => "text",
+#              "biological_context.name"  => "text",
+#              "biological_context.value" => "text",
+#              "citation.name"            => "text",
+#              "metadata.name"            => "text",
+#              "metadata.value"           => "text",
+#              "summary_text"             => "text"
+#            },
+#            {
+#              "name"       => "TextIndex",
+#              "background" => true,
+#              "weights" => {
+#                "bel_statement"            => 10,
+#                "biological_context.name"  => 4,
+#                "biological_context.value" => 10,
+#                "citation.name"            => 2,
+#                "metadata.name"            => 4,
+#                "metadata.value"           => 6,
+#                "summary_text"             => 8
+#              }
+#            }
+#          )
+#        end
       end
 
       def create_evidence(evidence)
@@ -55,8 +78,29 @@ module OpenBEL
           end
         end
 
+        find_options = {
+          :skip  => offset,
+          :limit => length,
+          :sort  => [
+            [:bel_statement, :asc]
+          ]
+        }
+
+        if query_hash[:$text]
+          find_options[:fields] = [
+            {
+              :score => {
+                :$meta => "textScore"
+              }
+            }
+          ]
+          find_options[:sort].unshift(
+            [:score, {:$meta => "textScore"}]
+          )
+        end
+
         results = {
-          :cursor => @collection.find(query_hash, :skip => offset, :limit => length)
+          :cursor => @collection.find(query_hash, find_options)
         }
         if facet
           results[:facets] = evidence_facets(query_hash)
