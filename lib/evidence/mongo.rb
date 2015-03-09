@@ -1,6 +1,6 @@
 require 'mongo'
 require_relative 'api'
-require_relative 'mongo_facet_aggregation'
+require_relative 'mongo_facet'
 
 module OpenBEL
   module Evidence
@@ -8,14 +8,18 @@ module OpenBEL
     class Evidence
       include API
       include Mongo
-      include Facets
 
       def initialize(options = {})
-        host      = options.delete(:host)
-        port      = options.delete(:port)
-        db        = options.delete(:database)
-        @db       = MongoClient.new(host, port).db(db)
-        @collection = @db[:evidence]
+        host             = options.delete(:host)
+        port             = options.delete(:port)
+        db               = options.delete(:database)
+        @db              = MongoClient.new(host, port).db(db)
+        @collection      = @db[:evidence]
+        @evidence_facets = EvidenceFacets.new(
+          :host     => host,
+          :port     => port,
+          :database => db
+        )
 #        if @collection.index_information['TextIndex'].nil?
 #          @collection.ensure_index(
 #            {
@@ -52,58 +56,24 @@ module OpenBEL
         @collection.find_one(to_id(value))
       end
 
-      def find_evidence_by_query(query_hash = nil, offset = 0, length = 0, facet = false)
-        if query_hash != nil && !query_hash.is_a?(Hash)
-          fail ArgumentError.new("query_hash is not of type nil or Hash")
-        end
-
-        query_hash.keys.each do |key|
-          if key.to_s.start_with?('biological_context.')
-            # split into two parts
-            _, name = key.split('.', 2)
-
-            # lookup value
-            value   = query_hash[key]
-
-            # add elemMatch query on name/value
-            query_hash['biological_context'] = {
-              :$elemMatch => {
-                :name  => name,
-                :value => value
-              }
-            }
-
-            # delete previous "category.name" key
-            query_hash.delete(key)
-          end
-        end
-
-        find_options = {
+      def find_evidence(filters = [], offset = 0, length = 0, facet = false)
+        query_hash = to_query(filters)
+        query_opts = query_options(
+          query_hash,
           :skip  => offset,
           :limit => length,
           :sort  => [
             [:bel_statement, :asc]
           ]
-        }
+        )
 
-        if query_hash[:$text]
-          find_options[:fields] = [
-            {
-              :score => {
-                :$meta => "textScore"
-              }
-            }
-          ]
-          find_options[:sort].unshift(
-            [:score, {:$meta => "textScore"}]
-          )
-        end
-
+        puts query_hash
         results = {
-          :cursor => @collection.find(query_hash, find_options)
+          :cursor => @collection.find(query_hash, query_opts)
         }
         if facet
-          results[:facets] = evidence_facets(query_hash)
+          facets_doc = @evidence_facets.find_facets(query_hash, filters)
+          results[:facets] = facets_doc["facets"]
         end
 
         results
@@ -125,6 +95,64 @@ module OpenBEL
       end
 
       private
+
+      EMPTY_HASH = {}
+
+      def to_query(filters = [])
+        if !filters || filters.empty?
+          return EMPTY_HASH
+        end
+
+        query_hash = {}
+        filters.each do |filter|
+          category = filter['category']
+          name     = filter['name']
+          value    = filter['value']
+
+          if category == 'biological_context'
+            context = query_hash.fetch('biological_context', nil)
+            if !context
+              context = {
+                :$all => []
+              }
+              query_hash['biological_context'] = context
+            end
+
+            context[:$all] << {
+              :name  => name.to_s,
+              :value => value.to_s
+            }
+          else
+            query_hash["#{filter['category']}.#{filter['name']}"] = filter['value'].to_s
+          end
+        end
+
+        fts_search_value = query_hash.delete("fts.search")
+        if fts_search_value
+          query_hash[:$text] = {
+            :$search => fts_search_value
+          }
+        end
+
+        query_hash
+      end
+
+      def query_options(query_hash, options = {})
+
+        if query_hash[:$text]
+          options[:fields] = [
+            {
+              :score => {
+                :$meta => "textScore"
+              }
+            }
+          ]
+          options[:sort].unshift(
+            [:score, {:$meta => "textScore"}]
+          )
+        end
+        options
+      end
 
       def to_id(value)
         BSON::ObjectId(value.to_s)

@@ -61,23 +61,21 @@ module OpenBEL
         size     = (params[:size]   || 0).to_i
         faceted  = as_bool(params[:faceted])
 
-        filter_hash = {}
+        # check filters
+        filters = []
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
         filter_params.each do |filter|
           filter = read_filter(filter)
           halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-          filter_hash["#{filter['category']}.#{filter['name']}"] = filter['value'].to_s
+
+          if filter['category'] == 'fts' && filter['name'] == 'search'
+            halt 400 unless filter['value'].to_s.length > 1
+          end
+
+          filters << filter
         end
 
-        fts_search_value = filter_hash.delete("fts.search")
-        if fts_search_value
-          halt 404 unless fts_search_value.length > 1
-          filter_hash[:$text] = {
-            :$search => fts_search_value
-          }
-        end
-
-        results  = @api.find_evidence_by_query(filter_hash, start, size, faceted)
+        results  = @api.find_evidence(filters, start, size, faceted)
         evidence = results[:cursor].to_a
         facets   = results[:facets]
 

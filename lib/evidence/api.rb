@@ -11,7 +11,7 @@ module OpenBEL
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def find_evidence_by_query(query_hash, offset = 0, length = 100, facet = false)
+      def find_evidence(filters = [], offset = 0, length = 0, facet = false)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
