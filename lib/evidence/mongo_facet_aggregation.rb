@@ -28,7 +28,7 @@ module OpenBEL
         },
         {
           :'$group' => {
-            :_id => '$facets.filter',
+            :_id => '$facets',
             :count => {
               :'$sum' => 1
             }
