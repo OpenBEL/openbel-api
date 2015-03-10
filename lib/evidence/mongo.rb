@@ -28,6 +28,7 @@ module OpenBEL
 
         # remove evidence_facets after insert to facets
         remove_evidence_facets(_id)
+        _id
       end
 
       def find_evidence_by_id(value)
@@ -66,6 +67,7 @@ module OpenBEL
 
         # remove evidence_facets after update to facets
         remove_evidence_facets(_id)
+        nil
       end
 
       def delete_evidence_by_id(value)
