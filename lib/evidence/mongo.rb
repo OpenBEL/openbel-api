@@ -23,7 +23,11 @@ module OpenBEL
       end
 
       def create_evidence(evidence)
-        @collection.insert(evidence.to_h, :j => true)
+        # insert evidence; acknowledge journal
+        _id = @collection.insert(evidence.to_h, :j => true)
+
+        # remove evidence_facets after insert to facets
+        remove_evidence_facets(_id)
       end
 
       def find_evidence_by_id(value)
@@ -53,12 +57,25 @@ module OpenBEL
       end
 
       def update_evidence_by_id(value, evidence)
+        # add ObjectId to update
         evidence_h = evidence.to_h
         evidence_h[:_id] = BSON::ObjectId(value)
+
+        # save evidence; acknowledge journal
         @collection.save(evidence_h, :j => true)
+
+        # remove evidence_facets after update to facets
+        remove_evidence_facets(_id)
       end
 
       def delete_evidence_by_id(value)
+        # convert to ObjectId
+        _id = to_id(value)
+
+        # remove evidence_facets before evidence removal
+        remove_evidence_facets(_id)
+
+        # remove evidence
         @collection.remove(
           {
             :_id => to_id(value)
@@ -129,6 +146,17 @@ module OpenBEL
 
       def to_id(value)
         BSON::ObjectId(value.to_s)
+      end
+
+      def remove_evidence_facets(_id)
+        evidence = @collection.find_one(_id, {
+          :fields => [ 'facets' ]
+        })
+
+        if evidence && evidence.has_key?('facets')
+          @evidence_facets.remove_facets_by_filters(evidence['facets'])
+          @evidence_facets.remove_facets_by_filters 
+        end
       end
     end
   end

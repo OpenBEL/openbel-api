@@ -1,4 +1,5 @@
 require 'mongo'
+require 'multi_json'
 require_relative 'facet_api'
 require_relative 'facet_filter'
 
@@ -28,7 +29,28 @@ module OpenBEL
         @evidence_facets.find_one(_id) || create_facets(_id, query_hash)
       end
 
+      def remove_facets_by_filters(filters = [], options = {})
+        remove_spec =
+          if filters.empty?
+            { :_id => "" }
+          else
+            {
+              :_id => {
+                :$in => filters.map { |filter|
+                  to_regexp(MultiJson.load(filter))
+                }
+              }
+            }
+          end
+        @evidence_facets.remove(remove_spec, :j => true)
+      end
+
       private
+
+      def to_regexp(filter)
+        filter_s = "#{filter['category']}|#{filter['name']}|#{filter['value']}"
+        %r{.*#{Regexp.escape(filter_s)}.*}
+      end
 
       def create_facets(_id, query_hash)
         # create and save facets, identified by query
