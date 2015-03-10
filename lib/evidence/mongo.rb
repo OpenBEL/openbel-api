@@ -20,32 +20,6 @@ module OpenBEL
           :port     => port,
           :database => db
         )
-#        if @collection.index_information['TextIndex'].nil?
-#          @collection.ensure_index(
-#            {
-#              "bel_statement"            => "text",
-#              "biological_context.name"  => "text",
-#              "biological_context.value" => "text",
-#              "citation.name"            => "text",
-#              "metadata.name"            => "text",
-#              "metadata.value"           => "text",
-#              "summary_text"             => "text"
-#            },
-#            {
-#              "name"       => "TextIndex",
-#              "background" => true,
-#              "weights" => {
-#                "bel_statement"            => 10,
-#                "biological_context.name"  => 4,
-#                "biological_context.value" => 10,
-#                "citation.name"            => 2,
-#                "metadata.name"            => 4,
-#                "metadata.value"           => 6,
-#                "summary_text"             => 8
-#              }
-#            }
-#          )
-#        end
       end
 
       def create_evidence(evidence)
@@ -67,7 +41,6 @@ module OpenBEL
           ]
         )
 
-        puts query_hash
         results = {
           :cursor => @collection.find(query_hash, query_opts)
         }
