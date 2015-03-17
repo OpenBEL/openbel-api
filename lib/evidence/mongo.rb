@@ -59,8 +59,9 @@ module OpenBEL
 
       def update_evidence_by_id(value, evidence)
         # add ObjectId to update
+        _id = BSON::ObjectId(value)
         evidence_h = evidence.to_h
-        evidence_h[:_id] = BSON::ObjectId(value)
+        evidence_h[:_id] = _id
 
         # save evidence; acknowledge journal
         @collection.save(evidence_h, :j => true)
