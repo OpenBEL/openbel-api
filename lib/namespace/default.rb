@@ -152,7 +152,22 @@ module OpenBEL
         end
         return nil unless value_uri
 
-        if options[:target]
+        if options[:species]
+          species_tax_id = options[:species].to_s
+          @storage.triples(
+            value_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
+          ).map { |object|
+            # describe ortholog
+            ortholog = namespace_value_by_uri(object)
+
+            # select if species match
+            if ortholog && ortholog.fromSpecies.to_s == species_tax_id
+              ortholog
+            else
+              nil
+            end
+          }.to_a.compact
+        elsif options[:target]
           target_uri = find_namespace_rdf_uri(options[:target])
           return nil unless target_uri
 
