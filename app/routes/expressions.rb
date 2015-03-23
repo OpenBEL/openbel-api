@@ -80,8 +80,6 @@ module OpenBEL
           )
         ])
 
-        puts "#{LibBEL::bel_ast_as_string(transformed_ast)}"
-
         # serialize AST to BEL
         bel_serialization = BELSerializationTransform.new
         transformed_ast.transform_tree([bel_serialization])
@@ -278,7 +276,6 @@ module OpenBEL
           if value.start_with?('"') && value.end_with?('"')
             value = value[1...-1]
           end
-          puts value
           orthologs = @namespace_api.find_ortholog(
             namespace,
             value,
