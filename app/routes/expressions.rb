@@ -1,6 +1,5 @@
 require 'bel'
 require 'uri'
-require 'pry'
 
 module OpenBEL
   module Routes
@@ -11,6 +10,7 @@ module OpenBEL
         super
         @namespace_api  = OpenBEL::Settings["namespace-api"].create_instance
         @annotation_api = OpenBEL::Settings["annotation-api"].create_instance
+        @sequence_variation = SequenceVariationFunctionHasLocationPredicate.new
       end
 
       options '/api/expressions/*/completions' do
@@ -74,6 +74,18 @@ module OpenBEL
 
         bel_ast = BEL::Parser.parse(bel)
 
+        if bel_ast.any?([@sequence_variation])
+          msg = 'Cannot orthologize sequence variation terms with location'
+          halt(
+            400,
+            { 'Content-Type' => 'application/json' },
+            render_json({
+              :status => 400,
+              :msg    => msg
+            })
+          )
+        end
+
         transformed_ast = bel_ast.transform_tree([
           ParameterOrthologTransform.new(
             OrthologAdapter.new(@namespace_api, @annotation_api, species)
@@ -103,6 +115,60 @@ module OpenBEL
       # TODO Move out to a separate route.
       get '/api/expressions/*/semantic-validations/?' do
         halt 501
+      end
+
+      class SequenceVariationFunctionHasLocationPredicate
+        include LibBEL
+
+        SEQUENCE_VARIATION_FX = [
+          'fus', 'fusion',
+          'pmod', 'proteinModification',
+          'sub', 'substitution',
+          'trunc', 'truncation'
+        ]
+
+        def call(ast_node)
+          # check if AST node is a TERM
+          if !ast_node.is_a?(BelAstNodeToken) || ast_node.token_type != :BEL_TOKEN_TERM
+            return false
+          end
+
+          # check if AST node is a pmod TERM
+          if !SEQUENCE_VARIATION_FX.include?(ast_node.left.to_typed_node.value)
+            return false
+          end
+
+          # walk arg AST nodes until terminal
+          arg_node = ast_node.right.to_typed_node
+          while !(arg_node.left.pointer.null? && arg_node.right.pointer.null?)
+            # check if NV token child
+            arg_token = arg_node.left.to_typed_node
+
+            if arg_token.token_type == :BEL_TOKEN_NV
+              # true if namespace value is an integer
+              node_value = arg_token.right.to_typed_node.value
+              if integer?(node_value)
+                return true
+              end
+            end
+
+            # advance to the next ARG
+            arg_node = arg_node.right.to_typed_node
+          end
+
+          return false
+        end
+
+        private
+
+        def integer?(value)
+          begin
+            Integer(value)
+            return true
+          rescue ArgumentError
+            return false
+          end
+        end
       end
 
       class ParameterOrthologTransform
