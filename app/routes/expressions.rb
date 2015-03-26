@@ -53,8 +53,8 @@ module OpenBEL
       end
 
       get '/api/expressions/*/ortholog/:species' do
-        bel      = params[:splat].first
-        species  = params[:species]
+        bel           = params[:splat].first
+        species       = params[:species]
         species  = @annotation_api.find_annotation_value(
           'taxon',
           params[:species].to_s
@@ -75,22 +75,35 @@ module OpenBEL
         bel_ast = BEL::Parser.parse(bel)
 
         if bel_ast.any?([@sequence_variation])
-          msg = 'Cannot orthologize sequence variation terms with location'
+          msg = 'Could not orthologize sequence variation terms with location'
           halt(
-            400,
+            404,
             { 'Content-Type' => 'application/json' },
             render_json({
-              :status => 400,
+              :status => 404,
               :msg    => msg
             })
           )
         end
 
-        transformed_ast = bel_ast.transform_tree([
-          ParameterOrthologTransform.new(
-            OrthologAdapter.new(@namespace_api, @annotation_api, species)
+        param_transform = ParameterOrthologTransform.new(
+          @namespace_api, @annotation_api, species
+        )
+        transformed_ast = bel_ast.transform_tree([param_transform])
+
+        if !param_transform.parameter_errors.empty?
+          parameters = param_transform.parameter_errors.map { |p|
+            p.join(':')
+          }.join(', ')
+          halt(
+            404,
+            { 'Content-Type' => 'application/json' },
+            render_json({
+              :status => 404,
+              :msg    => "Could not orthologize #{parameters}"
+            })
           )
-        ])
+        end
 
         # serialize AST to BEL
         bel_serialization = BELSerializationTransform.new
@@ -194,20 +207,28 @@ module OpenBEL
           "egid",
         ]
 
-        def initialize(orthology)
-          @orthology = orthology
+        def initialize(namespace_api, annotation_api, species_tax_id)
+          @namespace_api = namespace_api
+          @orthology = OrthologAdapter.new(
+            namespace_api, annotation_api, species_tax_id
+          )
+          @species_tax_id = species_tax_id
+          @parameter_errors = []
+        end
+
+        def parameter_errors
+          @parameter_errors.uniq
         end
 
         def call(ast_node)
           if ast_node.is_a?(BelAstNodeToken) &&
               ast_node.token_type == :BEL_TOKEN_NV
 
-            orthologs = @orthology[
-              [
-                ast_node.left.to_typed_node.value,
-                ast_node.right.to_typed_node.value
-              ]
+            ns_value = [
+              ast_node.left.to_typed_node.value,
+              ast_node.right.to_typed_node.value
             ]
+            orthologs = @orthology[ns_value]
             if !orthologs.empty?
               orthologs.sort_by! { |ortholog| namespace_preference(ortholog) }
               ortholog = orthologs.first
@@ -220,6 +241,16 @@ module OpenBEL
               ast_node.right = BelAstNode.new(
                 bel_new_ast_node_value(:BEL_VALUE_VAL, ortholog[1])
               )
+            else
+              # flag as ortholog error if this parameter has a namespace and
+              # the namespace value is either not known or its species differs
+              # from our target
+              if ns_value[0] != nil
+                nsv_object = @namespace_api.find_namespace_value(*ns_value)
+                if !nsv_object || nsv_object.fromSpecies != @species_tax_id
+                  @parameter_errors << ns_value
+                end
+              end
             end
           end
         end
