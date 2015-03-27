@@ -31,11 +31,15 @@ module OpenBEL
             value = annotation[:value]
             if value.respond_to?(:each)
               value.map { |v|
-                self.make_filter(:biological_context, name, v)
+                [:biological_context, name, v]
               }
             else
-              self.make_filter(:biological_context, name, value)
+              [:biological_context, name, value]
             end
+          }.select { |category, name, value|
+            value != nil
+          }.map { |filter|
+            self.make_filter(*filter)
           }
         else
           EMPTY
@@ -45,7 +49,11 @@ module OpenBEL
       def map_metadata_facets(metadata)
         if metadata
           metadata.map { |name, value|
-            self.make_filter(:metadata, name, value)
+            [:metadata, name, value]
+          }.select { |category, name, value|
+            value != nil
+          }.map { |filter|
+            self.make_filter(*filter)
           }
         else
           EMPTY
