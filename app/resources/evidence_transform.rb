@@ -1,70 +1,70 @@
-require 'active_support'
-require 'active_support/inflector/transliterate'
+require 'bel'
 
 module OpenBEL
   module Resource
     module Evidence
 
       class AnnotationTransform
-        include ActiveSupport::Inflector
 
+        SERVER_PATTERN = %r{/api/annotations/([^/]*)/values/([^/]*)/?}
+        RDFURI_PATTERN = %r{/bel/namespace/([^/]*)/([^/]*)/?}
         URI_PATTERNS = [
-          %r{/api/annotations/([^/]*)/values/([^/]*)/?}, #Route URI
-          %r{/bel/namespace/([^/]*)/([^/]*)/?},   #RDF   URI
+          %r{/api/annotations/([^/]*)/values/([^/]*)/?},
+          %r{/bel/namespace/([^/]*)/([^/]*)/?}
         ]
+        ANNOTATION_VALUE_URI = "%s/api/annotations/%s/values/%s"
 
         def initialize(annotation_api)
           @annotation_api = annotation_api
         end
 
-        def transform_evidence(evidence)
-          if evidence == nil
-            nil
-          else
-            context = evidence['biological_context']
-            if context != nil
-              context.map! { |annotation|
-                transform_annotation(annotation)
+        def transform_evidence!(evidence, base_url)
+          if evidence
+            experiment_context = evidence.experiment_context
+            if experiment_context != nil
+              experiment_context.values.map! { |annotation|
+                transform_annotation(annotation, base_url)
               }
             end
-
-            evidence
           end
         end
 
-        def transform_annotation(annotation)
-          if annotation['uri']
-            transform_uri(annotation['uri'])
-          elsif annotation['name'] && annotation['value']
-            name  = annotation['name']
-            value = annotation['value']
-            transform_name_value(name, value)
-          else
-            nil
+        def transform_annotation(annotation, base_url)
+          if annotation[:uri]
+            transform_uri(annotation[:uri], base_url)
+          elsif annotation[:name] && annotation[:value]
+            name  = annotation[:name]
+            value = annotation[:value]
+            transform_name_value(name, value, base_url)
+          elsif annotation.respond_to?(:each)
+            name  = annotation[0]
+            value = annotation[1]
+            transform_name_value(name, value, base_url)
           end
         end
 
         private
 
-        def transform_uri(uri)
+        def transform_uri(uri, base_url)
           URI_PATTERNS.each do |pattern|
             match = pattern.match(uri)
             if match
-              return transform_name_value(match[1], match[2])
+              return transform_name_value(match[1], match[2], base_url)
             end
           end
         end
 
-        def transform_name_value(name, value)
-          structured_annotation(name, value) || free_annotation(name, value)
+        def transform_name_value(name, value, base_url)
+          structured_annotation(name, value, base_url) || free_annotation(name, value)
         end
 
-        def structured_annotation(name, value)
+        def structured_annotation(name, value, base_url)
           annotation = @annotation_api.find_annotation(name)
           if annotation
+            annotation_label = annotation.prefLabel
             if value.respond_to?(:each)
               {
-                :name  => annotation.prefLabel,
+                :name  => annotation_label,
                 :value => value.map { |v|
                   mapped = @annotation_api.find_annotation_value(annotation, v)
                   mapped ? mapped.prefLabel : v
@@ -73,9 +73,11 @@ module OpenBEL
             else
               annotation_value = @annotation_api.find_annotation_value(annotation, value)
               if annotation_value
+                value_label = annotation_value.prefLabel
                 {
                   :name  => annotation.prefLabel,
-                  :value => annotation_value.prefLabel
+                  :value => annotation_value.prefLabel,
+                  :uri   => ANNOTATION_VALUE_URI % [base_url, annotation_label, value_label]
                 }
               else
                 {
@@ -84,11 +86,6 @@ module OpenBEL
                 }
               end
             end
-          else
-            {
-              :name  => name,
-              :value => value
-            }
           end
         end
 
@@ -105,9 +102,9 @@ module OpenBEL
           if name_s.empty?
             nil
           else
-            transliterate(name_s).
+            name_s.
               split(%r{[^a-zA-Z0-9]+}).
-              map { |word| word[0].upcase + word[1..-1] }.
+              map! { |word| word.capitalize }.
               join
           end
         end
@@ -115,22 +112,27 @@ module OpenBEL
 
       class AnnotationGroupingTransform
 
-        def transform_evidence(evidence)
-          context = evidence['biological_context']
-          if context != nil
-            evidence['biological_context'] = context.group_by { |annotation|
-              annotation[:name]
-            }.values.map do |grouped_annotation|
-              {
-                :name  => grouped_annotation.first[:name],
-                :value => grouped_annotation.flat_map { |annotation|
-                  annotation[:value]
-                }
-              }
-            end
-          end
+        ExperimentContext = ::BEL::Model::ExperimentContext
 
-          evidence
+        def transform_evidence!(evidence)
+          experiment_context = evidence.experiment_context
+          if experiment_context != nil
+            evidence.experiment_context = ExperimentContext.new(
+              experiment_context.group_by { |annotation|
+                annotation[:name]
+              }.values.map do |grouped_annotation|
+                {
+                  :name  => grouped_annotation.first[:name],
+                  :value => grouped_annotation.flat_map { |annotation|
+                    annotation[:value]
+                  },
+                  :uri   => grouped_annotation.flat_map { |annotation|
+                    annotation[:uri]
+                  }
+                }
+              end
+            )
+          end
         end
       end
     end

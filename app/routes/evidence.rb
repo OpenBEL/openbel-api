@@ -30,27 +30,21 @@ module OpenBEL
       end
 
       post '/api/evidence' do
-        validate_media_type! "application/json", :profile => schema_url('evidence')
+        _id = nil
+        read_evidence.each do |evidence|
+          @annotation_transform.transform_evidence!(evidence, base_url)
 
-        evidence_obj = read_json
-        schema_validation = validate_schema(evidence_obj, :evidence)
-        unless schema_validation[0]
-          halt(
-            400,
-            { 'Content-Type' => 'application/json' },
-            render_json({ :status => 400, :msg => schema_validation[1].join("\n") })
-          )
+          # XXX Not sure we need to group values together. Instead we split
+          # multi-valued items into individual objects.
+          # Wait and see what breaks.
+          #@annotation_grouping_transform.transform_evidence!(evidence)
+
+          facets = map_evidence_facets(evidence)
+          hash = evidence.to_h
+          hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
+          hash[:facets]        = facets
+          _id = @api.create_evidence(hash)
         end
-
-        # transformation
-        evidence = evidence_obj['evidence']
-        evidence = @annotation_grouping_transform.transform_evidence(
-          @annotation_transform.transform_evidence(evidence)
-        )
-
-        evidence[:facets] = map_evidence_facets(evidence)
-
-        _id = @api.create_evidence(evidence)
 
         status 201
         headers "Location" => "#{base_url}/api/evidence/#{_id}"

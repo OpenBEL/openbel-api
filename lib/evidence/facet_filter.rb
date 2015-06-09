@@ -5,11 +5,11 @@ module OpenBEL
     module FacetFilter
 
       EMPTY = []
-      EVIDENCE_PARTS = ['citation', 'biological_context', 'metadata']
+      EVIDENCE_PARTS = ['citation', 'experiment_context', 'metadata']
 
       def map_evidence_facets(evidence)
         EVIDENCE_PARTS.reduce([]) { |facets, evidence_part|
-          part = evidence[evidence_part]
+          part = evidence.send(evidence_part)
           facets.concat(self.send(:"map_#{evidence_part}_facets", part))
         }
       end
@@ -24,17 +24,17 @@ module OpenBEL
         end
       end
 
-      def map_biological_context_facets(biological_context)
-        if biological_context
-          biological_context.flat_map { |annotation|
+      def map_experiment_context_facets(experiment_context)
+        if experiment_context
+          experiment_context.flat_map { |annotation|
             name  = annotation[:name]
             value = annotation[:value]
             if value.respond_to?(:each)
               value.map { |v|
-                [:biological_context, name, v]
+                [:experiment_context, name, v]
               }
             else
-              [:biological_context, name, value]
+              [:experiment_context, name, value]
             end
           }.select { |category, name, value|
             value != nil

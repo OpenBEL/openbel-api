@@ -1,131 +1,179 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema",
-  "description": "DESCRIBE EVIDENCE",
-  "type": "object",
+  "$schema":              "http://json-schema.org/draft-04/schema",
+  "description":          "DESCRIBE EVIDENCE",
+  "type":                 "object",
   "additionalProperties": false,
-  "required": [
-    "evidence"
-  ],
+  "required":             ["evidence"],
   "properties": {
     "evidence": {
-      "type": "object",
+      "type":                 "object",
       "additionalProperties": false,
-      "required": [
-          "bel_statement",
-          "citation"
-      ],
+      "required":             ["bel_statement", "citation"],
       "properties": {
         "bel_statement": {
-            "type": "string",
-            "title": "BEL Statement",
-            "description": "A BEL Statement is an expression that represents knowledge of the existence of biological entities and relationships between them that are known to be observed within a particular context, based on some source of prior knowledge such as a scientific publication or newly generated experimental data."
+          "type":        "string",
+          "title":       "BEL Statement",
+          "description": "A BEL Statement is an expression that represents knowledge of the existence of biological entities and relationships between them that are known to be observed within a particular context, based on some source of prior knowledge such as a scientific publication or newly generated experimental data."
         },
         "citation": {
-            "type": "object",
-            "title": "Citation",
-            "description": "The citation specifies the written source where the biological knowledge was referenced.",
-            "required": [
-              "type",
-              "id"
-            ],
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "enum": [
-                        "PubMed",
-                        "Book",
-                        "Journal",
-                        "Online Resource",
-                        "Other"
-                    ],
-                    "title": "Citation Type",
-                    "description": "The citation type of the reference."
-                },
-                "id": {
-                    "type": ["string", "number"],
-                    "title": "Citation ID",
-                    "description": "The citation identifier (PubMed ID, ISBN, DOI, URL) of the reference."
-                },
-                "name": {
-                    "type": "string",
-                    "title": "Citation Name",
-                    "description": "The citation name of the reference."
-                },
-                "date": {
-                    "type": "string",
-                    "title": "Citation Date",
-                    "description": "The citation date of the reference."
-                },
-                "authors": {
-                    "type": "array",
-                    "title": "Citation Authors",
-                    "description": "The citation authors of the reference.",
-                    "items": {
-                      "type": "string",
-                      "minItems": 0
-                    }
-                },
-                "comment": {
-                    "type": "string",
-                    "title": "Citation Comment",
-                    "description": "The citation comment of the reference."
-                }
+          "type":        "object",
+          "title":       "Citation",
+          "description": "The citation specifies the written source where the biological knowledge was referenced.",
+          "required":    ["type", "id"],
+          "properties": {
+            "type": {
+              "type":        "string",
+              "enum":        ["PubMed", "Book", "Journal", "Online Resource", "Other"],
+              "title":       "Citation Type",
+              "description": "The citation type of the reference."
+            },
+            "id": {
+              "type":        ["string", "number"],
+              "title":       "Citation ID",
+              "description": "The citation identifier (PubMed ID, ISBN, DOI, URL) of the reference."
+            },
+            "name": {
+              "type":        "string",
+              "title":       "Citation Name",
+              "description": "The citation name of the reference."
+            },
+            "date": {
+              "type":        "string",
+              "title":       "Citation Date",
+              "description": "The citation date of the reference."
+            },
+            "authors": {
+              "type":        "array",
+              "title":       "Citation Authors",
+              "description": "The citation authors of the reference.",
+              "items": {
+                "type":     "string",
+                "minItems": 0
+              }
+            },
+            "comment": {
+              "type":        "string",
+              "title":       "Citation Comment",
+              "description": "The citation comment of the reference."
             }
+          }
         },
-        "biological_context": {
-            "type": ["array", "null"],
-            "title": "Biological Context",
-            "description": "A biological context specifies the experiment's parameters where this interaction was observed.",
-            "items": {
-                "oneOf": [
-                    {
-                        "type": "object",
-                        "required": ["name", "value"],
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "title": "Annotation Type",
-                                "description": "Annotation type listing - sourced from the BEL Annotation resource names"
-                            },
-                            "value": {
-                                "type": ["string", "number", "boolean", "array"],
-                                "title": "Annotations",
-                                "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
-                                "items": {
-                                    "type": ["string", "number", "boolean"]
-                                }
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": ["uri"],
-                        "title": "Annotation URI(s)",
-                        "description": "URI(s) for Annotations",
-                        "properties": {
-                            "uri": {
-                                "type": ["string", "array"],
-                                "format": "uri",
-                                "items": {
-                                    "type": "string",
-                                    "format": "uri"
-                                }
-                            }
-                        }
+        "experiment_context": {
+          "type":        ["array", "null"],
+          "title":       "Experiment Context",
+          "description": "An experiment context specifies the experiment's parameters where this interaction was observed.",
+          "items": {
+            "oneOf": [
+              {
+                "type":       "object",
+                "required":   ["name", "value"],
+                "properties": {
+                  "name": {
+                    "type":        "string",
+                    "title":       "Annotation Type",
+                    "description": "Annotation type listing - sourced from the BEL Annotation resource names"
+                  },
+                  "value": {
+                    "type":        ["string", "number", "boolean", "array"],
+                    "title":       "Annotations",
+                    "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
+                    "items": {
+                      "type": ["string", "number", "boolean"]
                     }
-                ]
-            }
+                  }
+                }
+              },
+              {
+                "type":        "object",
+                "required":    [ "uri" ],
+                "title":       "Annotation URI(s)",
+                "description": "URI(s) for Annotations",
+                "properties": {
+                  "uri": {
+                    "type":   ["string", "array"],
+                    "format": "uri",
+                    "items": {
+                      "type":   "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            ]
+          }
         },
         "summary_text": {
-            "type": ["string", "null"],
-            "title": "Summary Text",
-            "description": "Abstract from source text to provide support for this evidence"
+          "type":        ["string", "null"],
+          "title":       "Summary Text",
+          "description": "Abstract from source text to provide support for this evidence"
+        },
+        "references": {
+          "type":        ["array", "null"],
+          "title":       "References",
+          "description": "The references section identifies annotation and namespace URIs.",
+          "items": {
+            "type":        "object",
+            "required":    ["keyword", "uri"],
+            "title":       "Reference",
+            "description": "Reference for either Annotation or Namespace stated in the evidence.",
+            "properties": {
+              "keyword": {
+                "type":        "string",
+                "title":       "Keyword",
+                "description": "Keyword reference used in the annotation or namespace value."
+              },
+              "uri": {
+                "type":        "string",
+                "format":      "uri",
+                "title":       "URI",
+                "description": "URI that identifies the annotation or namespace classification."
+              }
+            }
+          }
         },
         "metadata": {
-            "type": ["object", "null"],
-            "title": "Evidence resource metadata",
-            "description": "Metadata that describes the evidence resource.",
-            "additionalProperties": true
+          "type":        ["array", "null"],
+          "title":       "Evidence resource metadata",
+          "description": "Metadata that describes the evidence resource.",
+          "items": {
+            "oneOf": [
+              {
+                "type":       "object",
+                "required":   ["name", "value"],
+                "properties": {
+                  "name": {
+                    "type":        "string",
+                    "title":       "Annotation Type",
+                    "description": "Annotation type listing - sourced from the BEL Annotation resource names"
+                  },
+                  "value": {
+                    "type":        ["string", "number", "boolean", "array"],
+                    "title":       "Annotations",
+                    "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
+                    "items": {
+                      "type": ["string", "number", "boolean"]
+                    }
+                  }
+                }
+              },
+              {
+                "type":        "object",
+                "required":    ["uri"],
+                "title":       "Annotation URI(s)",
+                "description": "URI(s) for Annotations",
+                "properties": {
+                  "uri": {
+                    "type":   ["string", "array"],
+                    "format": "uri",
+                    "items": {
+                      "type":   "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            ]
+          }
         }
       }
     }

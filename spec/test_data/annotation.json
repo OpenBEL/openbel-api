@@ -1,0 +1,18 @@
+{
+  "evidence": {
+    "bel_statement": "biologicalProcess(GOBP:aging) increases biologicalProcess(GOBP:\"apoptotic process\")",
+    "citation": {
+      "type": "PubMed",
+      "name": "Trends in molecular medicine",
+      "id": "12928037",
+      "date": "2003-08-09",
+      "authors": "de Nigris F|Lerman A|Ignarro LJ|Williams-Ignarro S|Sica V|Baker AH|Lerman LO|Geng YJ|Napoli C",
+      "comment": "Primary literature from (Trends in Molecular Medicine)."
+    },
+    "summary_text": "Aging, one of the major predictors for atherosclerotic lesion formation, increases\nthe sensitivity of endothelial cells to apoptosis induced by in vitro and in vivo\nstimuli [35–37].",
+    "experiment_context": [
+    ],
+    "metadata": {
+    }
+  }
+}

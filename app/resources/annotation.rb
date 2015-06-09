@@ -11,6 +11,7 @@ module OpenBEL
         schema do
           type :annotation
           properties do |p|
+            p.rdf_uri   item.uri
             p.name      item.prefLabel
             p.prefix    item.prefix
             p.domain    item.domain

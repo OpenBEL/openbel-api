@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'activesupport', '~> 4.2.0'
 gem 'bel'
 gem 'bson_ext', '1.12.0'
 gem 'builder'
@@ -22,6 +21,12 @@ gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
 gem 'sqlite3'
+
+group :test do
+  gem 'faraday_middleware'
+  gem 'hyperclient'
+  gem 'rspec'
+end
 
 group :development do
   gem 'POpen4'

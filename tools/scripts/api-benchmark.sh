@@ -4,9 +4,9 @@ cd "$DIR" || exit 1
 . "$DIR"/env.sh || exit 1
 
 # requirements
+require_cmd bundle
 require_cmd curl
 require_cmd siege
-require_cmd pumactl
 
 SERVER_AS_DAEMON=1
 

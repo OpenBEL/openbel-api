@@ -1,3 +1,4 @@
+require 'bel'
 require 'json_schema'
 require 'multi_json'
 require 'namespace/model'
@@ -92,6 +93,12 @@ module OpenBEL
           end
 
           halt 415 unless valid
+        end
+
+        def read_evidence
+          fmt = ::BEL::Extension::Format.formatters(request.media_type)
+          halt 415 unless fmt
+          ::BEL::Format.evidence(request.body, request.media_type)
         end
 
         def resolve_supported_content_type(request)

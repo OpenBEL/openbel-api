@@ -252,7 +252,7 @@ schemas:
                   "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
                   "id": "10699758"
                 },
-                "biological_context": {
+                "experiment_context": {
                   "species": "9606",
                   "disease": "leukemia"
                 },
@@ -335,7 +335,7 @@ schemas:
           description: |
             A filter to apply to the evidence resource collection to narrow the resources retrieved.
           example: |
-            {"category":"biological_context","name":"Anatomy","value":"prostate gland"}
+            {"category":"experiment_context","name":"Anatomy","value":"prostate gland"}
             {"category":"fts","name":"search","value":"\"subdural hematoma\" carcinoma"}
             {"category":"fts","name":"search","value":"homatoma -carcinoma"}
           required: false
@@ -358,7 +358,7 @@ schemas:
               - `filter`
               ```json
               {
-                "category":"biological_context",
+                "category":"experiment_context",
                 "name":"Anatomy",
                 "value":"prostate gland"
               }
@@ -377,7 +377,7 @@ schemas:
                         "name": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer",
                         "id": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer"
                       },
-                      "biological_context": {
+                      "experiment_context": {
                         "species": "9606"
                       },
                       "metadata": {
@@ -387,14 +387,14 @@ schemas:
                   ]
                   "facets": [
                     {
-                      "category": "biological_context",
+                      "category": "experiment_context",
                       "name": "Species",
                       "value": "9606",
                       "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"9606\"}",
                       "count": 49071
                     },
                     {
-                      "category": "biological_context",
+                      "category": "experiment_context",
                       "name": "Species",
                       "value": "10090",
                       "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10090\"}",
@@ -429,14 +429,14 @@ schemas:
                       "count": 18784
                     },
                     {
-                      "category": "biological_context",
+                      "category": "experiment_context",
                       "name": "Species",
                       "value": "10116",
                       "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10116\"}",
                       "count": 7091
                     },
                     {
-                      "category": "biological_context",
+                      "category": "experiment_context",
                       "name": "Anatomy",
                       "value": "liver",
                       "filter": "{\"category\":\"context\",\"name\":\"Anatomy\",\"value\":\"liver\"}",
@@ -477,7 +477,7 @@ schemas:
                       "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
                       "id": "10699758"
                     },
-                    "biological_context": {
+                    "experiment_context": {
                       "Species": "9606",
                       "CellLine": "LNCAP cell",
                       "Anatomy": "prostate gland",

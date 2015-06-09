@@ -102,13 +102,13 @@ module OpenBEL
           name     = filter['name']
           value    = filter['value']
 
-          if category == 'biological_context'
-            context = query_hash.fetch('biological_context', nil)
+          if category == 'experiment_context'
+            context = query_hash.fetch('experiment_context', nil)
             if !context
               context = {
                 :$all => []
               }
-              query_hash['biological_context'] = context
+              query_hash['experiment_context'] = context
             end
 
             context[:$all] << {

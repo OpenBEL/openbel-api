@@ -5,9 +5,9 @@ cd "$DIR" || exit 1
 . "$DIR"/env.sh || exit 1
 
 # requirements
-require_cmd pumactl
+require_cmd bundle
 
-pumactl \
+bundle exec pumactl \
   --config-file "$CONFIGS"/server_config.rb \
   start
 

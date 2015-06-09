@@ -14,7 +14,9 @@ module OpenBEL
             p.bel_statement      item['bel_statement']
             p.citation           item['citation']
             p.summary_text       item['summary_text']
-            p.biological_context item['biological_context']
+            p.experiment_context prepare_experiment_context(
+              item['experiment_context']
+            )
             p.metadata           item['metadata']
           end
 
@@ -23,6 +25,16 @@ module OpenBEL
         end
 
         private
+
+        def prepare_experiment_context(experiment_context)
+          experiment_context.each do |annotation|
+            if annotation['uri']
+              annotation.delete('name')
+              annotation.delete('value')
+            end
+          end
+          experiment_context
+        end
 
         def link_self(id)
           {
