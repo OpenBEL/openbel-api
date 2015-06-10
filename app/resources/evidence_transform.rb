@@ -31,8 +31,11 @@ module OpenBEL
 
         def transform_annotation(annotation, base_url)
           if annotation[:uri]
-            transform_uri(annotation[:uri], base_url)
-          elsif annotation[:name] && annotation[:value]
+            transformed = transform_uri(annotation[:uri], base_url)
+            return transformed if transformed != nil
+          end
+
+          if annotation[:name] && annotation[:value]
             name  = annotation[:name]
             value = annotation[:value]
             transform_name_value(name, value, base_url)
@@ -46,12 +49,10 @@ module OpenBEL
         private
 
         def transform_uri(uri, base_url)
-          URI_PATTERNS.each do |pattern|
+          URI_PATTERNS.map { |pattern|
             match = pattern.match(uri)
-            if match
-              return transform_name_value(match[1], match[2], base_url)
-            end
-          end
+            match ? transform_name_value(match[1], match[2], base_url) : nil
+          }.compact.first
         end
 
         def transform_name_value(name, value, base_url)
