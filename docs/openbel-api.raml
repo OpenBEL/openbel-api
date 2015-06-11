@@ -211,23 +211,6 @@ schemas:
                 Accept:
                   description: Allowable HTTP methods.
                   type:        string
-            400:
-              description: |
-                *400 Bad Request*
-
-                Returned if a filter is malformed.
-            404:
-              description: |
-                *404 Not Found*
-
-                Returned if no annotation values were found for the FTS search.
-              
-                Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
-            501:
-              description: |
-                *501 Not Implemented*
-
-                Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
         get:
           description: |
             Retrieves the annotation values within an *{annotation}*.
@@ -306,6 +289,23 @@ schemas:
                 application/json:
                   schema:  annotation_value_collection
                   example: !include http://next.belframework.org/example/annotation_value_collection.example.json
+            400:
+              description: |
+                *400 Bad Request*
+
+                Returned if a filter is malformed.
+            404:
+              description: |
+                *404 Not Found*
+
+                Returned if no annotation values were found for the FTS search.
+              
+                Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
+            501:
+              description: |
+                *501 Not Implemented*
+
+                Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
         /{value}:
           description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
           options:
