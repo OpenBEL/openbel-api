@@ -82,7 +82,52 @@ schemas:
                 description: Allowable HTTP methods.
                 type:        string
       get:
-        description: Retrieve the annotation values resource collection for all annotation resources.
+        description: |
+          Retrieves the annotation values resource collection for all annotation resources. This allows the caller to retrieve values across all annotations known to the API.
+
+          A good use case for this is an annotation search interface.
+
+          <br>
+           **Limitations**
+          
+           This endpoint is limited to full-text searching including a *filter* like:
+           ```json
+           {
+             "category": "fts",
+             "name": "search",
+             "value": "cat"
+           }
+           ```
+
+          A filter not referring to a full-text search will return `400 Bad Request`.
+
+          <br>
+          **Complete Example**
+          
+          **<sub>GET http://next.belframework.org/api/annotations/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22dendritic%20cell%20thymoma%22}</sub>**
+          
+          ```json
+          {
+            "annotation_values": [
+              {
+                "type": "BiologicalProcessConcept",
+                "identifier": "3282",
+                "name": "dendritic cell thymoma",
+                "_links": {
+                  "self": {
+                    "type": "annotation_value",
+                    "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3282"
+                  },
+                  "collection": {
+                    "type": "annotation",
+                    "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                  }
+                }
+              }
+            ]
+          }
+          ```
+
         queryParameters:
           start:
             type: integer
