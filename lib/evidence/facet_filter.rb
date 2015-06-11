@@ -10,7 +10,8 @@ module OpenBEL
       def map_evidence_facets(evidence)
         EVIDENCE_PARTS.reduce([]) { |facets, evidence_part|
           part = evidence.send(evidence_part)
-          facets.concat(self.send(:"map_#{evidence_part}_facets", part))
+          new_facets = self.send(:"map_#{evidence_part}_facets", part)
+          facets.concat(new_facets)
         }
       end
 
@@ -34,9 +35,11 @@ module OpenBEL
                 [:experiment_context, name, v]
               }
             else
-              [:experiment_context, name, value]
+              # HACK: nested array will be flattened out by flat_map;
+              # otherwise we would have each data value unrolled
+              [[:experiment_context, name, value]]
             end
-          }.select { |category, name, value|
+          }.select { |(category, name, value)|
             value != nil
           }.map { |filter|
             self.make_filter(*filter)
@@ -48,8 +51,16 @@ module OpenBEL
 
       def map_metadata_facets(metadata)
         if metadata
-          metadata.map { |name, value|
-            [:metadata, name, value]
+          metadata.flat_map { |name, value|
+            if value.respond_to?(:each)
+              value.map { |v|
+                [:metadata, name, v]
+              }
+            else
+              # HACK: nested array will be flattened out by flat_map;
+              # otherwise we would have each data value unrolled
+              [[:metadata, name, value]]
+            end
           }.select { |category, name, value|
             value != nil
           }.map { |filter|
