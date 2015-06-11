@@ -2,80 +2,18 @@
   "annotation_values": [
     {
       "type": "AnnotationConcept",
-      "identifier": "0002056",
-      "name": "HaCaT",
+      "identifier": "0007836",
+      "name": "Mouse cell",
       "_links": {
         "self": {
           "type": "annotation_value",
-          "href": "http://next.belframework.org/api/annotations/experimental-factor-ontology/values/0002056"
+          "href": "http://next.belframework.org/api/annotations/cell-line-ontology/values/0007836"
         },
         "collection": {
           "type": "annotation",
-          "href": "http://next.belframework.org/api/annotations/experimental-factor-ontology"
-        }
-      }
-    },
-    {
-      "type": "BiologicalProcessConcept",
-      "identifier": "D002371",
-      "name": "Cat Diseases",
-      "_links": {
-        "self": {
-          "type": "annotation_value",
-          "href": "http://next.belframework.org/api/annotations/mesh-diseases/values/D002371"
-        },
-        "collection": {
-          "type": "annotation",
-          "href": "http://next.belframework.org/api/annotations/mesh-diseases"
-        }
-      }
-    },
-    {
-      "type": "BiologicalProcessConcept",
-      "identifier": "0050481",
-      "name": "endemic typhus",
-      "_links": {
-        "self": {
-          "type": "annotation_value",
-          "href": "http://next.belframework.org/api/annotations/disease-ontology/values/0050481"
-        },
-        "collection": {
-          "type": "annotation",
-          "href": "http://next.belframework.org/api/annotations/disease-ontology"
-        }
-      }
-    },
-    {
-      "type": "BiologicalProcessConcept",
-      "identifier": "13768",
-      "name": "opisthorchiasis",
-      "_links": {
-        "self": {
-          "type": "annotation_value",
-          "href": "http://next.belframework.org/api/annotations/disease-ontology/values/13768"
-        },
-        "collection": {
-          "type": "annotation",
-          "href": "http://next.belframework.org/api/annotations/disease-ontology"
-        }
-      }
-    },
-    {
-      "type": "BiologicalProcessConcept",
-      "identifier": "11258",
-      "name": "cat-scratch disease",
-      "_links": {
-        "self": {
-          "type": "annotation_value",
-          "href": "http://next.belframework.org/api/annotations/disease-ontology/values/11258"
-        },
-        "collection": {
-          "type": "annotation",
-          "href": "http://next.belframework.org/api/annotations/disease-ontology"
+          "href": "http://next.belframework.org/api/annotations/cell-line-ontology"
         }
       }
     }
   ]
 }
-
-

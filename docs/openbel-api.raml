@@ -201,7 +201,8 @@ schemas:
                 schema:  annotation_resource
                 example: !include http://next.belframework.org/example/annotation_resource.example.json
       /values:
-        description: Represents the collection of annotation values available within the identified *{annotation}*.
+        description: |
+          Access the annotation values within an *{annotation}*.
         options:
           description: Returns allowable HTTP methods.
           responses:
@@ -210,14 +211,73 @@ schemas:
                 Accept:
                   description: Allowable HTTP methods.
                   type:        string
+            400:
+              description: |
+                *400 Bad Request*
+
+                Returned if a filter is malformed.
+            404:
+              description: |
+                *404 Not Found*
+
+                Returned if no annotation values were found for the FTS search.
+              
+                Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
+            501:
+              description: |
+                *501 Not Implemented*
+
+                Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
         get:
-          description: Retrieve the collection of annotation values available within the identified *{annotation}*.
+          description: |
+            Retrieves the annotation values within an *{annotation}*.
+
+            A good use case for this is an annotation search interface constrained to one *{annotation}*.
+
+            <br>
+             **Limitations**
+            
+             This endpoint is limited to full-text searching including a *filter* like:
+             ```json
+             {
+               "category": "fts",
+               "name": "search",
+               "value": "cat"
+             }
+             ```
+
+            <br>
+            **Complete Example**
+            
+            **<sub>GET http://next.belframework.org/api/annotations/taxon/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22Mouse%22}</sub>**
+            
+            ```json
+            {
+              "annotation_values": [
+                {
+                  "type": "AnnotationConcept",
+                  "identifier": "0007836",
+                  "name": "Mouse cell",
+                  "_links": {
+                    "self": {
+                      "type": "annotation_value",
+                      "href": "http://next.belframework.org/api/annotations/cell-line-ontology/values/0007836"
+                    },
+                    "collection": {
+                      "type": "annotation",
+                      "href": "http://next.belframework.org/api/annotations/cell-line-ontology"
+                    }
+                  }
+                }
+              ]
+            }
+            ```
           queryParameters:
             start:
               type: integer
               description: |
                 The annotation value resource to start from for paging purposes.
-              example: 100
+              example:  "0"
               required: false
             size:
               type: integer
@@ -225,21 +285,21 @@ schemas:
                 The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
 
                 A size of zero or less will return all values.
-              example: 100
+              example:  1
               required: false
             filter:
               type: string
               description: |
                 A filter to apply to the annotation value resource collection to narrow the resources retrieved.
               example: |
-                {"category":"fts","name":"search","value":"cat"}
+                {"category":"fts","name":"search","value":"Mouse"}
               required: false
             faceted:
               type: string
               description: |
                 The boolean indicator to provided faceted results for the annotation value resource collection. The default is to not facet.
               enum: [ 'true', 'yes', '1', 'on' ]
-              example: yes
+              example: no
           responses:
             200:
               body:
