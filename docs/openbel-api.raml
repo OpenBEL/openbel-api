@@ -99,8 +99,6 @@ schemas:
            }
            ```
 
-          A filter not referring to a full-text search will return `400 Bad Request`.
-
           <br>
           **Complete Example**
           
@@ -133,7 +131,7 @@ schemas:
             type: integer
             description: |
               The annotation value resource to start from for paging purposes.
-            example: 100
+            example:  "0"
             required: false
           size:
             type: integer
@@ -141,7 +139,7 @@ schemas:
               The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
 
               A size of zero or less will return all values.
-            example: 100
+            example:  5
             required: false
           filter:
             type: string
@@ -155,13 +153,30 @@ schemas:
             description: |
               The boolean indicator to provided faceted results for the annotation value resource collection. The default is to not facet.
             enum: [ 'true', 'yes', '1', 'on' ]
-            example: yes
+            example: no
         responses:
           200:
             body:
               application/json:
                 schema:  annotation_value_collection
                 example: !include http://next.belframework.org/example/annotation_value_collection.example.json
+          400:
+            description: |
+              *400 Bad Request*
+
+              Returned if a filter is malformed.
+          404:
+            description: |
+              *404 Not Found*
+
+              Returned if no annotation values were found for the FTS search.
+            
+              Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
+          501:
+            description: |
+              *501 Not Implemented*
+
+              Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
     /{annotation}:
       description: Represents a single annotation resource.
       uriParameters:
