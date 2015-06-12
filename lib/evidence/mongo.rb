@@ -96,29 +96,28 @@ module OpenBEL
           return EMPTY_HASH
         end
 
-        query_hash = {}
-        filters.each do |filter|
-          category = filter['category']
-          name     = filter['name']
-          value    = filter['value']
+        query_hash = {
+          :$and => filters.map { |filter|
+            category = filter['category']
+            name     = filter['name']
+            value    = filter['value']
 
-          if category == 'experiment_context'
-            context = query_hash.fetch('experiment_context', nil)
-            if !context
-              context = {
-                :$all => []
+            if category == 'experiment_context'
+              {
+                :experiment_context => {
+                  :$elemMatch => {
+                    :name  => name.to_s,
+                    :value => value.to_s
+                  }
+                }
               }
-              query_hash['experiment_context'] = context
+            else
+              {
+                "#{filter['category']}.#{filter['name']}" => filter['value'].to_s
+              }
             end
-
-            context[:$all] << {
-              :name  => name.to_s,
-              :value => value.to_s
-            }
-          else
-            query_hash["#{filter['category']}.#{filter['name']}"] = filter['value'].to_s
-          end
-        end
+          }
+        }
 
         fts_search_value = query_hash.delete("fts.search")
         if fts_search_value
