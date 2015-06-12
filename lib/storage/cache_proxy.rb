@@ -1,4 +1,3 @@
-require 'pry'
 require_relative 'triple_storage'
 
 module OpenBEL
