@@ -5,7 +5,7 @@ module OpenBEL
     module FacetFilter
 
       EMPTY = []
-      EVIDENCE_PARTS = ['citation', 'experiment_context', 'metadata']
+      EVIDENCE_PARTS = [:citation, :experiment_context, :metadata]
 
       def map_evidence_facets(evidence)
         EVIDENCE_PARTS.reduce([]) { |facets, evidence_part|
