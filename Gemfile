@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'bel'
+gem 'bel', '~> 0.3'
 gem 'bson_ext', '1.12.0'
 gem 'builder'
 gem 'dot_hash'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby
 gem 'json_schema'
-gem 'kyotocabinet-ffi', :path => '../kyotocabinet-ffi'
+gem 'kyotocabinet-ffi', '~> 0.1'
 gem 'mongo', '1.12.0'
 gem 'multi_json', '~> 1.10'
 gem 'nokogiri'

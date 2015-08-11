@@ -34,7 +34,7 @@ module OpenBEL
       end
 
       def on_load
-        require 'kyotocabinet'
+        require 'kyotocabinet_ffi'
       end
 
       def validate(extensions = {}, options = {})
