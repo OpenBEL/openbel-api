@@ -8,6 +8,6 @@ cd "$DIR" || exit 1
 require_cmd bundle
 
 bundle exec pumactl \
-  --config-file "$CONFIGS"/server_config.rb \
+  --config-file "$CONFIG"/server_config.rb \
   start
 

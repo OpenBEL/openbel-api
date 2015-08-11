@@ -12,8 +12,10 @@ default CUSTOM_ENV_SH           "$DIR/env.sh.custom"
 default CTAG_INCLUDES           "Gemfile Rakefile app/ lib/"
 
 ### PATHS ###
-default CONFIGS                 "$DIR"/config
-default SCRIPTS                 "$DIR"/tools/scripts
+default CONFIG                  "$DIR"/config
+default TOOLS                   "$DIR"/tools
+default TOOLS_KAFKA             "$TOOLS"/kafka
+default SCRIPTS                 "$TOOLS"/scripts
 default DOCS                    "$DIR"/docs
 default TESTS                   "$DIR"/tests
 default TESTS_API_SPEC          "$TESTS/api-specification"
