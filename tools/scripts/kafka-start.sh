@@ -8,5 +8,8 @@ cd "$DIR" || exit 1
 require_cmd java
 
 "$TOOLS_KAFKA"/bin/kafka-server-start.sh \
-  "$CONFIG"/kafka_broker.properties
+  "$CONFIG"/kafka_broker.properties \
+  --override "zookeeper.connect=${KAFKA_ZOOKEEPER_CONNECT}" \
+  --override "port=${KAFKA_PORT}" \
+  --override "log.dirs=${KAFKA_LOG_DIRS}"
 

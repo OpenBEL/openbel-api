@@ -6,12 +6,12 @@ source "$DIR/.gosh.sh" || return 1
 default CUSTOM_ENV_SH "$DIR/env.sh.custom"
 assert_source "$CUSTOM_ENV_SH" || return 1
 
-### GENERAL ENV VARS ###
+# GENERAL ENV VARS #
 default DIR                     "$DIR"
 default CUSTOM_ENV_SH           "$DIR/env.sh.custom"
 default CTAG_INCLUDES           "Gemfile Rakefile app/ lib/"
 
-### PATHS ###
+# PATHS #
 default CONFIG                  "$DIR"/config
 default TOOLS                   "$DIR"/tools
 default TOOLS_KAFKA             "$TOOLS"/kafka
@@ -22,28 +22,42 @@ default TESTS_API_SPEC          "$TESTS/api-specification"
 default OUT                     "$DIR"/out
 default OUT_TEST_RESULTS        "$OUT"/test-results
 
-### SERVER PARAMETERS ###
-default PID_FILE                "$DIR"/server.pid
-default PORT_START              9000
-default WORKER_COUNT            4
-default THREADED                1
-default THREAD_MIN              0
-default THREAD_MAX              2
-default SERVER_AS_DAEMON        0
-default OUT_SERVER_STDOUT       "$OUT"/api-stdout.log
-default OUT_SERVER_STDERR       "$OUT"/api-stderr.log
+# SERVER PARAMETERS #
 
-### DOC PARAMETERS ###
+  # REST #
+  default PID_FILE                "$DIR"/server.pid
+  default PORT_START              9000
+  default WORKER_COUNT            4
+  default THREADED                1
+  default THREAD_MIN              0
+  default THREAD_MAX              2
+  default SERVER_AS_DAEMON        0
+  default OUT_SERVER_STDOUT       "$OUT"/api-stdout.log
+  default OUT_SERVER_STDERR       "$OUT"/api-stderr.log
+
+  # ZOOKEEPER #
+  default ZOOKEEPER_CLIENT_PORT   2181             # i.e. kafka inbound port
+  default ZOOKEEPER_DATA_DIR      "$OUT"/zookeeper # data directory
+  default ZOOKEEPER_TICK_TIME     2000             # client heartbeat interval
+  default ZOOKEEPER_MAX_CONN      0                # i.e. no minimum per IP
+
+  # KAFKA #
+  default KAFKA_ZOOKEEPER_CONNECT "localhost:${ZOOKEEPER_CLIENT_PORT}"
+  default KAFKA_PORT              9092
+  default KAFKA_LOG_DIRS          "$OUT"/kafka-logs
+
+
+# DOC PARAMETERS #
 default DOC_API_SPEC            "$DOCS/openbel-api.raml"
 default DOC_SCHEMAS             "$DOCS/schemas"
 
-### TEST PARAMETERS ###
+# TEST PARAMETERS #
 default ABAO_TEST_REPORTER      "min"
 default TEST_HOST_URL           "http://localhost:$PORT_START"
 default TEST_API_ROOT_URL       "$TEST_HOST_URL/api"
 default TEST_URLS_FILE          "$TESTS/urls"
 
-### THE GO SHELL ###
+# THE GO SHELL #
 default GOSH_SCRIPTS            "$DIR"/tools/scripts
 default GOSH_CONTRIB            "$SCRIPTS"/gosh-contrib
 

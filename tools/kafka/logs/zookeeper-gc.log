@@ -1,11 +1,10 @@
-Java HotSpot(TM) 64-Bit Server VM (25.45-b02) for linux-amd64 JRE (1.8.0_45-b14), built on Apr 10 2015 10:07:45 by "java_re" with gcc 4.3.0 20080428 (Red Hat 4.3.0-8)
-Memory: 4k page, physical 16384076k(10020100k free), swap 33554428k(33554428k free)
-CommandLine flags: -XX:+CMSClassUnloadingEnabled -XX:+CMSScavengeBeforeRemark -XX:+DisableExplicitGC -XX:InitialHeapSize=536870912 -XX:+ManagementServer -XX:MaxHeapSize=536870912 -XX:MaxNewSize=178958336 -XX:MaxTenuringThreshold=6 -XX:NewSize=178958336 -XX:OldPLABSize=16 -XX:OldSize=357912576 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+UseParNewGC 
+OpenJDK 64-Bit Server VM (24.85-b03) for linux-amd64 JRE (1.7.0_85-b01), built on Jul 21 2015 19:19:20 by "builduser" with gcc 5.1.0
+Memory: 4k page, physical 16384076k(401592k free), swap 33554428k(10623184k free)
+CommandLine flags: -XX:+CMSClassUnloadingEnabled -XX:+CMSScavengeBeforeRemark -XX:+DisableExplicitGC -XX:InitialHeapSize=536870912 -XX:+ManagementServer -XX:MaxHeapSize=536870912 -XX:MaxNewSize=178958336 -XX:MaxTenuringThreshold=6 -XX:NewSize=178958336 -XX:OldPLABSize=16 -XX:OldSize=357912576 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+UseParNewGC 
 Heap
- par new generation   total 157248K, used 33561K [0x00000000e0000000, 0x00000000eaaa0000, 0x00000000eaaa0000)
-  eden space 139776K,  24% used [0x00000000e0000000, 0x00000000e20c64a0, 0x00000000e8880000)
-  from space 17472K,   0% used [0x00000000e8880000, 0x00000000e8880000, 0x00000000e9990000)
-  to   space 17472K,   0% used [0x00000000e9990000, 0x00000000e9990000, 0x00000000eaaa0000)
- concurrent mark-sweep generation total 349568K, used 0K [0x00000000eaaa0000, 0x0000000100000000, 0x0000000100000000)
- Metaspace       used 8666K, capacity 8782K, committed 9088K, reserved 1056768K
-  class space    used 1031K, capacity 1047K, committed 1152K, reserved 1048576K
+ par new generation   total 157248K, used 33556K [0x00000000d5a00000, 0x00000000e04a0000, 0x00000000e04a0000)
+  eden space 139776K,  24% used [0x00000000d5a00000, 0x00000000d7ac5090, 0x00000000de280000)
+  from space 17472K,   0% used [0x00000000de280000, 0x00000000de280000, 0x00000000df390000)
+  to   space 17472K,   0% used [0x00000000df390000, 0x00000000df390000, 0x00000000e04a0000)
+ concurrent mark-sweep generation total 349568K, used 0K [0x00000000e04a0000, 0x00000000f5a00000, 0x00000000f5a00000)
+ concurrent-mark-sweep perm gen total 21248K, used 9676K [0x00000000f5a00000, 0x00000000f6ec0000, 0x0000000100000000)

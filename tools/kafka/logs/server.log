@@ -1,1329 +1,898 @@
-[2015-08-10 15:00:37,405] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:00:37,408] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:06:54,479] INFO KafkaConfig values: 
+	log.roll.hours = 168
+	controlled.shutdown.max.retries = 3
+	inter.broker.protocol.version = 0.8.3.X
+	log.cleaner.threads = 1
+	zookeeper.connection.timeout.ms = 6000
+	log.preallocate = false
+	offsets.load.buffer.size = 5242880
+	security.inter.broker.protocol = PLAINTEXT
+	controller.socket.timeout.ms = 30000
+	zookeeper.session.timeout.ms = 6000
+	log.cleaner.enable = false
+	controlled.shutdown.enable = true
+	offsets.topic.num.partitions = 50
+	num.recovery.threads.per.data.dir = 1
+	background.threads = 10
+	unclean.leader.election.enable = true
+	message.max.bytes = 1000012
+	log.cleaner.backoff.ms = 15000
+	replica.lag.time.max.ms = 10000
+	log.roll.jitter.hours = 0
+	auto.create.topics.enable = true
+	log.retention.check.interval.ms = 300000
+	zookeeper.sync.time.ms = 2000
+	offsets.topic.compression.codec = 0
+	log.cleaner.io.buffer.load.factor = 0.9
+	replica.fetch.max.bytes = 1048576
+	log.retention.hours = 168
+	log.cleaner.delete.retention.ms = 86400000
+	log.dirs = /home/tony/projects/openbel/openbel-server/out/kafka-logs
+	log.index.size.max.bytes = 10485760
+	fetch.purgatory.purge.interval.requests = 1000
+	log.retention.minutes = null
+	connections.max.idle.ms = 600000
+	log.cleaner.min.cleanable.ratio = 0.5
+	offsets.commit.timeout.ms = 5000
+	offsets.retention.minutes = 1440
+	max.connections.per.ip = 2147483647
+	log.retention.bytes = -1
+	offset.metadata.max.bytes = 4096
+	replica.fetch.wait.max.ms = 500
+	metrics.num.samples = 2
+	leader.imbalance.check.interval.seconds = 300
+	port = 9092
+	offsets.retention.check.interval.ms = 600000
+	log.roll.jitter.ms = null
+	reserved.broker.max.id = 1000
+	log.cleaner.dedupe.buffer.size = 524288000
+	replica.fetch.backoff.ms = 1000
+	log.segment.bytes = 1073741824
+	advertised.host.name = null
+	log.cleaner.io.buffer.size = 524288
+	log.dir = /tmp/kafka-logs
+	min.insync.replicas = 1
+	producer.purgatory.purge.interval.requests = 1000
+	controlled.shutdown.retry.backoff.ms = 5000
+	socket.receive.buffer.bytes = 102400
+	log.segment.delete.delay.ms = 60000
+	log.flush.scheduler.interval.ms = 9223372036854775807
+	log.flush.offset.checkpoint.interval.ms = 60000
+	consumer.min.session.timeout.ms = 6000
+	num.partitions = 1
+	num.io.threads = 8
+	leader.imbalance.per.broker.percentage = 10
+	num.network.threads = 3
+	socket.request.max.bytes = 104857600
+	queued.max.requests = 500
+	zookeeper.connect = localhost:2181
+	offsets.topic.replication.factor = 3
+	log.roll.ms = null
+	replica.socket.timeout.ms = 30000
+	offsets.topic.segment.bytes = 104857600
+	replica.high.watermark.checkpoint.interval.ms = 5000
+	broker.id = 0
+	listeners = null
+	log.flush.interval.messages = 9223372036854775807
+	log.retention.ms = null
+	socket.send.buffer.bytes = 102400
+	offsets.commit.required.acks = -1
+	log.flush.interval.ms = null
+	consumer.max.session.timeout.ms = 30000
+	log.cleaner.io.max.bytes.per.second = 1.7976931348623157E308
+	num.replica.fetchers = 1
+	default.replication.factor = 1
+	metrics.sample.window.ms = 1000
+	advertised.listeners = null
+	replica.socket.receive.buffer.bytes = 65536
+	auto.leader.rebalance.enable = true
+	delete.topic.enable = false
+	log.index.interval.bytes = 4096
+	host.name = 
+	metric.reporters = []
+	compression.type = producer
+	advertised.port = null
+	max.connections.per.ip.overrides = 
+	replica.fetch.min.bytes = 1
+	log.cleanup.policy = delete
+ (kafka.server.KafkaConfig)
+[2015-08-13 09:06:54,598] INFO starting (kafka.server.KafkaServer)
+[2015-08-13 09:06:54,601] INFO Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
+[2015-08-13 09:06:54,862] INFO Loading logs. (kafka.log.LogManager)
+[2015-08-13 09:06:54,916] WARN Found an corrupted index file, /home/tony/projects/openbel/openbel-server/out/kafka-logs/evidence-0/00000000000000000000.index, deleting and rebuilding index... (kafka.log.Log)
+[2015-08-13 09:06:57,596] INFO Recovering unflushed segment 0 in log evidence-0. (kafka.log.Log)
+[2015-08-13 09:06:59,328] INFO Completed load of log evidence-0 with log end offset 1253856 (kafka.log.Log)
+[2015-08-13 09:06:59,342] INFO Logs loading complete. (kafka.log.LogManager)
+[2015-08-13 09:06:59,343] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
+[2015-08-13 09:06:59,349] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
+[2015-08-13 09:06:59,406] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
+[2015-08-13 09:06:59,408] INFO [Socket Server on Broker 0], Started 1 acceptor threads (kafka.network.SocketServer)
+[2015-08-13 09:06:59,439] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:06:59,440] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:06:59,650] INFO [ConsumerCoordinator 0]: Starting up. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:06:59,652] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:06:59,653] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:06:59,655] INFO [ConsumerCoordinator 0]: Startup complete. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:06:59,659] INFO [Offset Manager on Broker 0]: Removed 0 expired offsets in 10 milliseconds. (kafka.server.OffsetManager)
+[2015-08-13 09:06:59,674] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
+[2015-08-13 09:06:59,715] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1439471219685","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1439470712036","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} (kafka.utils.ZkUtils$)
+[2015-08-13 09:06:59,764] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439471219685","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092}] at /brokers/ids/0 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
+[2015-08-13 09:07:03,029] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+[2015-08-13 09:07:03,204] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
+[2015-08-13 09:07:03,739] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 3500; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:00:37,490] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:01:21,772] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:03,778] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 64; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:01:22,054] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:01:22,081] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:01:34,508] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:01:34,556] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:01:34,562] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:01:34,595] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:04,714] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 5197; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:01:35,008] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:06:23,366] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:04,778] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 36; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:06:23,384] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:05,776] INFO Registered broker 0 at path /brokers/ids/0 with addresses: PLAINTEXT -> EndPoint(localhost.localdomain,9092,PLAINTEXT) (kafka.utils.ZkUtils$)
+[2015-08-13 09:07:05,785] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
+[2015-08-13 09:07:05,984] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:07:06,008] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:07:12,622] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
+[2015-08-13 09:07:12,625] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
+[2015-08-13 09:07:47,492] INFO KafkaConfig values: 
+	log.roll.hours = 168
+	controlled.shutdown.max.retries = 3
+	inter.broker.protocol.version = 0.8.3.X
+	log.cleaner.threads = 1
+	zookeeper.connection.timeout.ms = 6000
+	log.preallocate = false
+	offsets.load.buffer.size = 5242880
+	security.inter.broker.protocol = PLAINTEXT
+	controller.socket.timeout.ms = 30000
+	zookeeper.session.timeout.ms = 6000
+	log.cleaner.enable = false
+	controlled.shutdown.enable = true
+	offsets.topic.num.partitions = 50
+	num.recovery.threads.per.data.dir = 1
+	background.threads = 10
+	unclean.leader.election.enable = true
+	message.max.bytes = 1000012
+	log.cleaner.backoff.ms = 15000
+	replica.lag.time.max.ms = 10000
+	log.roll.jitter.hours = 0
+	auto.create.topics.enable = true
+	log.retention.check.interval.ms = 300000
+	zookeeper.sync.time.ms = 2000
+	offsets.topic.compression.codec = 0
+	log.cleaner.io.buffer.load.factor = 0.9
+	replica.fetch.max.bytes = 1048576
+	log.retention.hours = 168
+	log.cleaner.delete.retention.ms = 86400000
+	log.dirs = /home/tony/projects/openbel/openbel-server/out/kafka-logs
+	log.index.size.max.bytes = 10485760
+	fetch.purgatory.purge.interval.requests = 1000
+	log.retention.minutes = null
+	connections.max.idle.ms = 600000
+	log.cleaner.min.cleanable.ratio = 0.5
+	offsets.commit.timeout.ms = 5000
+	offsets.retention.minutes = 1440
+	max.connections.per.ip = 2147483647
+	log.retention.bytes = -1
+	offset.metadata.max.bytes = 4096
+	replica.fetch.wait.max.ms = 500
+	metrics.num.samples = 2
+	leader.imbalance.check.interval.seconds = 300
+	port = 9092
+	offsets.retention.check.interval.ms = 600000
+	log.roll.jitter.ms = null
+	reserved.broker.max.id = 1000
+	log.cleaner.dedupe.buffer.size = 524288000
+	replica.fetch.backoff.ms = 1000
+	log.segment.bytes = 1073741824
+	advertised.host.name = null
+	log.cleaner.io.buffer.size = 524288
+	log.dir = /tmp/kafka-logs
+	min.insync.replicas = 1
+	producer.purgatory.purge.interval.requests = 1000
+	controlled.shutdown.retry.backoff.ms = 5000
+	socket.receive.buffer.bytes = 102400
+	log.segment.delete.delay.ms = 60000
+	log.flush.scheduler.interval.ms = 9223372036854775807
+	log.flush.offset.checkpoint.interval.ms = 60000
+	consumer.min.session.timeout.ms = 6000
+	num.partitions = 1
+	num.io.threads = 8
+	leader.imbalance.per.broker.percentage = 10
+	num.network.threads = 3
+	socket.request.max.bytes = 104857600
+	queued.max.requests = 500
+	zookeeper.connect = localhost:2181
+	offsets.topic.replication.factor = 3
+	log.roll.ms = null
+	replica.socket.timeout.ms = 30000
+	offsets.topic.segment.bytes = 104857600
+	replica.high.watermark.checkpoint.interval.ms = 5000
+	broker.id = 0
+	listeners = null
+	log.flush.interval.messages = 9223372036854775807
+	log.retention.ms = null
+	socket.send.buffer.bytes = 102400
+	offsets.commit.required.acks = -1
+	log.flush.interval.ms = null
+	consumer.max.session.timeout.ms = 30000
+	log.cleaner.io.max.bytes.per.second = 1.7976931348623157E308
+	num.replica.fetchers = 1
+	default.replication.factor = 1
+	metrics.sample.window.ms = 1000
+	advertised.listeners = null
+	replica.socket.receive.buffer.bytes = 65536
+	auto.leader.rebalance.enable = true
+	delete.topic.enable = false
+	log.index.interval.bytes = 4096
+	host.name = 
+	metric.reporters = []
+	compression.type = producer
+	advertised.port = null
+	max.connections.per.ip.overrides = 
+	replica.fetch.min.bytes = 1
+	log.cleanup.policy = delete
+ (kafka.server.KafkaConfig)
+[2015-08-13 09:07:47,616] INFO starting (kafka.server.KafkaServer)
+[2015-08-13 09:07:47,620] INFO Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
+[2015-08-13 09:07:47,831] INFO Loading logs. (kafka.log.LogManager)
+[2015-08-13 09:07:47,874] WARN Found an corrupted index file, /home/tony/projects/openbel/openbel-server/out/kafka-logs/evidence-0/00000000000000000000.index, deleting and rebuilding index... (kafka.log.Log)
+[2015-08-13 09:07:49,992] INFO Recovering unflushed segment 0 in log evidence-0. (kafka.log.Log)
+[2015-08-13 09:07:52,109] INFO Completed load of log evidence-0 with log end offset 1253856 (kafka.log.Log)
+[2015-08-13 09:07:52,121] INFO Logs loading complete. (kafka.log.LogManager)
+[2015-08-13 09:07:52,121] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
+[2015-08-13 09:07:52,126] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
+[2015-08-13 09:07:52,181] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
+[2015-08-13 09:07:52,182] INFO [Socket Server on Broker 0], Started 1 acceptor threads (kafka.network.SocketServer)
+[2015-08-13 09:07:52,211] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:07:52,212] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:07:52,396] INFO [ConsumerCoordinator 0]: Starting up. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:07:52,400] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:07:52,401] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:07:52,403] INFO [ConsumerCoordinator 0]: Startup complete. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:07:52,407] INFO [Offset Manager on Broker 0]: Removed 0 expired offsets in 12 milliseconds. (kafka.server.OffsetManager)
+[2015-08-13 09:07:52,421] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
+[2015-08-13 09:07:52,470] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1439471272435","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1439471219685","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} (kafka.utils.ZkUtils$)
+[2015-08-13 09:07:52,537] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439471272435","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092}] at /brokers/ids/0 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
+[2015-08-13 09:07:54,075] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+[2015-08-13 09:07:54,250] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
+[2015-08-13 09:07:54,306] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 3789; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:06:23,389] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:06:23,533] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:06:32,566] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:06:32,583] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:54,306] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 72; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:06:32,639] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:55,247] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 42; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:06:32,643] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:06:38,112] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:55,247] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 5202; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:06:38,195] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:56,252] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 43; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:10:12,626] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [messages_prime,2],[messages_prime,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:10:12,629] INFO Completed load of log messages_prime-2 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:10:12,631] INFO Created log for partition [messages_prime,2] in /tmp/kafka-logs-0 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:10:12,632] WARN Partition [messages_prime,2] on broker 0: No checkpointed highwatermark is found for partition [messages_prime,2] (kafka.cluster.Partition)
-[2015-08-10 15:10:12,635] INFO Completed load of log messages_prime-0 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:10:12,636] INFO Created log for partition [messages_prime,0] in /tmp/kafka-logs-0 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:10:12,636] WARN Partition [messages_prime,0] on broker 0: No checkpointed highwatermark is found for partition [messages_prime,0] (kafka.cluster.Partition)
-[2015-08-10 15:10:57,575] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:56,311] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 73; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:10:57,590] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:57,253] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 5203; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:10:58,715] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:57,256] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 44; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:11:29,184] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:58,256] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 5205; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:11:29,381] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:11:39,723] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:58,313] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 3791; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:11:39,815] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:07:58,548] INFO Registered broker 0 at path /brokers/ids/0 with addresses: PLAINTEXT -> EndPoint(localhost.localdomain,9092,PLAINTEXT) (kafka.utils.ZkUtils$)
+[2015-08-13 09:07:58,561] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
+[2015-08-13 09:07:58,685] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:07:58,711] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:08:04,231] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
+[2015-08-13 09:08:04,232] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
+[2015-08-13 09:08:04,288] INFO [Kafka Server 0], Controlled shutdown succeeded (kafka.server.KafkaServer)
+[2015-08-13 09:08:04,292] INFO [Socket Server on Broker 0], Shutting down (kafka.network.SocketServer)
+[2015-08-13 09:08:04,300] INFO [Socket Server on Broker 0], Shutdown completed (kafka.network.SocketServer)
+[2015-08-13 09:08:04,302] INFO [Kafka Request Handler on Broker 0], shutting down (kafka.server.KafkaRequestHandlerPool)
+[2015-08-13 09:08:04,305] INFO [Kafka Request Handler on Broker 0], shut down completely (kafka.server.KafkaRequestHandlerPool)
+[2015-08-13 09:08:04,309] INFO [Replica Manager on Broker 0]: Shutting down (kafka.server.ReplicaManager)
+[2015-08-13 09:08:04,309] INFO [ReplicaFetcherManager on broker 0] shutting down (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:08:04,312] INFO [ReplicaFetcherManager on broker 0] shutdown completed (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:08:04,313] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,382] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,382] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,383] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,424] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,424] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,436] INFO [Replica Manager on Broker 0]: Shut down completely (kafka.server.ReplicaManager)
+[2015-08-13 09:08:04,438] INFO Shutting down. (kafka.log.LogManager)
+[2015-08-13 09:08:04,471] INFO Shutdown complete. (kafka.log.LogManager)
+[2015-08-13 09:08:04,472] INFO [ConsumerCoordinator 0]: Shutting down. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:08:04,474] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,614] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,614] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,615] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,814] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,814] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:04,817] INFO [ConsumerCoordinator 0]: Shutdown complete. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:08:05,221] INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
+[2015-08-13 09:08:07,171] INFO KafkaConfig values: 
+	log.roll.hours = 168
+	controlled.shutdown.max.retries = 3
+	inter.broker.protocol.version = 0.8.3.X
+	log.cleaner.threads = 1
+	zookeeper.connection.timeout.ms = 6000
+	log.preallocate = false
+	offsets.load.buffer.size = 5242880
+	security.inter.broker.protocol = PLAINTEXT
+	controller.socket.timeout.ms = 30000
+	zookeeper.session.timeout.ms = 6000
+	log.cleaner.enable = false
+	controlled.shutdown.enable = true
+	offsets.topic.num.partitions = 50
+	num.recovery.threads.per.data.dir = 1
+	background.threads = 10
+	unclean.leader.election.enable = true
+	message.max.bytes = 1000012
+	log.cleaner.backoff.ms = 15000
+	replica.lag.time.max.ms = 10000
+	log.roll.jitter.hours = 0
+	auto.create.topics.enable = true
+	log.retention.check.interval.ms = 300000
+	zookeeper.sync.time.ms = 2000
+	offsets.topic.compression.codec = 0
+	log.cleaner.io.buffer.load.factor = 0.9
+	replica.fetch.max.bytes = 1048576
+	log.retention.hours = 168
+	log.cleaner.delete.retention.ms = 86400000
+	log.dirs = /home/tony/projects/openbel/openbel-server/out/kafka-logs
+	log.index.size.max.bytes = 10485760
+	fetch.purgatory.purge.interval.requests = 1000
+	log.retention.minutes = null
+	connections.max.idle.ms = 600000
+	log.cleaner.min.cleanable.ratio = 0.5
+	offsets.commit.timeout.ms = 5000
+	offsets.retention.minutes = 1440
+	max.connections.per.ip = 2147483647
+	log.retention.bytes = -1
+	offset.metadata.max.bytes = 4096
+	replica.fetch.wait.max.ms = 500
+	metrics.num.samples = 2
+	leader.imbalance.check.interval.seconds = 300
+	port = 9092
+	offsets.retention.check.interval.ms = 600000
+	log.roll.jitter.ms = null
+	reserved.broker.max.id = 1000
+	log.cleaner.dedupe.buffer.size = 524288000
+	replica.fetch.backoff.ms = 1000
+	log.segment.bytes = 1073741824
+	advertised.host.name = null
+	log.cleaner.io.buffer.size = 524288
+	log.dir = /tmp/kafka-logs
+	min.insync.replicas = 1
+	producer.purgatory.purge.interval.requests = 1000
+	controlled.shutdown.retry.backoff.ms = 5000
+	socket.receive.buffer.bytes = 102400
+	log.segment.delete.delay.ms = 60000
+	log.flush.scheduler.interval.ms = 9223372036854775807
+	log.flush.offset.checkpoint.interval.ms = 60000
+	consumer.min.session.timeout.ms = 6000
+	num.partitions = 1
+	num.io.threads = 8
+	leader.imbalance.per.broker.percentage = 10
+	num.network.threads = 3
+	socket.request.max.bytes = 104857600
+	queued.max.requests = 500
+	zookeeper.connect = localhost:2181
+	offsets.topic.replication.factor = 3
+	log.roll.ms = null
+	replica.socket.timeout.ms = 30000
+	offsets.topic.segment.bytes = 104857600
+	replica.high.watermark.checkpoint.interval.ms = 5000
+	broker.id = 0
+	listeners = null
+	log.flush.interval.messages = 9223372036854775807
+	log.retention.ms = null
+	socket.send.buffer.bytes = 102400
+	offsets.commit.required.acks = -1
+	log.flush.interval.ms = null
+	consumer.max.session.timeout.ms = 30000
+	log.cleaner.io.max.bytes.per.second = 1.7976931348623157E308
+	num.replica.fetchers = 1
+	default.replication.factor = 1
+	metrics.sample.window.ms = 1000
+	advertised.listeners = null
+	replica.socket.receive.buffer.bytes = 65536
+	auto.leader.rebalance.enable = true
+	delete.topic.enable = false
+	log.index.interval.bytes = 4096
+	host.name = 
+	metric.reporters = []
+	compression.type = producer
+	advertised.port = null
+	max.connections.per.ip.overrides = 
+	replica.fetch.min.bytes = 1
+	log.cleanup.policy = delete
+ (kafka.server.KafkaConfig)
+[2015-08-13 09:08:07,285] INFO starting (kafka.server.KafkaServer)
+[2015-08-13 09:08:07,287] INFO Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
+[2015-08-13 09:08:07,465] INFO Loading logs. (kafka.log.LogManager)
+[2015-08-13 09:08:07,516] INFO Completed load of log evidence-0 with log end offset 1253856 (kafka.log.Log)
+[2015-08-13 09:08:07,527] INFO Logs loading complete. (kafka.log.LogManager)
+[2015-08-13 09:08:07,528] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
+[2015-08-13 09:08:07,531] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
+[2015-08-13 09:08:07,580] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
+[2015-08-13 09:08:07,581] INFO [Socket Server on Broker 0], Started 1 acceptor threads (kafka.network.SocketServer)
+[2015-08-13 09:08:07,603] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:07,604] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:07,794] INFO [ConsumerCoordinator 0]: Starting up. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:08:07,796] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:07,798] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:08:07,801] INFO [ConsumerCoordinator 0]: Startup complete. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:08:07,812] INFO [Offset Manager on Broker 0]: Removed 0 expired offsets in 17 milliseconds. (kafka.server.OffsetManager)
+[2015-08-13 09:08:07,827] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
+[2015-08-13 09:08:07,880] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1439471287843","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1439471272435","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} (kafka.utils.ZkUtils$)
+[2015-08-13 09:08:07,932] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439471287843","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092}] at /brokers/ids/0 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
+[2015-08-13 09:08:13,941] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1439471287843","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1439471272435","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092} (kafka.utils.ZkUtils$)
+[2015-08-13 09:08:13,987] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439471287843","endpoints":["PLAINTEXT://localhost.localdomain:9092"],"host":"localhost.localdomain","version":2,"port":9092}] at /brokers/ids/0 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
+[2015-08-13 09:08:15,040] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+[2015-08-13 09:08:15,261] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
+[2015-08-13 09:08:15,382] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 3842; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:11:40,048] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:11:45,077] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:08:16,482] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 54; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:11:45,085] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:08:17,486] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 55; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:11:45,221] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:11:45,236] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:11:54,180] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:12:06,076] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:12:06,234] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:08:18,388] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 3844; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:12:06,434] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:12:06,630] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:12:57,753] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:12:59,685] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:27,800] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
+[2015-08-13 09:08:19,495] ERROR [KafkaApi-0] error when handling request Name: TopicMetadataRequest; Version: 0; CorrelationId: 57; ClientId: rdkafka; Topics: evidence (kafka.server.KafkaApis)
+kafka.admin.AdminOperationException: replication factor: 1 larger than available brokers: 0
+	at kafka.admin.AdminUtils$.assignReplicasToBrokers(AdminUtils.scala:76)
+	at kafka.admin.AdminUtils$.createTopic(AdminUtils.scala:235)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:461)
+	at kafka.server.KafkaApis$$anonfun$9.apply(KafkaApis.scala:444)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:244)
+	at scala.collection.immutable.Set$Set1.foreach(Set.scala:74)
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:244)
+	at scala.collection.AbstractSet.scala$collection$SetLike$$super$map(Set.scala:47)
+	at scala.collection.SetLike$class.map(SetLike.scala:93)
+	at scala.collection.AbstractSet.map(Set.scala:47)
+	at kafka.server.KafkaApis.getTopicMetadata(KafkaApis.scala:444)
+	at kafka.server.KafkaApis.handleTopicMetadataRequest(KafkaApis.scala:486)
+	at kafka.server.KafkaApis.handle(KafkaApis.scala:59)
+	at kafka.server.KafkaRequestHandler.run(KafkaRequestHandler.scala:60)
 	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:13:27,841] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:27,948] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:32,534] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:32,645] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:13:45,135] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:47,801] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:47,872] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:13:47,994] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:48,373] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:49,558] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:13:49,563] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:14:09,848] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:14:18,292] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:14:36,731] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:14:48,190] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:14:51,855] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:14:54,428] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:14:54,461] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:14:56,384] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:14:56,456] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:15:06,792] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:15:06,857] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:06,946] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:09,425] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:10,796] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:10,833] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:15:11,712] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:37,096] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:15:37,099] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:39,781] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:39,904] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:15:39,921] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:52,825] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:52,885] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:15:53,094] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:55,652] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:15:55,726] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:15:55,855] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:04,816] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:04,888] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:04,939] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:17:05,534] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:25,051] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:30,772] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:36,555] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:36,729] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:17:36,986] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:37,276] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:50,569] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:50,792] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:17:50,806] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:50,977] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:54,123] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:17:54,610] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:31:56,562] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:31:56,591] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:31:57,584] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:37:45,088] FATAL  (kafka.Kafka$)
-java.io.FileNotFoundException: --help (No such file or directory)
-	at java.io.FileInputStream.open0(Native Method)
-	at java.io.FileInputStream.open(FileInputStream.java:195)
-	at java.io.FileInputStream.<init>(FileInputStream.java:138)
-	at java.io.FileInputStream.<init>(FileInputStream.java:93)
-	at kafka.utils.Utils$.loadProps(Utils.scala:146)
-	at kafka.Kafka$.main(Kafka.scala:34)
-	at kafka.Kafka.main(Kafka.scala)
-[2015-08-10 15:41:15,260] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,285] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,285] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,285] INFO Property log.dirs is overridden to /tmp/kafka-logs-0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,285] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,285] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,286] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,286] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,286] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,286] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,286] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,286] INFO Property port is overridden to 9092 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,287] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,287] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,287] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,287] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,287] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:15,315] INFO [Kafka Server 0], starting (kafka.server.KafkaServer)
-[2015-08-10 15:41:15,316] INFO [Kafka Server 0], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:41:15,639] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:41:15,673] INFO Completed load of log messages_prime-0 with log end offset 59476 (kafka.log.Log)
-[2015-08-10 15:41:15,678] INFO Completed load of log messages_prime-2 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:41:15,681] INFO Completed load of log messages-1 with log end offset 104590 (kafka.log.Log)
-[2015-08-10 15:41:15,684] INFO Completed load of log messages-3 with log end offset 8264 (kafka.log.Log)
-[2015-08-10 15:41:15,687] INFO Completed load of log messages-0 with log end offset 106656 (kafka.log.Log)
-[2015-08-10 15:41:15,690] INFO Completed load of log messages-2 with log end offset 4132 (kafka.log.Log)
-[2015-08-10 15:41:15,693] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:41:15,694] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:41:15,699] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:41:15,722] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
-[2015-08-10 15:41:15,722] INFO [Socket Server on Broker 0], Started (kafka.network.SocketServer)
-[2015-08-10 15:41:15,772] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:41:15,819] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
-[2015-08-10 15:41:16,066] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
-[2015-08-10 15:41:16,075] INFO Registered broker 0 at path /brokers/ids/0 with address localhost.localdomain:9092. (kafka.utils.ZkUtils$)
-[2015-08-10 15:41:16,086] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
-[2015-08-10 15:41:16,200] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [messages_prime,2],[messages_prime,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:16,240] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions  (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:16,247] INFO [ReplicaFetcherManager on broker 0] Added fetcher for partitions List() (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:16,257] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [messages,1],[messages,3],[messages,0],[messages_prime,0],[messages,2],[messages_prime,2] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:25,755] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,781] INFO Property broker.id is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,781] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,781] INFO Property log.dirs is overridden to /tmp/kafka-logs-1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,781] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,781] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,782] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,782] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,782] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,782] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,782] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,782] INFO Property port is overridden to 9093 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,783] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,783] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,783] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,783] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,783] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:41:25,811] INFO [Kafka Server 1], starting (kafka.server.KafkaServer)
-[2015-08-10 15:41:25,812] INFO [Kafka Server 1], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:41:26,063] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:41:26,098] INFO Completed load of log messages_prime-3 with log end offset 63099 (kafka.log.Log)
-[2015-08-10 15:41:26,105] INFO Completed load of log messages_prime-1 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:41:26,108] INFO Completed load of log messages-0 with log end offset 106656 (kafka.log.Log)
-[2015-08-10 15:41:26,111] INFO Completed load of log messages-2 with log end offset 4132 (kafka.log.Log)
-[2015-08-10 15:41:26,115] INFO Completed load of log messages-1 with log end offset 104590 (kafka.log.Log)
-[2015-08-10 15:41:26,118] INFO Completed load of log messages-3 with log end offset 8264 (kafka.log.Log)
-[2015-08-10 15:41:26,121] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:41:26,123] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:41:26,126] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:41:26,149] INFO Awaiting socket connections on 0.0.0.0:9093. (kafka.network.Acceptor)
-[2015-08-10 15:41:26,150] INFO [Socket Server on Broker 1], Started (kafka.network.SocketServer)
-[2015-08-10 15:41:26,196] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:41:26,233] INFO Registered broker 1 at path /brokers/ids/1 with address localhost.localdomain:9093. (kafka.utils.ZkUtils$)
-[2015-08-10 15:41:26,241] INFO [Kafka Server 1], started (kafka.server.KafkaServer)
-[2015-08-10 15:41:26,345] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [messages_prime,1],[messages_prime,3] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:26,395] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [messages,2],[messages,3],[messages,0],[messages,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:26,398] INFO Truncating log messages-2 to offset 4132. (kafka.log.Log)
-[2015-08-10 15:41:26,399] INFO Truncating log messages-3 to offset 8264. (kafka.log.Log)
-[2015-08-10 15:41:26,399] INFO Truncating log messages-0 to offset 106656. (kafka.log.Log)
-[2015-08-10 15:41:26,399] INFO Truncating log messages-1 to offset 104590. (kafka.log.Log)
-[2015-08-10 15:41:26,421] INFO [ReplicaFetcherThread-0-0], Starting  (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:41:26,423] INFO [ReplicaFetcherManager on broker 1] Added fetcher for partitions List([[messages,2], initOffset 4132 to broker id:0,host:localhost.localdomain,port:9092] , [[messages,3], initOffset 8264 to broker id:0,host:localhost.localdomain,port:9092] , [[messages,0], initOffset 106656 to broker id:0,host:localhost.localdomain,port:9092] , [[messages,1], initOffset 104590 to broker id:0,host:localhost.localdomain,port:9092] ) (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:26,436] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [messages_prime,1],[messages_prime,3] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:41:26,441] INFO Partition [messages,1] on broker 0: Expanding ISR for partition [messages,1] from 0 to 0,1 (kafka.cluster.Partition)
-[2015-08-10 15:41:26,445] INFO Partition [messages,2] on broker 0: Expanding ISR for partition [messages,2] from 0 to 0,1 (kafka.cluster.Partition)
-[2015-08-10 15:41:26,446] INFO Partition [messages,3] on broker 0: Expanding ISR for partition [messages,3] from 0 to 0,1 (kafka.cluster.Partition)
-[2015-08-10 15:41:26,448] INFO Partition [messages,0] on broker 0: Expanding ISR for partition [messages,0] from 0 to 0,1 (kafka.cluster.Partition)
-[2015-08-10 15:41:48,438] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:41:48,439] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 15:41:49,133] INFO [Kafka Server 1], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:41:49,134] INFO [Kafka Server 1], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 15:42:19,447] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,471] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,472] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,472] INFO Property log.dirs is overridden to /tmp/kafka-logs-0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,472] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,472] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,472] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,472] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,473] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,473] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,473] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,473] INFO Property port is overridden to 9092 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,473] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,473] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,474] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,474] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,474] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:19,501] INFO [Kafka Server 0], starting (kafka.server.KafkaServer)
-[2015-08-10 15:42:19,503] INFO [Kafka Server 0], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:42:19,800] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:42:19,831] INFO Recovering unflushed segment 0 in log messages_prime-0. (kafka.log.Log)
-[2015-08-10 15:42:20,382] INFO Completed load of log messages_prime-0 with log end offset 59476 (kafka.log.Log)
-[2015-08-10 15:42:20,386] INFO Recovering unflushed segment 0 in log messages_prime-2. (kafka.log.Log)
-[2015-08-10 15:42:20,387] INFO Completed load of log messages_prime-2 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:42:20,390] INFO Recovering unflushed segment 0 in log messages-1. (kafka.log.Log)
-[2015-08-10 15:42:20,905] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,931] INFO Property broker.id is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,931] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,932] INFO Property log.dirs is overridden to /tmp/kafka-logs-1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,932] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,932] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,932] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,932] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,932] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,933] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,933] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,933] INFO Property port is overridden to 9093 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,933] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,933] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,933] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,934] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,934] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:20,963] INFO [Kafka Server 1], starting (kafka.server.KafkaServer)
-[2015-08-10 15:42:20,965] INFO [Kafka Server 1], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:42:21,020] INFO Completed load of log messages-1 with log end offset 104590 (kafka.log.Log)
-[2015-08-10 15:42:21,023] INFO Recovering unflushed segment 0 in log messages-3. (kafka.log.Log)
-[2015-08-10 15:42:21,083] INFO Completed load of log messages-3 with log end offset 8264 (kafka.log.Log)
-[2015-08-10 15:42:21,086] INFO Recovering unflushed segment 0 in log messages-0. (kafka.log.Log)
-[2015-08-10 15:42:21,192] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:42:21,225] INFO Recovering unflushed segment 0 in log messages_prime-3. (kafka.log.Log)
-[2015-08-10 15:42:21,711] INFO Completed load of log messages-0 with log end offset 106656 (kafka.log.Log)
-[2015-08-10 15:42:21,714] INFO Recovering unflushed segment 0 in log messages-2. (kafka.log.Log)
-[2015-08-10 15:42:21,740] INFO Completed load of log messages-2 with log end offset 4132 (kafka.log.Log)
-[2015-08-10 15:42:21,742] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:42:21,743] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:21,745] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:21,768] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
-[2015-08-10 15:42:21,769] INFO [Socket Server on Broker 0], Started (kafka.network.SocketServer)
-[2015-08-10 15:42:21,815] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:42:21,820] INFO Completed load of log messages_prime-3 with log end offset 63099 (kafka.log.Log)
-[2015-08-10 15:42:21,825] INFO Recovering unflushed segment 0 in log messages_prime-1. (kafka.log.Log)
-[2015-08-10 15:42:21,826] INFO Completed load of log messages_prime-1 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:42:21,829] INFO Recovering unflushed segment 0 in log messages-0. (kafka.log.Log)
-[2015-08-10 15:42:21,855] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1439235741839","host":"localhost.localdomain","version":1,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1439235676071","host":"localhost.localdomain","version":1,"port":9092} (kafka.utils.ZkUtils$)
-[2015-08-10 15:42:21,865] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439235741839","host":"localhost.localdomain","version":1,"port":9092}] at /brokers/ids/0 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
-[2015-08-10 15:42:22,501] INFO Completed load of log messages-0 with log end offset 106656 (kafka.log.Log)
-[2015-08-10 15:42:22,504] INFO Recovering unflushed segment 0 in log messages-2. (kafka.log.Log)
-[2015-08-10 15:42:22,537] INFO Completed load of log messages-2 with log end offset 4132 (kafka.log.Log)
-[2015-08-10 15:42:22,541] INFO Recovering unflushed segment 0 in log messages-1. (kafka.log.Log)
-[2015-08-10 15:42:23,129] INFO Completed load of log messages-1 with log end offset 104590 (kafka.log.Log)
-[2015-08-10 15:42:23,132] INFO Recovering unflushed segment 0 in log messages-3. (kafka.log.Log)
-[2015-08-10 15:42:23,182] INFO Completed load of log messages-3 with log end offset 8264 (kafka.log.Log)
-[2015-08-10 15:42:23,186] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:42:23,187] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:23,192] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:23,211] INFO Awaiting socket connections on 0.0.0.0:9093. (kafka.network.Acceptor)
-[2015-08-10 15:42:23,212] INFO [Socket Server on Broker 1], Started (kafka.network.SocketServer)
-[2015-08-10 15:42:23,258] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:42:23,302] INFO conflict in /brokers/ids/1 data: {"jmx_port":-1,"timestamp":"1439235743289","host":"localhost.localdomain","version":1,"port":9093} stored data: {"jmx_port":-1,"timestamp":"1439235686225","host":"localhost.localdomain","version":1,"port":9093} (kafka.utils.ZkUtils$)
-[2015-08-10 15:42:23,315] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439235743289","host":"localhost.localdomain","version":1,"port":9093}] at /brokers/ids/1 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
-[2015-08-10 15:42:24,770] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:42:24,773] INFO [Socket Server on Broker 0], Shutting down (kafka.network.SocketServer)
-[2015-08-10 15:42:24,780] INFO [Socket Server on Broker 0], Shutdown completed (kafka.network.SocketServer)
-[2015-08-10 15:42:24,781] INFO [Kafka Request Handler on Broker 0], shutting down (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:42:24,795] INFO [Kafka Request Handler on Broker 0], shut down completely (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:42:25,015] INFO [Replica Manager on Broker 0]: Shut down (kafka.server.ReplicaManager)
-[2015-08-10 15:42:25,016] INFO [ReplicaFetcherManager on broker 0] shutting down (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:42:25,017] INFO [ReplicaFetcherManager on broker 0] shutdown completed (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:42:25,020] INFO [Replica Manager on Broker 0]: Shut down completely (kafka.server.ReplicaManager)
-[2015-08-10 15:42:25,021] INFO Shutting down. (kafka.log.LogManager)
-[2015-08-10 15:42:25,036] INFO Shutdown complete. (kafka.log.LogManager)
-[2015-08-10 15:42:25,037] WARN Kafka scheduler has not been started (kafka.utils.Utils$)
-java.lang.IllegalStateException: Kafka scheduler has not been started
-	at kafka.utils.KafkaScheduler.ensureStarted(KafkaScheduler.scala:114)
-	at kafka.utils.KafkaScheduler.shutdown(KafkaScheduler.scala:86)
-	at kafka.controller.KafkaController.onControllerResignation(KafkaController.scala:350)
-	at kafka.controller.KafkaController.shutdown(KafkaController.scala:664)
-	at kafka.server.KafkaServer$$anonfun$shutdown$8.apply$mcV$sp(KafkaServer.scala:285)
-	at kafka.utils.Utils$.swallow(Utils.scala:172)
-	at kafka.utils.Logging$class.swallowWarn(Logging.scala:92)
-	at kafka.utils.Utils$.swallowWarn(Utils.scala:45)
-	at kafka.utils.Logging$class.swallow(Logging.scala:94)
-	at kafka.utils.Utils$.swallow(Utils.scala:45)
-	at kafka.server.KafkaServer.shutdown(KafkaServer.scala:285)
-	at kafka.server.KafkaServerStartable.shutdown(KafkaServerStartable.scala:42)
-	at kafka.Kafka$$anon$1.run(Kafka.scala:42)
-[2015-08-10 15:42:25,041] INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
-[2015-08-10 15:42:26,023] INFO [Kafka Server 1], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:42:26,028] INFO [Socket Server on Broker 1], Shutting down (kafka.network.SocketServer)
-[2015-08-10 15:42:26,035] INFO [Socket Server on Broker 1], Shutdown completed (kafka.network.SocketServer)
-[2015-08-10 15:42:26,037] INFO [Kafka Request Handler on Broker 1], shutting down (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:42:26,054] INFO [Kafka Request Handler on Broker 1], shut down completely (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:42:26,260] INFO [Replica Manager on Broker 1]: Shut down (kafka.server.ReplicaManager)
-[2015-08-10 15:42:26,261] INFO [ReplicaFetcherManager on broker 1] shutting down (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:42:26,263] INFO [ReplicaFetcherManager on broker 1] shutdown completed (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:42:26,265] INFO [Replica Manager on Broker 1]: Shut down completely (kafka.server.ReplicaManager)
-[2015-08-10 15:42:26,266] INFO Shutting down. (kafka.log.LogManager)
-[2015-08-10 15:42:26,280] INFO Shutdown complete. (kafka.log.LogManager)
-[2015-08-10 15:42:26,281] WARN Kafka scheduler has not been started (kafka.utils.Utils$)
-java.lang.IllegalStateException: Kafka scheduler has not been started
-	at kafka.utils.KafkaScheduler.ensureStarted(KafkaScheduler.scala:114)
-	at kafka.utils.KafkaScheduler.shutdown(KafkaScheduler.scala:86)
-	at kafka.controller.KafkaController.onControllerResignation(KafkaController.scala:350)
-	at kafka.controller.KafkaController.shutdown(KafkaController.scala:664)
-	at kafka.server.KafkaServer$$anonfun$shutdown$8.apply$mcV$sp(KafkaServer.scala:285)
-	at kafka.utils.Utils$.swallow(Utils.scala:172)
-	at kafka.utils.Logging$class.swallowWarn(Logging.scala:92)
-	at kafka.utils.Utils$.swallowWarn(Utils.scala:45)
-	at kafka.utils.Logging$class.swallow(Logging.scala:94)
-	at kafka.utils.Utils$.swallow(Utils.scala:45)
-	at kafka.server.KafkaServer.shutdown(KafkaServer.scala:285)
-	at kafka.server.KafkaServerStartable.shutdown(KafkaServerStartable.scala:42)
-	at kafka.Kafka$$anon$1.run(Kafka.scala:42)
-[2015-08-10 15:42:26,287] INFO [Kafka Server 1], shut down completed (kafka.server.KafkaServer)
-[2015-08-10 15:42:42,939] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,965] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,965] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,965] INFO Property log.dirs is overridden to /tmp/kafka-logs-0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,965] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,965] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,966] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,966] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,966] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,966] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,966] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,966] INFO Property port is overridden to 9092 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,967] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,967] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,967] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,967] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,967] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:42,995] INFO [Kafka Server 0], starting (kafka.server.KafkaServer)
-[2015-08-10 15:42:42,996] INFO [Kafka Server 0], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:42:43,258] INFO Log directory '/tmp/kafka-logs-0' not found, creating it. (kafka.log.LogManager)
-[2015-08-10 15:42:43,265] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:42:43,270] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:42:43,270] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:43,273] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:43,294] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
-[2015-08-10 15:42:43,294] INFO [Socket Server on Broker 0], Started (kafka.network.SocketServer)
-[2015-08-10 15:42:43,341] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:42:43,369] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
-[2015-08-10 15:42:43,447] INFO Registered broker 0 at path /brokers/ids/0 with address localhost.localdomain:9092. (kafka.utils.ZkUtils$)
-[2015-08-10 15:42:43,456] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
-[2015-08-10 15:42:43,496] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
-[2015-08-10 15:42:44,747] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,772] INFO Property broker.id is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,772] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,773] INFO Property log.dirs is overridden to /tmp/kafka-logs-1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,773] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,773] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,773] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,773] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,774] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,774] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,774] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,774] INFO Property port is overridden to 9093 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,774] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,774] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,775] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,775] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,775] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:42:44,802] INFO [Kafka Server 1], starting (kafka.server.KafkaServer)
-[2015-08-10 15:42:44,804] INFO [Kafka Server 1], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:42:44,936] INFO Log directory '/tmp/kafka-logs-1' not found, creating it. (kafka.log.LogManager)
-[2015-08-10 15:42:44,943] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:42:44,948] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:42:44,949] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:44,951] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:42:44,976] INFO Awaiting socket connections on 0.0.0.0:9093. (kafka.network.Acceptor)
-[2015-08-10 15:42:44,977] INFO [Socket Server on Broker 1], Started (kafka.network.SocketServer)
-[2015-08-10 15:42:45,025] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:42:45,136] INFO Registered broker 1 at path /brokers/ids/1 with address localhost.localdomain:9093. (kafka.utils.ZkUtils$)
-[2015-08-10 15:42:45,152] INFO [Kafka Server 1], started (kafka.server.KafkaServer)
-[2015-08-10 15:45:48,710] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:45:48,725] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,2],[greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:45:48,731] INFO Completed load of log greetings-1 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:45:48,737] INFO Created log for partition [greetings,1] in /tmp/kafka-logs-0 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:45:48,738] WARN Partition [greetings,1] on broker 0: No checkpointed highwatermark is found for partition [greetings,1] (kafka.cluster.Partition)
-[2015-08-10 15:45:48,753] INFO Completed load of log greetings-2 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:45:48,761] INFO Completed load of log greetings-2 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:45:48,762] INFO Created log for partition [greetings,2] in /tmp/kafka-logs-1 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:45:48,763] INFO Created log for partition [greetings,2] in /tmp/kafka-logs-0 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:45:48,763] WARN Partition [greetings,2] on broker 0: No checkpointed highwatermark is found for partition [greetings,2] (kafka.cluster.Partition)
-[2015-08-10 15:45:48,764] WARN Partition [greetings,2] on broker 1: No checkpointed highwatermark is found for partition [greetings,2] (kafka.cluster.Partition)
-[2015-08-10 15:45:48,770] INFO Completed load of log greetings-0 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:45:48,772] INFO Created log for partition [greetings,0] in /tmp/kafka-logs-0 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:45:48,773] WARN Partition [greetings,0] on broker 0: No checkpointed highwatermark is found for partition [greetings,0] (kafka.cluster.Partition)
-[2015-08-10 15:45:48,774] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,2],[greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:45:48,777] INFO Truncating log greetings-2 to offset 0. (kafka.log.Log)
-[2015-08-10 15:45:48,778] INFO Truncating log greetings-0 to offset 0. (kafka.log.Log)
-[2015-08-10 15:45:48,791] INFO Completed load of log greetings-0 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:45:48,794] INFO Created log for partition [greetings,0] in /tmp/kafka-logs-1 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:45:48,795] WARN Partition [greetings,0] on broker 1: No checkpointed highwatermark is found for partition [greetings,0] (kafka.cluster.Partition)
-[2015-08-10 15:45:48,807] INFO [ReplicaFetcherThread-0-1], Starting  (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:45:48,808] INFO [ReplicaFetcherManager on broker 0] Added fetcher for partitions List([[greetings,2], initOffset 0 to broker id:1,host:localhost.localdomain,port:9093] , [[greetings,0], initOffset 0 to broker id:1,host:localhost.localdomain,port:9093] ) (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:45:48,810] INFO Completed load of log greetings-1 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:45:48,814] INFO Created log for partition [greetings,1] in /tmp/kafka-logs-1 with properties {segment.index.bytes -> 10485760, file.delete.delay.ms -> 60000, segment.bytes -> 1073741824, flush.ms -> 9223372036854775807, delete.retention.ms -> 86400000, index.interval.bytes -> 4096, retention.bytes -> -1, min.insync.replicas -> 1, cleanup.policy -> delete, unclean.leader.election.enable -> true, segment.ms -> 604800000, max.message.bytes -> 1000012, flush.messages -> 9223372036854775807, min.cleanable.dirty.ratio -> 0.5, retention.ms -> 604800000, segment.jitter.ms -> 0}. (kafka.log.LogManager)
-[2015-08-10 15:45:48,814] WARN Partition [greetings,1] on broker 1: No checkpointed highwatermark is found for partition [greetings,1] (kafka.cluster.Partition)
-[2015-08-10 15:45:48,816] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:45:48,819] INFO Truncating log greetings-1 to offset 0. (kafka.log.Log)
-[2015-08-10 15:45:48,852] INFO [ReplicaFetcherThread-0-0], Starting  (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:45:48,856] INFO [ReplicaFetcherManager on broker 1] Added fetcher for partitions List([[greetings,1], initOffset 0 to broker id:0,host:localhost.localdomain,port:9092] ) (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:46:14,069] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:46:21,355] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:46:26,195] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:47:17,803] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:47:17,815] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:47:17,822] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:47:18,071] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:47:50,970] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:47:50,981] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:47:50,987] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:47:51,009] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:47:51,822] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:47:51,822] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:48:36,954] INFO [Kafka Server 1], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:48:36,956] INFO [Kafka Server 1], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 15:48:36,988] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:48:36,991] INFO [ReplicaFetcherThread-0-0], Shutting down (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:48:36,997] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:48:37,005] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,2] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:48:37,013] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:48:37,013] INFO [ReplicaFetcherThread-0-1], Shutting down (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:48:37,017] INFO [Kafka Server 1], Controlled shutdown succeeded (kafka.server.KafkaServer)
-[2015-08-10 15:48:37,018] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:48:37,019] INFO [Socket Server on Broker 1], Shutting down (kafka.network.SocketServer)
-[2015-08-10 15:48:37,022] INFO Reconnect due to socket error: java.io.EOFException: Received -1 when reading from channel, socket has likely been closed. (kafka.consumer.SimpleConsumer)
-[2015-08-10 15:48:37,022] INFO [Socket Server on Broker 1], Shutdown completed (kafka.network.SocketServer)
-[2015-08-10 15:48:37,023] INFO [Kafka Request Handler on Broker 1], shutting down (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:48:37,025] INFO [ReplicaFetcherThread-0-1], Stopped  (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:48:37,025] INFO [ReplicaFetcherThread-0-1], Shutdown completed (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:48:37,044] INFO [ReplicaFetcherThread-0-0], Shutdown completed (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:48:37,044] INFO [ReplicaFetcherThread-0-0], Stopped  (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:48:37,045] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:48:37,045] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:48:37,046] INFO [Kafka Request Handler on Broker 1], shut down completely (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:48:37,186] INFO [Replica Manager on Broker 1]: Shut down (kafka.server.ReplicaManager)
-[2015-08-10 15:48:37,187] INFO [ReplicaFetcherManager on broker 1] shutting down (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:48:37,189] INFO [ReplicaFetcherManager on broker 1] shutdown completed (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:48:37,190] INFO [Replica Manager on Broker 1]: Shut down completely (kafka.server.ReplicaManager)
-[2015-08-10 15:48:37,191] INFO Shutting down. (kafka.log.LogManager)
-[2015-08-10 15:48:37,210] INFO Shutdown complete. (kafka.log.LogManager)
-[2015-08-10 15:48:37,212] WARN Kafka scheduler has not been started (kafka.utils.Utils$)
-java.lang.IllegalStateException: Kafka scheduler has not been started
-	at kafka.utils.KafkaScheduler.ensureStarted(KafkaScheduler.scala:114)
-	at kafka.utils.KafkaScheduler.shutdown(KafkaScheduler.scala:86)
-	at kafka.controller.KafkaController.onControllerResignation(KafkaController.scala:350)
-	at kafka.controller.KafkaController.shutdown(KafkaController.scala:664)
-	at kafka.server.KafkaServer$$anonfun$shutdown$8.apply$mcV$sp(KafkaServer.scala:285)
-	at kafka.utils.Utils$.swallow(Utils.scala:172)
-	at kafka.utils.Logging$class.swallowWarn(Logging.scala:92)
-	at kafka.utils.Utils$.swallowWarn(Utils.scala:45)
-	at kafka.utils.Logging$class.swallow(Logging.scala:94)
-	at kafka.utils.Utils$.swallow(Utils.scala:45)
-	at kafka.server.KafkaServer.shutdown(KafkaServer.scala:285)
-	at kafka.server.KafkaServerStartable.shutdown(KafkaServerStartable.scala:42)
-	at kafka.Kafka$$anon$1.run(Kafka.scala:42)
-[2015-08-10 15:48:37,216] INFO [Kafka Server 1], shut down completed (kafka.server.KafkaServer)
-[2015-08-10 15:48:37,222] WARN sleep interrupted (kafka.utils.Utils$)
-java.lang.InterruptedException: sleep interrupted
-	at java.lang.Thread.sleep(Native Method)
-	at kafka.controller.RequestSendThread$$anonfun$liftedTree1$1$1.apply$mcV$sp(ControllerChannelManager.scala:144)
-	at kafka.utils.Utils$.swallow(Utils.scala:172)
-	at kafka.utils.Logging$class.swallowWarn(Logging.scala:92)
-	at kafka.utils.Utils$.swallowWarn(Utils.scala:45)
-	at kafka.utils.Logging$class.swallow(Logging.scala:94)
-	at kafka.utils.Utils$.swallow(Utils.scala:45)
-	at kafka.controller.RequestSendThread.liftedTree1$1(ControllerChannelManager.scala:144)
-	at kafka.controller.RequestSendThread.doWork(ControllerChannelManager.scala:131)
-	at kafka.utils.ShutdownableThread.run(ShutdownableThread.scala:60)
-[2015-08-10 15:48:41,693] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:48:41,695] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 15:48:41,729] INFO [Kafka Server 0], Remaining partitions to move: [greetings,1],[greetings,2],[greetings,0] (kafka.server.KafkaServer)
-[2015-08-10 15:48:41,729] INFO [Kafka Server 0], Error code from controller: 0 (kafka.server.KafkaServer)
-[2015-08-10 15:48:46,731] WARN [Kafka Server 0], Retrying controlled shutdown after the previous attempt failed... (kafka.server.KafkaServer)
-[2015-08-10 15:48:54,462] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,490] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,490] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,491] INFO Property log.dirs is overridden to /tmp/kafka-logs-0 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,491] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,491] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,491] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,491] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,491] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,492] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,492] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,492] INFO Property port is overridden to 9092 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,492] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,492] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,492] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,493] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,493] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:54,520] INFO [Kafka Server 0], starting (kafka.server.KafkaServer)
-[2015-08-10 15:48:54,521] INFO [Kafka Server 0], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:48:57,128] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,153] INFO Property broker.id is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,154] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,154] INFO Property log.dirs is overridden to /tmp/kafka-logs-1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,154] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,154] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,154] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,154] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,155] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,155] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,155] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,155] INFO Property port is overridden to 9093 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,155] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,155] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,156] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,156] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,156] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 15:48:57,183] INFO [Kafka Server 1], starting (kafka.server.KafkaServer)
-[2015-08-10 15:48:57,185] INFO [Kafka Server 1], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 15:48:59,641] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:48:59,664] INFO Recovering unflushed segment 0 in log greetings-0. (kafka.log.Log)
-[2015-08-10 15:48:59,671] INFO Completed load of log greetings-0 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:48:59,679] INFO Recovering unflushed segment 0 in log greetings-2. (kafka.log.Log)
-[2015-08-10 15:48:59,767] INFO Completed load of log greetings-2 with log end offset 2066 (kafka.log.Log)
-[2015-08-10 15:48:59,770] INFO Recovering unflushed segment 0 in log greetings-1. (kafka.log.Log)
-[2015-08-10 15:48:59,770] INFO Completed load of log greetings-1 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:48:59,774] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:48:59,774] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:48:59,777] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:48:59,798] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
-[2015-08-10 15:48:59,798] INFO [Socket Server on Broker 0], Started (kafka.network.SocketServer)
-[2015-08-10 15:48:59,836] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 15:48:59,852] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:48:59,865] INFO Completed load of log greetings-1 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:48:59,872] INFO Completed load of log greetings-0 with log end offset 0 (kafka.log.Log)
-[2015-08-10 15:48:59,882] INFO Completed load of log greetings-2 with log end offset 2066 (kafka.log.Log)
-[2015-08-10 15:48:59,886] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 15:48:59,887] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 15:48:59,889] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 15:48:59,902] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1439236139878","host":"localhost.localdomain","version":1,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1439235763438","host":"localhost.localdomain","version":1,"port":9092} (kafka.utils.ZkUtils$)
-[2015-08-10 15:48:59,913] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439236139878","host":"localhost.localdomain","version":1,"port":9092}] at /brokers/ids/0 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
-[2015-08-10 15:48:59,914] INFO Awaiting socket connections on 0.0.0.0:9093. (kafka.network.Acceptor)
-[2015-08-10 15:48:59,915] INFO [Socket Server on Broker 1], Started (kafka.network.SocketServer)
-[2015-08-10 15:48:59,960] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 15:49:00,008] INFO Registered broker 1 at path /brokers/ids/1 with address localhost.localdomain:9093. (kafka.utils.ZkUtils$)
-[2015-08-10 15:49:00,016] INFO [Kafka Server 1], started (kafka.server.KafkaServer)
-[2015-08-10 15:49:05,915] INFO conflict in /brokers/ids/0 data: {"jmx_port":-1,"timestamp":"1439236139878","host":"localhost.localdomain","version":1,"port":9092} stored data: {"jmx_port":-1,"timestamp":"1439235763438","host":"localhost.localdomain","version":1,"port":9092} (kafka.utils.ZkUtils$)
-[2015-08-10 15:49:05,922] INFO I wrote this conflicted ephemeral node [{"jmx_port":-1,"timestamp":"1439236139878","host":"localhost.localdomain","version":1,"port":9092}] at /brokers/ids/0 a while back in a different session, hence I will backoff for this node to be deleted by Zookeeper and retry (kafka.utils.ZkUtils$)
-[2015-08-10 15:49:06,028] INFO 1 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
-[2015-08-10 15:49:06,038] INFO New leader is 1 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
-[2015-08-10 15:49:06,210] INFO New leader is 1 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
-[2015-08-10 15:49:06,218] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions  (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:49:06,227] INFO [ReplicaFetcherManager on broker 1] Added fetcher for partitions List() (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:49:06,277] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,1],[greetings,2],[greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:49:11,928] INFO Registered broker 0 at path /brokers/ids/0 with address localhost.localdomain:9092. (kafka.utils.ZkUtils$)
-[2015-08-10 15:49:11,946] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
-[2015-08-10 15:49:12,088] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,1],[greetings,2],[greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:49:12,091] INFO Truncating log greetings-1 to offset 0. (kafka.log.Log)
-[2015-08-10 15:49:12,092] INFO Truncating log greetings-2 to offset 2066. (kafka.log.Log)
-[2015-08-10 15:49:12,093] INFO Truncating log greetings-0 to offset 0. (kafka.log.Log)
-[2015-08-10 15:49:12,113] INFO [ReplicaFetcherThread-0-1], Starting  (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:49:12,115] INFO [ReplicaFetcherManager on broker 0] Added fetcher for partitions List([[greetings,1], initOffset 0 to broker id:1,host:localhost.localdomain,port:9093] , [[greetings,2], initOffset 2066 to broker id:1,host:localhost.localdomain,port:9093] , [[greetings,0], initOffset 0 to broker id:1,host:localhost.localdomain,port:9093] ) (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:49:12,137] INFO Partition [greetings,1] on broker 1: Expanding ISR for partition [greetings,1] from 1 to 1,0 (kafka.cluster.Partition)
-[2015-08-10 15:49:12,140] INFO Partition [greetings,2] on broker 1: Expanding ISR for partition [greetings,2] from 1 to 1,0 (kafka.cluster.Partition)
-[2015-08-10 15:49:12,141] INFO Partition [greetings,0] on broker 1: Expanding ISR for partition [greetings,0] from 1 to 1,0 (kafka.cluster.Partition)
-[2015-08-10 15:49:43,444] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:49:53,658] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:50:01,780] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:50:12,715] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:50:21,802] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:50:38,178] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:50:46,946] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:50:47,179] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:50:56,633] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:51:26,323] ERROR Closing socket for /127.0.0.1 because of error (kafka.network.Processor)
-java.io.IOException: Broken pipe
-	at sun.nio.ch.FileDispatcherImpl.write0(Native Method)
-	at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
-	at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:93)
-	at sun.nio.ch.IOUtil.write(IOUtil.java:65)
-	at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:471)
-	at kafka.api.TopicDataSend.writeTo(FetchResponse.scala:123)
-	at kafka.network.MultiSend.writeTo(Transmission.scala:101)
-	at kafka.api.FetchResponseSend.writeTo(FetchResponse.scala:231)
-	at kafka.network.Processor.write(SocketServer.scala:472)
-	at kafka.network.Processor.run(SocketServer.scala:342)
-	at java.lang.Thread.run(Thread.java:745)
-[2015-08-10 15:51:33,271] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:51:33,273] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 15:51:33,312] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,316] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,320] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,1] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,321] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,2] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,322] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,2] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,325] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,2] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,327] INFO [ReplicaFetcherManager on broker 1] Removed fetcher for partitions [greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,330] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,331] INFO [ReplicaFetcherThread-0-1], Shutting down (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:51:33,332] INFO [Kafka Server 0], Controlled shutdown succeeded (kafka.server.KafkaServer)
-[2015-08-10 15:51:33,332] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:51:33,333] INFO [Socket Server on Broker 0], Shutting down (kafka.network.SocketServer)
-[2015-08-10 15:51:33,339] INFO [Socket Server on Broker 0], Shutdown completed (kafka.network.SocketServer)
-[2015-08-10 15:51:33,340] INFO [Kafka Request Handler on Broker 0], shutting down (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:51:33,730] INFO [ReplicaFetcherThread-0-1], Stopped  (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:51:33,730] INFO [ReplicaFetcherThread-0-1], Shutdown completed (kafka.server.ReplicaFetcherThread)
-[2015-08-10 15:51:33,732] INFO Closing socket connection to /127.0.0.1. (kafka.network.Processor)
-[2015-08-10 15:51:33,733] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [greetings,0] (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,735] INFO [Kafka Request Handler on Broker 0], shut down completely (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 15:51:33,980] INFO [Replica Manager on Broker 0]: Shut down (kafka.server.ReplicaManager)
-[2015-08-10 15:51:33,981] INFO [ReplicaFetcherManager on broker 0] shutting down (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,983] INFO [ReplicaFetcherManager on broker 0] shutdown completed (kafka.server.ReplicaFetcherManager)
-[2015-08-10 15:51:33,984] INFO [Replica Manager on Broker 0]: Shut down completely (kafka.server.ReplicaManager)
-[2015-08-10 15:51:33,985] INFO Shutting down. (kafka.log.LogManager)
-[2015-08-10 15:51:34,002] INFO Shutdown complete. (kafka.log.LogManager)
-[2015-08-10 15:51:34,004] WARN Kafka scheduler has not been started (kafka.utils.Utils$)
-java.lang.IllegalStateException: Kafka scheduler has not been started
-	at kafka.utils.KafkaScheduler.ensureStarted(KafkaScheduler.scala:114)
-	at kafka.utils.KafkaScheduler.shutdown(KafkaScheduler.scala:86)
-	at kafka.controller.KafkaController.onControllerResignation(KafkaController.scala:350)
-	at kafka.controller.KafkaController.shutdown(KafkaController.scala:664)
-	at kafka.server.KafkaServer$$anonfun$shutdown$8.apply$mcV$sp(KafkaServer.scala:285)
-	at kafka.utils.Utils$.swallow(Utils.scala:172)
-	at kafka.utils.Logging$class.swallowWarn(Logging.scala:92)
-	at kafka.utils.Utils$.swallowWarn(Utils.scala:45)
-	at kafka.utils.Logging$class.swallow(Logging.scala:94)
-	at kafka.utils.Utils$.swallow(Utils.scala:45)
-	at kafka.server.KafkaServer.shutdown(KafkaServer.scala:285)
-	at kafka.server.KafkaServerStartable.shutdown(KafkaServerStartable.scala:42)
-	at kafka.Kafka$$anon$1.run(Kafka.scala:42)
-[2015-08-10 15:51:34,007] INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
-[2015-08-10 15:51:34,011] WARN sleep interrupted (kafka.utils.Utils$)
-java.lang.InterruptedException: sleep interrupted
-	at java.lang.Thread.sleep(Native Method)
-	at kafka.controller.RequestSendThread$$anonfun$liftedTree1$1$1.apply$mcV$sp(ControllerChannelManager.scala:144)
-	at kafka.utils.Utils$.swallow(Utils.scala:172)
-	at kafka.utils.Logging$class.swallowWarn(Logging.scala:92)
-	at kafka.utils.Utils$.swallowWarn(Utils.scala:45)
-	at kafka.utils.Logging$class.swallow(Logging.scala:94)
-	at kafka.utils.Utils$.swallow(Utils.scala:45)
-	at kafka.controller.RequestSendThread.liftedTree1$1(ControllerChannelManager.scala:144)
-	at kafka.controller.RequestSendThread.doWork(ControllerChannelManager.scala:131)
-	at kafka.utils.ShutdownableThread.run(ShutdownableThread.scala:60)
-[2015-08-10 15:51:35,424] INFO [Kafka Server 1], shutting down (kafka.server.KafkaServer)
-[2015-08-10 15:51:35,425] INFO [Kafka Server 1], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 15:51:35,455] INFO [Kafka Server 1], Remaining partitions to move: [greetings,1],[greetings,2],[greetings,0] (kafka.server.KafkaServer)
-[2015-08-10 15:51:35,455] INFO [Kafka Server 1], Error code from controller: 0 (kafka.server.KafkaServer)
-[2015-08-10 15:51:40,456] WARN [Kafka Server 1], Retrying controlled shutdown after the previous attempt failed... (kafka.server.KafkaServer)
-[2015-08-10 21:49:57,668] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,700] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,700] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,700] INFO Property log.dirs is overridden to /tmp/kafka-logs-0 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,700] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,701] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,701] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,701] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,701] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,702] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,702] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,702] INFO Property port is overridden to 9092 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,702] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,702] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,703] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,703] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,703] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:49:57,737] INFO [Kafka Server 0], starting (kafka.server.KafkaServer)
-[2015-08-10 21:49:57,741] INFO [Kafka Server 0], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 21:49:58,065] INFO Log directory '/tmp/kafka-logs-0' not found, creating it. (kafka.log.LogManager)
-[2015-08-10 21:49:58,071] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 21:49:58,077] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 21:49:58,078] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 21:49:58,082] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 21:49:58,112] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
-[2015-08-10 21:49:58,114] INFO [Socket Server on Broker 0], Started (kafka.network.SocketServer)
-[2015-08-10 21:49:58,178] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 21:49:58,214] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
-[2015-08-10 21:49:58,300] INFO Registered broker 0 at path /brokers/ids/0 with address localhost.localdomain:9092. (kafka.utils.ZkUtils$)
-[2015-08-10 21:49:58,312] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
-[2015-08-10 21:49:58,361] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
-[2015-08-10 21:50:08,595] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-08-10 21:50:08,597] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 21:50:08,660] INFO [Kafka Server 0], Controlled shutdown succeeded (kafka.server.KafkaServer)
-[2015-08-10 21:50:08,663] INFO [Socket Server on Broker 0], Shutting down (kafka.network.SocketServer)
-[2015-08-10 21:50:08,697] INFO [Socket Server on Broker 0], Shutdown completed (kafka.network.SocketServer)
-[2015-08-10 21:50:08,698] INFO [Kafka Request Handler on Broker 0], shutting down (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 21:50:08,701] INFO [Kafka Request Handler on Broker 0], shut down completely (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 21:50:08,991] INFO [Replica Manager on Broker 0]: Shut down (kafka.server.ReplicaManager)
-[2015-08-10 21:50:08,992] INFO [ReplicaFetcherManager on broker 0] shutting down (kafka.server.ReplicaFetcherManager)
-[2015-08-10 21:50:08,994] INFO [ReplicaFetcherManager on broker 0] shutdown completed (kafka.server.ReplicaFetcherManager)
-[2015-08-10 21:50:08,998] INFO [Replica Manager on Broker 0]: Shut down completely (kafka.server.ReplicaManager)
-[2015-08-10 21:50:08,999] INFO Shutting down. (kafka.log.LogManager)
-[2015-08-10 21:50:09,004] INFO Shutdown complete. (kafka.log.LogManager)
-[2015-08-10 21:50:09,011] INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
-[2015-08-10 21:51:00,857] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,889] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,889] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,890] INFO Property log.dirs is overridden to /tmp/kafka-logs-0 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,890] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,890] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,890] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,890] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,891] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,891] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,891] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,891] INFO Property port is overridden to 9092 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,892] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,892] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,892] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,892] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,892] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:00,928] INFO [Kafka Server 0], starting (kafka.server.KafkaServer)
-[2015-08-10 21:51:00,929] INFO [Kafka Server 0], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 21:51:01,101] INFO Loading logs. (kafka.log.LogManager)
-[2015-08-10 21:51:01,107] INFO Logs loading complete. (kafka.log.LogManager)
-[2015-08-10 21:51:01,107] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
-[2015-08-10 21:51:01,110] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
-[2015-08-10 21:51:01,137] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
-[2015-08-10 21:51:01,137] INFO [Socket Server on Broker 0], Started (kafka.network.SocketServer)
-[2015-08-10 21:51:01,196] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
-[2015-08-10 21:51:01,235] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
-[2015-08-10 21:51:01,318] INFO Registered broker 0 at path /brokers/ids/0 with address localhost.localdomain:9092. (kafka.utils.ZkUtils$)
-[2015-08-10 21:51:01,328] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
-[2015-08-10 21:51:01,381] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
-[2015-08-10 21:51:07,266] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-08-10 21:51:07,268] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
-[2015-08-10 21:51:07,330] INFO [Kafka Server 0], Controlled shutdown succeeded (kafka.server.KafkaServer)
-[2015-08-10 21:51:07,332] INFO [Socket Server on Broker 0], Shutting down (kafka.network.SocketServer)
-[2015-08-10 21:51:07,381] INFO [Socket Server on Broker 0], Shutdown completed (kafka.network.SocketServer)
-[2015-08-10 21:51:07,382] INFO [Kafka Request Handler on Broker 0], shutting down (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 21:51:07,383] INFO [Kafka Request Handler on Broker 0], shut down completely (kafka.server.KafkaRequestHandlerPool)
-[2015-08-10 21:51:07,600] INFO [Replica Manager on Broker 0]: Shut down (kafka.server.ReplicaManager)
-[2015-08-10 21:51:07,601] INFO [ReplicaFetcherManager on broker 0] shutting down (kafka.server.ReplicaFetcherManager)
-[2015-08-10 21:51:07,601] INFO [ReplicaFetcherManager on broker 0] shutdown completed (kafka.server.ReplicaFetcherManager)
-[2015-08-10 21:51:07,604] INFO [Replica Manager on Broker 0]: Shut down completely (kafka.server.ReplicaManager)
-[2015-08-10 21:51:07,604] INFO Shutting down. (kafka.log.LogManager)
-[2015-08-10 21:51:07,610] INFO Shutdown complete. (kafka.log.LogManager)
-[2015-08-10 21:51:07,618] INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
-[2015-08-10 21:51:21,545] INFO Verifying properties (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,577] INFO Property broker.id is overridden to 0 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,577] INFO Property log.cleaner.enable is overridden to false (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,577] INFO Property log.dirs is overridden to /tmp/kafka-logs-0 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,577] INFO Property log.retention.check.interval.ms is overridden to 300000 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,578] INFO Property log.retention.hours is overridden to 168 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,578] INFO Property log.segment.bytes is overridden to 1073741824 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,578] INFO Property num.io.threads is overridden to 8 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,578] INFO Property num.network.threads is overridden to 3 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,578] INFO Property num.partitions is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,579] INFO Property num.recovery.threads.per.data.dir is overridden to 1 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,579] INFO Property port is overridden to 9092 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,579] INFO Property socket.receive.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,579] INFO Property socket.request.max.bytes is overridden to 104857600 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,580] INFO Property socket.send.buffer.bytes is overridden to 102400 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,580] INFO Property zookeeper.connect is overridden to localhost:2181 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,580] INFO Property zookeeper.connection.timeout.ms is overridden to 6000 (kafka.utils.VerifiableProperties)
-[2015-08-10 21:51:21,614] INFO [Kafka Server 0], starting (kafka.server.KafkaServer)
-[2015-08-10 21:51:21,616] INFO [Kafka Server 0], Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
-[2015-08-10 21:51:24,552] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
-[2015-08-10 21:51:24,559] INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
+[2015-08-13 09:08:19,999] INFO Registered broker 0 at path /brokers/ids/0 with addresses: PLAINTEXT -> EndPoint(localhost.localdomain,9092,PLAINTEXT) (kafka.utils.ZkUtils$)
+[2015-08-13 09:08:20,012] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
+[2015-08-13 09:08:20,135] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:08:20,158] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:08:43,550] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
+[2015-08-13 09:08:43,552] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)
+[2015-08-13 09:10:38,001] INFO [Kafka Server 0], Controlled shutdown succeeded (kafka.server.KafkaServer)
+[2015-08-13 09:10:38,005] INFO [Socket Server on Broker 0], Shutting down (kafka.network.SocketServer)
+[2015-08-13 09:10:38,012] INFO [Socket Server on Broker 0], Shutdown completed (kafka.network.SocketServer)
+[2015-08-13 09:10:38,013] INFO [Kafka Request Handler on Broker 0], shutting down (kafka.server.KafkaRequestHandlerPool)
+[2015-08-13 09:10:38,015] INFO [Kafka Request Handler on Broker 0], shut down completely (kafka.server.KafkaRequestHandlerPool)
+[2015-08-13 09:10:38,019] INFO [Replica Manager on Broker 0]: Shutting down (kafka.server.ReplicaManager)
+[2015-08-13 09:10:38,020] INFO [ReplicaFetcherManager on broker 0] shutting down (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:10:38,022] INFO [ReplicaFetcherManager on broker 0] shutdown completed (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:10:38,022] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,031] INFO KafkaConfig values: 
+	log.roll.hours = 168
+	controlled.shutdown.max.retries = 3
+	inter.broker.protocol.version = 0.8.3.X
+	log.cleaner.threads = 1
+	zookeeper.connection.timeout.ms = 6000
+	log.preallocate = false
+	offsets.load.buffer.size = 5242880
+	security.inter.broker.protocol = PLAINTEXT
+	controller.socket.timeout.ms = 30000
+	zookeeper.session.timeout.ms = 6000
+	log.cleaner.enable = false
+	controlled.shutdown.enable = true
+	offsets.topic.num.partitions = 50
+	num.recovery.threads.per.data.dir = 1
+	background.threads = 10
+	unclean.leader.election.enable = true
+	message.max.bytes = 1000012
+	log.cleaner.backoff.ms = 15000
+	replica.lag.time.max.ms = 10000
+	log.roll.jitter.hours = 0
+	auto.create.topics.enable = true
+	log.retention.check.interval.ms = 300000
+	zookeeper.sync.time.ms = 2000
+	offsets.topic.compression.codec = 0
+	log.cleaner.io.buffer.load.factor = 0.9
+	replica.fetch.max.bytes = 1048576
+	log.retention.hours = 168
+	log.cleaner.delete.retention.ms = 86400000
+	log.dirs = /home/tony/projects/openbel/openbel-server/out/kafka-logs
+	log.index.size.max.bytes = 10485760
+	fetch.purgatory.purge.interval.requests = 1000
+	log.retention.minutes = null
+	connections.max.idle.ms = 600000
+	log.cleaner.min.cleanable.ratio = 0.5
+	offsets.commit.timeout.ms = 5000
+	offsets.retention.minutes = 1440
+	max.connections.per.ip = 2147483647
+	log.retention.bytes = -1
+	offset.metadata.max.bytes = 4096
+	replica.fetch.wait.max.ms = 500
+	metrics.num.samples = 2
+	leader.imbalance.check.interval.seconds = 300
+	port = 9092
+	offsets.retention.check.interval.ms = 600000
+	log.roll.jitter.ms = null
+	reserved.broker.max.id = 1000
+	log.cleaner.dedupe.buffer.size = 524288000
+	replica.fetch.backoff.ms = 1000
+	log.segment.bytes = 1073741824
+	advertised.host.name = null
+	log.cleaner.io.buffer.size = 524288
+	log.dir = /tmp/kafka-logs
+	min.insync.replicas = 1
+	producer.purgatory.purge.interval.requests = 1000
+	controlled.shutdown.retry.backoff.ms = 5000
+	socket.receive.buffer.bytes = 102400
+	log.segment.delete.delay.ms = 60000
+	log.flush.scheduler.interval.ms = 9223372036854775807
+	log.flush.offset.checkpoint.interval.ms = 60000
+	consumer.min.session.timeout.ms = 6000
+	num.partitions = 1
+	num.io.threads = 8
+	leader.imbalance.per.broker.percentage = 10
+	num.network.threads = 3
+	socket.request.max.bytes = 104857600
+	queued.max.requests = 500
+	zookeeper.connect = localhost:2181
+	offsets.topic.replication.factor = 3
+	log.roll.ms = null
+	replica.socket.timeout.ms = 30000
+	offsets.topic.segment.bytes = 104857600
+	replica.high.watermark.checkpoint.interval.ms = 5000
+	broker.id = 0
+	listeners = null
+	log.flush.interval.messages = 9223372036854775807
+	log.retention.ms = null
+	socket.send.buffer.bytes = 102400
+	offsets.commit.required.acks = -1
+	log.flush.interval.ms = null
+	consumer.max.session.timeout.ms = 30000
+	log.cleaner.io.max.bytes.per.second = 1.7976931348623157E308
+	num.replica.fetchers = 1
+	default.replication.factor = 1
+	metrics.sample.window.ms = 1000
+	advertised.listeners = null
+	replica.socket.receive.buffer.bytes = 65536
+	auto.leader.rebalance.enable = true
+	delete.topic.enable = false
+	log.index.interval.bytes = 4096
+	host.name = 
+	metric.reporters = []
+	compression.type = producer
+	advertised.port = null
+	max.connections.per.ip.overrides = 
+	replica.fetch.min.bytes = 1
+	log.cleanup.policy = delete
+ (kafka.server.KafkaConfig)
+[2015-08-13 09:10:38,081] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,081] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,081] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,137] INFO starting (kafka.server.KafkaServer)
+[2015-08-13 09:10:38,139] INFO Connecting to zookeeper on localhost:2181 (kafka.server.KafkaServer)
+[2015-08-13 09:10:38,151] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,152] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,162] INFO [Replica Manager on Broker 0]: Shut down completely (kafka.server.ReplicaManager)
+[2015-08-13 09:10:38,162] INFO Shutting down. (kafka.log.LogManager)
+[2015-08-13 09:10:38,183] INFO Shutdown complete. (kafka.log.LogManager)
+[2015-08-13 09:10:38,184] INFO [ConsumerCoordinator 0]: Shutting down. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:10:38,185] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,289] INFO Loading logs. (kafka.log.LogManager)
+[2015-08-13 09:10:38,336] INFO Completed load of log evidence-0 with log end offset 1253856 (kafka.log.Log)
+[2015-08-13 09:10:38,344] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,344] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,345] INFO [ExpirationReaper-0], Shutting down (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,350] INFO Logs loading complete. (kafka.log.LogManager)
+[2015-08-13 09:10:38,351] INFO Starting log cleanup with a period of 300000 ms. (kafka.log.LogManager)
+[2015-08-13 09:10:38,357] INFO Starting log flusher with a default period of 9223372036854775807 ms. (kafka.log.LogManager)
+[2015-08-13 09:10:38,422] INFO Awaiting socket connections on 0.0.0.0:9092. (kafka.network.Acceptor)
+[2015-08-13 09:10:38,423] INFO [Socket Server on Broker 0], Started 1 acceptor threads (kafka.network.SocketServer)
+[2015-08-13 09:10:38,455] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,456] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,544] INFO [ExpirationReaper-0], Stopped  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,544] INFO [ExpirationReaper-0], Shutdown completed (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,546] INFO [ConsumerCoordinator 0]: Shutdown complete. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:10:38,561] INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
+[2015-08-13 09:10:38,698] INFO [ConsumerCoordinator 0]: Starting up. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:10:38,707] INFO [ConsumerCoordinator 0]: Startup complete. (kafka.coordinator.ConsumerCoordinator)
+[2015-08-13 09:10:38,708] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,710] INFO [ExpirationReaper-0], Starting  (kafka.server.DelayedOperationPurgatory$ExpiredOperationReaper)
+[2015-08-13 09:10:38,710] INFO 0 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+[2015-08-13 09:10:38,713] INFO [Offset Manager on Broker 0]: Removed 0 expired offsets in 20 milliseconds. (kafka.server.OffsetManager)
+[2015-08-13 09:10:38,736] INFO Will not load MX4J, mx4j-tools.jar is not in the classpath (kafka.utils.Mx4jLoader$)
+[2015-08-13 09:10:38,825] INFO Registered broker 0 at path /brokers/ids/0 with addresses: PLAINTEXT -> EndPoint(localhost.localdomain,9092,PLAINTEXT) (kafka.utils.ZkUtils$)
+[2015-08-13 09:10:38,842] INFO [Kafka Server 0], started (kafka.server.KafkaServer)
+[2015-08-13 09:10:39,025] INFO New leader is 0 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
+[2015-08-13 09:10:39,210] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:10:39,244] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions [evidence,0] (kafka.server.ReplicaFetcherManager)
+[2015-08-13 09:11:02,269] INFO [Kafka Server 0], shutting down (kafka.server.KafkaServer)
+[2015-08-13 09:11:02,270] INFO [Kafka Server 0], Starting controlled shutdown (kafka.server.KafkaServer)

@@ -8,5 +8,8 @@ cd "$DIR" || exit 1
 require_cmd java
 
 "$TOOLS_KAFKA"/bin/zookeeper-server-start.sh \
-  "$CONFIG"/kafka_zookeeper.properties
+  ${ZOOKEEPER_CLIENT_PORT} \
+  ${ZOOKEEPER_DATA_DIR} \
+  ${ZOOKEEPER_TICK_TIME} \
+  ${ZOOKEEPER_MAX_CONN}
 
