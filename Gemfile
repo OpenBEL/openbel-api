@@ -1,9 +1,11 @@
 source 'https://rubygems.org'
 
+gem 'async_sinatra', :git => 'https://github.com/raggi/async_sinatra.git'
 gem 'bel', '~> 0.3'
 gem 'bson_ext', '1.12.0'
 gem 'builder'
 gem 'dot_hash'
+gem 'eventmachine'
 gem 'foreman'
 gem 'hermann', '0.24.1.dev'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby
@@ -14,7 +16,7 @@ gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
 gem 'oat'
 gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
-gem 'puma'
+#gem 'puma'
 gem 'rack'
 gem 'rack-cors'
 gem 'rack-handlers'
@@ -23,6 +25,7 @@ gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
 gem 'sqlite3'
+gem 'thin'
 
 group :test do
   gem 'faraday_middleware'

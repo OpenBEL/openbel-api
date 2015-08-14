@@ -45,18 +45,18 @@ module OpenBEL
         read_evidence.each do |evidence|
           @evidence_events_stream.push(MultiJson.dump(evidence.to_h))
 
-          @annotation_transform.transform_evidence!(evidence, base_url)
+          #@annotation_transform.transform_evidence!(evidence, base_url)
 
           # XXX Not sure we need to group values together. Instead we split
           # multi-valued items into individual objects.
           # Wait and see what breaks.
-          @annotation_grouping_transform.transform_evidence!(evidence)
+          #@annotation_grouping_transform.transform_evidence!(evidence)
 
-          facets = map_evidence_facets(evidence)
-          hash = evidence.to_h
-          hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
-          hash[:facets]        = facets
-          _id = @api.create_evidence(hash)
+          #facets = map_evidence_facets(evidence)
+          #hash = evidence.to_h
+          #hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
+          #hash[:facets]        = facets
+          #_id = @api.create_evidence(hash)
         end
 
         status 201
