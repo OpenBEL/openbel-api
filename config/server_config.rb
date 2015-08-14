@@ -15,7 +15,7 @@ if ENV['SERVER_AS_DAEMON'].to_i == 1
   stdout_redirect stdout_file, stderr_file
 end
 
-bind "tcp://0.0.0.0:#{ENV['PORT_START']}"
+#bind "tcp://0.0.0.0:#{ENV['PORT_START']}"
 
 workers ENV['WORKER_COUNT'].to_i
 

@@ -5,6 +5,7 @@ gem 'bson_ext', '1.12.0'
 gem 'builder'
 gem 'dot_hash'
 gem 'foreman'
+gem 'hermann', '0.24.1.dev'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby
 gem 'json_schema'
 gem 'kyotocabinet-ffi', '~> 0.1'
