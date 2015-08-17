@@ -8,9 +8,6 @@ cd "$DIR" || exit 1
 require_cmd bundle
 
 bundle exec thin \
-  --daemonize \
-  --pid  $EV_APP_PID_FILE \
   --port $EV_APP_PORT \
-  --log  "$EV_APP_LOG" \
   --rackup applications/evidence/config.ru \
   restart

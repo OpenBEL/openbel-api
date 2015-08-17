@@ -25,6 +25,9 @@ default OUT_TEST_RESULTS        "$OUT"/test-results
 
 # SERVER PARAMETERS #
 
+  # NGINX #
+  default NGINX_CONFIG_FILE       "$CONFIG/nginx.conf"
+
   # REST APP #
   default REST_APP_PID_FILE       "$OUT"/rest-app.pid
   default REST_PORT               $PORT_START

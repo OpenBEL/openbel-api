@@ -1,15 +1,8 @@
 #!/usr/bin/env puma
 
-tag 'OBP - API'
+tag 'obp: rest'
 
 pidfile ENV['REST_APP_PID_FILE']
-
-daemonize true
-
-require 'fileutils'
-stdout_file = stderr_file = ENV['REST_APP_LOG']
-FileUtils.mkdir_p File.dirname(stdout_file)
-stdout_redirect stdout_file, stderr_file
 
 workers ENV['WORKER_COUNT'].to_i
 
@@ -18,6 +11,7 @@ if ENV['THREADED'].to_i == 1
 end
 
 
+###############################################################################
 # The directory to operate out of.
 #
 # The default is the current directory.
