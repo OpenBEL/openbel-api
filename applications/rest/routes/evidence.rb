@@ -1,7 +1,7 @@
 require 'bel'
 require 'cgi'
-require 'lib/evidence/facet_filter'
-require 'app/resources/evidence_transform'
+require 'evidence/facet_filter'
+require 'base_libs/resources/evidence_transform'
 require 'mongo'
 
 # emitting evidence events

@@ -25,16 +25,19 @@ default OUT_TEST_RESULTS        "$OUT"/test-results
 
 # SERVER PARAMETERS #
 
-  # REST #
-  default PID_FILE                "$DIR"/server.pid
+  # REST APP #
+  default REST_APP_PID_FILE       "$OUT"/rest-app.pid
   default REST_PORT               $PORT_START
   default WORKER_COUNT            4
   default THREADED                1
   default THREAD_MIN              0
   default THREAD_MAX              2
-  default SERVER_AS_DAEMON        0
-  default OUT_SERVER_STDOUT       "$OUT"/api-stdout.log
-  default OUT_SERVER_STDERR       "$OUT"/api-stderr.log
+  default REST_APP_LOG            "$OUT"/rest-app.log
+
+  # EVIDENCE APP #
+  default EV_APP_PID_FILE         "$OUT"/evidence-app.pid
+  default EV_APP_PORT             9005
+  default EV_APP_LOG              "$OUT"/evidence-app.log
 
   # ZOOKEEPER #
   default ZOOKEEPER_CLIENT_PORT   9010             # i.e. kafka inbound port
@@ -47,6 +50,8 @@ default OUT_TEST_RESULTS        "$OUT"/test-results
   default KAFKA_PORT              9020
   default KAFKA_LOG_DIRS          "$OUT"/kafka-logs
 
+  # GREENLINE #
+  default OBP_GOPATH              "$DIR"/.gopath
 
 # DOC PARAMETERS #
 default DOC_API_SPEC            "$DOCS/openbel-api.raml"

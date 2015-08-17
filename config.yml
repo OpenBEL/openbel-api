@@ -22,7 +22,7 @@ rdf-storage:
     cache: 'rdf-cache'
   options:
     storage:     'sqlite'
-    name:        'rdf.db'
+    name:        'rdf_20150611.db'
     new:         'no'
     synchronous: 'no'
 
@@ -30,7 +30,7 @@ rdf-search:
   type:   'search'
   plugin: 'sqlite3_search'
   options:
-    file: 'rdf.db'
+    file: 'rdf_20150611.db'
 
 annotation-api:
   type:   'annotation'

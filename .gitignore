@@ -11,3 +11,5 @@
 /tags
 node_modules
 tools/kafka/logs/*
+.flavors
+.netrwhist

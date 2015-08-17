@@ -3,21 +3,22 @@ require 'bundler'
 
 Bundler.setup
 $: << File.expand_path('../', __FILE__)
-$: << File.expand_path('../lib', __FILE__)
+$: << File.expand_path('../../', __FILE__)
+$: << File.expand_path('../../../lib', __FILE__)
 
 require 'config/config'
-require 'app/util'
 
 require 'rack/cors'
 
 require 'sinatra/base'
-require 'app/routes/base'
-require 'app/routes/root'
-require 'app/routes/annotations'
-require 'app/routes/evidence'
-require 'app/routes/expressions'
-require 'app/routes/functions'
-require 'app/routes/namespaces'
+require 'base_libs/routes/base'
+require 'routes/root'
+require 'routes/annotations'
+require 'routes/evidence'
+require 'routes/expressions'
+require 'routes/functions'
+require 'routes/namespaces'
+require 'base_libs/util'
 
 module OpenBEL
 

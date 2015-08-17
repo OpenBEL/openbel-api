@@ -1,8 +1,4 @@
 http://localhost:9000/api
-http://localhost:9000/api/expressions/pro/completions
-http://localhost:9000/api/expressions/p(/completions
-http://localhost:9000/api/expressions/p(HGN/completions
-http://localhost:9000/api/expressions/p(HGNC:AKT1/completions
 http://localhost:9000/api/functions
 http://localhost:9000/api/functions/bp
 http://localhost:9000/api/functions/biologicalProcess

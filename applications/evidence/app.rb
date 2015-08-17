@@ -2,17 +2,14 @@ require 'rubygems'
 require 'bundler'
 
 Bundler.setup
-$: << File.expand_path('../', __FILE__)
-$: << File.expand_path('../lib', __FILE__)
-
-require 'config/config'
-require 'app/util'
+$: << File.expand_path('../../', __FILE__)
+$: << File.expand_path('../../../lib', __FILE__)
 
 require 'rack/cors'
 
 require 'sinatra/async'
 require 'sinatra/base'
-require 'app/routes/base'
+require 'base_libs/routes/base'
 
 require 'bel'
 require 'hermann'
@@ -20,24 +17,23 @@ require 'hermann/producer'
 
 def run(opts)
 
-  # Start the reactor
-  $stderr.puts "starting reactor, stand back..."
   EM.run do
 
-    # define some defaults for our app
+    trap('HUP') do
+      EM.stop_event_loop
+    end
+
     server  = opts[:server] || 'thin'
     host    = opts[:host]   || '0.0.0.0'
-    port    = opts[:port]   || '8181'
+    port    = opts[:port]   || '9030'
     web_app = opts[:app]
 
     dispatch = Rack::Builder.app do
-      map '/api/streaming' do
+      map '/api/evidence' do
         run web_app
       end
     end
 
-    # NOTE that we have to use an EM-compatible web-server. There
-    # might be more, but these are some that are currently available.
     unless ['thin', 'hatetepe', 'goliath'].include? server
       raise "Need an EM webserver, but #{server} isn't"
     end
@@ -45,10 +41,10 @@ def run(opts)
     # Start the web server. Note that you are free to run other tasks
     # within your EM instance.
     Rack::Server.start({
-      app:    dispatch,
-      server: server,
-      Host:   host,
-      Port:   port,
+      app:     dispatch,
+      server:  server,
+      Host:    host,
+      Port:    port,
       signals: false
     })
   end
@@ -70,14 +66,8 @@ module OpenBEL
         puts "connected to evidence-events topic"
       end
 
-      configure :development do
-        # pass
-      end
-
       configure do
         set :threaded, false
-        config = OpenBEL::Config::load('config.yml')
-        OpenBEL.const_set :Settings, config
       end
 
       use Rack::Deflater
@@ -112,12 +102,15 @@ module OpenBEL
 
         def read_evidence
           fmt = ::BEL::Extension::Format.formatters(request.media_type)
-          halt 415 unless fmt
-          ::BEL::Format.evidence(request.body, request.media_type)
+          if fmt
+            ::BEL::Format.evidence(request.body, request.media_type)
+          else
+            ahalt 415
+          end
         end
       end
 
-      apost '/async-evidence' do
+      apost '' do
         count = 0
         read_evidence.each do |evidence|
           @evidence_events_stream.push(MultiJson.dump(evidence.to_h))
@@ -128,36 +121,9 @@ module OpenBEL
           :count  => count,
           :status => :complete
         })
-        #_id = nil
-        #status 201
-        #headers "Location" => "#{base_url}/api/evidence/#{_id}"
-      end
-
-      post '/evidence' do
-        stream = nil
-        stream(:keep_open) do |out|
-          stream = out
-        end
-
-        EM.defer do
-          count = 0
-          read_evidence.each do |evidence|
-            @evidence_events_stream.push(MultiJson.dump(evidence.to_h))
-            stream << evidence.to_h
-          end
-        end
-
-        _id = nil
-        status 201
-        headers "Location" => "#{base_url}/api/evidence/#{_id}"
       end
     end
   end
 end
-
-run(
-  :app  => OpenBEL::Apps::EvidenceStreaming.new,
-  :port => 9000
-)
 # vim: ts=2 sts=2 sw=2
 # encoding: utf-8

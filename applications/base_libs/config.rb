@@ -5,10 +5,11 @@ module OpenBEL
     include DotHash
 
     CFG_VAR = 'OPENBEL_SERVER_CONFIG'
-    DEFAULT = 'config.yml'
+    DEFAULT = File.join(File.expand_path('../../../', __FILE__), 'config.yml')
 
     def self.load!
       config_file = ENV[CFG_VAR] || DEFAULT
+      puts config_file
       config = {}
       File.open(config_file, 'r:UTF-8') do |cf|
         config = YAML::load(cf)

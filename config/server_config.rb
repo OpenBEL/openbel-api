@@ -2,20 +2,14 @@
 
 tag 'OBP - API'
 
-pidfile ENV['PID_FILE']
+pidfile ENV['REST_APP_PID_FILE']
 
-if ENV['SERVER_AS_DAEMON'].to_i == 1
-  daemonize true
+daemonize true
 
-  require 'fileutils'
-  stdout_file = ENV['OUT_SERVER_STDOUT']
-  FileUtils.mkdir_p File.dirname(stdout_file)
-  stderr_file = ENV['OUT_SERVER_STDERR']
-  FileUtils.mkdir_p File.dirname(stderr_file)
-  stdout_redirect stdout_file, stderr_file
-end
-
-#bind "tcp://0.0.0.0:#{ENV['PORT_START']}"
+require 'fileutils'
+stdout_file = stderr_file = ENV['REST_APP_LOG']
+FileUtils.mkdir_p File.dirname(stdout_file)
+stdout_redirect stdout_file, stderr_file
 
 workers ENV['WORKER_COUNT'].to_i
 

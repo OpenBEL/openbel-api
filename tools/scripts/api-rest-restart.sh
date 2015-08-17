@@ -9,5 +9,4 @@ require_cmd bundle
 
 bundle exec pumactl \
   --config-file "$CONFIG"/server_config.rb \
-  restart
-
+  restart \

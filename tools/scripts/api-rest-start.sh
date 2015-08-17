@@ -10,4 +10,5 @@ require_cmd bundle
 bundle exec pumactl \
   --config-file "$CONFIG"/server_config.rb \
   start \
-  --port $REST_PORT
+  --port $REST_PORT \
+  applications/rest/config.ru

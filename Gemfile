@@ -16,7 +16,7 @@ gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
 gem 'oat'
 gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
-#gem 'puma'
+gem 'puma'
 gem 'rack'
 gem 'rack-cors'
 gem 'rack-handlers'
