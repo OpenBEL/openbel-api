@@ -1,5 +1,7 @@
 require_relative 'app'
 
-run(
-  :app => OpenBEL::Apps::EvidenceStreaming.new
+em_run(
+  :server => 'thin',
+  :app    => OpenBEL::Apps::Evidence.new,
+  :port   => ENV['EV_APP_PORT']
 )

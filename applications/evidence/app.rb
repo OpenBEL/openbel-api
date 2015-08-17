@@ -15,7 +15,7 @@ require 'bel'
 require 'hermann'
 require 'hermann/producer'
 
-def run(opts)
+def em_run(opts)
 
   EM.run do
 
@@ -35,7 +35,7 @@ def run(opts)
     end
 
     unless ['thin', 'hatetepe', 'goliath'].include? server
-      raise "Need an EM webserver, but #{server} isn't"
+      raise "Need an EM webserver, but #{server} is not one."
     end
 
     # Start the web server. Note that you are free to run other tasks
@@ -53,7 +53,7 @@ end
 module OpenBEL
   module Apps
 
-    class EvidenceStreaming < Sinatra::Base
+    class Evidence < Sinatra::Base
       register Sinatra::Async
 
       def initialize
@@ -63,7 +63,6 @@ module OpenBEL
           ["localhost:#{ENV['KAFKA_PORT']}"]
         )
         @evidence_events_stream.connect
-        puts "connected to evidence-events topic"
       end
 
       configure do
