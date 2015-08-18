@@ -131,7 +131,7 @@ module OpenBEL
       end
 
       class SequenceVariationFunctionHasLocationPredicate
-        include LibBEL
+        include BEL::LibBEL
 
         SEQUENCE_VARIATION_FX = [
           'fus', 'fusion',
@@ -185,7 +185,7 @@ module OpenBEL
       end
 
       class ParameterOrthologTransform
-        include LibBEL
+        include BEL::LibBEL
 
         NAMESPACE_PREFERENCE = [
           "hgnc",
@@ -263,7 +263,7 @@ module OpenBEL
       end
 
       class BELSerializationTransform
-        include LibBEL
+        include BEL::LibBEL
 
         attr_reader :bel_string
 
