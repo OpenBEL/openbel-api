@@ -232,12 +232,12 @@ module OpenBEL
             if !orthologs.empty?
               orthologs.sort_by! { |ortholog| namespace_preference(ortholog) }
               ortholog = orthologs.first
-              LibBEL::bel_free_ast_node(ast_node.left.pointer)
+              BEL::LibBEL::bel_free_ast_node(ast_node.left.pointer)
               ast_node.left  = BelAstNode.new(
                 bel_new_ast_node_value(:BEL_VALUE_PFX, ortholog[0].upcase)
               )
 
-              LibBEL::bel_free_ast_node(ast_node.right.pointer)
+              BEL::LibBEL::bel_free_ast_node(ast_node.right.pointer)
               ast_node.right = BelAstNode.new(
                 bel_new_ast_node_value(:BEL_VALUE_VAL, ortholog[1])
               )
