@@ -7,6 +7,7 @@ $: << File.expand_path('../../', __FILE__)
 $: << File.expand_path('../../../lib', __FILE__)
 
 require 'config/config'
+require 'syslog/logger'
 
 require 'rack/cors'
 
@@ -29,6 +30,14 @@ module OpenBEL
     end
 
     configure do
+      class Syslog::Logger
+        def <<(msg)
+          info(msg)
+        end
+      end
+
+      use Rack::CommonLogger, Syslog::Logger.new('app-rest')
+
       config = OpenBEL::Config::load('config.yml')
       OpenBEL.const_set :Settings, config
     end

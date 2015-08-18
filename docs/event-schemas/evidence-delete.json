@@ -1,0 +1,11 @@
+{
+    "event": {
+        "type": "evidence",
+        "action": "delete",
+        "data": {
+            "id": {
+                "_id": "55d31ee28a4cca5e63004450"
+            }
+        }
+    }
+}

@@ -1,4 +1,5 @@
 #!/usr/bin/env puma
+require 'syslog/logger'
 
 tag 'obp: rest'
 
@@ -9,7 +10,6 @@ workers ENV['WORKER_COUNT'].to_i
 if ENV['THREADED'].to_i == 1
   threads ENV['THREAD_MIN'].to_i, ENV['THREAD_MAX'].to_i
 end
-
 
 ###############################################################################
 # The directory to operate out of.

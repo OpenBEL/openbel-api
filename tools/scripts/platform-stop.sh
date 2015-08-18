@@ -12,6 +12,7 @@ if [ -z "$SESSION_LIST" ]; then
     exit 1
 fi
 
+tools/scripts/service-evidence-document-storage-stop.sh
 tools/scripts/api-rest-stop.sh
 tools/scripts/kafka-stop.sh
 killall nginx

@@ -25,7 +25,9 @@ gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
 gem 'sqlite3'
+gem 'SyslogLogger'
 gem 'thin'
+gem 'uuid'
 
 group :test do
   gem 'faraday_middleware'

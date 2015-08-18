@@ -9,7 +9,6 @@ module OpenBEL
 
     def self.load!
       config_file = ENV[CFG_VAR] || DEFAULT
-      puts config_file
       config = {}
       File.open(config_file, 'r:UTF-8') do |cf|
         config = YAML::load(cf)

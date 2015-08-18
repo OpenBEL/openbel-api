@@ -21,13 +21,6 @@ module OpenBEL
         annotation_api = OpenBEL::Settings["annotation-api"].create_instance
         @annotation_transform = AnnotationTransform.new(annotation_api)
         @annotation_grouping_transform = AnnotationGroupingTransform.new
-
-        @evidence_events_stream = Hermann::Producer.new(
-          'evidence-events',
-          ["localhost:#{ENV['KAFKA_PORT']}"]
-        )
-        @evidence_events_stream.connect
-        puts "connected to evidence-events topic"
       end
 
       options '/api/evidence' do
@@ -43,20 +36,18 @@ module OpenBEL
       post '/api/evidence' do
         _id = nil
         read_evidence.each do |evidence|
-          @evidence_events_stream.push(MultiJson.dump(evidence.to_h))
-
-          #@annotation_transform.transform_evidence!(evidence, base_url)
+          @annotation_transform.transform_evidence!(evidence, base_url)
 
           # XXX Not sure we need to group values together. Instead we split
           # multi-valued items into individual objects.
           # Wait and see what breaks.
-          #@annotation_grouping_transform.transform_evidence!(evidence)
+          @annotation_grouping_transform.transform_evidence!(evidence)
 
-          #facets = map_evidence_facets(evidence)
-          #hash = evidence.to_h
-          #hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
-          #hash[:facets]        = facets
-          #_id = @api.create_evidence(hash)
+          facets = map_evidence_facets(evidence)
+          hash = evidence.to_h
+          hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
+          hash[:facets]        = facets
+          _id = @api.create_evidence(hash)
         end
 
         status 201

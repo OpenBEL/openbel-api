@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+
+gem 'bson_ext',   '~> 1.12'
+gem 'daemons',    '~> 1.2'
+gem 'hermann',    '0.24.1.dev'
+gem 'mongo',      '~> 1.12'
+gem 'multi_json', '~> 1'
+gem 'oj',         '~> 2.12'
+
+group :development do
+  gem 'pry'
+end

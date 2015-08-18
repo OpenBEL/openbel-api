@@ -50,7 +50,10 @@ default OUT_TEST_RESULTS        "$OUT"/test-results
 
   # KAFKA #
   default KAFKA_ZOOKEEPER_CONNECT "localhost:${ZOOKEEPER_CLIENT_PORT}"
+  default KAFKA_HOST              "127.0.0.1"
   default KAFKA_PORT              9020
+  default KAFKA_TOPIC_RAW         "evidence-raw-events"
+  default KAFKA_TOPIC_PROCESSED   "evidence-processed-events"
   default KAFKA_LOG_DIRS          "$OUT"/kafka-logs
 
   # GREENLINE #

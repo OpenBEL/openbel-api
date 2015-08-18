@@ -16,13 +16,20 @@ if [ ! -z "$SESSION_LIST" ]; then
     tmux attach -t obp || exit 1
     exit 0
 fi
-tmux new-session -s obp    -n zookeeper     -d "./go.sh 14"   || exit 1
-tmux new-window  -t obp:2  -n kafka         -d "./go.sh 12"   || exit 1
+tmux new-session -s obp    -n zookeeper         -d "./go.sh 14"   || exit 1
+tmux new-window  -t obp:2  -n kafka             -d "./go.sh 12"   || exit 1
 
-tmux new-window  -t obp:3  -n nginx         -d "./go.sh 16"   || exit 1
+sleep 1s
 
-tmux new-window  -t obp:4  -n rest-app      -d "./go.sh 1"    || exit 1
-tmux new-window  -t obp:5  -n evidence-app  -d "./go.sh 4"    || exit 1
+tmux new-window  -t obp:3  -n nginx             -d "./go.sh 16"   || exit 1
+
+# services
+tmux new-window  -t obp:4  -n srvc-doc-storage1 -d "tools/scripts/service-evidence-document-storage-run.sh --kafka-partition 0"   || exit 1
+tmux new-window  -t obp:5  -n srvc-doc-storage2 -d "tools/scripts/service-evidence-document-storage-run.sh --kafka-partition 1"   || exit 1
+
+# applications
+tmux new-window  -t obp:6  -n rest-app          -d "./go.sh 1"    || exit 1
+tmux new-window  -t obp:7  -n evidence-app      -d "./go.sh 4"    || exit 1
 
 tmux attach -t obp || exit 1
 
