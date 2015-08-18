@@ -6,7 +6,7 @@ gem 'builder'
 gem 'dot_hash'
 gem 'jrjackson', '~> 0.2', :platforms => :jruby
 gem 'json_schema'
-gem 'kyotocabinet-ffi', :path => '../kyotocabinet-ffi'
+gem 'kyotocabinet-ffi'
 gem 'mongo', '1.12.0'
 gem 'multi_json', '~> 1.10'
 gem 'nokogiri'
