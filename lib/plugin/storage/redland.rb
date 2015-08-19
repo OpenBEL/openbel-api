@@ -40,7 +40,7 @@ module OpenBEL
           return ValidationError.new(self, :storage, "Value is not supported. Options are one of [#{STORAGE_OPTION_VALUES.join(', ')}].")
         end
 
-        name = options.delete(:storage)
+        name = options.delete(:name)
         if not name and storage == :sqlite
           return ValidationError.new(self, :storage, "Option is required when using this storage option. Options are one of [#{STORAGE_OPTION_VALUES.join(', ')}].")
         end
