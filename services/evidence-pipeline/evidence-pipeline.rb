@@ -144,7 +144,7 @@ consumer.consume do |msg, _key, _offset|
       event_obj[:data][:evidence] = evidence.to_h
     end
 
-    producer.push(MultiJson.dump(event_obj))
+    producer.push(MultiJson.dump(event))
     count += 1
   end
 end
