@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'bel',        '~> 0.3'
-gem 'bson_ext',   '~> 1.12'
 gem 'daemons',    '~> 1.2'
 gem 'hermann',    '0.24.1.dev'
 gem 'multi_json', '~> 1'

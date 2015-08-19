@@ -12,9 +12,6 @@ GEM
   specs:
     bel (0.3.3)
       ffi (= 1.9.8)
-    bson (1.12.3)
-    bson_ext (1.12.3)
-      bson (~> 1.12.3)
     coderay (1.1.0)
     daemons (1.2.3)
     ffi (1.9.8)
@@ -41,7 +38,6 @@ PLATFORMS
 
 DEPENDENCIES
   bel (~> 0.3)
-  bson_ext (~> 1.12)
   daemons (~> 1.2)
   hermann (= 0.24.1.dev)
   multi_json (~> 1)
