@@ -26,7 +26,7 @@ module OpenBEL
           normalized_value = equivalent.first
           [
             @namespace_api.find_namespace(URI(normalized_value.inScheme)).prefix,
-            normalized_value.prefLabel
+            normalized_value.identifier
           ]
         end
       end
