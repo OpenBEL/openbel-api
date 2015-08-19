@@ -12,10 +12,12 @@ $: << File.expand_path('../lib', __FILE__)
 
 require 'storage/redland'
 require 'search/sqlite3'
+require 'namespace/default'
 require 'namespace/model'
 require 'annotation/default'
 require 'evidence-pipeline/annotation_transform'
 require 'evidence-pipeline/annotation_group_transform'
+require 'evidence-pipeline/namespace_transform'
 
 options = {
   consumer: {
@@ -78,9 +80,16 @@ search  = OpenBEL::Search::Sqlite3FTS.new({
 annotation_api = OpenBEL::Annotation::Annotation.new(
   storage, search
 )
+namespace_api  = OpenBEL::Namespace::Namespace.new(
+  storage, search
+)
 
-@annotation_transform = OpenBEL::Transform::AnnotationTransform.new(annotation_api)
-@annotation_grouping_transform = OpenBEL::Transform::AnnotationGroupingTransform.new
+@normalize_namespace_transform =
+  OpenBEL::Transform::NamespaceTransform.new(namespace_api)
+@annotation_transform =
+  OpenBEL::Transform::AnnotationTransform.new(annotation_api)
+@annotation_grouping_transform =
+  OpenBEL::Transform::AnnotationGroupingTransform.new
 
 consumer = Hermann::Consumer.new(
   options[:consumer][:kafka_topic], {
@@ -125,6 +134,10 @@ consumer.consume do |msg, _key, _offset|
       evidence_obj = event_obj[:data][:evidence]
       evidence     = BEL::Model::Evidence.create(evidence_obj)
 
+      # normative namespaces
+      @normalize_namespace_transform.transform_evidence!(evidence)
+
+      # normative annotations
       @annotation_transform.transform_evidence!(evidence, base_url)
       @annotation_grouping_transform.transform_evidence!(evidence)
 
@@ -136,5 +149,6 @@ consumer.consume do |msg, _key, _offset|
   end
 end
 
-puts "read #{count} messages from #{options[:kafka_topic]} topic"
+puts "consumed #{count} evidence from #{options[:consumer][:kafka_topic]}"
+puts "produced #{count} evidence to #{options[:producer][:kafka_topic]}"
 

@@ -15,10 +15,7 @@ GEM
     bson (1.12.3)
     bson_ext (1.12.3)
       bson (~> 1.12.3)
-    byebug (5.0.0)
-      columnize (= 0.9.0)
     coderay (1.1.0)
-    columnize (0.9.0)
     daemons (1.2.3)
     ffi (1.9.8)
     hermann (0.24.1.dev)
@@ -28,17 +25,12 @@ GEM
     json (1.8.3)
     method_source (0.8.2)
     mini_portile (0.6.2)
-    mongo (1.12.3)
-      bson (= 1.12.3)
     multi_json (1.11.2)
     oj (2.12.12)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-byebug (3.2.0)
-      byebug (~> 5.0)
-      pry (~> 0.10)
     slop (3.6.0)
     sqlite3 (1.3.10)
     thread_safe (0.3.5)
@@ -50,14 +42,11 @@ PLATFORMS
 DEPENDENCIES
   bel (~> 0.3)
   bson_ext (~> 1.12)
-  byebug
   daemons (~> 1.2)
   hermann (= 0.24.1.dev)
-  mongo (~> 1.12)
   multi_json (~> 1)
   oj (~> 2.12)
   pry
-  pry-byebug
   redlander!
   sqlite3
 
