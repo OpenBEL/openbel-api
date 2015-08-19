@@ -54,6 +54,7 @@ default OUT_TEST_RESULTS        "$OUT"/test-results
   default KAFKA_PORT              9020
   default KAFKA_TOPIC_RAW         "evidence-raw-events"
   default KAFKA_TOPIC_PROCESSED   "evidence-processed-events"
+  default KAFKA_TOPIC_RDF         "evidence-rdf-events"
   default KAFKA_LOG_DIRS          "$OUT"/kafka-logs
 
   # GREENLINE #

@@ -1,0 +1,15 @@
+source 'https://rubygems.org'
+
+gem 'addressable', '~> 2.3'
+gem 'bel',         '~> 0.3'
+gem 'daemons',     '~> 1.2'
+gem 'hermann',     '0.24.1.dev'
+gem 'json-ld',     '~> 1.1'
+gem 'multi_json',  '~> 1'
+gem 'oj',          '~> 2.12'
+gem 'rdf',         '~> 1.1'
+gem 'uuid',        '~> 2.3'
+
+group :development do
+  gem 'pry'
+end

@@ -30,10 +30,14 @@ tmux new-window  -t obp:6  -n srvc-pipeline0    -d "tools/scripts/service-eviden
 tmux new-window  -t obp:7  -n srvc-pipeline1    -d "tools/scripts/service-evidence-pipeline-run.sh --consumer-partition 1"        || exit 1
 tmux new-window  -t obp:8  -n srvc-pipeline2    -d "tools/scripts/service-evidence-pipeline-run.sh --consumer-partition 2"        || exit 1
 tmux new-window  -t obp:9  -n srvc-pipeline3    -d "tools/scripts/service-evidence-pipeline-run.sh --consumer-partition 3"        || exit 1
+tmux new-window  -t obp:10 -n srvc-rdf0         -d "tools/scripts/service-evidence-rdf-run.sh --consumer-partition 0"             || exit 1
+tmux new-window  -t obp:11 -n srvc-rdf1         -d "tools/scripts/service-evidence-rdf-run.sh --consumer-partition 1"             || exit 1
+tmux new-window  -t obp:12 -n srvc-rdf2         -d "tools/scripts/service-evidence-rdf-run.sh --consumer-partition 2"             || exit 1
+tmux new-window  -t obp:13 -n srvc-rdf3         -d "tools/scripts/service-evidence-rdf-run.sh --consumer-partition 3"             || exit 1
 
 # applications
-tmux new-window  -t obp:10  -n rest-app          -d "./go.sh 1"    || exit 1
-tmux new-window  -t obp:11  -n evidence-app      -d "./go.sh 4"    || exit 1
+tmux new-window  -t obp:14  -n rest-app          -d "./go.sh 1"    || exit 1
+tmux new-window  -t obp:15  -n evidence-app      -d "./go.sh 4"    || exit 1
 
 tmux attach -t obp || exit 1
 
