@@ -151,6 +151,7 @@ module OpenBEL
                 type:   'evidence',
                 action: action,
                 data:   {
+                  uuid:     options[:uuid],
                   evidence: evidence,
                 }
               }
@@ -185,11 +186,18 @@ module OpenBEL
         read_evidence.each do |evidence|
           evidence_obj = evidence.to_h
 
-          # put uuid in metadata
-          (evidence_obj[:metadata] ||= {})[:__uuid__] = UUID.generate
+          # generate a new UUID for this evidence
+          new_uuid = UUID.generate
 
-          event = evidence_event(:create, evidence.to_h)
+          # put uuid in metadata
+          (evidence_obj[:metadata] ||= {})[:__uuid__] = new_uuid
+
+          # put uuid in create evidence event
+          event = evidence_event(:create, evidence.to_h, :uuid => new_uuid)
+
+          # push create evidence event to evidence-raw-events stream
           @evidence_events_stream.push(MultiJson.dump(event))
+
           count += 1
         end
 

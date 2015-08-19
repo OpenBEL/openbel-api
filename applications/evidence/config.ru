@@ -1,7 +1,5 @@
 require_relative 'app'
 
-puts ENV.inspect
-
 em_run(
   :server => 'thin',
   :app    => OpenBEL::Apps::Evidence.new({
