@@ -14,7 +14,7 @@ options = {
   mongo_port:              27017,
   mongo_database:          'openbel',
   kafka_broker:            "#{ENV['KAFKA_HOST']}:#{ENV['KAFKA_PORT']}",
-  kafka_topic:             "#{ENV['KAFKA_TOPIC_RAW']}",
+  kafka_topic:             "#{ENV['KAFKA_TOPIC_PROCESSED']}",
   kafka_consumer_group:    'evidence-document-storage',
   kafka_partition:         0,
   kafka_rewind:            false
