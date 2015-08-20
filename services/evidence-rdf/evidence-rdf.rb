@@ -8,7 +8,6 @@ require 'hermann/consumer'
 require 'hermann/producer'
 
 require 'rdf'
-require 'json/ld'
 
 $: << File.expand_path('../../../lib', __FILE__)
 $: << File.expand_path('../lib', __FILE__)
@@ -123,7 +122,7 @@ consumer.consume do |msg, _key, _offset|
         x.is_a?(BEL::Model::Statement)
       }.first
 
-      content = JSON::LD::Writer.buffer do |writer|
+      rdf_quads = RDF::NQuads::Writer.buffer do |writer|
         bel_statement.to_rdf[1].each do |trpl|
           writer.write_statement(
             RDF::Statement(
@@ -134,14 +133,9 @@ consumer.consume do |msg, _key, _offset|
         end
       end
 
-      data[:rdf] = MultiJson.load(
-        content,
-        :symbolize_keys => true
-      )
-      data.delete(:evidence)
+      producer.push rdf_quads
     end
 
-    producer.push(MultiJson.dump(event_obj))
     count += 1
   end
 end
