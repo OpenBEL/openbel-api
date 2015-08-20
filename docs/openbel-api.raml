@@ -432,6 +432,8 @@ schemas:
         ```
 
         The *filter* property value can be used as a *filter* option. This is intended to support filtering the evidence resource collection by selected facets.
+
+        The *max_values_per_facet* option can be specified to limit the number of returned facet values by category, name pairs. For example, setting *max_values_per_facet* to `2` would return up to 2 distinct facets values for `{ "category": "citation", "name": "id", ... }`.
       headers:
         Accept:
           displayName: Accept
@@ -442,18 +444,24 @@ schemas:
           type: integer
           description: |
             The evidence resource to start from for paging purposes.
+            
+            The default value is `0`. This value will return evidence resources starting from the beginning of collection.
           example: 100
           required: false
         size:
           type: integer
           description: |
-            The size of the evidence resource collection to retrieve. This will return a clice of the evidence resource collection relative to *start*.
+            The size of the evidence resource collection to retrieve. This will return a slice of the evidence resource collection relative to *start*.
+
+            The default is `0`. This value will return all evidence resources in the collection.
           example: 100
           required: false
         filter:
           type: string
           description: |
             A filter to apply to the evidence resource collection to narrow the resources retrieved.
+
+            The default is to not apply filters. If filters are not specified then all evidence resources, in the collection, will be returned.
           example: |
             {"category":"experiment_context","name":"Anatomy","value":"prostate gland"}
             {"category":"fts","name":"search","value":"\"subdural hematoma\" carcinoma"}
@@ -462,9 +470,19 @@ schemas:
         faceted:
           type: string
           description: |
-            The boolean indicator to provided faceted results for the evidence resource collection. The default is to not facet.
+            The boolean indicator to provided faceted results for the evidence resource collection.
+            
+            The default is `false`. This value will not return facets in the response.
           enum: [ 'true', 'yes', '1', 'on' ]
           example: yes
+        max_values_per_facet:
+          type: integer
+          description: |
+            The maximum about of facet values to display for every category, name pair.
+            
+            The default is `0`. This value will return all facet values (i.e. unbounded) for every category, name pair.
+          example: 20
+          required: false
       responses:
         200:
           description: |
@@ -475,6 +493,7 @@ schemas:
               - `start=0`
               - `size=1`
               - `faceted=yes`
+              - `max_values_per_facet=1`
               - `filter`
               ```json
               {
@@ -514,46 +533,11 @@ schemas:
                       "count": 49071
                     },
                     {
-                      "category": "experiment_context",
-                      "name": "Species",
-                      "value": "10090",
-                      "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10090\"}",
-                      "count": 19416
-                    },
-                    {
                       "category": "metadata",
                       "name": "status",
                       "value": "Review",
                       "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Review\"}",
                       "count": 18954
-                    },
-                    {
-                      "category": "metadata",
-                      "name": "status",
-                      "value": "Approved",
-                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Approved\"}",
-                      "count": 18947
-                    },
-                    {
-                      "category": "metadata",
-                      "name": "status",
-                      "value": "Rejected",
-                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Rejected\"}",
-                      "count": 18896
-                    },
-                    {
-                      "category": "metadata",
-                      "name": "status",
-                      "value": "Draft",
-                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Draft\"}",
-                      "count": 18784
-                    },
-                    {
-                      "category": "experiment_context",
-                      "name": "Species",
-                      "value": "10116",
-                      "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"10116\"}",
-                      "count": 7091
                     },
                     {
                       "category": "experiment_context",

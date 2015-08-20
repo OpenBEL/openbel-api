@@ -51,9 +51,10 @@ module OpenBEL
       end
 
       get '/api/evidence' do
-        start    = (params[:start]  || 0).to_i
-        size     = (params[:size]   || 0).to_i
-        faceted  = as_bool(params[:faceted])
+        start                = (params[:start]  || 0).to_i
+        size                 = (params[:size]   || 0).to_i
+        faceted              = as_bool(params[:faceted])
+        max_values_per_facet = (params[:max_values_per_facet] || 0).to_i
 
         # check filters
         filters = []
@@ -80,17 +81,39 @@ module OpenBEL
           :size    => size,
           :filters => filter_params
         }
+
         if facets
-          facet_hashes = facets.map { |facet|
-            filter = read_filter(facet['_id'])
-            {
-              :category => filter['category'].to_sym,
-              :name     => filter['name'].to_sym,
-              :value    => filter['value'],
-              :filter   => facet['_id'],
-              :count    => facet['count']
+          if max_values_per_facet == 0
+            facet_hashes = facets.map { |facet|
+              filter = read_filter(facet['_id'])
+              {
+                :category => filter['category'].to_sym,
+                :name     => filter['name'].to_sym,
+                :value    => filter['value'],
+                :filter   => facet['_id'],
+                :count    => facet['count']
+              }
             }
-          }
+          else
+            counts = Hash.new { |hash, key| hash[key] = 0 }
+            facet_hashes = facets.map { |facet|
+              filter = read_filter(facet['_id'])
+              c = counts[filter.values_at('category', 'name')] += 1
+
+              if c > max_values_per_facet
+                nil
+              else
+                {
+                  :category => filter['category'].to_sym,
+                  :name     => filter['name'].to_sym,
+                  :value    => filter['value'],
+                  :filter   => facet['_id'],
+                  :count    => facet['count']
+                }
+              end
+            }.compact
+          end
+
           options[:facets] = facet_hashes
         end
 
