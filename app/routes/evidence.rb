@@ -83,35 +83,35 @@ module OpenBEL
         }
 
         if facets
+          # group by category/name
+          hashed_values = Hash.new { |hash, key| hash[key] = [] }
+          facets.each { |facet|
+            filter = read_filter(facet['_id'])
+            key = filter.values_at('category', 'name').map(&:to_sym)
+            facet_obj = {
+              :value    => filter['value'],
+              :filter   => facet['_id'],
+              :count    => facet['count']
+            }
+            hashed_values[key] << facet_obj
+          }
+
           if max_values_per_facet == 0
-            facet_hashes = facets.map { |facet|
-              filter = read_filter(facet['_id'])
+            facet_hashes = hashed_values.map { |(category, name), value_objects|
               {
-                :category => filter['category'].to_sym,
-                :name     => filter['name'].to_sym,
-                :value    => filter['value'],
-                :filter   => facet['_id'],
-                :count    => facet['count']
+                :category => category,
+                :name     => name,
+                :values   => value_objects
               }
             }
           else
-            counts = Hash.new { |hash, key| hash[key] = 0 }
-            facet_hashes = facets.map { |facet|
-              filter = read_filter(facet['_id'])
-              c = counts[filter.values_at('category', 'name')] += 1
-
-              if c > max_values_per_facet
-                nil
-              else
-                {
-                  :category => filter['category'].to_sym,
-                  :name     => filter['name'].to_sym,
-                  :value    => filter['value'],
-                  :filter   => facet['_id'],
-                  :count    => facet['count']
-                }
-              end
-            }.compact
+            facet_hashes = hashed_values.map { |(category, name), value_objects|
+              {
+                :category => category,
+                :name     => name,
+                :values   => value_objects.take(max_values_per_facet)
+              }
+            }
           end
 
           options[:facets] = facet_hashes
