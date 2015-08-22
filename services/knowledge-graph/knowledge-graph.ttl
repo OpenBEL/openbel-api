@@ -1,0 +1,40 @@
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+[]
+    rdf:type fuseki:Server ;
+    fuseki:services (
+        <#service>
+    ) .
+
+<#service>
+    rdf:type                          fuseki:Service         ;
+    fuseki:label                      "Knowledge Graph (RW)" ;
+    fuseki:name                       "knowledge-graph"      ;
+    fuseki:serviceQuery               "sparql"               ;
+    fuseki:serviceQuery               "query"                ;
+    fuseki:serviceUpdate              "update"               ;
+    fuseki:serviceUpload              "upload"               ;
+    fuseki:serviceReadWriteGraphStore "data"                 ;
+    fuseki:serviceReadGraphStore      "get"                  ;
+    fuseki:dataset                    <#dataset>             ;
+    .
+
+<#dataset>
+    rdf:type              tdb:DatasetTDB ;
+    tdb:logExec           true           ;
+    tdb:fileMode          "mapped"       ;
+    tdb:node2nodeid_cache_size 500000    ;
+    tdb:nodeid2node_cache_size 1000000   ;
+    tdb:node_miss_cache_size   "500"       ;
+    tdb:location          "db-named"     ;
+    tdb:unionDefaultGraph true           ;
+    .
+
+[] ja:loadClass "org.apache.jena.tdb.TDB" .
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model      .

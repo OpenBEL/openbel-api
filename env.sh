@@ -60,6 +60,9 @@ default OUT_TEST_RESULTS        "$OUT"/test-results
   # GREENLINE #
   default OBP_GOPATH              "$DIR"/.gopath
 
+  # JENA FUSEKI
+  default FUSEKI_HOME             "$DIR"/tools/fuseki
+
 # DOC PARAMETERS #
 default DOC_API_SPEC            "$DOCS/openbel-api.raml"
 default DOC_SCHEMAS             "$DOCS/schemas"

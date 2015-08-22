@@ -109,7 +109,7 @@ consumer.consume do |msg, _key, _offset|
   if event_obj[:type] == 'evidence'
     data             = event_obj[:data]
     uuid             = data[:uuid]
-    evidence_context = "http://www.openbel.org/bel/evidence/#{uuid}"
+    evidence_context = RDF::URI.new("http://www.openbel.org/bel/evidence/#{uuid}")
 
     case event_obj[:action]
     when 'create', 'update'
