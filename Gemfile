@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bel'
+gem 'bel', '~> 0.3'
 gem 'bson_ext', '1.12.0'
 gem 'builder'
 gem 'dot_hash'
@@ -21,6 +21,11 @@ gem 'sinatra'
 gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
 gem 'sqlite3'
+
+# Needed for BEL::RDF bel.rb plugin. Used in /api/expressions/{bel}/components
+gem 'addressable'
+gem 'rdf'
+gem 'uuid'
 
 group :test do
   gem 'faraday_middleware'

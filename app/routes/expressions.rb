@@ -52,6 +52,33 @@ module OpenBEL
         )
       end
 
+      get '/api/expressions/*/components/?' do
+        bel = params[:splat].first
+
+        statement = BEL::Script.parse(bel).find { |obj|
+          obj.is_a? BEL::Model::Statement
+        }
+        halt 404 unless statement
+
+        # Normalize relationship
+        normalized_relationship =
+          BEL::RDF::RELATIONSHIP_TYPE.select { |k, v|
+            v == BEL::RDF::RELATIONSHIP_TYPE[statement.relationship.to_s]
+          }.
+          find { |k, v|
+            k =~ /^[a-z]/
+          } || [nil]
+
+        response.headers['Content-Type'] = 'application/json'
+        MultiJson.dump({
+          :expression_components => {
+            :subject      => statement.subject,
+            :relationship => normalized_relationship[0],
+            :object       => statement.object,
+          }
+        })
+      end
+
       get '/api/expressions/*/ortholog/:species' do
         bel           = params[:splat].first
         species       = params[:species]

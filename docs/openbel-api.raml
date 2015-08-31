@@ -704,6 +704,77 @@ schemas:
                   ]
                 }
               schema: completion_collection
+  /expressions/{bel}/components:
+    description: |
+      Retrieve the components of a *BEL* expression fragment. Currently this will only return the *subject*, *relationship*, and *object* understood from BEL statement expression.
+    uriParameters:
+      bel:
+        type: string
+        description: BEL statement expression to recognize; Components will be returned for this input.
+        required: false
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+    get:
+      description: |
+        Retrieve the components of a *BEL* expression fragment. Currently this will only return the *subject*, *relationship*, and *object* understood from BEL statement expression.
+
+        Examples:
+
+          - *p(HGNC:AKT1)* yields:
+
+            ```json
+            {
+                "expression_components": {
+                    "subject":      "p(HGNC:AKT1)",
+                    "relationship": null,
+                    "object":       null
+                }
+            }
+            ```
+
+          - *p(HGNC:AKT1) -> bp(MESHPP:Apoptosis)* yields:
+
+            ```json
+            {
+                "expression_components": {
+                    "subject":      "p(HGNC:AKT1)",
+                    "relationship": "increases",
+                    "object":       "bp(MESHPP:Apoptosis)"
+                }
+            }
+            ```
+
+          - *a(CHEBI:"phosphatidyl-L-serine") increases pep(p(HGNC:F3))* yields:
+
+            ```json
+            {
+                "expression_components": {
+                    "subject":      "a(CHEBI:\"phosphatidyl-L-serine\")",
+                    "relationship": "increases",
+                    "object":       "pep(p(HGNC:F3))"
+                }
+            }
+            ```
+
+      queryParameters:
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                    "expression_components": {
+                        "subject":      "p(HGNC:AKT1)",
+                        "relationship": "increases",
+                        "object":       "bp(MESHPP:Apoptosis)"
+                    }
+                }
   /functions:
     description: Retrieve the BEL function resource collection.
     options:
