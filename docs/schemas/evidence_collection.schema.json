@@ -50,6 +50,39 @@
           }
         }
       }
+    },
+    "metadata": {
+      "title": "Metadata",
+      "description": "Data about the evidence collection",
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "collection_paging": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "number",
+              "minimum": 0
+            },
+            "filtered_total": {
+              "type": "number",
+              "minimum": 0
+            },
+            "page_total": {
+              "type": "number",
+              "minimum": 0
+            },
+            "current_page": {
+              "type": "number",
+              "minimum": 0
+            },
+            "resources_in_page_total": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      }
     }
   }
 }

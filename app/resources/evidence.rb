@@ -77,10 +77,12 @@ module OpenBEL
           properties do |p|
             p.evidence item
             p.facets   context[:facets]
+            p.metadata context[:metadata]
           end
 
           link :self,       link_self
           link :start,      link_start
+          link :previous,   link_previous
           link :next,       link_next
         end
 
@@ -103,12 +105,23 @@ module OpenBEL
           }
         end
 
-        def link_next
-          start  = context[:start]
-          size   = context[:size]
+        def link_previous
+          previous_series = context[:previous_series]
+          return {} unless previous_series
+
           {
             :type => :'evidence-collection',
-            :href => "#{base_url}/api/evidence?start=#{start + size}&size=#{size}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/evidence?start=#{previous_series[:start]}&size=#{previous_series[:size]}&#{filter_query_params.join('&')}"
+          }
+        end
+
+        def link_next
+          next_series = context[:next_series]
+          return {} unless next_series
+
+          {
+            :type => :'evidence-collection',
+            :href => "#{base_url}/api/evidence?start=#{next_series[:start]}&size=#{next_series[:size]}&#{filter_query_params.join('&')}"
           }
         end
 

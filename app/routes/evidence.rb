@@ -70,16 +70,27 @@ module OpenBEL
           filters << filter
         end
 
-        results  = @api.find_evidence(filters, start, size, faceted)
-        evidence = results[:cursor].to_a
-        facets   = results[:facets]
+        collection_total  = @api.count_evidence()
+        filtered_total    = @api.count_evidence(filters)
+        page_results      = @api.find_evidence(filters, start, size, faceted)
+        evidence          = page_results[:cursor].to_a
+        facets            = page_results[:facets]
 
         halt 404 if evidence.empty?
 
         options = {
-          :start   => start,
-          :size    => size,
-          :filters => filter_params
+          :start    => start,
+          :size     => size,
+          :filters  => filter_params,
+          :metadata => {
+            :collection_paging => {
+              :total                  => collection_total,
+              :filtered_total         => filtered_total,
+              :page_total             => size > 0 ? (filtered_total / size.to_f).ceil : 1,
+              :current_page           => start > 0 && size > 0 ? ((start + size) / size.to_f).ceil : 1,
+              :current_resource_total => evidence.size,
+            }
+          }
         }
 
         if facets
@@ -115,6 +126,28 @@ module OpenBEL
           end
 
           options[:facets] = facet_hashes
+        end
+
+        # calculate previous evidence series range
+        previous_series = nil
+        if size > 0 && start > 0 && @api.find_evidence(filters, start - size, 1, false)[:cursor].to_a.size > 0
+          options[:previous_series] = {
+            :start => (start - size),
+            :size  => size
+          }
+        else
+          options[:previous_series] = nil
+        end
+
+        # calculate next evidence series range
+        next_series = nil
+        if size > 0 && @api.find_evidence(filters, start + size, 1, false)[:cursor].to_a.size > 0
+          options[:next_series] = {
+            :start => (start + size),
+            :size  => size
+          }
+        else
+          options[:next_series] = nil
         end
 
         render_collection(evidence, :evidence, options)

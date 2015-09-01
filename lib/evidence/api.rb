@@ -15,6 +15,10 @@ module OpenBEL
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
+      def count_evidence(filters = [])
+        fail NotImplementedError, "#{__method__} is not implemented"
+      end
+
       def update_evidence_by_id(id, evidence_update)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
