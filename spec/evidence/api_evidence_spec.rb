@@ -71,10 +71,10 @@ describe 'API Evidence' do
       expect(evidence_resource['metadata']['collection_paging']).not_to be_nil
       paging = evidence_resource['metadata']['collection_paging']
       expect(paging['total']).to eql(10)
-      expect(paging['filtered_total']).to eql(10)
-      expect(paging['page_total']).to eql(1)
+      expect(paging['total_filtered']).to eql(10)
+      expect(paging['total_pages']).to eql(1)
       expect(paging['current_page']).to eql(1)
-      expect(paging['current_resource_total']).to eql(10)
+      expect(paging['current_page_size']).to eql(10)
 
       # clean up
       evidence_uris.each { |uri|
@@ -126,10 +126,10 @@ describe 'API Evidence' do
       expect(evidence_resource['metadata']['collection_paging']).not_to be_nil
       paging = evidence_resource['metadata']['collection_paging']
       expect(paging['total']).to eql(15)
-      expect(paging['filtered_total']).to eql(10)
-      expect(paging['page_total']).to eql(2)
+      expect(paging['total_filtered']).to eql(10)
+      expect(paging['total_pages']).to eql(2)
       expect(paging['current_page']).to eql(1)
-      expect(paging['current_resource_total']).to eql(5)
+      expect(paging['current_page_size']).to eql(5)
 
       # clean up
       evidence_uris.each { |uri|

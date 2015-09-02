@@ -61,22 +61,32 @@
           "type": "object",
           "properties": {
             "total": {
+              "title": "Total",
+              "description": "The total number of resources in this collection.",
               "type": "number",
               "minimum": 0
             },
-            "filtered_total": {
+            "total_filtered": {
+              "title": "Total Filtered",
+              "description": "The total number of resources in the filtered collection.",
               "type": "number",
               "minimum": 0
             },
-            "page_total": {
+            "total_pages": {
+              "title": "Total Pages",
+              "description": "The total number of pages (i.e. sized partitions) in the filtered collection.",
               "type": "number",
               "minimum": 0
             },
             "current_page": {
+              "title": "Current Page",
+              "description": "The current page of the filtered collection that this resource represents.",
               "type": "number",
               "minimum": 0
             },
-            "resources_in_page_total": {
+            "current_page_size": {
+              "title": "Current Page Size",
+              "description": "The number of resources in the current page of the filtered collection.",
               "type": "number",
               "minimum": 0
             }

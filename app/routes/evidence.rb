@@ -81,7 +81,6 @@ module OpenBEL
         halt 404 if evidence.empty?
 
         pager = Pager.new(start, size, filtered_total)
-        puts pager.inspect
 
         options = {
           :start    => start,
@@ -90,10 +89,10 @@ module OpenBEL
           :metadata => {
             :collection_paging => {
               :total                  => collection_total,
-              :filtered_total         => pager.total_size,
-              :page_total             => pager.total_pages,
+              :total_filtered         => pager.total_size,
+              :total_pages            => pager.total_pages,
               :current_page           => pager.current_page,
-              :current_resource_total => evidence.size,
+              :current_page_size      => evidence.size,
             }
           }
         }
@@ -136,7 +135,6 @@ module OpenBEL
         # pager links
         options[:previous_page] = pager.previous_page
         options[:next_page]     = pager.next_page
-        puts pager.next_page.inspect
 
         render_collection(evidence, :evidence, options)
       end
