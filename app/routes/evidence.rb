@@ -130,9 +130,10 @@ module OpenBEL
 
         # calculate previous evidence series range
         previous_series = nil
-        if size > 0 && start > 0 && @api.find_evidence(filters, start - size, 1, false)[:cursor].to_a.size > 0
+        previous_start  = (start - size) < 0 ? 0 : (start - size)
+        if size > 0 && start > 0 && @api.find_evidence(filters, previous_start, 1, false)[:cursor].to_a.size > 0
           options[:previous_series] = {
-            :start => (start - size),
+            :start => previous_start,
             :size  => size
           }
         else

@@ -1,4 +1,5 @@
 require_relative '../spec_helper'
+require 'json'
 
 describe 'API Evidence' do
 
@@ -47,27 +48,93 @@ describe 'API Evidence' do
     api_conn.delete location
   end
 
-  it 'is pageable' do
-    # XXX Fix paging in /api/evidence; the "start" and "next" link rel
-    # should be templatable.
+  context 'entire collection (10 resources)' do
 
-    # create
-    response = api_conn.post('/api/evidence') { |req|
-      req.headers['Content-Type'] = 'application/json; charset=utf-8'
-      req.body                    = test_file('example_evidence.json').read
-    }
-    expect(response.status).to eql(201)
-    expect(response['Location']).not_to be_empty
-    location = response['Location']
+    it 'reports collection paging' do
+      # create evidence resources
+      evidence_uris = 10.times.map do |_|
+        response = api_conn.post('/api/evidence') { |req|
+          req.headers['Content-Type'] = 'application/json; charset=utf-8'
+          req.body                    = test_file('example_evidence.json').read
+        }
+        expect(response.status).to eql(201)
+        expect(response['Location']).not_to be_empty
+        response['Location']
+      end
 
-    evidence_resource = api_conn.get { |req|
-      req.url '/api/evidence', :start => 0, :size => 1
-    }.body
-    
-    expect(evidence_resource['evidence']).not_to be_nil
-    expect(evidence_resource['evidence'].size).to eql(1)
+      evidence_resource = api_conn.get { |req|
+        req.url '/api/evidence'
+      }.body
+      expect(evidence_resource['evidence']).not_to be_nil
+      expect(evidence_resource['evidence'].size).to eql(10)
+      expect(evidence_resource['metadata']).not_to be_nil
+      expect(evidence_resource['metadata']['collection_paging']).not_to be_nil
+      paging = evidence_resource['metadata']['collection_paging']
+      expect(paging['total']).to eql(10)
+      expect(paging['filtered_total']).to eql(10)
+      expect(paging['page_total']).to eql(1)
+      expect(paging['current_page']).to eql(1)
+      expect(paging['current_resource_total']).to eql(10)
 
-    # clean up
-    api_conn.delete location
+      # clean up
+      evidence_uris.each { |uri|
+        api_conn.delete uri
+      }
+    end
+  end
+
+  context 'filtered collection' do
+
+    it 'reports collection paging' do
+      # create evidence resources
+      human_evidence = test_file('human_evidence.json').read
+      evidence_uris = 10.times.map do |_|
+        response = api_conn.post('/api/evidence') { |req|
+          req.headers['Content-Type'] = 'application/json; charset=utf-8'
+          req.body                    = human_evidence
+        }
+        expect(response.status).to eql(201)
+        expect(response['Location']).not_to be_empty
+        response['Location']
+      end
+      mouse_evidence = test_file('mouse_evidence.json').read
+      evidence_uris += 5.times.map do |_|
+        response = api_conn.post('/api/evidence') { |req|
+          req.headers['Content-Type'] = 'application/json; charset=utf-8'
+          req.body                    = mouse_evidence
+        }
+        expect(response.status).to eql(201)
+        expect(response['Location']).not_to be_empty
+        response['Location']
+      end
+
+      evidence_resource = api_conn.get { |req|
+        req.url '/api/evidence',
+          :start  => 0,
+          :size   => 5,
+          :filter => JSON.dump(
+          {
+            'category' => 'experiment_context',
+            'name'     => 'Ncbi Taxonomy',
+            'value'    => 'Homo sapiens'
+          }
+        )
+      }.body
+      expect(evidence_resource['evidence']).not_to be_nil
+      expect(evidence_resource['evidence'].size).to eql(5)
+      expect(evidence_resource['metadata']).not_to be_nil
+      expect(evidence_resource['metadata']['collection_paging']).not_to be_nil
+      paging = evidence_resource['metadata']['collection_paging']
+      expect(paging['total']).to eql(15)
+      expect(paging['filtered_total']).to eql(10)
+      expect(paging['page_total']).to eql(2)
+      expect(paging['current_page']).to eql(1)
+      expect(paging['current_resource_total']).to eql(5)
+
+      # clean up
+      evidence_uris.each { |uri|
+        api_conn.delete uri
+      }
+    end
   end
 end

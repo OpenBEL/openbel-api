@@ -59,7 +59,7 @@ module OpenBEL
 
       def count_evidence(filters = [])
         query_hash = to_query(filters)
-        @collection.count(query_hash)
+        @collection.count(:query => query_hash)
       end
 
       def update_evidence_by_id(value, evidence)
