@@ -11,9 +11,13 @@ export GOSH_CONTRIB_NODE_NPM_MODPATH="$TESTS"
 export GOSH_CONTRIB_NODE_NPM_PKGJSON="$TESTS"/package.json
 
 # Create the node environment if needed...
-create_node_env
-# ... and use it.
-export PATH="$GOSH_CONTRIB_NODE_NPM_MODPATH/node_modules/.bin":$PATH
+pushd "$TESTS" > /dev/null
+
+  create_node_env
+  # ... and use it.
+  export PATH="$GOSH_CONTRIB_NODE_NPM_MODPATH/node_modules/.bin":$PATH
+
+popd > /dev/null
 
 require_cmd curl
 
