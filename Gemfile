@@ -1,24 +1,24 @@
 source 'https://rubygems.org'
 
-gem 'bel', '~> 0.3'
-gem 'bson_ext', '1.12.0'
+gem 'bel',                     '~> 0.3'
+gem 'bson_ext',                '~> 1.12'
 gem 'builder'
 gem 'dot_hash'
-gem 'jrjackson', '~> 0.2', :platforms => :jruby
+gem 'jrjackson',               '~> 0.2',  :platforms => :jruby
 gem 'json_schema'
 gem 'kyotocabinet-ffi'
-gem 'mongo', '1.12.0'
-gem 'multi_json', '~> 1.10'
+gem 'mongo',                   '~> 1.12'
+gem 'multi_json',              '~> 1.10'
 gem 'nokogiri'
 gem 'oat'
-gem 'oj', '~> 2.10', :platforms => [:ruby, :rbx]
-gem 'puma'
+gem 'oj',                      '~> 2.10', :platforms => [:ruby, :rbx]
+gem 'puma',                    '~> 2.13'
 gem 'rack'
 gem 'rack-cors'
 gem 'rack-handlers'
-gem 'redlander', :path => '../redlander'
+gem 'redlander',                          :path => '../redlander'
 gem 'sinatra'
-gem 'sinatra-advanced-routes', :require => 'sinatra/advanced_routes'
+gem 'sinatra-advanced-routes',            :require => 'sinatra/advanced_routes'
 gem 'sinatra-contrib'
 gem 'sqlite3'
 

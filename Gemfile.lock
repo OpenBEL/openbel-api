@@ -25,9 +25,9 @@ GEM
       ffi (= 1.9.8)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bson (1.12.0)
-    bson_ext (1.12.0)
-      bson (~> 1.12.0)
+    bson (1.12.3)
+    bson_ext (1.12.3)
+      bson (~> 1.12.3)
     builder (3.2.2)
     celluloid (0.16.1)
       timers (~> 4.0.0)
@@ -70,8 +70,8 @@ GEM
     method_source (0.8.2)
     mini_portile (0.6.2)
     minitest (5.8.0)
-    mongo (1.12.0)
-      bson (= 1.12.0)
+    mongo (1.12.3)
+      bson (= 1.12.3)
     multi_json (1.11.2)
     multipart-post (2.0.0)
     net-http-digest_auth (1.4)
@@ -165,7 +165,7 @@ DEPENDENCIES
   POpen4
   addressable
   bel (~> 0.3)
-  bson_ext (= 1.12.0)
+  bson_ext (~> 1.12)
   builder
   dot_hash
   faraday_middleware
@@ -173,7 +173,7 @@ DEPENDENCIES
   jrjackson (~> 0.2)
   json_schema
   kyotocabinet-ffi
-  mongo (= 1.12.0)
+  mongo (~> 1.12)
   multi_json (~> 1.10)
   nokogiri
   oat
@@ -181,7 +181,7 @@ DEPENDENCIES
   pry (~> 0.9.12)
   pry-nav
   pry-stack_explorer
-  puma
+  puma (~> 2.13)
   rack
   rack-cors
   rack-handlers
