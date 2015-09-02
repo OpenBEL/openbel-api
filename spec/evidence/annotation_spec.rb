@@ -22,7 +22,10 @@ describe 'API Evidence - Annotations' do
       expect(resource['evidence'].first).to include('experiment_context')
 
       expect(resource['evidence'].first['experiment_context']).to include(
-        {'name' => 'Species', 'value' => '9606'}
+        {
+          'name'  => 'Species',
+          'value' => '9606'
+        }
       )
     end
   end
@@ -71,7 +74,11 @@ describe 'API Evidence - Annotations' do
       expect(resource['evidence'].first).to include('experiment_context')
 
       expect(resource['evidence'].first['experiment_context']).to include(
-        {'uri' => "#{api_root}/annotations/Ncbi Taxonomy/values/Homo sapiens"}
+        {
+          'name'  => 'Ncbi Taxonomy',
+          'value' => 'Homo sapiens',
+          'uri'   => "#{api_root}/annotations/taxon/values/9606"
+        }
       )
     end
   end
@@ -80,7 +87,7 @@ describe 'API Evidence - Annotations' do
     example = JSON.load(test_file('annotation.json'))
     example['evidence']['experiment_context'] = [
       {
-        'uri'  => "#{api_root}/annotations/taxon/values/9606"
+        'uri' => "#{api_root}/annotations/taxon/values/9606"
       }
     ]
 
@@ -92,7 +99,11 @@ describe 'API Evidence - Annotations' do
       expect(resource['evidence'].first).to include('experiment_context')
 
       expect(resource['evidence'].first['experiment_context']).to include(
-        {'uri' => "#{api_root}/annotations/Ncbi Taxonomy/values/Homo sapiens"}
+        {
+          'name'  => 'Ncbi Taxonomy',
+          'value' => 'Homo sapiens',
+          'uri'   => "#{api_root}/annotations/taxon/values/9606"
+        }
       )
     end
   end
@@ -101,7 +112,7 @@ describe 'API Evidence - Annotations' do
     example = JSON.load(test_file('annotation.json'))
     example['evidence']['experiment_context'] = [
       {
-        'uri'  => 'http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606'
+        'uri' => 'http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606'
       }
     ]
 
@@ -113,7 +124,11 @@ describe 'API Evidence - Annotations' do
       expect(resource['evidence'].first).to include('experiment_context')
 
       expect(resource['evidence'].first['experiment_context']).to include(
-        {'uri' => "#{api_root}/annotations/Ncbi Taxonomy/values/Homo sapiens"}
+        {
+          'name'  => 'Ncbi Taxonomy',
+          'value' => 'Homo sapiens',
+          'uri'   => "#{api_root}/annotations/taxon/values/9606"
+        }
       )
     end
   end

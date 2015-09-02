@@ -62,10 +62,10 @@ module OpenBEL
         def structured_annotation(name, value, base_url)
           annotation = @annotation_api.find_annotation(name)
           if annotation
-            annotation_label = annotation.prefLabel
+            annotation_label = annotation.prefix
             if value.respond_to?(:each)
               {
-                :name  => annotation_label,
+                :name  => annotation.prefLabel,
                 :value => value.map { |v|
                   mapped = @annotation_api.find_annotation_value(annotation, v)
                   mapped ? mapped.prefLabel : v
@@ -74,11 +74,15 @@ module OpenBEL
             else
               annotation_value = @annotation_api.find_annotation_value(annotation, value)
               if annotation_value
-                value_label = annotation_value.prefLabel
+                value_label = annotation_value.identifier
                 {
                   :name  => annotation.prefLabel,
                   :value => annotation_value.prefLabel,
-                  :uri   => ANNOTATION_VALUE_URI % [base_url, annotation_label, value_label]
+                  :uri   => ANNOTATION_VALUE_URI % [
+                    base_url,
+                    annotation.prefix,
+                    annotation_value.identifier
+                  ]
                 }
               else
                 {
