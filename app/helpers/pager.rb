@@ -28,8 +28,9 @@ module OpenBEL
       private_constant :NEXT_COND_FUNCTION
 
       def initialize(start_offset, page_size, total_size)
-        page_size   ||= total_size
-        page_size     = page_size <= 0 ? total_size : page_size
+        raise ArgumentError.new("start_offset must be >= 0") if start_offset < 0
+        raise ArgumentError.new("page_size must be >= 0") if page_size < 0
+        raise ArgumentError.new("total_size must be >= 0") if total_size < 0
 
         @start_offset = NEGATIVE_FUNCTION.call(start_offset)
         @page_size    = FLOAT_FUNCTION.call(page_size)
@@ -41,7 +42,21 @@ module OpenBEL
       end
 
       def current_page
-        ((@start_offset + @page_size) / @page_size).ceil
+        return 0 if @total_size == 0
+
+        if @page_size > 0
+          ((@start_offset + @page_size) / @page_size).ceil
+        else
+          total_pages = total_pages()
+
+          case total_pages
+          when 1
+            1
+          when 2
+            midpoint = @total_size / total_pages
+            @start_offset < midpoint ? 1 : 2
+          end
+        end
       end
 
       def page_size
@@ -49,7 +64,13 @@ module OpenBEL
       end
 
       def total_pages
-        (@total_size / @page_size).ceil
+        return 0 if @total_size == 0
+
+        if @page_size > 0
+          (@total_size / @page_size).ceil
+        else
+          @start_offset == 0 ? 1 : 2
+        end
       end
 
       def total_size
