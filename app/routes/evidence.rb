@@ -2,6 +2,7 @@ require 'bel'
 require 'cgi'
 require 'lib/evidence/facet_filter'
 require 'app/resources/evidence_transform'
+require 'app/helpers/paging'
 require 'mongo'
 
 module OpenBEL
@@ -10,6 +11,7 @@ module OpenBEL
     class Evidence < Base
       include OpenBEL::Evidence::FacetFilter
       include OpenBEL::Resource::Evidence
+      include OpenBEL::Helpers
 
       def initialize(app)
         super
@@ -78,6 +80,9 @@ module OpenBEL
 
         halt 404 if evidence.empty?
 
+        pager = Pager.new(start, size, filtered_total)
+        puts pager.inspect
+
         options = {
           :start    => start,
           :size     => size,
@@ -85,9 +90,9 @@ module OpenBEL
           :metadata => {
             :collection_paging => {
               :total                  => collection_total,
-              :filtered_total         => filtered_total,
-              :page_total             => size > 0 ? (filtered_total / size.to_f).ceil : 1,
-              :current_page           => start > 0 && size > 0 ? ((start + size) / size.to_f).ceil : 1,
+              :filtered_total         => pager.total_size,
+              :page_total             => pager.total_pages,
+              :current_page           => pager.current_page,
               :current_resource_total => evidence.size,
             }
           }
@@ -128,28 +133,10 @@ module OpenBEL
           options[:facets] = facet_hashes
         end
 
-        # calculate previous evidence series range
-        previous_series = nil
-        previous_start  = (start - size) < 0 ? 0 : (start - size)
-        if size > 0 && start > 0 && @api.find_evidence(filters, previous_start, 1, false)[:cursor].to_a.size > 0
-          options[:previous_series] = {
-            :start => previous_start,
-            :size  => size
-          }
-        else
-          options[:previous_series] = nil
-        end
-
-        # calculate next evidence series range
-        next_series = nil
-        if size > 0 && @api.find_evidence(filters, start + size, 1, false)[:cursor].to_a.size > 0
-          options[:next_series] = {
-            :start => (start + size),
-            :size  => size
-          }
-        else
-          options[:next_series] = nil
-        end
+        # pager links
+        options[:previous_page] = pager.previous_page
+        options[:next_page]     = pager.next_page
+        puts pager.next_page.inspect
 
         render_collection(evidence, :evidence, options)
       end

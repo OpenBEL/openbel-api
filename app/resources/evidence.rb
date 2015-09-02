@@ -106,22 +106,22 @@ module OpenBEL
         end
 
         def link_previous
-          previous_series = context[:previous_series]
-          return {} unless previous_series
+          previous_page = context[:previous_page]
+          return {} unless previous_page
 
           {
             :type => :'evidence-collection',
-            :href => "#{base_url}/api/evidence?start=#{previous_series[:start]}&size=#{previous_series[:size]}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/evidence?start=#{previous_page.start_offset}&size=#{previous_page.page_size}&#{filter_query_params.join('&')}"
           }
         end
 
         def link_next
-          next_series = context[:next_series]
-          return {} unless next_series
+          next_page = context[:next_page]
+          return {} unless next_page
 
           {
             :type => :'evidence-collection',
-            :href => "#{base_url}/api/evidence?start=#{next_series[:start]}&size=#{next_series[:size]}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/evidence?start=#{next_page.start_offset}&size=#{next_page.page_size}&#{filter_query_params.join('&')}"
           }
         end
 
