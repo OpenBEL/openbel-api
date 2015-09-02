@@ -18,7 +18,7 @@ GEM
       Platform (>= 0.4.0)
       open4
     Platform (0.4.0)
-    activesupport (4.2.3)
+    activesupport (4.2.4)
       i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -53,17 +53,17 @@ GEM
     ffi (1.9.8)
     futuroscope (0.1.11)
     hitimes (1.2.2)
-    hyperclient (0.7.1)
-      faraday (~> 0.8)
-      faraday-digestauth (~> 0.2)
-      faraday_hal_middleware (~> 0.0.1)
-      faraday_middleware (~> 0.9)
-      futuroscope (>= 0.0.10)
-      net-http-digest_auth (~> 1.2)
-      uri_template (~> 0.5)
+    hyperclient (0.7.2)
+      faraday
+      faraday-digestauth
+      faraday_hal_middleware
+      faraday_middleware
+      futuroscope
+      net-http-digest_auth
+      uri_template
     i18n (0.7.0)
     json (1.8.3)
-    json_schema (0.6.1)
+    json_schema (0.6.2)
     kyotocabinet-ffi (0.1.0)
       ffi (~> 1.9)
     link_header (0.0.8)
@@ -107,10 +107,10 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rb-fsevent (0.9.5)
+    rb-fsevent (0.9.6)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
-    rdf (1.1.14)
+    rdf (1.1.15)
       link_header (~> 0.0, >= 0.0.8)
     rerun (0.10.0)
       listen (~> 2.7, >= 2.7.3)
@@ -154,7 +154,7 @@ GEM
       tins (~> 1.0)
     thread_safe (0.3.5)
     tilt (2.0.1)
-    timers (4.0.1)
+    timers (4.0.4)
       hitimes
     tins (1.6.0)
     tzinfo (1.2.2)
