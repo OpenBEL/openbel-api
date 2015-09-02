@@ -2,9 +2,12 @@ require 'rspec'
 require 'hyperclient'
 require 'json'
 
-HAL           = 'application/hal+json'
-HAL_REGEX     = Regexp.escape(HAL)
-HTTP_OK       = 200
+# silence rantly output
+ENV['RANTLY_VERBOSE'] = '0'
+
+HAL                   = 'application/hal+json'
+HAL_REGEX             = Regexp.escape(HAL)
+HTTP_OK               = 200
 
 def api_root
   ENV['API_ROOT_URL'] || (raise RuntimeError.new('API_ROOT_URL is not set'))

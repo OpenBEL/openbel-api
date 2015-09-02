@@ -30,6 +30,7 @@ gem 'uuid'
 group :test do
   gem 'faraday_middleware'
   gem 'hyperclient'
+  gem 'rantly',                           :git => 'https://github.com/abargnesi/rantly.git'
   gem 'rspec'
 end
 

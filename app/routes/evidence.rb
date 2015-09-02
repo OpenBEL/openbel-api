@@ -2,7 +2,7 @@ require 'bel'
 require 'cgi'
 require 'lib/evidence/facet_filter'
 require 'app/resources/evidence_transform'
-require 'app/helpers/paging'
+require 'app/helpers/pager'
 require 'mongo'
 
 module OpenBEL

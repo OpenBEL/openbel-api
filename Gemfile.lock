@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/abargnesi/rantly.git
+  revision: 682f1b25ff5118c2e90361688654893d0ba81b13
+  specs:
+    rantly (0.3.1)
+
 PATH
   remote: ../redlander
   specs:
@@ -185,6 +191,7 @@ DEPENDENCIES
   rack
   rack-cors
   rack-handlers
+  rantly!
   rdf
   redlander!
   rerun
