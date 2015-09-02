@@ -45,7 +45,7 @@ module OpenBEL
         return 0 if @total_size == 0
 
         if @page_size > 0
-          ((@start_offset + @page_size) / @page_size).ceil
+          ((@start_offset + @page_size) / @page_size).floor
         else
           total_pages = total_pages()
 

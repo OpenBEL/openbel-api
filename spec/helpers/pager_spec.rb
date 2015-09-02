@@ -120,6 +120,23 @@ describe Pager do
           expect(pager.current_page).to eql 2
         }
       end
+
+      it 'when paging' do
+        property_of {
+          Rantly.value(1000) {
+            start       = range(0, 10000)
+            page_size   = range(1, 10000)
+            total       = range(1, 10000)
+
+            guard start <= total
+
+            [start, page_size, total]
+          }
+        }.check(25000, 1000) { |start, page_size, total|
+          pager = Pager.new(start, page_size, total)
+          expect(pager.current_page).to eql ((start + page_size) / page_size.to_f).floor
+        }
+      end
     end
   end
 end
