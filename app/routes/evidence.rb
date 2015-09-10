@@ -175,9 +175,12 @@ module OpenBEL
         end
 
         # transformation
-        evidence = evidence_obj['evidence']
-        evidence = @annotation_transform.transform_evidence(evidence)
-        evidence[:facets] = map_evidence_facets(evidence)
+        evidence          = evidence_obj['evidence']
+        evidence_model    = ::BEL::Model::Evidence.create(evidence)
+        @annotation_transform.transform_evidence!(evidence_model, base_url)
+        facets = map_evidence_facets(evidence_model)
+        evidence = evidence_model.to_h
+        evidence[:facets] = facets
 
         @api.update_evidence_by_id(object_id, evidence)
 
