@@ -108,25 +108,52 @@
           "description": "Abstract from source text to provide support for this evidence"
         },
         "references": {
-          "type":        ["array", "null"],
+          "type":        ["object", "null"],
           "title":       "References",
           "description": "The references section identifies annotation and namespace URIs.",
-          "items": {
-            "type":        "object",
-            "required":    ["keyword", "uri"],
-            "title":       "Reference",
-            "description": "Reference for either Annotation or Namespace stated in the evidence.",
-            "properties": {
-              "keyword": {
-                "type":        "string",
-                "title":       "Keyword",
-                "description": "Keyword reference used in the annotation or namespace value."
-              },
-              "uri": {
-                "type":        "string",
-                "format":      "uri",
-                "title":       "URI",
-                "description": "URI that identifies the annotation or namespace classification."
+          "properties": {
+            "annotations": {
+              "type":        ["array", "null"],
+              "title":       "Annotation references",
+              "description": "References to annotation resources.",
+              "item": {
+                "type": "object",
+                "properties": {
+                  "keyword": {
+                    "type":        "string",
+                    "title":       "Keyword",
+                    "description": "Keyword that identifies this annotation resource, but only in the context of this Evidence."
+                  },
+                  "uri": {
+                    "type":        "string",
+                    "format":      "uri",
+                    "title":       "URI",
+                    "description": "URI that identifies this annotation resource."
+                  }
+                },
+                "required": ["keyword", "uri"]
+              }
+            },
+            "namespaces": {
+              "type":        ["array", "null"],
+              "title":       "Namespace references",
+              "description": "References to namespace resources.",
+              "item": {
+                "type": "object",
+                "properties": {
+                  "keyword": {
+                    "type":        "string",
+                    "title":       "Keyword",
+                    "description": "Keyword that identifies this namespace resource, but only in the context of this Evidence."
+                  },
+                  "uri": {
+                    "type":        "string",
+                    "format":      "uri",
+                    "title":       "URI",
+                    "description": "URI that identifies this namespace resource."
+                  }
+                },
+                "required": ["keyword", "uri"]
               }
             }
           }
@@ -143,15 +170,15 @@
                 "properties": {
                   "name": {
                     "type":        "string",
-                    "title":       "Annotation Type",
-                    "description": "Annotation type listing - sourced from the BEL Annotation resource names"
+                    "title":       "Name",
+                    "description": "The name of this metadata property."
                   },
                   "value": {
-                    "type":        ["string", "number", "boolean", "array"],
-                    "title":       "Annotations",
-                    "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
+                    "type":        ["array", "boolean", "number", "object", "string"],
+                    "title":       "Value",
+                    "description": "The value of this metadata property.",
                     "items": {
-                      "type": ["string", "number", "boolean"]
+                      "type": ["array", "boolean", "integer", "number", "null", "object", "string"]
                     }
                   }
                 }
