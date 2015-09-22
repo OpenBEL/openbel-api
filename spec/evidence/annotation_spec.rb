@@ -17,11 +17,10 @@ describe 'API Evidence - Annotations' do
     post_and_get(example, '/api/evidence') do |response|
       resource = response.body
       expect(resource).to                   include('evidence')
-      expect(resource['evidence']).to       be_an(Array)
-      expect(resource['evidence'].size).to  eql(1)
-      expect(resource['evidence'].first).to include('experiment_context')
+      expect(resource['evidence']).to       be_a(Hash)
+      expect(resource['evidence']).to       include('experiment_context')
 
-      expect(resource['evidence'].first['experiment_context']).to include(
+      expect(resource['evidence']['experiment_context']).to include(
         {
           'name'  => 'Species',
           'value' => '9606'
@@ -46,11 +45,10 @@ describe 'API Evidence - Annotations' do
     post_and_get(example, '/api/evidence') do |response|
       resource = response.body
       expect(resource).to                   include('evidence')
-      expect(resource['evidence']).to       be_an(Array)
-      expect(resource['evidence'].size).to  eql(1)
-      expect(resource['evidence'].first).to include('experiment_context')
+      expect(resource['evidence']).to       be_a(Hash)
+      expect(resource['evidence']).to       include('experiment_context')
 
-      expect(resource['evidence'].first['experiment_context']).to include(
+      expect(resource['evidence']['experiment_context']).to include(
         {'name' => 'StatusValue', 'value' => '1'},
         {'name' => 'StatusValue', 'value' => '3'}
       )
@@ -69,11 +67,10 @@ describe 'API Evidence - Annotations' do
     post_and_get(example, '/api/evidence') do |response|
       resource = response.body
       expect(resource).to                   include('evidence')
-      expect(resource['evidence']).to       be_an(Array)
-      expect(resource['evidence'].size).to  eql(1)
-      expect(resource['evidence'].first).to include('experiment_context')
+      expect(resource['evidence']).to       be_a(Hash)
+      expect(resource['evidence']).to       include('experiment_context')
 
-      expect(resource['evidence'].first['experiment_context']).to include(
+      expect(resource['evidence']['experiment_context']).to include(
         {
           'name'  => 'Ncbi Taxonomy',
           'value' => 'Homo sapiens',
@@ -94,11 +91,10 @@ describe 'API Evidence - Annotations' do
     post_and_get(example, '/api/evidence') do |response|
       resource = response.body
       expect(resource).to                   include('evidence')
-      expect(resource['evidence']).to       be_an(Array)
-      expect(resource['evidence'].size).to  eql(1)
-      expect(resource['evidence'].first).to include('experiment_context')
+      expect(resource['evidence']).to       be_a(Hash)
+      expect(resource['evidence']).to       include('experiment_context')
 
-      expect(resource['evidence'].first['experiment_context']).to include(
+      expect(resource['evidence']['experiment_context']).to include(
         {
           'name'  => 'Ncbi Taxonomy',
           'value' => 'Homo sapiens',
@@ -119,11 +115,10 @@ describe 'API Evidence - Annotations' do
     post_and_get(example, '/api/evidence') do |response|
       resource = response.body
       expect(resource).to                   include('evidence')
-      expect(resource['evidence']).to       be_an(Array)
-      expect(resource['evidence'].size).to  eql(1)
-      expect(resource['evidence'].first).to include('experiment_context')
+      expect(resource['evidence']).to       be_a(Hash)
+      expect(resource['evidence']).to       include('experiment_context')
 
-      expect(resource['evidence'].first['experiment_context']).to include(
+      expect(resource['evidence']['experiment_context']).to include(
         {
           'name'  => 'Ncbi Taxonomy',
           'value' => 'Homo sapiens',

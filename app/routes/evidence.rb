@@ -148,10 +148,10 @@ module OpenBEL
 
         # XXX Hack to return single resource wrapped as json array
         # XXX Need to better support evidence resource arrays in base.rb
-        render(
+        render_resource(
           evidence,
           :evidence,
-          :as_array => true
+          :as_array => false
         )
       end
 

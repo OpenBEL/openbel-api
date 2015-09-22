@@ -174,9 +174,7 @@ module OpenBEL
           adapter = Oat::Adapters::HAL
 
           resource = resource_serializer.new(
-            [
-              type_serializer.new(obj, resource_context, adapter).to_hash
-            ],
+            type_serializer.new(obj, resource_context, adapter).to_hash,
             resource_context,
             adapter
           ).to_hash

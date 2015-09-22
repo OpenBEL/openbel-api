@@ -45,10 +45,10 @@ module OpenBEL
         schema do
           type :'evidence'
           properties do |p|
-            collection :evidence, item, EvidenceSerializer
+            p.evidence item
           end
 
-          link :self,         link_self(item.first['_id'])
+          link :self,         link_self(item['_id'])
           link :collection,   link_collection
         end
 
