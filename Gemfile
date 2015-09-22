@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bel',                     '~> 0.3'
+gem 'bel',                                :path => '../bel.rb'
 gem 'bson_ext',                '~> 1.12'
 gem 'builder'
 gem 'dot_hash'
@@ -30,16 +30,15 @@ gem 'uuid'
 group :test do
   gem 'faraday_middleware'
   gem 'hyperclient'
-  gem 'rantly',                           :git => 'https://github.com/abargnesi/rantly.git'
+  gem 'rantly',            '~> 0.3'
   gem 'rspec'
 end
 
 group :development do
   gem 'POpen4'
-  gem 'pry', '~> 0.9.12'
-  gem 'pry-stack_explorer'
-  gem 'pry-nav'
-  gem 'rerun'
+  gem 'pry'
+  gem 'byebug'
+  gem 'pry-byebug'
   gem 'ripper-tags'
   gem 'starscope'
   gem 'term-ansicolor'
