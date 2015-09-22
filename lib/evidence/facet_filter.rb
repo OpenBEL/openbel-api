@@ -16,9 +16,9 @@ module OpenBEL
       end
 
       def map_citation_facets(citation)
-        if citation and citation['id']
+        if citation and citation.id
           [
-            self.make_filter(:citation, :id, citation['id'])
+            self.make_filter(:citation, :id, citation.id)
           ]
         else
           EMPTY
