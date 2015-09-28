@@ -75,7 +75,10 @@ module OpenBEL
         collection_total  = @api.count_evidence()
         filtered_total    = @api.count_evidence(filters)
         page_results      = @api.find_evidence(filters, start, size, faceted)
-        evidence          = page_results[:cursor].to_a
+        evidence          = page_results[:cursor].map { |item|
+          item.delete('facets')
+          item
+        }.to_a
         facets            = page_results[:facets]
 
         halt 404 if evidence.empty?
@@ -146,12 +149,15 @@ module OpenBEL
         evidence = @api.find_evidence_by_id(object_id)
         halt 404 unless evidence
 
+        evidence.delete('facets')
+
         # XXX Hack to return single resource wrapped as json array
         # XXX Need to better support evidence resource arrays in base.rb
         render_resource(
           evidence,
           :evidence,
-          :as_array => false
+          :as_array => false,
+          :_id      => object_id
         )
       end
 

@@ -9,7 +9,7 @@ module OpenBEL
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'evidence'
+          type :evidence
           properties do |p|
             p.bel_statement      item['bel_statement']
             p.citation           item['citation']
@@ -33,7 +33,7 @@ module OpenBEL
 
         def link_collection
           {
-            :type => :'evidence-collection',
+            :type => :evidence_collection,
             :href => "#{base_url}/api/evidence"
           }
         end
@@ -43,18 +43,20 @@ module OpenBEL
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'evidence'
+          type :evidence
           properties do |p|
             p.evidence item
           end
 
-          link :self,         link_self(item['_id'])
+          link :self,         link_self
           link :collection,   link_collection
         end
 
         private
 
-        def link_self(id)
+        def link_self
+          id = item['_id'] || context[:_id]
+          item.delete('_id')
           {
             :type => :evidence,
             :href => "#{base_url}/api/evidence/#{id}"
@@ -63,7 +65,7 @@ module OpenBEL
 
         def link_collection
           {
-            :type => :'evidence-collection',
+            :type => :evidence_collection,
             :href => "#{base_url}/api/evidence"
           }
         end
@@ -73,17 +75,14 @@ module OpenBEL
         adapter Oat::Adapters::HAL
 
         schema do
-          type :'evidence-collection'
-          properties do |p|
-            p.evidence item
-            p.facets   context[:facets]
-            p.metadata context[:metadata]
-          end
-
-          link :self,       link_self
-          link :start,      link_start
-          link :previous,   link_previous
-          link :next,       link_next
+          type     :evidence_collection
+          property :evidence_collection,   item
+          property :facets,                context[:facets]
+          property :metadata,              context[:metadata]
+          link     :self,                  link_self
+          link     :start,                 link_start
+          link     :previous,              link_previous
+          link     :next,                  link_next
         end
 
         private
@@ -92,7 +91,7 @@ module OpenBEL
           start  = context[:start]
           size   = context[:size]
           {
-            :type => :'evidence-collection',
+            :type => :evidence_collection,
             :href => "#{base_url}/api/evidence?start=#{start}&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
@@ -100,7 +99,7 @@ module OpenBEL
         def link_start
           size = context[:size]
           {
-            :type => :'evidence-collection',
+            :type => :evidence_collection,
             :href => "#{base_url}/api/evidence?start=0&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
@@ -110,7 +109,7 @@ module OpenBEL
           return {} unless previous_page
 
           {
-            :type => :'evidence-collection',
+            :type => :evidence_collection,
             :href => "#{base_url}/api/evidence?start=#{previous_page.start_offset}&size=#{previous_page.page_size}&#{filter_query_params.join('&')}"
           }
         end
@@ -120,7 +119,7 @@ module OpenBEL
           return {} unless next_page
 
           {
-            :type => :'evidence-collection',
+            :type => :evidence_collection,
             :href => "#{base_url}/api/evidence?start=#{next_page.start_offset}&size=#{next_page.page_size}&#{filter_query_params.join('&')}"
           }
         end

@@ -4,17 +4,17 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "evidence",
+    "evidence_collection",
     "facets"
   ],
   "properties": {
-    "evidence": {
+    "evidence_collection": {
       "type": "array",
       "minItems": 0,
       "title": "",
       "description": "",
       "items": {
-        "$ref":"http://next.belframework.org/schema/evidence.schema.json#/properties/evidence"
+        "$ref":"evidence_resource.schema.json"
       }
     },
     "facets": {

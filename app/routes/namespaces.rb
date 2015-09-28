@@ -77,11 +77,11 @@ module OpenBEL
 
         halt 404 if not namespaces or namespaces.empty?
 
-        render(
+        render_collection(
           namespaces.sort { |x,y|
             x.prefLabel.to_s <=> y.prefLabel.to_s
           },
-          :namespace_collection
+          :namespace
         )
       end
 
@@ -112,7 +112,7 @@ module OpenBEL
 
         status 200
         render(
-          [ns],
+          ns,
           :namespace
         )
       end
@@ -246,8 +246,8 @@ module OpenBEL
 
         status 200
         render(
-          [value],
-          :"namespace_value"
+          value,
+          :namespace_value
         )
       end
 
@@ -255,9 +255,9 @@ module OpenBEL
         equivalents = @api.find_equivalent(namespace, value)
         halt 404 if not equivalents or equivalents.empty?
 
-        render(
+        render_collection(
           equivalents,
-          :"namespace_value"
+          :namespace_value
         )
       end
 
@@ -267,9 +267,9 @@ module OpenBEL
         })
         halt 404 if not equivalents or equivalents.empty?
 
-        render(
+        render_collection(
           equivalents,
-          :"namespace_value"
+          :namespace_value
         )
       end
 
@@ -277,9 +277,9 @@ module OpenBEL
         orthologs = @api.find_ortholog(namespace, value)
         halt 404 if not orthologs or orthologs.empty?
 
-        render(
+        render_collection(
           orthologs,
-          :"namespace_value"
+          :namespace_value
         )
       end
 
@@ -289,9 +289,9 @@ module OpenBEL
         })
         halt 404 if not orthologs or orthologs.empty?
 
-        render(
+        render_collection(
           orthologs,
-          :"namespace_value"
+          :namespace_value
         )
       end
     end

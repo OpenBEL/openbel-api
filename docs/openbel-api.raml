@@ -1,20 +1,21 @@
 #%RAML 0.8
 title: OpenBEL API
 version: 0.0.2
-baseUri: http://next.belframework.org
+baseUri: http://next.belframework.org/api
 schemas:
-  - annotation:                            !include http://next.belframework.org/schema/annotation.schema.json
-  - annotation_resource:                   !include http://next.belframework.org/schema/annotation_resource.schema.json
-  - annotation_collection:                 !include http://next.belframework.org/schema/annotation_collection.schema.json
-  - annotation_value:                      !include http://next.belframework.org/schema/annotation_value.schema.json
-  - annotation_value_resource:             !include http://next.belframework.org/schema/annotation_value_resource.schema.json
-  - annotation_value_collection:           !include http://next.belframework.org/schema/annotation_value_collection.schema.json
-  - completion:                            !include http://next.belframework.org/schema/completion.schema.json
-  - completion_collection:                 !include http://next.belframework.org/schema/completion_collection.schema.json
-  - evidence:                              !include http://next.belframework.org/schema/evidence.schema.json
-  - evidence_collection:                   !include http://next.belframework.org/schema/evidence_collection.schema.json
-  - match_result:                          !include http://next.belframework.org/schema/match_result.schema.json
-  - match_result_collection:               !include http://next.belframework.org/schema/match_result_collection.schema.json
+  - annotation:                  !include http://next.belframework.org/schema/annotation.schema.json
+  - annotation_resource:         !include http://next.belframework.org/schema/annotation_resource.schema.json
+  - annotation_collection:       !include http://next.belframework.org/schema/annotation_collection.schema.json
+  - annotation_value:            !include http://next.belframework.org/schema/annotation_value.schema.json
+  - annotation_value_resource:   !include http://next.belframework.org/schema/annotation_value_resource.schema.json
+  - annotation_value_collection: !include http://next.belframework.org/schema/annotation_value_collection.schema.json
+  - completion:                  !include http://next.belframework.org/schema/completion.schema.json
+  - completion_collection:       !include http://next.belframework.org/schema/completion_collection.schema.json
+  - evidence:                    !include http://next.belframework.org/schema/evidence.schema.json
+  - evidence_resource:           !include http://next.belframework.org/schema/evidence_resource.schema.json
+  - evidence_collection:         !include http://next.belframework.org/schema/evidence_collection.schema.json
+  - match_result:                !include http://next.belframework.org/schema/match_result.schema.json
+  - match_result_collection:     !include http://next.belframework.org/schema/match_result_collection.schema.json
 /api:
   description: The root resource collection.
   options:
@@ -53,8 +54,26 @@ schemas:
                   ]
                 }
               }
-  /annotations:
-    description: Represents the annotation resource collection.
+/annotations:
+  description: Represents the annotation resource collection.
+  options:
+    description: Returns allowable HTTP methods.
+    responses:
+      200:
+        headers:
+          Accept:
+            description: Allowable HTTP methods.
+            type:        string
+  get:
+    description: Retrieves all annotation resources.
+    responses:
+      200:
+        body:
+          application/json:
+            schema:  annotation_collection
+            example: !include http://next.belframework.org/example/annotation_collection.example.json
+  /values:
+    description: Represents the annotation values resource collection for all annotation resources.
     options:
       description: Returns allowable HTTP methods.
       responses:
@@ -64,15 +83,127 @@ schemas:
               description: Allowable HTTP methods.
               type:        string
     get:
-      description: Retrieves all annotation resources.
+      description: |
+        Retrieves the annotation values resource collection for all annotation resources. This allows the caller to retrieve values across all annotations known to the API.
+
+        A good use case for this is an annotation search interface.
+
+        <br>
+         **Limitations**
+        
+         This endpoint is limited to full-text searching including a *filter* like:
+         ```json
+         {
+           "category": "fts",
+           "name": "search",
+           "value": "cat"
+         }
+         ```
+
+        <br>
+        **Complete Example**
+        
+        **<sub>GET http://next.belframework.org/api/annotations/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22dendritic%20cell%20thymoma%22}</sub>**
+        
+        ```json
+        {
+          "annotation_values": [
+            {
+              "type": "BiologicalProcessConcept",
+              "identifier": "3282",
+              "name": "dendritic cell thymoma",
+              "_links": {
+                "self": {
+                  "type": "annotation_value",
+                  "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3282"
+                },
+                "collection": {
+                  "type": "annotation",
+                  "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                }
+              }
+            }
+          ]
+        }
+        ```
+
+      queryParameters:
+        start:
+          type: integer
+          description: |
+            The annotation value resource to start from for paging purposes.
+          example:  "0"
+          required: false
+        size:
+          type: integer
+          description: |
+            The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
+
+            A size of zero or less will return all values.
+          example:  5
+          required: false
+        filter:
+          type: string
+          description: |
+            A filter to apply to the annotation value resource collection to narrow the resources retrieved.
+          example: |
+            {"category":"fts","name":"search","value":"cat"}
+          required: false
+        faceted:
+          type: string
+          description: |
+            The boolean indicator to provided faceted results for the annotation value resource collection. The default is to not facet.
+          enum: [ 'true', 'yes', '1', 'on' ]
+          example: no
       responses:
         200:
           body:
             application/json:
-              schema:  annotation_collection
-              example: !include http://next.belframework.org/example/annotation_collection.example.json
+              schema:  annotation_value_collection
+              example: !include http://next.belframework.org/example/annotation_value_collection.example.json
+        400:
+          description: |
+            *400 Bad Request*
+
+            Returned if a filter is malformed.
+        404:
+          description: |
+            *404 Not Found*
+
+            Returned if no annotation values were found for the FTS search.
+          
+            Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
+        501:
+          description: |
+            *501 Not Implemented*
+
+            Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
+  /{annotation}:
+    description: Represents a single annotation resource.
+    uriParameters:
+      annotation:
+        type: string
+        description: An identifier string for an annotation. This is either the annotation name or prefix.
+        required: true
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+    get:
+      description: Retrieves an annotation resource.
+      responses:
+        200:
+          body:
+            application/json:
+              schema:  annotation_resource
+              example: !include http://next.belframework.org/example/annotation_resource.example.json
     /values:
-      description: Represents the annotation values resource collection for all annotation resources.
+      description: |
+        Access the annotation values within an *{annotation}*.
       options:
         description: Returns allowable HTTP methods.
         responses:
@@ -83,9 +214,9 @@ schemas:
                 type:        string
       get:
         description: |
-          Retrieves the annotation values resource collection for all annotation resources. This allows the caller to retrieve values across all annotations known to the API.
+          Retrieves the annotation values within an *{annotation}*.
 
-          A good use case for this is an annotation search interface.
+          A good use case for this is an annotation search interface constrained to one *{annotation}*.
 
           <br>
            **Limitations**
@@ -102,30 +233,29 @@ schemas:
           <br>
           **Complete Example**
           
-          **<sub>GET http://next.belframework.org/api/annotations/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22dendritic%20cell%20thymoma%22}</sub>**
+          **<sub>GET http://next.belframework.org/api/annotations/taxon/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22Mouse%22}</sub>**
           
           ```json
           {
             "annotation_values": [
               {
-                "type": "BiologicalProcessConcept",
-                "identifier": "3282",
-                "name": "dendritic cell thymoma",
+                "type": "AnnotationConcept",
+                "identifier": "0007836",
+                "name": "Mouse cell",
                 "_links": {
                   "self": {
                     "type": "annotation_value",
-                    "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3282"
+                    "href": "http://next.belframework.org/api/annotations/cell-line-ontology/values/0007836"
                   },
                   "collection": {
                     "type": "annotation",
-                    "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                    "href": "http://next.belframework.org/api/annotations/cell-line-ontology"
                   }
                 }
               }
             ]
           }
           ```
-
         queryParameters:
           start:
             type: integer
@@ -139,14 +269,14 @@ schemas:
               The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
 
               A size of zero or less will return all values.
-            example:  5
+            example:  1
             required: false
           filter:
             type: string
             description: |
               A filter to apply to the annotation value resource collection to narrow the resources retrieved.
             example: |
-              {"category":"fts","name":"search","value":"cat"}
+              {"category":"fts","name":"search","value":"Mouse"}
             required: false
           faceted:
             type: string
@@ -177,32 +307,8 @@ schemas:
               *501 Not Implemented*
 
               Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
-    /{annotation}:
-      description: Represents a single annotation resource.
-      uriParameters:
-        annotation:
-          type: string
-          description: An identifier string for an annotation. This is either the annotation name or prefix.
-          required: true
-      options:
-        description: Returns allowable HTTP methods.
-        responses:
-          200:
-            headers:
-              Accept:
-                description: Allowable HTTP methods.
-                type:        string
-      get:
-        description: Retrieves an annotation resource.
-        responses:
-          200:
-            body:
-              application/json:
-                schema:  annotation_resource
-                example: !include http://next.belframework.org/example/annotation_resource.example.json
-      /values:
-        description: |
-          Access the annotation values within an *{annotation}*.
+      /{value}:
+        description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
         options:
           description: Returns allowable HTTP methods.
           responses:
@@ -212,310 +318,206 @@ schemas:
                   description: Allowable HTTP methods.
                   type:        string
         get:
-          description: |
-            Retrieves the annotation values within an *{annotation}*.
+          description:
+/evidence:
+  description: |
+    Operate on the evidence resource collection.
 
-            A good use case for this is an annotation search interface constrained to one *{annotation}*.
+    *Operations*
 
-            <br>
-             **Limitations**
-            
-             This endpoint is limited to full-text searching including a *filter* like:
-             ```json
-             {
-               "category": "fts",
-               "name": "search",
-               "value": "cat"
-             }
-             ```
+    - Filter the evidence resource collection using `GET /evidence` with query parameters.
+    - Retrieve an evidence resource using `GET /evidence/{id}`.
+    - Create a new evidence resource using `POST /evidence` with a supported content type.
+    - Update an existing evidence resource using `PUT /evidence/{id}` with a supported content type.
+    - Delete an existing evidence resource using `DELETE /evidence/{id}`.
 
-            <br>
-            **Complete Example**
-            
-            **<sub>GET http://next.belframework.org/api/annotations/taxon/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22Mouse%22}</sub>**
-            
+  options:
+    description: Returns allowable HTTP methods.
+    responses:
+      200:
+        headers:
+          Accept:
+            description: Allowable HTTP methods.
+            type:        string
+  post:
+    description: |
+      Create an evidence resource.
+
+      Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
+
+      *Example*:
+
+      - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence.schema.json`
+    responses:
+      201:
+        description: |
+          *201 Created*
+
+          The evidence resource was created.
+
+          The link to the evidence resource is conveyed is the *Link* header.
+      415:
+        description: |
+          *415 Unsupported Media Type*
+
+          The evidence resource body was not a supported media type..
+    body:
+      application/json:
+        schema: evidence
+        example: |
+          {
+            "evidence": {
+              "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
+              "citation": {
+                "type": "PubMed",
+                "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
+                "id": "10699758"
+              },
+              "experiment_context": [
+                {
+                  "name":  "species",
+                  "value": "9606"
+                },
+                {
+                  "name":  "disease",
+                  "value": "leukemia"
+                }
+              ],
+              "metadata": {
+                "status": "Approved"
+              }
+            }
+          }
+  get:
+    description: |
+      Retrieve the evidence resource collection.
+
+      All evidence resources will be returned by default.
+
+      The collection can be returned page by page by providing a *start* (defaults to `0`) index and *size* (defaults to no size limit) to return.
+
+      This collection can be filtered by providing one or more *filter* options. A filter specifies the *category*, *name*, and *value* of the filter and is encoded as a JSON object. For example an evidence metadata filter might be encoded as:
+
+      ```json
+        {
+          "category": "metadata",
+          "name": "status",
+          "value": "Approved"
+        }
+      ```
+
+      This collection can be filtered using by a full-text search filter such as:
+
+      ```json
+        {
+          "category": "fts",
+          "name": "search",
+          "value": "lung liver pancreas"
+        }
+      ```
+
+      ```json
+        {
+          "category": "fts",
+          "name": "search",
+          "value": "\"subdural hematoma\""
+        }
+      ```
+
+      This collection can specify the *faceted* boolean option. Facets will reflect all (possibly filtered) evidence resources irrespective of *start* and *size* paging.
+      
+      Facts are an array of facet objects that are composed of a *filter* and *count*. For example for the evidence metadata filter the facet object would be encoded as:
+
+      ```json
+        {
+          "category": "metadata",
+          "name": "status",
+          "value": "Approved",
+          "filter": "{\"category\": \"metadata\", \"name\": \"status\", \"value\": \"Approved \"}",
+          "count": 10200
+        }
+      ```
+
+      The *filter* property value can be used as a *filter* option. This is intended to support filtering the evidence resource collection by selected facets.
+
+      The *max_values_per_facet* option can be specified to limit the number of returned facet values by category, name pairs. For example, setting *max_values_per_facet* to `2` would return up to 2 distinct facets values for `{ "category": "citation", "name": "id", ... }`.
+    headers:
+      Accept:
+        displayName: Accept
+        description: |
+          The Accept header informs the server which media types the client accepts.
+    queryParameters:
+      start:
+        type: integer
+        description: |
+          The evidence resource to start from for paging purposes.
+          
+          The default value is `0`. This value will return evidence resources starting from the beginning of collection.
+        example: 100
+        required: false
+      size:
+        type: integer
+        description: |
+          The size of the evidence resource collection to retrieve. This will return a slice of the evidence resource collection relative to *start*.
+
+          The default is `0`. This value will return all evidence resources in the collection.
+        example: 100
+        required: false
+      filter:
+        type: string
+        description: |
+          A filter to apply to the evidence resource collection to narrow the resources retrieved.
+
+          The default is to not apply filters. If filters are not specified then all evidence resources, in the collection, will be returned.
+        example: |
+          {"category":"experiment_context","name":"Anatomy","value":"prostate gland"}
+          {"category":"fts","name":"search","value":"\"subdural hematoma\" carcinoma"}
+          {"category":"fts","name":"search","value":"homatoma -carcinoma"}
+        required: false
+      faceted:
+        type: string
+        description: |
+          The boolean indicator to provided faceted results for the evidence resource collection.
+          
+          The default is `false`. This value will not return facets in the response.
+        enum: [ 'true', 'yes', '1', 'on' ]
+        example: yes
+      max_values_per_facet:
+        type: integer
+        description: |
+          The maximum about of facet values to display for every category, name pair.
+          
+          The default is `0`. This value will return all facet values (i.e. unbounded) for every category, name pair.
+        example: 20
+        required: false
+    responses:
+      200:
+        description: |
+          An example request for this resource might be:
+
+          - Path: `/api/evidence`
+          - Query parameters:
+            - `start=0`
+            - `size=1`
+            - `faceted=yes`
+            - `max_values_per_facet=1`
+            - `filter`
             ```json
             {
-              "annotation_values": [
-                {
-                  "type": "AnnotationConcept",
-                  "identifier": "0007836",
-                  "name": "Mouse cell",
-                  "_links": {
-                    "self": {
-                      "type": "annotation_value",
-                      "href": "http://next.belframework.org/api/annotations/cell-line-ontology/values/0007836"
-                    },
-                    "collection": {
-                      "type": "annotation",
-                      "href": "http://next.belframework.org/api/annotations/cell-line-ontology"
-                    }
-                  }
-                }
-              ]
+              "category":"experiment_context",
+              "name":"Anatomy",
+              "value":"prostate gland"
             }
             ```
-          queryParameters:
-            start:
-              type: integer
-              description: |
-                The annotation value resource to start from for paging purposes.
-              example:  "0"
-              required: false
-            size:
-              type: integer
-              description: |
-                The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
 
-                A size of zero or less will return all values.
-              example:  1
-              required: false
-            filter:
-              type: string
-              description: |
-                A filter to apply to the annotation value resource collection to narrow the resources retrieved.
-              example: |
-                {"category":"fts","name":"search","value":"Mouse"}
-              required: false
-            faceted:
-              type: string
-              description: |
-                The boolean indicator to provided faceted results for the annotation value resource collection. The default is to not facet.
-              enum: [ 'true', 'yes', '1', 'on' ]
-              example: no
-          responses:
-            200:
-              body:
-                application/json:
-                  schema:  annotation_value_collection
-                  example: !include http://next.belframework.org/example/annotation_value_collection.example.json
-            400:
-              description: |
-                *400 Bad Request*
-
-                Returned if a filter is malformed.
-            404:
-              description: |
-                *404 Not Found*
-
-                Returned if no annotation values were found for the FTS search.
-              
-                Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
-            501:
-              description: |
-                *501 Not Implemented*
-
-                Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
-        /{value}:
-          description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
-          options:
-            description: Returns allowable HTTP methods.
-            responses:
-              200:
-                headers:
-                  Accept:
-                    description: Allowable HTTP methods.
-                    type:        string
-          get:
-            description:
-  /evidence:
-    description: |
-      Operate on the evidence resource collection.
-
-      *Operations*
-
-      - Filter the evidence resource collection using `GET /evidence` with query parameters.
-      - Retrieve an evidence resource using `GET /evidence/{id}`.
-      - Create a new evidence resource using `POST /evidence` with a supported content type.
-      - Update an existing evidence resource using `PUT /evidence/{id}` with a supported content type.
-      - Delete an existing evidence resource using `DELETE /evidence/{id}`.
-
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
-    post:
-      description: |
-        Create an evidence resource.
-
-        Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
-
-        *Example*:
-
-        - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence.schema.json`
-      responses:
-        201:
-          description: |
-            *201 Created*
-
-            The evidence resource was created.
-
-            The link to the evidence resource is conveyed is the *Link* header.
-        415:
-          description: |
-            *415 Unsupported Media Type*
-
-            The evidence resource body was not a supported media type..
-      body:
-        application/json:
-          schema: evidence
-          example: |
-            {
-              "evidence": {
-                "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
-                "citation": {
-                  "type": "PubMed",
-                  "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
-                  "id": "10699758"
-                },
-                "experiment_context": [
-                  {
-                    "name":  "species",
-                    "value": "9606"
-                  },
-                  {
-                    "name":  "disease",
-                    "value": "leukemia"
-                  }
-                ],
-                "metadata": {
-                  "status": "Approved"
-                }
-              }
-            }
-    get:
-      description: |
-        Retrieve the evidence resource collection.
-
-        All evidence resources will be returned by default.
-
-        The collection can be returned page by page by providing a *start* (defaults to `0`) index and *size* (defaults to no size limit) to return.
-
-        This collection can be filtered by providing one or more *filter* options. A filter specifies the *category*, *name*, and *value* of the filter and is encoded as a JSON object. For example an evidence metadata filter might be encoded as:
-
-        ```json
-          {
-            "category": "metadata",
-            "name": "status",
-            "value": "Approved"
-          }
-        ```
-
-        This collection can be filtered using by a full-text search filter such as:
-
-        ```json
-          {
-            "category": "fts",
-            "name": "search",
-            "value": "lung liver pancreas"
-          }
-        ```
-
-        ```json
-          {
-            "category": "fts",
-            "name": "search",
-            "value": "\"subdural hematoma\""
-          }
-        ```
-
-        This collection can specify the *faceted* boolean option. Facets will reflect all (possibly filtered) evidence resources irrespective of *start* and *size* paging.
-        
-        Facts are an array of facet objects that are composed of a *filter* and *count*. For example for the evidence metadata filter the facet object would be encoded as:
-
-        ```json
-          {
-            "category": "metadata",
-            "name": "status",
-            "value": "Approved",
-            "filter": "{\"category\": \"metadata\", \"name\": \"status\", \"value\": \"Approved \"}",
-            "count": 10200
-          }
-        ```
-
-        The *filter* property value can be used as a *filter* option. This is intended to support filtering the evidence resource collection by selected facets.
-
-        The *max_values_per_facet* option can be specified to limit the number of returned facet values by category, name pairs. For example, setting *max_values_per_facet* to `2` would return up to 2 distinct facets values for `{ "category": "citation", "name": "id", ... }`.
-      headers:
-        Accept:
-          displayName: Accept
-          description: |
-            The Accept header informs the server which media types the client accepts.
-      queryParameters:
-        start:
-          type: integer
-          description: |
-            The evidence resource to start from for paging purposes.
-            
-            The default value is `0`. This value will return evidence resources starting from the beginning of collection.
-          example: 100
-          required: false
-        size:
-          type: integer
-          description: |
-            The size of the evidence resource collection to retrieve. This will return a slice of the evidence resource collection relative to *start*.
-
-            The default is `0`. This value will return all evidence resources in the collection.
-          example: 100
-          required: false
-        filter:
-          type: string
-          description: |
-            A filter to apply to the evidence resource collection to narrow the resources retrieved.
-
-            The default is to not apply filters. If filters are not specified then all evidence resources, in the collection, will be returned.
-          example: |
-            {"category":"experiment_context","name":"Anatomy","value":"prostate gland"}
-            {"category":"fts","name":"search","value":"\"subdural hematoma\" carcinoma"}
-            {"category":"fts","name":"search","value":"homatoma -carcinoma"}
-          required: false
-        faceted:
-          type: string
-          description: |
-            The boolean indicator to provided faceted results for the evidence resource collection.
-            
-            The default is `false`. This value will not return facets in the response.
-          enum: [ 'true', 'yes', '1', 'on' ]
-          example: yes
-        max_values_per_facet:
-          type: integer
-          description: |
-            The maximum about of facet values to display for every category, name pair.
-            
-            The default is `0`. This value will return all facet values (i.e. unbounded) for every category, name pair.
-          example: 20
-          required: false
-      responses:
-        200:
-          description: |
-            An example request for this resource might be:
-
-            - Path: `/api/evidence`
-            - Query parameters:
-              - `start=0`
-              - `size=1`
-              - `faceted=yes`
-              - `max_values_per_facet=1`
-              - `filter`
-              ```json
+        body:
+          application/json:
+            schema: evidence_collection
+            example: |
               {
-                "category":"experiment_context",
-                "name":"Anatomy",
-                "value":"prostate gland"
-              }
-              ```
-
-          body:
-            application/json:
-              schema: evidence_collection
-              example: |
-                {
-                  "evidence": [
-                    {
+                "evidence_collection": [
+                  {
+                    "evidence": {
                       "bel_statement": "p(HGNC:CDH1) decreases cat(complex(p(HGNC:ITGAV),p(HGNC:ITGB5)))",
                       "citation": {
                         "type": "Other",
@@ -528,97 +530,116 @@ schemas:
                       "metadata": {
                         "status": "Review"
                       }
-                    }
-                  ]
-                  "facets": [
-                    {
-                      "category": "experiment_context",
-                      "name": "Species",
-                      "value": "9606",
-                      "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"9606\"}",
-                      "count": 49071
                     },
-                    {
-                      "category": "metadata",
-                      "name": "status",
-                      "value": "Review",
-                      "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Review\"}",
-                      "count": 18954
-                    },
-                    {
-                      "category": "experiment_context",
-                      "name": "Anatomy",
-                      "value": "liver",
-                      "filter": "{\"category\":\"context\",\"name\":\"Anatomy\",\"value\":\"liver\"}",
-                      "count": 2357
-                    }
-                  ]
-                }
-    /{identifier}:
-      description:
-      options:
-        description: Returns allowable HTTP methods.
-        responses:
-          200:
-            headers:
-              Accept:
-                description: Allowable HTTP methods.
-                type:        string
-      get:
-      put:
-        description: |
-          Replaces an evidence resource identified by *{identifier}*.
-
-          Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
-
-          *Example*:
-
-          - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence.schema.json`
-        body:
-          application/json:
-            schema: evidence
-            example: |
-              {
-                "evidence": [
-                  {
-                    "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
-                    "citation": {
-                      "type": "PubMed",
-                      "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
-                      "id": "10699758"
-                    },
-                    "experiment_context": {
-                      "Species": "9606",
-                      "CellLine": "LNCAP cell",
-                      "Anatomy": "prostate gland",
-                      "Cell": "fibroblast",
-                      "Disease": "leukemia"
-                    },
-                    "metadata": {
-                      "status": "Approved"
+                    "links": {
+                      "self": {
+                        "type": "evidence",
+                        "href": "http://localhost:9000/api/evidence/560951418a4cca3a38000001"
+                      },
+                      "collection": {
+                        "type": "evidence_collection",
+                        "href": "http://localhost:9000/api/evidence"
+                      }
                     }
                   }
-                ]
+                ],
+                "facets": [
+                  {
+                    "category": "experiment_context",
+                    "name": "Species",
+                    "value": "9606",
+                    "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"9606\"}",
+                    "count": 49071
+                  },
+                  {
+                    "category": "metadata",
+                    "name": "status",
+                    "value": "Review",
+                    "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Review\"}",
+                    "count": 18954
+                  },
+                  {
+                    "category": "experiment_context",
+                    "name": "Anatomy",
+                    "value": "liver",
+                    "filter": "{\"category\":\"context\",\"name\":\"Anatomy\",\"value\":\"liver\"}",
+                    "count": 2357
+                  }
+                ],
+                "metadata": {
+                  "collection_paging": {
+                    "total": 52405,
+                    "total_filtered": 52405,
+                    "total_pages": 52405,
+                    "current_page": 1,
+                    "current_page_size": 1
+                  }
+                }
               }
-        responses:
-          202:
-            description: |
-              *202 Accepted*
+  /{identifier}:
+    description:
+    options:
+      description: Returns allowable HTTP methods.
+      responses:
+        200:
+          headers:
+            Accept:
+              description: Allowable HTTP methods.
+              type:        string
+    get:
+    put:
+      description: |
+        Replaces an evidence resource identified by *{identifier}*.
 
-              The replacement for the evidence resource will be applied.
-          404:
-            description: |
-              *404 Not Found*
+        Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
 
-              An evidence resource, identified by *{identifier}*, does not exist.
-          415:
-            description: |
-              *415 Unsupported Media Type*
+        *Example*:
 
-              The evidence resource body was not a supported media type.
-      patch:
-      delete:
-  /expressions/{bel}/completions:
+        - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence_resource.schema.json`
+      body:
+        application/json:
+          schema: evidence_resource
+          example: |
+            {
+              "evidence": {
+                "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
+                "citation": {
+                  "type": "PubMed",
+                  "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
+                  "id": "10699758"
+                },
+                "experiment_context": {
+                  "Species": "9606",
+                  "CellLine": "LNCAP cell",
+                  "Anatomy": "prostate gland",
+                  "Cell": "fibroblast",
+                  "Disease": "leukemia"
+                },
+                "metadata": {
+                  "status": "Approved"
+                }
+              }
+            }
+      responses:
+        202:
+          description: |
+            *202 Accepted*
+
+            The replacement for the evidence resource will be applied.
+        404:
+          description: |
+            *404 Not Found*
+
+            An evidence resource, identified by *{identifier}*, does not exist.
+        415:
+          description: |
+            *415 Unsupported Media Type*
+
+            The evidence resource body was not a supported media type.
+    patch:
+    delete:
+/expressions:
+  /{bel}/completions:
     description: |
       Retrieve completions for the *BEL* expression fragment. The caret position to complete from defaults to the end of *BEL* expression fragment.
 
@@ -710,7 +731,7 @@ schemas:
                   ]
                 }
               schema: completion_collection
-  /expressions/{bel}/components:
+  /{bel}/components:
     description: |
       Retrieve the components of a *BEL* expression fragment. Currently this will only return the *subject*, *relationship*, and *object* understood from BEL statement expression.
     uriParameters:
@@ -781,47 +802,47 @@ schemas:
                         "object":       "bp(MESHPP:Apoptosis)"
                     }
                 }
-  /functions:
-    description: Retrieve the BEL function resource collection.
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
-    get:
-      headers:
-        Accept:
-          displayName: Accept
-      responses:
-        200:
-  /functions/{fx}:
-    description: Retrieve a BEL function resource.
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
-    get:
-      headers:
-        Accept:
-          displayName: Accept
-      responses:
-        200:
-  /namespaces:
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
+/functions:
+  description: Retrieve the BEL function resource collection.
+  options:
+    description: Returns allowable HTTP methods.
+    responses:
+      200:
+        headers:
+          Accept:
+            description: Allowable HTTP methods.
+            type:        string
+  get:
+    headers:
+      Accept:
+        displayName: Accept
+    responses:
+      200:
+/functions/{fx}:
+  description: Retrieve a BEL function resource.
+  options:
+    description: Returns allowable HTTP methods.
+    responses:
+      200:
+        headers:
+          Accept:
+            description: Allowable HTTP methods.
+            type:        string
+  get:
+    headers:
+      Accept:
+        displayName: Accept
+    responses:
+      200:
+/namespaces:
+  options:
+    description: Returns allowable HTTP methods.
+    responses:
+      200:
+        headers:
+          Accept:
+            description: Allowable HTTP methods.
+            type:        string
   /namespaces/{namespace}:
     options:
       description: Returns allowable HTTP methods.
@@ -878,4 +899,4 @@ schemas:
             Accept:
               description: Allowable HTTP methods.
               type:        string
-# vim: ft=yaml sw=2 ts=2 sts=2 expandtab:
+  # vim: ft=yaml sw=2 ts=2 sts=2 expandtab:

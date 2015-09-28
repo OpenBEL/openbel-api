@@ -174,7 +174,7 @@ module OpenBEL
           adapter = Oat::Adapters::HAL
 
           resource = resource_serializer.new(
-            type_serializer.new(obj, resource_context, adapter).to_hash,
+            obj,
             resource_context,
             adapter
           ).to_hash
@@ -190,7 +190,7 @@ module OpenBEL
           }.merge(options)
 
           type_class = type.to_s.split('_').map(&:capitalize).join
-          type_serializer     = self.class.const_get("#{type_class}Serializer")
+          type_serializer     = self.class.const_get("#{type_class}ResourceSerializer")
           resource_serializer = self.class.const_get("#{type_class}CollectionSerializer")
 
           adapter = Oat::Adapters::HAL

@@ -9,24 +9,21 @@ module OpenBEL
       class NamespaceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :namespace
-          properties do |p|
-            p.rdf_uri   item.uri
-            p.name      item.prefLabel
-            p.prefix    item.prefix
-            p.domain    item.domain
-          end
+          type     :namespace
+          property :rdf_uri, item.uri
+          property :name,    item.prefLabel
+          property :prefix,  item.prefix
+          property :domain,  item.domain
         end
       end
 
       class NamespaceResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'namespace'
-          entities :namespaces, item, NamespaceSerializer
-
-          link :self,       link_self(item.first.prefix)
-          link :collection, link_collection
+          type     :namespace
+          property :namespace,  item
+          link     :self,       link_self(item.prefix)
+          link     :collection, link_collection
         end
 
         private
@@ -40,7 +37,7 @@ module OpenBEL
 
         def link_collection
           {
-            :type => :'namespace_collection',
+            :type => :namespace_collection,
             :href => "#{base_url}/api/namespaces"
           }
         end
@@ -49,26 +46,25 @@ module OpenBEL
       class NamespaceCollectionSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'namespace_collection'
-          entities :namespaces, item, NamespaceSerializer
-
-          link :self,       link_self
-          link :start,      link_start(item.first.prefix)
+          type     :namespace_collection
+          property :namespace_collection, item
+          link     :self,                 link_self
+          link     :start,                link_start
         end
 
         private
 
         def link_self
           {
-            :type => :'namespace_collection',
+            :type => :namespace_collection,
             :href => "#{base_url}/api/namespaces"
           }
         end
 
-        def link_start(prefix)
+        def link_start
           {
-            :type => :function,
-            :href => "#{base_url}/api/namespaces/#{prefix}"
+            :type => :start,
+            :href => "#{base_url}/api/namespaces/values"
           }
         end
       end
@@ -76,31 +72,29 @@ module OpenBEL
       class NamespaceValueSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'namespace_value'
-          properties do |p|
-            p.rdf_uri       item.uri
-            p.type          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
-            p.identifier    item.identifier
-            p.name          item.prefLabel
-            p.title         item.title
-            p.species       item.fromSpecies
-            p.namespace_uri item.inScheme
-          end
+          type     :namespace_value
+          property :rdf_uri,       item.uri
+          property :type,          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+          property :identifier,    item.identifier
+          property :name,          item.prefLabel
+          property :title,         item.title
+          property :species,       item.fromSpecies
+          property :namespace_uri, item.inScheme
         end
       end
 
       class NamespaceValueResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'namespace_value'
-          parts = URI(item.first.uri).path.split('/')[3..-1]
+          parts = URI(item.uri).path.split('/')[3..-1]
           namespace_id = parts[0]
           namespace_value_id = parts.join('/')
-          entities :'namespace_values', item, NamespaceValueSerializer
 
-          link :self,       link_self(namespace_value_id)
-          link :collection, link_namespace(namespace_id)
-          link :item,       [
+          type     :namespace_value
+          property :namespace_value, item
+          link     :self,            link_self(namespace_value_id)
+          link     :collection,      link_namespace(namespace_id)
+          link     :item,            [
             link_equivalents(namespace_value_id),
             link_orthologs(namespace_value_id)
           ]
@@ -110,7 +104,7 @@ module OpenBEL
 
         def link_self(id)
           {
-            :type => :'namespace_value',
+            :type => :namespace_value,
             :href => "#{base_url}/api/namespaces/#{id}"
           }
         end
@@ -124,14 +118,14 @@ module OpenBEL
 
         def link_equivalents(id)
           {
-            :type => :'namespace_value_collection',
+            :type => :namespace_value_collection,
             :href => "#{base_url}/api/namespaces/#{id}/equivalents"
           }
         end
 
         def link_orthologs(id)
           {
-            :type => :'namespace_value_collection',
+            :type => :namespace_value_collection,
             :href => "#{base_url}/api/namespaces/#{id}/orthologs"
           }
         end
@@ -140,25 +134,23 @@ module OpenBEL
       class NamespaceValueCollectionSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'namespace_value_collection'
-          entities :'namespace_values', item, NamespaceValueSerializer
+          type     :namespace_value_collection
+          property :namespace_value_collection, item
         end
       end
 
       class ValueEquivalenceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          type :'value_equivalence'
-          properties do |p|
-            p.value         item.value
-            p.type          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
-            p.identifier    item.identifier
-            p.title         item.title
-            p.species       item.fromSpecies
-            p.namespace_uri item.inScheme
-          end
+          type :value_equivalence
+          property :value,         item.value
+          property :type,          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+          property :identifier,    item.identifier
+          property :title,         item.title
+          property :species,       item.fromSpecies
+          property :namespace_uri, item.inScheme
 
-          entities :equivalences, item.equivalences, NamespaceValueSerializer
+          property :value_equivalence_collection, item.equivalences, NamespaceValueSerializer
         end
       end
     end

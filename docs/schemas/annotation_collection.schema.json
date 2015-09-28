@@ -4,16 +4,16 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "annotations"
+    "annotation_collection"
   ],
   "properties": {
-    "annotations": {
+    "annotation_collection": {
       "type": "array",
       "minItems": 0,
       "title": "",
       "description": "",
       "items": {
-        "$ref":"http://next.belframework.org/schema/annotation.schema.json#/properties/annotation"
+        "$ref":"http://next.belframework.org/schema/annotation_resource.schema.json"
       }
     }
   }

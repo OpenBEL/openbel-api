@@ -4,17 +4,27 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "annotation_values"
+    "annotation_value"
   ],
   "properties": {
-    "annotation_values": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
-      "title": "",
-      "description": "",
-      "items": {
-        "$ref":"http://next.belframework.org/schema/annotation.schema.json#/properties/annotation_value"
+    "annotation_value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "identifier",
+        "name"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
       }
     }
   }
