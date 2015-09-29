@@ -8,13 +8,12 @@ module OpenBEL
         adapter Oat::Adapters::HAL
         schema do
           type :completion
-          properties do |p|
-            p.type      item[:type]
-            p.label     item[:label]
-            p.value     item[:value]
-            p.highlight item[:highlight]
-            p.actions   item[:actions]
-          end
+          property :type,      item[:type]
+          property :label,     item[:label]
+          property :value,     item[:value]
+          property :highlight, item[:highlight]
+          property :actions,   item[:actions]
+          property :id,        item[:id]
         end
       end
 
@@ -26,8 +25,8 @@ module OpenBEL
             p.completions item
           end
 
-          link :self,        link_self(item.first[:id])
-          link :describedby, link_described_by(item.first[:type], item.first[:id])
+          link :self,        link_self(item[:id])
+          link :describedby, link_described_by(item[:type], item[:id])
         end
 
         private
