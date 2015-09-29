@@ -56,7 +56,7 @@ traits:
     ]
   get:
     description: |
-      Retrieves the *annotation_collection* containing an array of all *annotation* resources.
+      Returns the *annotation_collection* containing an array of all *annotation* resources.
 
       An *annotation* resource contains fields:
       - prefLabel: human-readable name
@@ -66,25 +66,29 @@ traits:
 
       The collection contains zero or more *annotation* resource objects. If the *annotation_collection* is empty then the result is an empty array.
 
-      **Schemas**
-      - [annotation_collection](http://next.belframework.org/schema/annotation_collection.schema.json)
-      - [annotation](http://next.belframework.org/schema/annotation_resource.schema.json)
     responses:
       200:
+        description: |
+          **JSON Schema**
+          - [annotation_collection](schemas/annotation_collection.schema.json)
+          - [annotation](schemas/annotation_resource.schema.json)
         body:
           application/json:
             example: !include examples/annotation_collection.example.json
   /values:
-    description: Represents the annotation values resource collection for all annotation resources.
+    description: |
+      Annotation Value collection for all Annotation resources within the API.
+
+      This provides a collection of all BEL annotation values that can be listed and filtered.
     options:
       is: [
         ro_options: { name: "annotation_value_collection" }
       ]
     get:
       description: |
-        Retrieves the annotation values resource collection for all annotation resources. This allows the caller to retrieve values across all annotations known to the API.
+        Returns the *annotation_value_collection* across all *annotation* resources.
 
-        A good use case for this is an annotation search interface.
+        Example: *Search by filter*
 
         <br>
          **Limitations**
@@ -92,37 +96,74 @@ traits:
          This endpoint is limited to full-text searching including a *filter* like:
          ```json
          {
-           "category": "fts",
-           "name": "search",
-           "value": "cat"
+             "category": "fts",
+             "name":     "search",
+             "value":    "lung sarcoma"
          }
          ```
 
         <br>
         **Complete Example**
         
-        **<sub>GET http://next.belframework.org/api/annotations/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22dendritic%20cell%20thymoma%22}</sub>**
+        **<sub>GET http://next.belframework.org/api/annotations/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22lung%20sarcoma%22}</sub>**
         
         ```json
         {
-          "annotation_values": [
-            {
-              "type": "BiologicalProcessConcept",
-              "identifier": "3282",
-              "name": "dendritic cell thymoma",
-              "_links": {
-                "self": {
-                  "type": "annotation_value",
-                  "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3282"
+            "annotation_value_collection": [
+                {
+                    "annotation_value": {
+                        "type": "BiologicalProcessConcept",
+                        "identifier": "2784",
+                        "name": "lung sarcoma",
+                        "_links": {
+                            "self": {
+                                "type": "annotation_value",
+                                "href": "http://next.belframework.org/api/annotations/disease-ontology/values/2784"
+                            },
+                            "collection": {
+                                "type": "annotation",
+                                "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                            }
+                        }
+                    }
                 },
-                "collection": {
-                  "type": "annotation",
-                  "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                {
+                    "annotation_value": {
+                        "type": "BiologicalProcessConcept",
+                        "identifier": "12762",
+                        "name": "Kaposi's sarcoma",
+                        "_links": {
+                            "self": {
+                                "type": "annotation_value",
+                                "href": "http://next.belframework.org/api/annotations/disease-ontology/values/8632"
+                            },
+                            "collection": {
+                                "type": "annotation",
+                                "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                            }
+                        }
+                    }
+                },
+                {
+                    "annotation_value": {
+                        "type": "BiologicalProcessConcept",
+                        "identifier": "5265",
+                        "name": "lung leiomyosarcoma",
+                        "_links": {
+                            "self": {
+                                "type": "annotation_value",
+                                "href": "http://next.belframework.org/api/annotations/disease-ontology/values/5265"
+                            },
+                            "collection": {
+                                "type": "annotation",
+                                "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          ]
+            ]
         }
+        
         ```
 
       queryParameters:
@@ -145,7 +186,7 @@ traits:
           description: |
             A filter to apply to the annotation value resource collection to narrow the resources retrieved.
           example: |
-            {"category":"fts","name":"search","value":"cat"}
+            {"category":"fts","name":"search","value":"lung sarcoma"}
           required: false
         faceted:
           type: string
@@ -155,10 +196,13 @@ traits:
           example: no
       responses:
         200:
+          description: |
+            **JSON Schema**
+            - [annotation_value_collection](schemas/annotation_value_collection.schema.json)
+            - [annotation_value](schemas/annotation_value_resource.schema.json)
           body:
             application/json:
-              schema:  annotation_value_collection
-              example: !include http://next.belframework.org/example/annotation_value_collection.example.json
+              example: !include examples/annotation_values_filter.example.json
         400:
           description: |
             *400 Bad Request*
