@@ -10,13 +10,12 @@ module OpenBEL
 
         schema do
           type :evidence
-          properties do |p|
-            p.bel_statement      item['bel_statement']
-            p.citation           item['citation']
-            p.summary_text       item['summary_text']
-            p.experiment_context item['experiment_context']
-            p.metadata           item['metadata']
-          end
+          property :bel_statement,      item['bel_statement']
+          property :citation,           item['citation']
+          property :summary_text,       item['summary_text']
+          property :experiment_context, item['experiment_context']
+          property :metadata,           item['metadata']
+          property :id,                 item['_id']
         end
       end
 
@@ -36,8 +35,8 @@ module OpenBEL
         private
 
         def link_self
-          id = item['_id'] || context[:_id]
-          item.delete('_id')
+          id = item[:id] || context[:_id]
+          item.delete(:id)
           {
             :type => :evidence,
             :href => "#{base_url}/api/evidence/#{id}"
