@@ -98,72 +98,71 @@ traits:
          {
              "category": "fts",
              "name":     "search",
-             "value":    "lung sarcoma"
+             "value":    "sarcoma"
          }
          ```
 
         <br>
         **Complete Example**
         
-        **<sub>GET http://next.belframework.org/api/annotations/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22lung%20sarcoma%22}</sub>**
+        **<sub>GET http://next.belframework.org/api/annotations/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22sarcoma%22}&start=0&size=3</sub>**
         
         ```json
         {
-            "annotation_value_collection": [
-                {
-                    "annotation_value": {
-                        "type": "BiologicalProcessConcept",
-                        "identifier": "2784",
-                        "name": "lung sarcoma",
-                        "_links": {
-                            "self": {
-                                "type": "annotation_value",
-                                "href": "http://next.belframework.org/api/annotations/disease-ontology/values/2784"
-                            },
-                            "collection": {
-                                "type": "annotation",
-                                "href": "http://next.belframework.org/api/annotations/disease-ontology"
-                            }
-                        }
-                    }
-                },
-                {
-                    "annotation_value": {
-                        "type": "BiologicalProcessConcept",
-                        "identifier": "12762",
-                        "name": "Kaposi's sarcoma",
-                        "_links": {
-                            "self": {
-                                "type": "annotation_value",
-                                "href": "http://next.belframework.org/api/annotations/disease-ontology/values/8632"
-                            },
-                            "collection": {
-                                "type": "annotation",
-                                "href": "http://next.belframework.org/api/annotations/disease-ontology"
-                            }
-                        }
-                    }
-                },
-                {
-                    "annotation_value": {
-                        "type": "BiologicalProcessConcept",
-                        "identifier": "5265",
-                        "name": "lung leiomyosarcoma",
-                        "_links": {
-                            "self": {
-                                "type": "annotation_value",
-                                "href": "http://next.belframework.org/api/annotations/disease-ontology/values/5265"
-                            },
-                            "collection": {
-                                "type": "annotation",
-                                "href": "http://next.belframework.org/api/annotations/disease-ontology"
-                            }
-                        }
-                    }
+          "annotation_value_collection": [
+            {
+              "annotation_value": {
+                "type": "BiologicalProcessConcept",
+                "identifier": "D012509",
+                "name": "Sarcoma",
+                "_links": {
+                  "self": {
+                    "type": "annotation_value",
+                    "href": "http://next.belframework.org/api/annotations/mesh-diseases/values/D012509"
+                  },
+                  "collection": {
+                    "type": "annotation",
+                    "href": "http://next.belframework.org/api/annotations/mesh-diseases"
+                  }
                 }
-            ]
+              }
+            },
+            {
+              "annotation_value": {
+                "type": "BiologicalProcessConcept",
+                "identifier": "1115",
+                "name": "sarcoma",
+                "_links": {
+                  "self": {
+                    "type": "annotation_value",
+                    "href": "http://next.belframework.org/api/annotations/disease-ontology/values/1115"
+                  },
+                  "collection": {
+                    "type": "annotation",
+                    "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                  }
+                }
+              }
+            },
+            {
+              "annotation_value": {
+                "type": "BiologicalProcessConcept",
+                "identifier": "D008223",
+                "name": "Lymphoma",
+                "_links": {
+                  "self": {
+                    "type": "annotation_value",
+                    "href": "http://next.belframework.org/api/annotations/mesh-diseases/values/D008223"
+                  },
+                  "collection": {
+                    "type": "annotation",
+                    "href": "http://next.belframework.org/api/annotations/mesh-diseases"
+                  }
+                }
+              }
+            }
+          ]
         }
-        
         ```
 
       queryParameters:
@@ -179,14 +178,14 @@ traits:
             The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
 
             A size of zero or less will return all values.
-          example:  5
+          example:  3
           required: false
         filter:
           type: string
           description: |
             A filter to apply to the annotation value resource collection to narrow the resources retrieved.
           example: |
-            {"category":"fts","name":"search","value":"lung sarcoma"}
+            {"category":"fts","name":"search","value":"sarcoma"}
           required: false
         faceted:
           type: string
@@ -219,38 +218,45 @@ traits:
           description: |
             *501 Not Implemented*
 
-            Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
+            Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
   /{annotation}:
-    description: Represents a single annotation resource.
+    description: |
+      Annotation resource identified by *{annotation}* URI parameter. 
     uriParameters:
       annotation:
         type: string
-        description: An identifier string for an annotation. This is either the annotation name or prefix.
+        description: |
+          An identifier string for an annotation. This is either the annotation prefix, name, or URI part.
+        example: |
+          "do" or "Disease Ontology" or "disease-ontology" (all resolve to the same annotation resource)
         required: true
     options:
       is: [
         ro_options: { name: "annotation resource" }
       ]
     get:
-      description: Retrieves an annotation resource.
+      description: |
+        Returns the *annotation* resource identified by *{annotation}* URI parameter.
       responses:
         200:
+          description: |
+            **JSON Schema**
+            - [annotation](schemas/annotation_resource.schema.json)
           body:
             application/json:
-              schema:  annotation_resource
-              example: !include http://next.belframework.org/example/annotation_resource.example.json
+              example: !include examples/annotation_resource.example.json
     /values:
       description: |
-        Access the annotation values within an *{annotation}*.
+        Annotation Value collection within an Annotation resource identified by *{annotation}*.
       options:
         is: [
           ro_options: { name: "annotation_value_collection" }
         ]
       get:
         description: |
-          Retrieves the annotation values within an *{annotation}*.
+          Returns the *annotation_value_collection* across the *annotation* resource identified by *{annotation}* URI parameter.
 
-          A good use case for this is an annotation search interface constrained to one *{annotation}*.
+          Example: *Search by filter*
 
           <br>
            **Limitations**
@@ -258,32 +264,68 @@ traits:
            This endpoint is limited to full-text searching including a *filter* like:
            ```json
            {
-             "category": "fts",
-             "name": "search",
-             "value": "cat"
+               "category": "fts",
+               "name":     "search",
+               "value":    "sarcoma"
            }
            ```
 
           <br>
           **Complete Example**
           
-          **<sub>GET http://next.belframework.org/api/annotations/taxon/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22Mouse%22}</sub>**
+          **<sub>GET http://next.belframework.org/api/annotations/do/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22sarcoma%22}&start=0&size=3</sub>**
           
           ```json
           {
-            "annotation_values": [
+            "annotation_value_collection": [
               {
-                "type": "AnnotationConcept",
-                "identifier": "0007836",
-                "name": "Mouse cell",
-                "_links": {
-                  "self": {
-                    "type": "annotation_value",
-                    "href": "http://next.belframework.org/api/annotations/cell-line-ontology/values/0007836"
-                  },
-                  "collection": {
-                    "type": "annotation",
-                    "href": "http://next.belframework.org/api/annotations/cell-line-ontology"
+                "annotation_value": {
+                  "type": "BiologicalProcessConcept",
+                  "identifier": "1115",
+                  "name": "sarcoma",
+                  "_links": {
+                    "self": {
+                      "type": "annotation_value",
+                      "href": "http://next.belframework.org/api/annotations/disease-ontology/values/1115"
+                    },
+                    "collection": {
+                      "type": "annotation",
+                      "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                    }
+                  }
+                }
+              },
+              {
+                "annotation_value": {
+                  "type": "BiologicalProcessConcept",
+                  "identifier": "3071",
+                  "name": "gliosarcoma",
+                  "_links": {
+                    "self": {
+                      "type": "annotation_value",
+                      "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3071"
+                    },
+                    "collection": {
+                      "type": "annotation",
+                      "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                    }
+                  }
+                }
+              },
+              {
+                "annotation_value": {
+                  "type": "BiologicalProcessConcept",
+                  "identifier": "3382",
+                  "name": "liposarcoma",
+                  "_links": {
+                    "self": {
+                      "type": "annotation_value",
+                      "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3382"
+                    },
+                    "collection": {
+                      "type": "annotation",
+                      "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                    }
                   }
                 }
               }
@@ -303,14 +345,14 @@ traits:
               The size of the annotation value resource collection to retrieve. This will return a slice of the annotation value resource collection relative to *start*.
 
               A size of zero or less will return all values.
-            example:  1
+            example:  3
             required: false
           filter:
             type: string
             description: |
               A filter to apply to the annotation value resource collection to narrow the resources retrieved.
             example: |
-              {"category":"fts","name":"search","value":"Mouse"}
+              {"category":"fts","name":"search","value":"sarcoma"}
             required: false
           faceted:
             type: string
@@ -320,10 +362,12 @@ traits:
             example: no
         responses:
           200:
+            description: |
+              **JSON Schema**
+              - [annotation_value_collection](schemas/annotation_value_collection.schema.json)
             body:
               application/json:
-                schema:  annotation_value_collection
-                example: !include http://next.belframework.org/example/annotation_value_collection.example.json
+                example: !include examples/annotation_value_collection.example.json
           400:
             description: |
               *400 Bad Request*
@@ -340,15 +384,54 @@ traits:
             description: |
               *501 Not Implemented*
 
-              Returned if the client enabled the `faceted` query parameter. Faceting annotation values is not supported.
+              Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
       /{value}:
-        description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
+        description: |
+          Annotation value resource identified by *{annotation}* and *{value}* URI parameters.
         options:
           is: [
             ro_options: { name: "annotation_value resource" }
           ]
         get:
-          description:
+          description: |
+            Returns the *annotation_value* resource identified by *{annotation}* and *{value}* URI parameters.
+
+            **Complete Example**
+            
+            **<sub>GET http://next.belframework.org/api/annotations/do/values/sarcoma</sub>**
+
+            ```json
+            {
+              "annotation_value": {
+                "type": "BiologicalProcessConcept",
+                "identifier": "1115",
+                "name": "sarcoma",
+                "_links": {
+                  "self": {
+                    "type": "annotation_value",
+                    "href": "http://next.belframework.org/api/annotations/disease-ontology/values/1115"
+                  },
+                  "collection": {
+                    "type": "annotation",
+                    "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                  }
+                }
+              }
+            }
+            ```
+          responses:
+            200:
+              description: |
+                **JSON Schema**
+                - [annotation_value](schemas/annotation_value_resource.schema.json)
+              body:
+                application/json:
+                  example: !include examples/annotation_value_resource.example.json
+            404:
+              description: |
+                *404 Not Found*
+
+                Returned if a resource was not found by *{annotation}* and *{value}*.
 /evidence:
   description: |
     Operate on the evidence resource collection.

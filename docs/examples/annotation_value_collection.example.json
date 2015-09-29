@@ -1,17 +1,53 @@
 {
-  "annotation_values": [
+  "annotation_value_collection": [
     {
-      "type": "AnnotationConcept",
-      "identifier": "0007836",
-      "name": "Mouse cell",
-      "_links": {
-        "self": {
-          "type": "annotation_value",
-          "href": "http://next.belframework.org/api/annotations/cell-line-ontology/values/0007836"
-        },
-        "collection": {
-          "type": "annotation",
-          "href": "http://next.belframework.org/api/annotations/cell-line-ontology"
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "1115",
+        "name": "sarcoma",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology/values/1115"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology"
+          }
+        }
+      }
+    },
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "3071",
+        "name": "gliosarcoma",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3071"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology"
+          }
+        }
+      }
+    },
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "3382",
+        "name": "liposarcoma",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology/values/3382"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology"
+          }
         }
       }
     }

@@ -1,55 +1,55 @@
 {
-    "annotation_value_collection": [
-        {
-            "annotation_value": {
-                "type": "BiologicalProcessConcept",
-                "identifier": "2784",
-                "name": "lung sarcoma",
-                "_links": {
-                    "self": {
-                        "type": "annotation_value",
-                        "href": "http://next.belframework.org/api/annotations/disease-ontology/values/2784"
-                    },
-                    "collection": {
-                        "type": "annotation",
-                        "href": "http://next.belframework.org/api/annotations/disease-ontology"
-                    }
-                }
-            }
-        },
-        {
-            "annotation_value": {
-                "type": "BiologicalProcessConcept",
-                "identifier": "12762",
-                "name": "Kaposi's sarcoma",
-                "_links": {
-                    "self": {
-                        "type": "annotation_value",
-                        "href": "http://next.belframework.org/api/annotations/disease-ontology/values/8632"
-                    },
-                    "collection": {
-                        "type": "annotation",
-                        "href": "http://next.belframework.org/api/annotations/disease-ontology"
-                    }
-                }
-            }
-        },
-        {
-            "annotation_value": {
-                "type": "BiologicalProcessConcept",
-                "identifier": "5265",
-                "name": "lung leiomyosarcoma",
-                "_links": {
-                    "self": {
-                        "type": "annotation_value",
-                        "href": "http://next.belframework.org/api/annotations/disease-ontology/values/5265"
-                    },
-                    "collection": {
-                        "type": "annotation",
-                        "href": "http://next.belframework.org/api/annotations/disease-ontology"
-                    }
-                }
-            }
+  "annotation_value_collection": [
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "D012509",
+        "name": "Sarcoma",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases/values/D012509"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases"
+          }
         }
-    ]
+      }
+    },
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "1115",
+        "name": "sarcoma",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology/values/1115"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology"
+          }
+        }
+      }
+    },
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "D008223",
+        "name": "Lymphoma",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases/values/D008223"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases"
+          }
+        }
+      }
+    }
+  ]
 }
