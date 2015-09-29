@@ -28,6 +28,59 @@ module OpenBEL
         status 200
       end
 
+      helpers do
+
+        def normalize_relationship(relationship)
+          match = BEL::RDF::RELATIONSHIP_TYPE.select { |k, v|
+            v == BEL::RDF::RELATIONSHIP_TYPE[relationship.to_s]
+          }.
+          find { |k, v|
+            k =~ /^[a-z]/
+          }
+
+          match ? match.first : nil
+        end
+
+        def statement_components(bel_statement, obj = {})
+          obj[:subject]      = term_components(bel_statement.subject)
+          obj[:relationship] = normalize_relationship(bel_statement.relationship)
+          obj[:object]       = term_components(bel_statement.object)
+          obj
+        end
+
+        def arg_components(bel_argument)
+          if bel_argument.respond_to? :fx
+            term_components(bel_argument)
+          elsif bel_argument.respond_to? :ns
+            parameter_components(bel_argument)
+          else
+            nil
+          end
+        end
+
+        def term_components(bel_term)
+          return nil unless bel_term
+
+          {
+            :term => {
+              :fx        => bel_term.fx,
+              :arguments => bel_term.arguments.map { |a| arg_components(a) }
+            }
+          }
+        end
+
+        def parameter_components(bel_parameter, obj = {})
+          return nil unless bel_parameter
+
+          {
+            :parameter => {
+              :ns        => bel_parameter.ns,
+              :value     => bel_parameter.value.to_s
+            }
+          }
+        end
+      end
+
       get '/api/expressions/*/completions/?' do
         bel = params[:splat].first
         caret_position = (params[:caret_position] || bel.length).to_i
@@ -60,22 +113,10 @@ module OpenBEL
         }
         halt 404 unless statement
 
-        # Normalize relationship
-        normalized_relationship =
-          BEL::RDF::RELATIONSHIP_TYPE.select { |k, v|
-            v == BEL::RDF::RELATIONSHIP_TYPE[statement.relationship.to_s]
-          }.
-          find { |k, v|
-            k =~ /^[a-z]/
-          } || [nil]
-
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump({
-          :expression_components => {
-            :subject      => statement.subject,
-            :relationship => normalized_relationship[0],
-            :object       => statement.object,
-          }
+          :expression_components => statement_components(statement),
+          :statement_short_form  => statement.to_s
         })
       end
 
