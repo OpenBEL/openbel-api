@@ -22,16 +22,16 @@ module OpenBEL
         schema do
           type     :namespace
           property :namespace,  item
-          link     :self,       link_self(item.prefix)
+          link     :self,       link_self(item)
           link     :collection, link_collection
         end
 
         private
 
-        def link_self(id)
+        def link_self(item)
           {
             :type => :namespace,
-            :href => "#{base_url}/api/namespaces/#{id}"
+            :href => "#{base_url}/api/namespaces/#{item[:prefix]}"
           }
         end
 
@@ -86,7 +86,7 @@ module OpenBEL
       class NamespaceValueResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          parts = URI(item.uri).path.split('/')[3..-1]
+          parts = URI(item[:rdf_uri]).path.split('/')[3..-1]
           namespace_id = parts[0]
           namespace_value_id = parts.join('/')
 

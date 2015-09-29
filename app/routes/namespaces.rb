@@ -111,7 +111,7 @@ module OpenBEL
         halt 404 unless ns
 
         status 200
-        render(
+        render_resource(
           ns,
           :namespace
         )
@@ -245,7 +245,7 @@ module OpenBEL
         halt 404 unless value
 
         status 200
-        render(
+        render_resource(
           value,
           :namespace_value
         )

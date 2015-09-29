@@ -17,25 +17,6 @@ module OpenBEL
             p.experiment_context item['experiment_context']
             p.metadata           item['metadata']
           end
-
-          link :self,         link_self(item['_id'])
-          link :collection,   link_collection
-        end
-
-        private
-
-        def link_self(id)
-          {
-            :type => :evidence,
-            :href => "#{base_url}/api/evidence/#{id}"
-          }
-        end
-
-        def link_collection
-          {
-            :type => :evidence_collection,
-            :href => "#{base_url}/api/evidence"
-          }
         end
       end
 

@@ -14,72 +14,72 @@ schemas:
   - evidence_collection:         !include http://next.belframework.org/schema/evidence_collection.schema.json
   - match_result:                !include http://next.belframework.org/schema/match_result.schema.json
   - match_result_collection:     !include http://next.belframework.org/schema/match_result_collection.schema.json
+traits:
+  - ro_options:
+      description: |
+        Returns allowable HTTP methods for this <<name>>.
+      responses:
+        200:
+          headers:
+            Allow:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'GET' ]
 /api:
-  description: The root resource collection.
+  description: |
+    Root resource of the API. Lists all subresources contained within the API.
   options:
-    description: Returns allowable HTTP methods.
-    responses:
-      200:
-        headers:
-          Accept:
-            description: Allowable HTTP methods.
-            type:        string
-            enum:        [ 'OPTIONS', 'POST', 'GET', 'PUT', 'DELETE' ]
+    is: [
+      ro_options: { name: "root resource" }
+    ]
   get:
-    headers:
-        Accept:
-          displayName: Accept
+    description: |
+      Returns a list of linked *item* resources.
     responses:
       200:
         body:
           application/hal+json:
-            example: |
-              {
-                "_links": {
-                  "item": [
-                    {
-                      "href": "http://next.belframework.org/api/evidence"
-                    },
-                    {
-                      "href": "http://next.belframework.org/api/expressions"
-                    },
-                    {
-                      "href": "http://next.belframework.org/api/functions"
-                    },
-                    {
-                      "href": "http://next.belframework.org/api/namespaces"
-                    }
-                  ]
-                }
-              }
+            example: !include examples/root.example.json
 /annotations:
-  description: Represents the annotation resource collection.
+  description: |
+    Annotation collection within the API. 
+
+    This provides access to BEL annotation vocabularies such as MeSH, Gene Ontology, and Disease Ontology.
+
+    BEL Evidence can be annotated to express knowledge about the evidence itself. Some important uses of annotations are:
+      - Specify information about the biological system in which the facts represented by the statement hold or were demonstrated.
+      - Specify information about the experimental methods used to demonstrate the facts.
+      - Specify information about the knowledge source on which the statement is based, such as the citation and the specific text supporting the statement.
   options:
-    description: Returns allowable HTTP methods.
-    responses:
-      200:
-        headers:
-          Accept:
-            description: Allowable HTTP methods.
-            type:        string
+    is: [
+      ro_options: { name: "annotation_collection" }
+    ]
   get:
-    description: Retrieves all annotation resources.
+    description: |
+      Retrieves the *annotation_collection* containing an array of all *annotation* resources.
+
+      An *annotation* resource contains fields:
+      - prefLabel: human-readable name
+      - prefix:    short prefix
+      - domain:    biological domain
+      - 
+
+      The collection contains zero or more *annotation* resource objects. If the *annotation_collection* is empty then the result is an empty array.
+
+      **Schemas**
+      - [annotation_collection](http://next.belframework.org/schema/annotation_collection.schema.json)
+      - [annotation](http://next.belframework.org/schema/annotation_resource.schema.json)
     responses:
       200:
         body:
           application/json:
-            schema:  annotation_collection
             example: !include examples/annotation_collection.example.json
   /values:
     description: Represents the annotation values resource collection for all annotation resources.
     options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
+      is: [
+        ro_options: { name: "annotation_value_collection" }
+      ]
     get:
       description: |
         Retrieves the annotation values resource collection for all annotation resources. This allows the caller to retrieve values across all annotations known to the API.
@@ -184,13 +184,9 @@ schemas:
         description: An identifier string for an annotation. This is either the annotation name or prefix.
         required: true
     options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
+      is: [
+        ro_options: { name: "annotation resource" }
+      ]
     get:
       description: Retrieves an annotation resource.
       responses:
@@ -203,13 +199,9 @@ schemas:
       description: |
         Access the annotation values within an *{annotation}*.
       options:
-        description: Returns allowable HTTP methods.
-        responses:
-          200:
-            headers:
-              Accept:
-                description: Allowable HTTP methods.
-                type:        string
+        is: [
+          ro_options: { name: "annotation_value_collection" }
+        ]
       get:
         description: |
           Retrieves the annotation values within an *{annotation}*.
@@ -308,13 +300,9 @@ schemas:
       /{value}:
         description: Represents a single annotation value resources available on the annotation resource identified by *{annotation}* and *{value}*.
         options:
-          description: Returns allowable HTTP methods.
-          responses:
-            200:
-              headers:
-                Accept:
-                  description: Allowable HTTP methods.
-                  type:        string
+          is: [
+            ro_options: { name: "annotation_value resource" }
+          ]
         get:
           description:
 /evidence:

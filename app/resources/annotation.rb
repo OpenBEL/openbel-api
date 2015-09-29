@@ -7,31 +7,13 @@ module OpenBEL
       VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
       class AnnotationSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+#        adapter Oat::Adapters::HAL
         schema do
           type     :annotation
           property :rdf_uri,    item.uri
           property :name,       item.prefLabel
           property :prefix,     item.prefix
           property :domain,     item.domain
-          link     :self,       link_self(item.prefix)
-          link     :collection, link_collection
-        end
-
-        private
-
-        def link_self(id)
-          {
-            :type => :annotation,
-            :href => "#{base_url}/api/annotations/#{id}"
-          }
-        end
-
-        def link_collection
-          {
-            :type => :annotation_collection,
-            :href => "#{base_url}/api/annotations"
-          }
         end
       end
 
@@ -40,7 +22,7 @@ module OpenBEL
         schema do
           type     :annotation
           property :annotation, item
-          link     :self,       link_self(item.prefix)
+          link     :self,       link_self(item[:prefix])
         end
 
         private
