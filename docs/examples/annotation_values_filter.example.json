@@ -1,0 +1,55 @@
+{
+    "annotation_value_collection": [
+        {
+            "annotation_value": {
+                "type": "BiologicalProcessConcept",
+                "identifier": "2784",
+                "name": "lung sarcoma",
+                "_links": {
+                    "self": {
+                        "type": "annotation_value",
+                        "href": "http://next.belframework.org/api/annotations/disease-ontology/values/2784"
+                    },
+                    "collection": {
+                        "type": "annotation",
+                        "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                    }
+                }
+            }
+        },
+        {
+            "annotation_value": {
+                "type": "BiologicalProcessConcept",
+                "identifier": "12762",
+                "name": "Kaposi's sarcoma",
+                "_links": {
+                    "self": {
+                        "type": "annotation_value",
+                        "href": "http://next.belframework.org/api/annotations/disease-ontology/values/8632"
+                    },
+                    "collection": {
+                        "type": "annotation",
+                        "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                    }
+                }
+            }
+        },
+        {
+            "annotation_value": {
+                "type": "BiologicalProcessConcept",
+                "identifier": "5265",
+                "name": "lung leiomyosarcoma",
+                "_links": {
+                    "self": {
+                        "type": "annotation_value",
+                        "href": "http://next.belframework.org/api/annotations/disease-ontology/values/5265"
+                    },
+                    "collection": {
+                        "type": "annotation",
+                        "href": "http://next.belframework.org/api/annotations/disease-ontology"
+                    }
+                }
+            }
+        }
+    ]
+}
