@@ -1,3 +1,4 @@
+require 'cgi'
 require 'bel'
 require 'uri'
 
@@ -118,6 +119,46 @@ module OpenBEL
           :expression_components => statement_components(statement),
           :statement_short_form  => statement.to_s
         })
+      end
+
+      get '/api/expressions/*/components/terms?' do
+        bel         = params[:splat].first
+        functions   = CGI::parse(env["QUERY_STRING"])['function']
+        flatten     = as_bool(params[:flatten])
+        inner_terms = as_bool(params[:flatten])
+
+        terms = BEL::Script.parse(bel).select { |obj|
+          obj.is_a? BEL::Model::Term
+        }
+
+        if !functions.empty?
+          functions = functions.map(&:to_sym)
+          terms = terms.select { |term|
+            functions.any? { |match|
+              term.fx.short_form == match || term.fx.long_form == match
+            }
+          }
+        end
+
+        if inner_terms
+          terms = terms.flat_map { |term|
+            term.arguments.select { |arg| arg.is_a? BEL::Model::Term }
+          }
+        end
+
+        terms = terms.to_a
+        halt 404 if terms.empty?
+
+        response.headers['Content-Type'] = 'application/json'
+        if flatten
+          MultiJson.dump({
+            :terms => terms.map { |term| term.to_bel }
+          })
+        else
+          MultiJson.dump({
+            :terms => terms.map { |term| term_components(term) }
+          })
+        end
       end
 
       get '/api/expressions/*/ortholog/:species' do
