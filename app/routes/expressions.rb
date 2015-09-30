@@ -125,7 +125,7 @@ module OpenBEL
         bel         = params[:splat].first
         functions   = CGI::parse(env["QUERY_STRING"])['function']
         flatten     = as_bool(params[:flatten])
-        inner_terms = as_bool(params[:flatten])
+        inner_terms = as_bool(params[:inner_terms])
 
         terms = BEL::Script.parse(bel).select { |obj|
           obj.is_a? BEL::Model::Term
