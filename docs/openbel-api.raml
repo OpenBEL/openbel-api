@@ -40,6 +40,8 @@ documentation:
   - title: Planned Functionality
     content: |
       We are currently working on the following:
+      - Creating a group of BEL Evidence with returned resource "Location"
+      - Support for [BEL version 2.0](http://wiki.openbel.org/display/BLVD)
       - Autocomplete with BEL expression semantics (e.g. namespace encoding, term signatures, etc.)
       - Creation of BEL knowledge networks from the Evidence collection
 /api:
@@ -492,16 +494,21 @@ documentation:
     description: |
       Creates one or more Evidence resource within the API.
 
-      The formats are supported:
+      The following formats are supported:
       - Evidence JSON
-        - media type: `application/json`
+        - media type:  `application/json`
+        - JSON schema: [evidence.schema.json](http://next.belframework.org/schema/evidence.schema.json)
       - BEL Script
+        - defined by [BEL Script V1.0 Format](http://wiki.openbel.org/display/BLDV20/BEL+Script+V1.0+Format)
         - media type: `application/bel`
       - XBEL (XML)
         - media type: `application/xml`
+        - XML Schema: [xbel](http://resource.belframework.org/belframework/20150611/schema/xbel.xsd), [xbel-annotations](http://resource.belframework.org/belframework/20150611/schema/xbel-annotations.xsd)
       - [BEL JSON Graph Format](http://jsongraphformat.info/)
-        - media type: `application/vnd.jgf+json`
+        - media type:  `application/vnd.jgf+json`
+        - JSON schema: [bel-json-graph-2.0.schema.json](http://jsongraphformat.info/child-schemas/bel-json-graph-2.0.schema.json)
       - BEL RDF
+        - defined within [bel.rb](https://github.com/OpenBEL/bel.rb) as a [format extension](https://github.com/OpenBEL/bel.rb/wiki/Format-Extensions). See [source](https://github.com/OpenBEL/bel.rb/tree/c1471942ce8326ad2399d66154c858d6a9fbcd6b/lib/bel/extensions/rdf)
         - media type
           - `application/n-quads`
           - `application/n-triples`
@@ -510,11 +517,9 @@ documentation:
           - `application/x-turtle`
           - `text/turtle`
 
-      Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
+      <br/>
+      If you send a single Evidence JSON object then the resource's *Location* will be returned. However if you send multiple Evidence resources using any of the supported formats above then a *Location* will not be returned. This will be addressed in a future version.
 
-      *Example*:
-
-      - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence.schema.json`
     responses:
       201:
         description: |
@@ -530,31 +535,206 @@ documentation:
           The evidence resource body was not a supported media type..
     body:
       application/json:
-        schema: evidence
         example: |
           {
             "evidence": {
-              "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
+              "bel_statement": "p(HGNC:MAPK1,pmod(P,T)) => kin(p(HGNC:MAPK1))",
               "citation": {
                 "type": "PubMed",
-                "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
-                "id": "10699758"
+                "name": "J Biol Chem. 1997 Jul 4;272(27):16917-23.",
+                "id": "9202001"
               },
+              "summary_text": "These kinases are regulated by the reversible dual\nphosphorylation of conserved threonine and tyrosine residues.",
               "experiment_context": [
                 {
-                  "name":  "species",
-                  "value": "9606"
+                  "name": "Species",
+                  "value": "9606",
+                  "uri": "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno/9606",
+                  "url": "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"
                 },
                 {
-                  "name":  "disease",
-                  "value": "leukemia"
+                  "name": "CellLine",
+                  "value": "U-937",
+                  "uri": "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno/U-937",
+                  "url": "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"
                 }
               ],
-              "metadata": {
-                "status": "Approved"
-              }
+              "references": {
+                "namespaces": {
+                  "SFAM": "http://resource.belframework.org/belframework/20150611/namespace/selventa-protein-families.belns",
+                  "SCOMP": "http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns",
+                  "HGNC": "http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns",
+                  "CHEBI": "http://resource.belframework.org/belframework/20150611/namespace/chebi.belns"
+                },
+                "annotations": {
+                  "CellLine": {
+                    "type": "url",
+                    "domain": "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"
+                  },
+                  "Species": {
+                    "type": "url",
+                    "domain": "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"
+                  }
+                }
+              },
+              "metadata": [
+                {
+                  "name": "document_header",
+                  "value": {
+                    "Name": "BEL Framework Example 1 Document",
+                    "Description": "Example of modeling a full abstract taken from the BEL V1.0 Language Overview. ",
+                    "Version": "20150611",
+                    "Copyright": "Copyright (c) 2011-2015, Selventa. All Rights Reserved.",
+                    "ContactInfo": "support@belframework.org",
+                    "Authors": "Selventa",
+                    "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License"
+                  }
+                }
+              ]
             }
           }
+
+      application/bel:
+        example: |
+          SET DOCUMENT Name = "BEL Framework Example 1 Document"
+          SET DOCUMENT Description = "Example of modeling a full abstract taken from the BEL V1.0 Language Overview. "
+          SET DOCUMENT Version = "20150611"
+          SET DOCUMENT Copyright = "Copyright (c) 2011-2015, Selventa. All Rights Reserved."
+          SET DOCUMENT ContactInfo = "support@belframework.org"
+          SET DOCUMENT Authors = "Selventa"
+          SET DOCUMENT Licenses = "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License"
+
+          DEFINE NAMESPACE SFAM AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-protein-families.belns"
+          DEFINE NAMESPACE SCOMP AS URL "http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns"
+          DEFINE NAMESPACE HGNC AS URL "http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"
+          DEFINE NAMESPACE CHEBI AS URL "http://resource.belframework.org/belframework/20150611/namespace/chebi.belns"
+
+          DEFINE ANNOTATION CellLine AS URL "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"
+          DEFINE ANNOTATION Species AS URL "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"
+
+          SET Citation = {"PubMed","J Biol Chem. 1997 Jul 4;272(27):16917-23.","9202001"}
+          SET Evidence = "These kinases are regulated by the reversible dual
+          SET Species = "9606"
+          SET CellLine = "U-937"
+          p(HGNC:MAPK1,pmod(P,T)) => kin(p(HGNC:MAPK1))
+
+      application/xml:
+        example: |
+          &lt?xml version="1.0"?&gt
+          &ltbel:document xmlns:bel="http://belframework.org/schema/1.0/xbel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://belframework.org/schema/1.0/xbel http://resource.belframework.org/belframework/1.0/schema/xbel.xsd"&gt
+            &ltbel:header&gt
+              &ltbel:name&gtBEL Framework Example 1 Document&lt/bel:name&gt
+              &ltbel:description&gtExample of modeling a full abstract taken from the BEL V1.0 Language Overview. &lt/bel:description&gt
+              &ltbel:version&gt20150611&lt/bel:version&gt
+              &ltbel:copyright&gtCopyright (c) 2011-2015, Selventa. All Rights Reserved.&lt/bel:copyright&gt
+              &ltbel:contactInfo&gtsupport@belframework.org&lt/bel:contactInfo&gt
+              &ltbel:authorGroup&gt
+                &ltbel:author&gtSelventa&lt/bel:author&gt
+              &lt/bel:authorGroup&gt
+              &ltbel:licenseGroup&gt
+                &ltbel:license&gtCreative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License&lt/bel:license&gt
+              &lt/bel:licenseGroup&gt
+            &lt/bel:header&gt
+            &ltbel:namespaceGroup&gt
+              &ltbel:namespace bel:prefix="SFAM" bel:resourceLocation="http://resource.belframework.org/belframework/20150611/namespace/selventa-protein-families.belns"/&gt
+              &ltbel:namespace bel:prefix="SCOMP" bel:resourceLocation="http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns"/&gt
+              &ltbel:namespace bel:prefix="HGNC" bel:resourceLocation="http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns"/&gt
+              &ltbel:namespace bel:prefix="CHEBI" bel:resourceLocation="http://resource.belframework.org/belframework/20150611/namespace/chebi.belns"/&gt
+            &lt/bel:namespaceGroup&gt
+            &ltbel:annotationDefinitionGroup&gt
+              &ltbel:externalAnnotationDefinition bel:id="CellLine" bel:url="http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"/&gt
+              &ltbel:externalAnnotationDefinition bel:id="Species" bel:url="http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"/&gt
+            &lt/bel:annotationDefinitionGroup&gt
+            &ltbel:statementGroup&gt
+              &ltbel:statement bel:relationship="=&gt;"&gt
+                &ltbel:annotationGroup&gt
+                  &ltbel:citation bel:type="PubMed"&gt
+                    &ltbel:reference&gt9202001&lt/bel:reference&gt
+                    &ltbel:name&gtJ Biol Chem. 1997 Jul 4;272(27):16917-23.&lt/bel:name&gt
+                  &lt/bel:citation&gt
+                  &ltbel:evidence&gtThese kinases are regulated by the reversible dual
+          phosphorylation of conserved threonine and tyrosine residues.&lt/bel:evidence&gt
+                  &ltbel:annotation bel:refID="Species"&gt9606&lt/bel:annotation&gt
+                  &ltbel:annotation bel:refID="CellLine"&gtU-937&lt/bel:annotation&gt
+                &lt/bel:annotationGroup&gt
+                &ltbel:subject&gt
+                  &ltbel:term bel:function="proteinAbundance"&gt
+                    &ltbel:parameter bel:ns="HGNC"&gtMAPK1&lt/bel:parameter&gt
+                    &ltbel:term bel:function="proteinModification"&gt
+                      &ltbel:parameter&gtP&lt/bel:parameter&gt
+                      &ltbel:parameter&gtT&lt/bel:parameter&gt
+                    &lt/bel:term&gt
+                  &lt/bel:term&gt
+                &lt/bel:subject&gt
+                &ltbel:object&gt
+                  &ltbel:term bel:function="kinaseActivity"&gt
+                    &ltbel:term bel:function="proteinAbundance"&gt
+                      &ltbel:parameter bel:ns="HGNC"&gtMAPK1&lt/bel:parameter&gt
+                    &lt/bel:term&gt
+                  &lt/bel:term&gt
+                &lt/bel:object&gt
+              &lt/bel:statement&gt
+            &lt/bel:statementGroup&gt
+          &lt/bel:document&gt
+
+      application/vnd.jgf+json:
+        example: |
+          {
+            "graph": {
+              "type": "BEL-V1.0",
+              "nodes": [
+                {
+                  "id": "p(HGNC:MAPK1,pmod(P,T))",
+                  "label": "p(HGNC:MAPK1,pmod(P,T))"
+                },
+                {
+                  "id": "kin(p(HGNC:MAPK1))",
+                  "label": "kin(p(HGNC:MAPK1))"
+                }
+              ],
+              "edges": [
+                {
+                  "source": "p(HGNC:MAPK1,pmod(P,T))",
+                  "relation": "=>",
+                  "target": "kin(p(HGNC:MAPK1))"
+                }
+              ]
+            }
+          }
+
+      application/n-triples:
+        example: |
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/Term&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/ModifiedProteinAbundance&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T&gt &lthttp://www.w3.org/2000/01/rdf-schema#label&gt "p(HGNC:MAPK1,pmod(P,T))" .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T&gt &lthttp://www.openbel.org/vocabulary/hasModificationType&gt &lthttp://www.openbel.org/vocabulary/Phosphorylation&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T&gt &lthttp://www.openbel.org/vocabulary/hasChild&gt &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/Term&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/ProteinAbundance&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.w3.org/2000/01/rdf-schema#label&gt "p(HGNC:MAPK1)" .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasConcept&gt &lthttp://www.openbel.org/bel/namespace/hgnc-human-genes/MAPK1&gt .
+          &lthttp://www.openbel.org/bel/kin_p_HGNC_MAPK1&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/Term&gt .
+          &lthttp://www.openbel.org/bel/kin_p_HGNC_MAPK1&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/AbundanceActivity&gt .
+          &lthttp://www.openbel.org/bel/kin_p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasActivityType&gt &lthttp://www.openbel.org/vocabulary/Kinase&gt .
+          &lthttp://www.openbel.org/bel/kin_p_HGNC_MAPK1&gt &lthttp://www.w3.org/2000/01/rdf-schema#label&gt "kin(p(HGNC:MAPK1))" .
+          &lthttp://www.openbel.org/bel/kin_p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasChild&gt &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/Term&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/ProteinAbundance&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.w3.org/2000/01/rdf-schema#label&gt "p(HGNC:MAPK1)" .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasConcept&gt &lthttp://www.openbel.org/bel/namespace/hgnc-human-genes/MAPK1&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T_DirectlyIncreases_kin_p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasSubject&gt &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T_DirectlyIncreases_kin_p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasObject&gt &lthttp://www.openbel.org/bel/kin_p_HGNC_MAPK1&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T_DirectlyIncreases_kin_p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasRelationship&gt &lthttp://www.openbel.org/vocabulary/DirectlyIncreases&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T_DirectlyIncreases_kin_p_HGNC_MAPK1&gt &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/Statement&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T_DirectlyIncreases_kin_p_HGNC_MAPK1&gt &lthttp://www.w3.org/2000/01/rdf-schema#label&gt "p(HGNC:MAPK1,pmod(P,T)) =&gt kin(p(HGNC:MAPK1))" .
+          _:1ddf16d0-4a7b-0133-5cfc-082e5f8a66ae &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt &lthttp://www.openbel.org/vocabulary/Evidence&gt .
+          &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T_DirectlyIncreases_kin_p_HGNC_MAPK1&gt &lthttp://www.openbel.org/vocabulary/hasEvidence&gt _:1ddf16d0-4a7b-0133-5cfc-082e5f8a66ae .
+          _:1ddf16d0-4a7b-0133-5cfc-082e5f8a66ae &lthttp://www.openbel.org/vocabulary/hasStatement&gt &lthttp://www.openbel.org/bel/p_HGNC_MAPK1_pmod_P_T_DirectlyIncreases_kin_p_HGNC_MAPK1&gt .
+          _:1ddf16d0-4a7b-0133-5cfc-082e5f8a66ae &lthttp://www.openbel.org/vocabulary/hasCitation&gt &lthttp://bio2rdf.org/pubmed:9202001&gt .
+          _:1ddf16d0-4a7b-0133-5cfc-082e5f8a66ae &lthttp://www.openbel.org/vocabulary/hasEvidenceText&gt "These kinases are regulated by the reversible dual\nphosphorylation of conserved threonine and tyrosine residues." .
+          _:1ddf16d0-4a7b-0133-5cfc-082e5f8a66ae &lthttp://www.openbel.org/vocabulary/hasAnnotation&gt &lthttp://www.openbel.org/bel/annotation/species-taxonomy-id/9606&gt .
+          _:1ddf16d0-4a7b-0133-5cfc-082e5f8a66ae &lthttp://www.openbel.org/vocabulary/hasAnnotation&gt &lthttp://www.openbel.org/bel/annotation/cell-line/U-937&gt .
+
   get:
     description: |
       Retrieve the evidence resource collection.
