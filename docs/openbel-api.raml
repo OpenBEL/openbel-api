@@ -1,5 +1,5 @@
 #%RAML 0.8
-title: OpenBEL API
+title: OpenBEL Platform
 version: 0.0.2
 baseUri: http://next.belframework.org/api
 schemas:
@@ -25,6 +25,23 @@ traits:
               description: Allowable HTTP methods.
               type:        string
               enum:        [ 'OPTIONS', 'GET' ]
+documentation:
+  - title: Welcome 
+    content: |
+      The OpenBEL Platform provides an Application Programming Interface (API) exposed over the Hypertext Transfer Protocol (HTTP). The primary goal of the API is to expose OpenBEL capabilities over the web to lower the technical barriers for users.
+  - title: Functionality
+    content: |
+      The API provides the following:
+      - Access and Search for BEL Annotations and Namespaces
+      - Equivalence and Orthologize BEL expressions
+      - Autocomplete syntax of BEL expressions
+      - Access BEL Functions and Relationships
+      - Store, query, and export BEL Evidence
+  - title: Planned Functionality
+    content: |
+      We are currently working on the following:
+      - Autocomplete with BEL expression semantics (e.g. namespace encoding, term signatures, etc.)
+      - Creation of BEL knowledge networks from the Evidence collection
 /api:
   description: |
     Root resource of the API. Lists all subresources contained within the API.
@@ -434,15 +451,34 @@ traits:
                 Returned if a resource was not found by *{annotation}* and *{value}*.
 /evidence:
   description: |
-    Operate on the evidence resource collection.
+    Evidence collection within the API.
 
-    *Operations*
+    This provides storage and query of Evidence resources.
 
-    - Filter the evidence resource collection using `GET /evidence` with query parameters.
-    - Retrieve an evidence resource using `GET /evidence/{id}`.
-    - Create a new evidence resource using `POST /evidence` with a supported content type.
-    - Update an existing evidence resource using `PUT /evidence/{id}` with a supported content type.
-    - Delete an existing evidence resource using `DELETE /evidence/{id}`.
+    BEL Evidence represents a biological finding extracted from scientific literature. It is comprised of 5 parts:
+      - Citation
+
+        Identifies the reference (e.g. PubMed, Book, Journal, etc.) that contains supporting the *Summary Text*.
+
+      - Summary Text
+
+        The excerpt from the *Citation* that the *BEL Statement* is extracted from.
+
+      - BEL Statement
+
+        An expression that represents knowledge of the existence of biological entities and relationships between them that are known to be observed within a particular *Experiment Context*. The structure of a BEL Statement is explained further on the [OpenBEL Wiki](http://wiki.openbel.org/display/BLVD/Statements).
+
+      - Experiment Context
+
+        Data (Key/Value) that describes parameters of the experiment. For example an evidence observed in the lung of a human could include Uberon's *lung* concept (i.e. [uberon/UBERON:0002048](http://identifiers.org/uberon/UBERON:0002048)) and NCBI Taxonomy's *homo sapiens* concept (i.e. [taxonomy/9606](http://identifiers.org/taxonomy/9606)) respectively.
+
+      - Metadata
+
+        Data (Key/Value) about this evidence resource useful for bookkeeping or system integration purposes. For example one might want to capture a *Reviewer* and *Review Status* to track who is reviewing and this evidence's status respectively.
+
+      - References
+
+        States the vocabularies which the namespace and annotation values are drawn from. Each vocabulary should include a keyword and URI.
 
   options:
     description: Returns allowable HTTP methods.
@@ -454,7 +490,25 @@ traits:
             type:        string
   post:
     description: |
-      Create an evidence resource.
+      Creates one or more Evidence resource within the API.
+
+      The formats are supported:
+      - Evidence JSON
+        - media type: `application/json`
+      - BEL Script
+        - media type: `application/bel`
+      - XBEL (XML)
+        - media type: `application/xml`
+      - [BEL JSON Graph Format](http://jsongraphformat.info/)
+        - media type: `application/vnd.jgf+json`
+      - BEL RDF
+        - media type
+          - `application/n-quads`
+          - `application/n-triples`
+          - `application/rdf+xml`
+          - `application/turtle`
+          - `application/x-turtle`
+          - `text/turtle`
 
       Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
 
@@ -466,9 +520,9 @@ traits:
         description: |
           *201 Created*
 
-          The evidence resource was created.
+          The Evidence resource was created.
 
-          The link to the evidence resource is conveyed is the *Link* header.
+          The link to the evidence resource is conveyed is the *Link* header. This will only be set when a single Evidence resource is created.
       415:
         description: |
           *415 Unsupported Media Type*
