@@ -20,16 +20,32 @@ traits:
         Returns allowable HTTP methods for this <<name>>.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Allow:
               description: Allowable HTTP methods.
               type:        string
               enum:        [ 'OPTIONS', 'GET' ]
+  - rw_options:
+      description: |
+        Returns allowable HTTP methods for this <<name>>.
+      responses:
+        200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+          headers:
+            Allow:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'GET', 'POST', 'PUT', 'DELETE' ]
   - create_options:
       description: |
         Returns allowable HTTP methods for this <<name>>.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Allow:
               description: Allowable HTTP methods.
@@ -66,6 +82,8 @@ documentation:
       Returns a list of linked *item* resources.
     responses:
       200:
+        description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
         body:
           application/hal+json:
             example: !include examples/root.example.json
@@ -98,6 +116,8 @@ documentation:
     responses:
       200:
         description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
           **JSON Schema**
           - [annotation_collection](schemas/annotation_collection.schema.json)
           - [annotation](schemas/annotation_resource.schema.json)
@@ -225,6 +245,8 @@ documentation:
       responses:
         200:
           description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
             **JSON Schema**
             - [annotation_value_collection](schemas/annotation_value_collection.schema.json)
             - [annotation_value](schemas/annotation_value_resource.schema.json)
@@ -233,19 +255,19 @@ documentation:
               example: !include examples/annotation_values_filter.example.json
         400:
           description: |
-            *400 Bad Request*
+            [400 Bad Request](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1)
 
             Returned if a filter is malformed.
         404:
           description: |
-            *404 Not Found*
+            [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
 
             Returned if no annotation values were found for the FTS search.
           
             Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
         501:
           description: |
-            *501 Not Implemented*
+            [501 Not Implemented](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2)
 
             Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
   /{annotation}:
@@ -269,6 +291,8 @@ documentation:
       responses:
         200:
           description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
             **JSON Schema**
             - [annotation](schemas/annotation_resource.schema.json)
           body:
@@ -392,6 +416,8 @@ documentation:
         responses:
           200:
             description: |
+              [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
               **JSON Schema**
               - [annotation_value_collection](schemas/annotation_value_collection.schema.json)
             body:
@@ -399,19 +425,19 @@ documentation:
                 example: !include examples/annotation_value_collection.example.json
           400:
             description: |
-              *400 Bad Request*
+              [400 Bad Request](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1)
 
               Returned if a filter is malformed.
           404:
             description: |
-              *404 Not Found*
+              [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
 
               Returned if no annotation values were found for the FTS search.
             
               Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
           501:
             description: |
-              *501 Not Implemented*
+              [501 Not Implemented](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2)
 
               Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
       /{value}:
@@ -451,6 +477,8 @@ documentation:
           responses:
             200:
               description: |
+                [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
                 **JSON Schema**
                 - [annotation_value](schemas/annotation_value_resource.schema.json)
               body:
@@ -458,7 +486,7 @@ documentation:
                   example: !include examples/annotation_value_resource.example.json
             404:
               description: |
-                *404 Not Found*
+                [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
 
                 Returned if a resource was not found by *{annotation}* and *{value}*.
 /evidence:
@@ -529,14 +557,14 @@ documentation:
     responses:
       201:
         description: |
-          *201 Created*
+          [201 Created](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2)
 
           The Evidence resource was created.
 
           The link to the evidence resource is conveyed is the *Link* header. This will only be set when a single Evidence resource is created.
       415:
         description: |
-          *415 Unsupported Media Type*
+          [415 Unsupported Media Type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.16)
 
           The evidence resource body was not a supported media type..
     body:
@@ -850,6 +878,8 @@ documentation:
     responses:
       200:
         description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
           An example request for this resource might be:
 
           - Path: `/api/evidence`
@@ -881,74 +911,190 @@ documentation:
                 "evidence_collection": [
                   {
                     "evidence": {
-                      "bel_statement": "p(HGNC:CDH1) decreases cat(complex(p(HGNC:ITGAV),p(HGNC:ITGB5)))",
+                      "bel_statement": "a(CHEBI:\"1-octadec-9-enoylglycero-3-phosphate\") increases kin(p(HGNC:EGFR))",
                       "citation": {
-                        "type": "Other",
-                        "name": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer",
-                        "id": "Landes Bioscience - Altered Integrin Expression in Three Common Types of Human Cancer=Breast Cancer"
+                        "type": "PubMed",
+                        "name": "Exp Cell Res 2003 Mar 10 284(1) 99-110",
+                        "id": "12648469",
+                        "date": "",
+                        "authors": [],
+                        "comment": ""
                       },
-                      "experiment_context": {
-                        "species": "9606"
-                      },
-                      "metadata": {
-                        "status": "Review"
-                      }
+                      "summary_text": "Treatment of cells with GPCR agonists such as endothelin- 1 (ET-1), thrombin, bombesin, and lysophosphatidic acid (LPA) transactivates ErbB1 (reviewed by Zwick et al. [48]). Mechanistically, the process involves rapid stimulation of metalloproteinases followed by cleavage of an ErbB1 ligand precursor, e.g., pro-HB-EGF [49], whose binding activates ErbB1 and downstream signaling pathways",
+                      "experiment_context": [
+                        {
+                          "name": "Species",
+                          "value": "9606"
+                        },
+                        {
+                          "name": "Anatomy",
+                          "value": "prostate gland"
+                        },
+                        {
+                          "name": "Cell",
+                          "value": "squamous epithelial cell"
+                        }
+                      ],
+                      "metadata": [
+                        {
+                          "name": "document_header",
+                          "value": {
+                            "Name": "BEL Framework Large Corpus Document",
+                            "Description": "Approximately 61,000 statements.",
+                            "Version": "20150611",
+                            "Copyright": "Copyright (c) 2011-2015, Selventa. All rights reserved.",
+                            "Authors": "Selventa",
+                            "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License",
+                            "ContactInfo": "support@belframework.org"
+                          }
+                        }
+                      ]
                     },
-                    "links": {
+                    "_links": {
                       "self": {
                         "type": "evidence",
-                        "href": "http://localhost:9000/api/evidence/560951418a4cca3a38000001"
+                        "href": "http://next.belframework.org/api/evidence/56015a638a4cca1317005637"
                       },
                       "collection": {
                         "type": "evidence_collection",
-                        "href": "http://localhost:9000/api/evidence"
+                        "href": "http://next.belframework.org/api/evidence"
                       }
                     }
                   }
                 ],
                 "facets": [
                   {
-                    "category": "experiment_context",
-                    "name": "Species",
-                    "value": "9606",
-                    "filter": "{\"category\":\"context\",\"name\":\"Species\",\"value\":\"9606\"}",
-                    "count": 49071
-                  },
-                  {
                     "category": "metadata",
-                    "name": "status",
-                    "value": "Review",
-                    "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Review\"}",
-                    "count": 18954
+                    "name": "document_header",
+                    "values": [
+                      {
+                        "value": [
+                          "Authors",
+                          "Selventa"
+                        ],
+                        "filter": "{\"category\":\"metadata\",\"name\":\"document_header\",\"value\":[\"Authors\",\"Selventa\"]}",
+                        "count": 423
+                      }
+                    ]
                   },
                   {
                     "category": "experiment_context",
                     "name": "Anatomy",
-                    "value": "liver",
-                    "filter": "{\"category\":\"context\",\"name\":\"Anatomy\",\"value\":\"liver\"}",
-                    "count": 2357
+                    "values": [
+                      {
+                        "value": "prostate gland",
+                        "filter": "{\"category\":\"experiment_context\",\"name\":\"Anatomy\",\"value\":\"prostate gland\"}",
+                        "count": 423
+                      }
+                    ]
+                  },
+                  {
+                    "category": "experiment_context",
+                    "name": "Species",
+                    "values": [
+                      {
+                        "value": "9606",
+                        "filter": "{\"category\":\"experiment_context\",\"name\":\"Species\",\"value\":\"9606\"}",
+                        "count": 263
+                      }
+                    ]
+                  },
+                  {
+                    "category": "citation",
+                    "name": "id",
+                    "values": [
+                      {
+                        "value": "12351634",
+                        "filter": "{\"category\":\"citation\",\"name\":\"id\",\"value\":\"12351634\"}",
+                        "count": 62
+                      }
+                    ]
+                  },
+                  {
+                    "category": "experiment_context",
+                    "name": "Cell",
+                    "values": [
+                      {
+                        "value": "fibroblast",
+                        "filter": "{\"category\":\"experiment_context\",\"name\":\"Cell\",\"value\":\"fibroblast\"}",
+                        "count": 20
+                      }
+                    ]
+                  },
+                  {
+                    "category": "experiment_context",
+                    "name": "Cellline",
+                    "values": [
+                      {
+                        "value": "LNCAP cell",
+                        "filter": "{\"category\":\"experiment_context\",\"name\":\"Cellline\",\"value\":\"LNCAP cell\"}",
+                        "count": 17
+                      }
+                    ]
+                  },
+                  {
+                    "category": "experiment_context",
+                    "name": "Disease",
+                    "values": [
+                      {
+                        "value": "prostate carcinoma in situ",
+                        "filter": "{\"category\":\"experiment_context\",\"name\":\"Disease\",\"value\":\"prostate carcinoma in situ\"}",
+                        "count": 13
+                      }
+                    ]
+                  },
+                  {
+                    "category": "experiment_context",
+                    "name": "Cellstructure",
+                    "values": [
+                      {
+                        "value": "Cytoplasm",
+                        "filter": "{\"category\":\"experiment_context\",\"name\":\"Cellstructure\",\"value\":\"Cytoplasm\"}",
+                        "count": 4
+                      }
+                    ]
                   }
                 ],
                 "metadata": {
                   "collection_paging": {
-                    "total": 52405,
-                    "total_filtered": 52405,
-                    "total_pages": 52405,
+                    "total": 52399,
+                    "total_filtered": 423,
+                    "total_pages": 423,
                     "current_page": 1,
                     "current_page_size": 1
                   }
+                },
+                "_links": {
+                  "self": {
+                    "type": "evidence_collection",
+                    "href": "http://next.belframework.org/api/evidence?start=0&size=1&filter={\"category\":\"experiment_context\",\"name\":\"Anatomy\",\"value\":\"prostate gland\"}"
+                  },
+                  "start": {
+                    "type": "evidence_collection",
+                    "href": "http://next.belframework.org/api/evidence?start=0&size=1&filter={\"category\":\"experiment_context\",\"name\":\"Anatomy\",\"value\":\"prostate gland\"}"
+                  },
+                  "next": {
+                    "type": "evidence_collection",
+                    "href": "http://next.belframework.org/api/evidence?start=1&size=1&filter={\"category\":\"experiment_context\",\"name\":\"Anatomy\",\"value\":\"prostate gland\"}"
+                  }
                 }
               }
+      404:
+        description: |
+          [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
+
+          The evidence collection could not be found given your request. This typically indicates an empty evidence collection for the provided query parameters.
+      406:
+        description: |
+          [406 Not Acceptable](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7)
+
+          The evidence collection identified cannot be returned in the client-specified Content Type.
   /{identifier}:
     description:
     options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
+      is: [
+        rw_options: { name: "evidence resource" }
+      ]
     get:
     put:
       description: |
@@ -986,17 +1132,17 @@ documentation:
       responses:
         202:
           description: |
-            *202 Accepted*
+            [202 Accepted](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.3)
 
             The replacement for the evidence resource will be applied.
         404:
           description: |
-            *404 Not Found*
+            [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
 
             An evidence resource, identified by *{identifier}*, does not exist.
         415:
           description: |
-            *415 Unsupported Media Type*
+            [415 Unsupported Media Type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.16)
 
             The evidence resource body was not a supported media type.
     patch:
@@ -1028,6 +1174,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
@@ -1060,6 +1208,8 @@ documentation:
           required: false
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           body:
             application/json:
               example: |
@@ -1106,6 +1256,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
@@ -1155,6 +1307,8 @@ documentation:
       queryParameters:
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           body:
             application/json:
               example: |
@@ -1171,6 +1325,8 @@ documentation:
     description: Returns allowable HTTP methods.
     responses:
       200:
+        description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
         headers:
           Accept:
             description: Allowable HTTP methods.
@@ -1181,12 +1337,16 @@ documentation:
         displayName: Accept
     responses:
       200:
+        description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
 /functions/{fx}:
   description: Retrieve a BEL function resource.
   options:
     description: Returns allowable HTTP methods.
     responses:
       200:
+        description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
         headers:
           Accept:
             description: Allowable HTTP methods.
@@ -1197,11 +1357,15 @@ documentation:
         displayName: Accept
     responses:
       200:
+        description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
 /namespaces:
   options:
     description: Returns allowable HTTP methods.
     responses:
       200:
+        description: |
+          [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
         headers:
           Accept:
             description: Allowable HTTP methods.
@@ -1211,6 +1375,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
@@ -1220,6 +1386,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
@@ -1230,6 +1398,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
@@ -1240,6 +1410,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
@@ -1249,6 +1421,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
@@ -1258,6 +1432,8 @@ documentation:
       description: Returns allowable HTTP methods.
       responses:
         200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
           headers:
             Accept:
               description: Allowable HTTP methods.
