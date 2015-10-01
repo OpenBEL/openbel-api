@@ -1096,37 +1096,145 @@ documentation:
         rw_options: { name: "evidence resource" }
       ]
     get:
+      description: |
+        Retrieve the Evidence resource identified by *{identifier}*.
+      responses:
+        200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
+            An example request for this resource might be:
+
+            - Path: `/api/evidence/56015c7e8a4cca1317006aa7`
+
+            Example URL: [http://next.belframework.org/api/evidence/56015c7e8a4cca1317006aa7](http://next.belframework.org/api/evidence/56015c7e8a4cca1317006aa7)
+
+            **JSON Schema**
+            - [evidence_resource](schemas/evidence_resource.schema.json)
+            - [evidence](schemas/evidence.schema.json)
+
+          body:
+            application/json:
+              example: |
+                {
+                  "evidence": {
+                    "bel_statement": "a(\"cyclic AMP\") increases r(HGNC:AR)",
+                    "citation": {
+                      "type": "PubMed",
+                      "name": "J Clin Endocrinol Metab 2003 Sep 88(9) 4043-54",
+                      "id": "12970260",
+                      "date": "",
+                      "authors": [],
+                      "comment": ""
+                    },
+                    "summary_text": "Treatment with the cAMP analog dibutyryl cAMP enhanced AR promoter activity about 4- to 6-fold in a reporter gene assay and increased AR mRNA expression in LNCaP cells",
+                    "experiment_context": [
+                      {
+                        "name": "Species",
+                        "value": "9606"
+                      }
+                    ],
+                    "metadata": [
+                      {
+                        "name": "document_header",
+                        "value": {
+                          "Name": "BEL Framework Large Corpus Document",
+                          "Description": "Approximately 61,000 statements.",
+                          "Version": "20150611",
+                          "Copyright": "Copyright (c) 2011-2015, Selventa. All rights reserved.",
+                          "Authors": "Selventa",
+                          "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License",
+                          "ContactInfo": "support@belframework.org"
+                        }
+                      }
+                    ]
+                  },
+                  "_links": {
+                    "self": {
+                      "type": "evidence",
+                      "href": "http://next.belframework.org/api/evidence/56015c7e8a4cca1317006aa7"
+                    },
+                    "collection": {
+                      "type": "evidence_collection",
+                      "href": "http://next.belframework.org/api/evidence"
+                    }
+                  }
+                }
+        404:
+          description: |
+            [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
+
+            The evidence resource could not be found for the given *{identifier}*.
+        406:
+          description: |
+            [406 Not Acceptable](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7)
+
+            The evidence resource identified cannot be returned in the client-specified Content Type.
     put:
       description: |
-        Replaces an evidence resource identified by *{identifier}*.
+        Replaces an Evidence resource identified by *{identifier}*.
 
-        Include a *profile* parameter in the *Content-Type* header to convey the schema evidence schema for the JSON document.
-
-        *Example*:
-
-        - `Content-Type: application/json; profile=http://next.belframework.org/schema/evidence_resource.schema.json`
+        **JSON Schema**
+        - [evidence_resource](schemas/evidence_resource.schema.json)
+        - [evidence](schemas/evidence.schema.json)
       body:
         application/json:
-          schema: evidence_resource
           example: |
             {
               "evidence": {
-                "bel_statement": "a(CHEBI:\"reactive oxygen species\") increases r(HGNC:JUN)",
+                "bel_statement": "p(HGNC:MAPK1,pmod(P,T)) => kin(p(HGNC:MAPK1))",
                 "citation": {
                   "type": "PubMed",
-                  "name": "Free Radic Biol Med 2000 Feb 1 28(3) 463-99",
-                  "id": "10699758"
+                  "name": "J Biol Chem. 1997 Jul 4;272(27):16917-23.",
+                  "id": "9202001"
                 },
-                "experiment_context": {
-                  "Species": "9606",
-                  "CellLine": "LNCAP cell",
-                  "Anatomy": "prostate gland",
-                  "Cell": "fibroblast",
-                  "Disease": "leukemia"
+                "summary_text": "These kinases are regulated by the reversible dual\nphosphorylation of conserved threonine and tyrosine residues.",
+                "experiment_context": [
+                  {
+                    "name": "Species",
+                    "value": "9606",
+                    "uri": "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno/9606",
+                    "url": "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"
+                  },
+                  {
+                    "name": "CellLine",
+                    "value": "U-937",
+                    "uri": "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno/U-937",
+                    "url": "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"
+                  }
+                ],
+                "references": {
+                  "namespaces": {
+                    "SFAM": "http://resource.belframework.org/belframework/20150611/namespace/selventa-protein-families.belns",
+                    "SCOMP": "http://resource.belframework.org/belframework/20150611/namespace/selventa-named-complexes.belns",
+                    "HGNC": "http://resource.belframework.org/belframework/20150611/namespace/hgnc-human-genes.belns",
+                    "CHEBI": "http://resource.belframework.org/belframework/20150611/namespace/chebi.belns"
+                  },
+                  "annotations": {
+                    "CellLine": {
+                      "type": "url",
+                      "domain": "http://resource.belframework.org/belframework/20150611/annotation/cell-line.belanno"
+                    },
+                    "Species": {
+                      "type": "url",
+                      "domain": "http://resource.belframework.org/belframework/20150611/annotation/species-taxonomy-id.belanno"
+                    }
+                  }
                 },
-                "metadata": {
-                  "status": "Approved"
-                }
+                "metadata": [
+                  {
+                    "name": "document_header",
+                    "value": {
+                      "Name": "BEL Framework Example 1 Document",
+                      "Description": "Example of modeling a full abstract taken from the BEL V1.0 Language Overview. ",
+                      "Version": "20150611",
+                      "Copyright": "Copyright (c) 2011-2015, Selventa. All Rights Reserved.",
+                      "ContactInfo": "support@belframework.org",
+                      "Authors": "Selventa",
+                      "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License"
+                    }
+                  }
+                ]
               }
             }
       responses:
@@ -1134,19 +1242,31 @@ documentation:
           description: |
             [202 Accepted](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.3)
 
-            The replacement for the evidence resource will be applied.
+            The action to replace the evidence resource, identified by *{identifier}*, was accepted by the API. The evidence resource is considered replaced if a subsequent `GET /api/evidence/{identifier}` request returns a representation that reflects the body sent in this `PUT` request.
         404:
           description: |
             [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
 
-            An evidence resource, identified by *{identifier}*, does not exist.
+            The evidence resource, identified by *{identifier}*, does not exist.
         415:
           description: |
             [415 Unsupported Media Type](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.16)
 
             The evidence resource body was not a supported media type.
-    patch:
     delete:
+      description: |
+        Deletes an Evidence resource identified by *{identifier}*.
+      responses:
+        202:
+          description: |
+            [202 Accepted](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.3)
+
+            The action to delete the evidence resource, identified by *{identifier}*, was accepted by the API. The evidence resource is considered removed if a subsequent `GET /api/evidence/{identifier}` request returns [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5).
+        404:
+          description: |
+            [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
+
+            The evidence resource, identified by *{identifier}*, does not exist.
 /expressions:
   /{bel}/completions:
     description: |
