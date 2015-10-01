@@ -25,6 +25,16 @@ traits:
               description: Allowable HTTP methods.
               type:        string
               enum:        [ 'OPTIONS', 'GET' ]
+  - create_options:
+      description: |
+        Returns allowable HTTP methods for this <<name>>.
+      responses:
+        200:
+          headers:
+            Allow:
+              description: Allowable HTTP methods.
+              type:        string
+              enum:        [ 'OPTIONS', 'GET', 'POST' ]
 documentation:
   - title: Welcome 
     content: |
@@ -483,13 +493,9 @@ documentation:
         States the vocabularies which the namespace and annotation values are drawn from. Each vocabulary should include a keyword and URI.
 
   options:
-    description: Returns allowable HTTP methods.
-    responses:
-      200:
-        headers:
-          Accept:
-            description: Allowable HTTP methods.
-            type:        string
+    is: [
+      create_options: { name: "evidence collection" }
+    ]
   post:
     description: |
       Creates one or more Evidence resource within the API.
@@ -778,11 +784,15 @@ documentation:
       ```json
         {
           "category": "metadata",
-          "name": "status",
-          "value": "Approved",
-          "filter": "{\"category\": \"metadata\", \"name\": \"status\", \"value\": \"Approved \"}",
-          "count": 10200
-        }
+          "name": "Status",
+          "values": [
+            {
+              "value": "Approved",
+              "filter": "{\"category\":\"metadata\",\"name\":\"status\",\"value\":\"Approved\"}",
+              "count": 10200
+            }
+          ]
+        },
       ```
 
       The *filter* property value can be used as a *filter* option. This is intended to support filtering the evidence resource collection by selected facets.
@@ -831,7 +841,7 @@ documentation:
         example: yes
       max_values_per_facet:
         type: integer
-        description: |
+        description: e|
           The maximum about of facet values to display for every category, name pair.
           
           The default is `0`. This value will return all facet values (i.e. unbounded) for every category, name pair.
@@ -857,9 +867,15 @@ documentation:
             }
             ```
 
+          Example URL: [http://next.belframework.org/api/evidence?start=0&size=1&faceted=yes&max_values_per_facet=1&filter={"category":"experiment_context","name":"Anatomy","value":"prostate gland"}](http://next.belframework.org/api/evidence?start=0&size=1&faceted=yes&max_values_per_facet=1&filter={%22category%22:%22experiment_context%22,%22name%22:%22Anatomy%22,%22value%22:%22prostate gland%22})
+
+          **JSON Schema**
+          - [evidence_collection](schemas/evidence_collection.schema.json)
+          - [evidence_resource](schemas/evidence_resource.schema.json)
+          - [evidence](schemas/evidence.schema.json)
+
         body:
           application/json:
-            schema: evidence_collection
             example: |
               {
                 "evidence_collection": [
