@@ -75,6 +75,13 @@ module OpenBEL
           property :type,            item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
           property :identifier,      item.identifier
           property :name,            item.prefLabel
+
+          # Support inclusion of the matched text when annotation values are filtered by
+          # a full-text search.
+          if item.match_text
+            property :match_text,    item.match_text
+          end
+
           setup(item)
           link     :self,            link_self
           link     :collection,      link_annotation

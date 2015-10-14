@@ -5,6 +5,7 @@
         "type": "BiologicalProcessConcept",
         "identifier": "1115",
         "name": "sarcoma",
+        "match_text": "&lt;&lt;sarcoma&gt;&gt;",
         "_links": {
           "self": {
             "type": "annotation_value",
@@ -22,6 +23,7 @@
         "type": "BiologicalProcessConcept",
         "identifier": "3071",
         "name": "gliosarcoma",
+        "match_text": "...3071 a ma oma coma rcoma arcoma &lt;&lt;sarcoma&gt;&gt; osarcoma iosarcoma liosarcoma gliosarcoma toma stoma astoma...",
         "_links": {
           "self": {
             "type": "annotation_value",
@@ -39,6 +41,7 @@
         "type": "BiologicalProcessConcept",
         "identifier": "3382",
         "name": "liposarcoma",
+        "match_text": "2 82 382 3382 a ma oma coma rcoma arcoma &lt;&lt;sarcoma&gt;&gt; osarcoma posarcoma iposarcoma liposarcoma",
         "_links": {
           "self": {
             "type": "annotation_value",

@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "description": "DESCRIBE ANNOTATION VALUE COLLECTION",
+  "title": "Annotation Value Collection",
+  "description": "A collection of annotation value resources.",
   "type": "object",
   "additionalProperties": false,
   "required": [

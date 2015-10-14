@@ -71,7 +71,9 @@ module OpenBEL
         end
 
         @search.search(match, :annotation_concept, nil, nil, options).map { |result|
-          annotation_value_by_uri(result.uri)
+          annotation_value = annotation_value_by_uri(result.uri)
+          annotation_value.match_text = result.snippet
+          annotation_value
         }
       end
 
@@ -80,7 +82,9 @@ module OpenBEL
         return nil unless annotation_uri
 
         @search.search(match, :annotation_concept, annotation_uri, nil, options).map { |result|
-          annotation_value_by_uri(result.uri)
+          annotation_value = annotation_value_by_uri(result.uri)
+          annotation_value.match_text = result.snippet
+          annotation_value
         }
       end
 

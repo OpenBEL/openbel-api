@@ -140,16 +140,21 @@ documentation:
         Example: *Search by filter*
 
         <br>
-         **Limitations**
+        **Limitations**
         
-         This endpoint is limited to full-text searching including a *filter* like:
-         ```json
-         {
-             "category": "fts",
-             "name":     "search",
-             "value":    "sarcoma"
-         }
-         ```
+        This endpoint is limited to full-text searching including a *filter* like:
+        ```json
+        {
+            "category": "fts",
+            "name":     "search",
+            "value":    "sarcoma"
+        }
+        ```
+
+        <br>
+        **Additional Property**
+
+        A `match_text` property, included in each *annotation_value*, provides the snippet of text that matched the search. The matched term will be prefixed with `<<` and suffixed with `>>`.
 
         <br>
         **Complete Example**
@@ -164,6 +169,7 @@ documentation:
                 "type": "BiologicalProcessConcept",
                 "identifier": "D012509",
                 "name": "Sarcoma",
+                "match_text": "...Sarcomas, Spindle Cell Soft Tissue <<Sarcoma>> Soft Tissue Sarcomas Spindle Cell <<Sarcoma>> Spindle Cell Sarcomas",
                 "_links": {
                   "self": {
                     "type": "annotation_value",
@@ -181,6 +187,7 @@ documentation:
                 "type": "BiologicalProcessConcept",
                 "identifier": "1115",
                 "name": "sarcoma",
+                "match_text": "<<sarcoma>>",
                 "_links": {
                   "self": {
                     "type": "annotation_value",
@@ -198,6 +205,7 @@ documentation:
                 "type": "BiologicalProcessConcept",
                 "identifier": "D008223",
                 "name": "Lymphoma",
+                "match_text": "Germinoblastic <<Sarcoma>> Germinoblastic Sarcomas Germinoblastoma Germinoblastomas Lymphoma, Malignant Lymphomas Lymphomas, Malignant Malignant Lymphoma Malignant Lymphomas...",
                 "_links": {
                   "self": {
                     "type": "annotation_value",
@@ -324,6 +332,11 @@ documentation:
            ```
 
           <br>
+          **Additional Property**
+
+          A `match_text` property, included in each *annotation_value*, provides the snippet of text that matched the search. The matched term will be prefixed with `<<` and suffixed with `>>`.
+
+          <br>
           **Complete Example**
           
           **<sub>GET http://next.belframework.org/api/annotations/do/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22sarcoma%22}&start=0&size=3</sub>**
@@ -336,6 +349,7 @@ documentation:
                   "type": "BiologicalProcessConcept",
                   "identifier": "1115",
                   "name": "sarcoma",
+                  "match_text": "<<sarcoma>>",
                   "_links": {
                     "self": {
                       "type": "annotation_value",
@@ -353,6 +367,7 @@ documentation:
                   "type": "BiologicalProcessConcept",
                   "identifier": "3071",
                   "name": "gliosarcoma",
+                  "match_text": "...3071 a ma oma coma rcoma arcoma <<sarcoma>> osarcoma iosarcoma liosarcoma gliosarcoma toma stoma astoma...",
                   "_links": {
                     "self": {
                       "type": "annotation_value",
@@ -370,6 +385,7 @@ documentation:
                   "type": "BiologicalProcessConcept",
                   "identifier": "3382",
                   "name": "liposarcoma",
+                  "match_text": "2 82 382 3382 a ma oma coma rcoma arcoma <<sarcoma>> osarcoma posarcoma iposarcoma liposarcoma",
                   "_links": {
                     "self": {
                       "type": "annotation_value",
