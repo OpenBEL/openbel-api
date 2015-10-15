@@ -72,7 +72,7 @@ module OpenBEL
         status 200
       end
 
-      get '/api/namespaces/?' do
+      get '/api/namespaces' do
         namespaces = @api.find_namespaces
 
         halt 404 if not namespaces or namespaces.empty?
@@ -85,13 +85,24 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/values/match-results/:match' do |match|
-        start    = (params[:start]  || 0).to_i
-        size     = (params[:size]   || 0).to_i
-
+      get '/api/namespaces/values' do
+        start    = (params[:start]  ||  0).to_i
+        size     = (params[:size]   || -1).to_i
+        size     = -1 if size <= 0
         faceted  = as_bool(params[:faceted])
+        halt 501 if faceted
+
+        filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        halt 501 if faceted or not filter_params.empty?
+        filter_params.each do |filter|
+          filter = read_filter(filter)
+          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
+          filter_hash[filter['category']][filter['name']] = filter['value']
+        end
+
+        halt 404 unless filter_hash['fts']['search'].is_a?(String)
+        match = filter_hash['fts']['search']
+        halt 404 unless match.length > 1
 
         match_results = @api.search(match,
           :start => start,
@@ -99,13 +110,13 @@ module OpenBEL
         ).to_a
 
         halt 404 if not match_results or match_results.empty?
-        render(
+        render_collection(
           match_results,
-          :match_result_collection
+          :namespace_value
         )
       end
 
-      get '/api/namespaces/:namespace/?' do |namespace|
+      get '/api/namespaces/:namespace' do |namespace|
         ns = @api.find_namespace(namespace)
 
         halt 404 unless ns
@@ -117,13 +128,24 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/values/match-results/:match' do |namespace, match|
-        start    = (params[:start]  || 0).to_i
-        size     = (params[:size]   || 0).to_i
-
+      get '/api/namespaces/:namespace/values' do |namespace|
+        start    = (params[:start]  ||  0).to_i
+        size     = (params[:size]   || -1).to_i
+        size     = -1 if size <= 0
         faceted  = as_bool(params[:faceted])
+        halt 501 if faceted
+
+        filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        halt 501 if faceted or not filter_params.empty?
+        filter_params.each do |filter|
+          filter = read_filter(filter)
+          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
+          filter_hash[filter['category']][filter['name']] = filter['value']
+        end
+
+        halt 404 unless filter_hash['fts']['search'].is_a?(String)
+        match = filter_hash['fts']['search']
+        halt 404 unless match.length > 1
 
         match_results = @api.search_namespace(namespace, match,
           :start => start,
@@ -131,13 +153,13 @@ module OpenBEL
         ).to_a
 
         halt 404 if not match_results or match_results.empty?
-        render(
+        render_collection(
           match_results,
-          :match_result_collection
+          :namespace_value
         )
       end
 
-      get '/api/namespaces/:namespace/equivalents/?' do |namespace|
+      get '/api/namespaces/:namespace/equivalents' do |namespace|
         halt 400 unless request.params['value']
 
         values = CGI::parse(env["QUERY_STRING"])['value']
@@ -158,7 +180,7 @@ module OpenBEL
         MultiJson.dump eq_mapping
       end
 
-      post '/api/namespaces/:namespace/equivalents/?' do |namespace|
+      post '/api/namespaces/:namespace/equivalents' do |namespace|
         halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
 
         content = request.body.read
@@ -188,7 +210,7 @@ module OpenBEL
         MultiJson.dump eq_mapping
       end
 
-      get '/api/namespaces/:namespace/orthologs/?' do |namespace|
+      get '/api/namespaces/:namespace/orthologs' do |namespace|
         halt 400 unless request.params['value']
 
         values = CGI::parse(env["QUERY_STRING"])['value']
@@ -209,7 +231,7 @@ module OpenBEL
         MultiJson.dump orth_mapping
       end
 
-      post '/api/namespaces/:namespace/orthologs/?' do |namespace|
+      post '/api/namespaces/:namespace/orthologs' do |namespace|
         halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
 
         content = request.body.read
@@ -239,7 +261,7 @@ module OpenBEL
         MultiJson.dump orth_mapping
       end
 
-      get '/api/namespaces/:namespace/:id/?' do |namespace, value|
+      get '/api/namespaces/:namespace/:id' do |namespace, value|
         value = @api.find_namespace_value(namespace, value)
 
         halt 404 unless value
@@ -251,7 +273,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/equivalents/?' do |namespace, value|
+      get '/api/namespaces/:namespace/:id/equivalents' do |namespace, value|
         equivalents = @api.find_equivalent(namespace, value)
         halt 404 if not equivalents or equivalents.empty?
 
@@ -261,7 +283,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/equivalents/:target/?' do |namespace, value, target|
+      get '/api/namespaces/:namespace/:id/equivalents/:target' do |namespace, value, target|
         equivalents = @api.find_equivalent(namespace, value, {
           target: target
         })
@@ -273,7 +295,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/orthologs/?' do |namespace, value|
+      get '/api/namespaces/:namespace/:id/orthologs' do |namespace, value|
         orthologs = @api.find_ortholog(namespace, value)
         halt 404 if not orthologs or orthologs.empty?
 
@@ -283,7 +305,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/orthologs/:target/?' do |namespace, value, target|
+      get '/api/namespaces/:namespace/:id/orthologs/:target' do |namespace, value, target|
         orthologs = @api.find_ortholog(namespace, value, {
           target: target
         })

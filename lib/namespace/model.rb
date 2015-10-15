@@ -12,6 +12,14 @@ module OpenBEL
       class NamespaceValue < OpenBEL::Model::RdfResource
         attr_accessor :inScheme, :type, :identifier,
                       :fromSpecies, :prefLabel, :title
+
+        def match_text=(match_text)
+          @match_text = match_text
+        end
+
+        def match_text
+          @match_text
+        end
       end
 
       class ValueEquivalence

@@ -79,14 +79,19 @@ module OpenBEL
           property :name,          item.prefLabel
           property :title,         item.title
           property :species,       item.fromSpecies
-          property :namespace_uri, item.inScheme
+
+          # Support inclusion of the matched text when annotation values are filtered by
+          # a full-text search.
+          if item.match_text
+            property :match_text,    item.match_text
+          end
         end
       end
 
       class NamespaceValueResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          parts = URI(item[:rdf_uri]).path.split('/')[3..-1]
+          parts = URI(item.delete(:rdf_uri)).path.split('/')[3..-1]
           namespace_id = parts[0]
           namespace_value_id = parts.join('/')
 
