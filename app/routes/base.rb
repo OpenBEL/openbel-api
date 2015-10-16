@@ -24,7 +24,7 @@ module OpenBEL
 
       DEFAULT_CONTENT_TYPE   = 'application/hal+json'
       SPOKEN_CONTENT_TYPES   = %w[application/hal+json application/json]
-      SCHEMA_BASE_URL        = 'http://next.belframework.org/schema/'
+      SCHEMA_BASE_URL        = 'http://next.belframework.org/schemas/'
       RESOURCE_SERIALIZERS   = {
         :annotation                 => AnnotationResourceSerializer,
         :annotation_collection      => AnnotationCollectionSerializer,
