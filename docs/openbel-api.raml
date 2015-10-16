@@ -436,6 +436,7 @@ documentation:
 
               **JSON Schema**
               - [annotation_value_collection](schemas/annotation_value_collection.schema.json)
+              - [annotation_value](schemas/annotation_value_resource.schema.json)
             body:
               application/json:
                 example: !include examples/annotation_value_collection.example.json
@@ -1506,6 +1507,196 @@ documentation:
           Accept:
             description: Allowable HTTP methods.
             type:        string
+  /values:
+    description: |
+      Namespace Value collection for all Namespace resources within the API.
+
+      This provides a collection of all BEL namespace values that can be listed and filtered.
+    options:
+      is: [
+        ro_options: { name: "namespace_value_collection" }
+      ]
+    get:
+      description: |
+        Returns the *namespace_value_collection* across all *namespace* resources.
+
+        Example: *Search by filter*
+
+        <br>
+        **Limitations**
+
+        This endpoint is limited to full-text searching including a *filter* like:
+        ```json
+        {
+            "category": "fts",
+            "name":     "search",
+            "value":    "sarcoma"
+        }
+        ```
+
+        <br>
+        **Additional Property**
+
+        A `match_text` property, included in each *namespace_value*, provides the snippet of text that matched the search. The matched term will be prefixed with `<<` and suffixed with `>>`.
+
+        <br>
+        **Complete Example**
+
+        **<sub>GET http://next.belframework.org/api/namespaces/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22factor%20VIII%22}&start=0&size=3</sub>**
+
+        ```json
+        {
+          "namespace_value_collection": [
+            {
+              "namespace_value": {
+                "type": "ProteinConcept",
+                "identifier": "88383",
+                "name": "F8",
+                "title": "coagulation factor VIII",
+                "species": "10090",
+                "match_text": "...or tor ctor actor <<factor>> I II III <<VIII>> FVIII <<Factor>> -8 f-8 Cf-8 f8..."
+              },
+              "_links": {
+                "self": {
+                  "type": "namespace_value",
+                  "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383"
+                },
+                "collection": {
+                  "type": "namespace",
+                  "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes"
+                },
+                "item": [
+                  {
+                    "type": "namespace_value_collection",
+                    "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383/equivalents"
+                  },
+                  {
+                    "type": "namespace_value_collection",
+                    "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383/orthologs"
+                  }
+                ]
+              }
+            },
+            {
+              "namespace_value": {
+                "type": "ProteinConcept",
+                "identifier": "727845",
+                "name": "F8",
+                "title": "coagulation factor VIII, procoagulant component",
+                "species": "10116",
+                "match_text": "coagulation <<factor>> <<VIII>>"
+              },
+              "_links": {
+                "self": {
+                  "type": "namespace_value",
+                  "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845"
+                },
+                "collection": {
+                  "type": "namespace",
+                  "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes"
+                },
+                "item": [
+                  {
+                    "type": "namespace_value_collection",
+                    "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845/equivalents"
+                  },
+                  {
+                    "type": "namespace_value_collection",
+                    "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845/orthologs"
+                  }
+                ]
+              }
+            },
+            {
+              "namespace_value": {
+                "type": "ProteinConcept",
+                "identifier": "3546",
+                "name": "F8",
+                "title": "coagulation factor VIII, procoagulant component",
+                "species": "9606",
+                "match_text": "coagulation <<factor>> VIII, procoagulant component...C 8C F8C I II III <<VIII>> FVIII"
+              },
+              "_links": {
+                "self": {
+                  "type": "namespace_value",
+                  "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546"
+                },
+                "collection": {
+                  "type": "namespace",
+                  "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes"
+                },
+                "item": [
+                  {
+                    "type": "namespace_value_collection",
+                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/equivalents"
+                  },
+                  {
+                    "type": "namespace_value_collection",
+                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/orthologs"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        ```
+
+      queryParameters:
+        start:
+          type: integer
+          description: |
+            The namespace value resource to start from for paging purposes.
+          example:  "0"
+          required: false
+        size:
+          type: integer
+          description: |
+            The size of the namespace value resource collection to retrieve. This will return a slice of the namespace value resource collection relative to *start*.
+
+            A size of zero or less will return all values.
+          example:  3
+          required: false
+        filter:
+          type: string
+          description: |
+            A filter to apply to the namespace value resource collection to narrow the resources retrieved.
+          example: |
+            {"category":"fts","name":"search","value":"sarcoma"}
+          required: false
+        faceted:
+          type: string
+          description: |
+            The boolean indicator to provided faceted results for the namespace value resource collection. The default is to not facet.
+          enum: [ 'true', 'yes', '1', 'on' ]
+          example: no
+      responses:
+        200:
+          description: |
+            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
+            **JSON Schema**
+            - [namespace_value_collection](schemas/namespace_value_collection.schema.json)
+            - [namespace_value](schemas/namespace_value_resource.schema.json)
+          body:
+            application/json:
+              example: !include examples/namespace_values_filter.example.json
+        400:
+          description: |
+            [400 Bad Request](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1)
+
+            Returned if a filter is malformed.
+        404:
+          description: |
+            [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
+
+            Returned if no namespace values were found for the FTS search.
+          
+            Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
+        501:
+          description: |
+            [501 Not Implemented](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2)
+
+            Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
   /namespaces/{namespace}:
     options:
       description: Returns allowable HTTP methods.
@@ -1517,6 +1708,163 @@ documentation:
             Accept:
               description: Allowable HTTP methods.
               type:        string
+    /values:
+      description: |
+        Namespace Value collection within a Namespace resource identified by *{namespace}*.
+      options:
+        is: [
+          ro_options: { name: "namespace_value_collection" }
+        ]
+      get:
+        description: |
+          Returns the *namespace_value_collection* across the *namespace* resource identified by *{namespace}* URI parameter.
+
+          Example: *Search by filter*
+
+          <br>
+           **Limitations**
+
+           This endpoint is limited to full-text searching including a *filter* like:
+           ```json
+           {
+               "category": "fts",
+               "name":     "search",
+               "value":    "factor VIII"
+           }
+           ```
+
+          <br>
+          **Additional Property**
+
+          A `match_text` property, included in each *namespace_value*, provides the snippet of text that matched the search. The matched term will be prefixed with `<<` and suffixed with `>>`.
+
+          <br>
+          **Complete Example**
+
+          **<sub>GET http://next.belframework.org/api/namespaces/hgnc/values?filter={%22category%22:%22fts%22,%22name%22:%22search%22,%22value%22:%22factor%20VIII%22}&start=0&size=2</sub>**
+
+          ```json
+          {
+            "namespace_value_collection": [
+              {
+                "namespace_value": {
+                  "type": "ProteinConcept",
+                  "identifier": "3546",
+                  "name": "F8",
+                  "title": "coagulation factor VIII, procoagulant component",
+                  "species": "9606",
+                  "match_text": "coagulation <<factor>> VIII, procoagulant component...C 8C F8C I II III <<VIII>> FVIII"
+                },
+                "_links": {
+                  "self": {
+                    "type": "namespace_value",
+                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546"
+                  },
+                  "collection": {
+                    "type": "namespace",
+                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes"
+                  },
+                  "item": [
+                    {
+                      "type": "namespace_value_collection",
+                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/equivalents"
+                    },
+                    {
+                      "type": "namespace_value_collection",
+                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/orthologs"
+                    }
+                  ]
+                }
+              },
+              {
+                "namespace_value": {
+                  "type": "ProteinConcept",
+                  "identifier": "6631",
+                  "name": "LMAN1",
+                  "title": "lectin, mannose-binding, 1",
+                  "species": "9606",
+                  "match_text": "F5F8D ERGIC53 MCFD1 MR60 gp58 ERGIC-53 FMFD1 coagulation <<factor>> V-factor <<VIII>> combined deficiency"
+                },
+                "_links": {
+                  "self": {
+                    "type": "namespace_value",
+                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/6631"
+                  },
+                  "collection": {
+                    "type": "namespace",
+                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes"
+                  },
+                  "item": [
+                    {
+                      "type": "namespace_value_collection",
+                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/6631/equivalents"
+                    },
+                    {
+                      "type": "namespace_value_collection",
+                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/6631/orthologs"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+          ```
+        queryParameters:
+          start:
+            type: integer
+            description: |
+              The namespace value resource to start from for paging purposes.
+            example:  "0"
+            required: false
+          size:
+            type: integer
+            description: |
+              The size of the namespace value resource collection to retrieve. This will return a slice of the namespace value resource collection relative to *start*.
+
+              A size of zero or less will return all values.
+            example:  2
+            required: false
+          filter:
+            type: string
+            description: |
+              A filter to apply to the namespace value resource collection to narrow the resources retrieved.
+            example: |
+              {"category":"fts","name":"search","value":"factor VIII"}
+            required: false
+          faceted:
+            type: string
+            description: |
+              The boolean indicator to provided faceted results for the namespace value resource collection. The default is to not facet.
+            enum: [ 'true', 'yes', '1', 'on' ]
+            example: no
+        responses:
+          200:
+            description: |
+              [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
+              **JSON Schema**
+              - [namespace_value_collection](schemas/namespace_value_collection.schema.json)
+              - [namespace_value](schemas/namespace_value_resource.schema.json)
+            body:
+              application/json:
+                example: !include examples/namespace_value_collection.example.json
+          400:
+            description: |
+              [400 Bad Request](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1)
+
+              Returned if a filter is malformed.
+          404:
+            description: |
+              [404 Not Found](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5)
+
+              Returned if no namespace values were found for the FTS search.
+            
+              Returned if a `{"category":"fts", "name": "search", ...}` filter was not provided.
+          501:
+            description: |
+              [501 Not Implemented](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2)
+
+              Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
   /namespaces/{namespace}/equivalents:
     options:
       description: Returns allowable HTTP methods.
