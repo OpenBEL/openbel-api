@@ -7,8 +7,6 @@ schemas:
   - annotation_collection:       !include http://next.belframework.org/schemas/annotation_collection.schema.json
   - annotation_value_resource:   !include http://next.belframework.org/schemas/annotation_value_resource.schema.json
   - annotation_value_collection: !include http://next.belframework.org/schemas/annotation_value_collection.schema.json
-  - completion:                  !include http://next.belframework.org/schemas/completion.schema.json
-  - completion_collection:       !include http://next.belframework.org/schemas/completion_collection.schema.json
   - evidence:                    !include http://next.belframework.org/schemas/evidence.schema.json
   - evidence_resource:           !include http://next.belframework.org/schemas/evidence_resource.schema.json
   - evidence_collection:         !include http://next.belframework.org/schemas/evidence_collection.schema.json
@@ -1378,7 +1376,6 @@ documentation:
                     }
                   ]
                 }
-              schema: completion_collection
   /{bel}/components:
     description: |
       Retrieve the components of a *BEL* expression fragment. Currently this will only return the *subject*, *relationship*, and *object* understood from BEL statement expression.
