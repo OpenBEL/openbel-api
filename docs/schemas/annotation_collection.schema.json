@@ -13,7 +13,7 @@
       "title": "",
       "description": "",
       "items": {
-        "$ref":"http://next.belframework.org/schema/annotation_resource.schema.json"
+        "$ref":"http://next.belframework.org/schemas/annotation_resource.schema.json"
       }
     }
   }

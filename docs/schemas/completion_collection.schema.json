@@ -13,7 +13,7 @@
       "title": "",
       "description": "",
       "items": {
-        "$ref":"http://next.belframework.org/schema/completion.schema.json#/properties/completion"
+        "$ref":"http://next.belframework.org/schemas/completion.schema.json#/properties/completion"
       }
     }
   }

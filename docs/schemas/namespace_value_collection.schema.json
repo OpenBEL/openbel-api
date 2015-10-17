@@ -14,7 +14,7 @@
       "title": "",
       "description": "",
       "items": {
-        "$ref":"http://next.belframework.org/schema/namespace_value_resource.schema.json"
+        "$ref":"http://next.belframework.org/schemas/namespace_value_resource.schema.json"
       }
     }
   }
