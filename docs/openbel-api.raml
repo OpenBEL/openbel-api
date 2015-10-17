@@ -3,17 +3,17 @@ title: OpenBEL Platform
 version: 0.0.2
 baseUri: http://next.belframework.org/api
 schemas:
-  - annotation_resource:         !include http://next.belframework.org/schema/annotation_resource.schema.json
-  - annotation_collection:       !include http://next.belframework.org/schema/annotation_collection.schema.json
-  - annotation_value_resource:   !include http://next.belframework.org/schema/annotation_value_resource.schema.json
-  - annotation_value_collection: !include http://next.belframework.org/schema/annotation_value_collection.schema.json
-  - completion:                  !include http://next.belframework.org/schema/completion.schema.json
-  - completion_collection:       !include http://next.belframework.org/schema/completion_collection.schema.json
-  - evidence:                    !include http://next.belframework.org/schema/evidence.schema.json
-  - evidence_resource:           !include http://next.belframework.org/schema/evidence_resource.schema.json
-  - evidence_collection:         !include http://next.belframework.org/schema/evidence_collection.schema.json
-  - match_result:                !include http://next.belframework.org/schema/match_result.schema.json
-  - match_result_collection:     !include http://next.belframework.org/schema/match_result_collection.schema.json
+  - annotation_resource:         !include http://next.belframework.org/schemas/annotation_resource.schema.json
+  - annotation_collection:       !include http://next.belframework.org/schemas/annotation_collection.schema.json
+  - annotation_value_resource:   !include http://next.belframework.org/schemas/annotation_value_resource.schema.json
+  - annotation_value_collection: !include http://next.belframework.org/schemas/annotation_value_collection.schema.json
+  - completion:                  !include http://next.belframework.org/schemas/completion.schema.json
+  - completion_collection:       !include http://next.belframework.org/schemas/completion_collection.schema.json
+  - evidence:                    !include http://next.belframework.org/schemas/evidence.schema.json
+  - evidence_resource:           !include http://next.belframework.org/schemas/evidence_resource.schema.json
+  - evidence_collection:         !include http://next.belframework.org/schemas/evidence_collection.schema.json
+  - match_result:                !include http://next.belframework.org/schemas/match_result.schema.json
+  - match_result_collection:     !include http://next.belframework.org/schemas/match_result_collection.schema.json
 traits:
   - ro_options:
       description: |
@@ -548,7 +548,7 @@ documentation:
       The following formats are supported:
       - Evidence JSON
         - media type:  `application/json`
-        - JSON schema: [evidence.schema.json](http://next.belframework.org/schema/evidence.schema.json)
+        - JSON schema: [evidence.schema.json](http://next.belframework.org/schemas/evidence.schema.json)
       - BEL Script
         - defined by [BEL Script V1.0 Format](http://wiki.openbel.org/display/BLDV20/BEL+Script+V1.0+Format)
         - media type: `application/bel`
