@@ -282,8 +282,14 @@ documentation:
         type: string
         description: |
           An identifier string for an annotation. This is either the annotation prefix, name, or URI part.
-        example: |
-          "do" or "Disease Ontology" or "disease-ontology" (all resolve to the same annotation resource)
+
+          **Example Usage**:
+
+          Identify the Disease Ontology, all of the following are equivalent identifiers:
+          - `do` (prefix)
+          - `Disease Ontology` (name)
+          - `disease-ontology` (URI part)
+        example: "Disease Ontology"
         required: true
     options:
       is: [
@@ -867,10 +873,25 @@ documentation:
           A filter to apply to the evidence resource collection to narrow the resources retrieved.
 
           The default is to not apply filters. If filters are not specified then all evidence resources, in the collection, will be returned.
+
+          **Example Usage:**
+
+          Find evidence matching either `prostate` or `gland`.
+          ```
+          {"category":"experiment_context","name":"Anatomy","value":"prostate gland"}
+          ```
+
+          Find evidence matching the phrase `subdural hematoma` or `carcinoma`.
+          ```
+          {"category":"fts","name":"search","value":"\"subdural hematoma\" carcinoma"}
+          ```
+
+          Find evidence matching `homatoma` but not `carcinoma`.
+          ```
+          {"category":"fts","name":"search","value":"homatoma -carcinoma"}
+          ```
         example: |
           {"category":"experiment_context","name":"Anatomy","value":"prostate gland"}
-          {"category":"fts","name":"search","value":"\"subdural hematoma\" carcinoma"}
-          {"category":"fts","name":"search","value":"homatoma -carcinoma"}
         required: false
       faceted:
         type: string
