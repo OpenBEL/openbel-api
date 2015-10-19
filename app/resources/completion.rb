@@ -22,7 +22,7 @@ module OpenBEL
         schema do
           type :completion
           properties do |p|
-            p.completions item
+            p.completion item
           end
 
           link :self,        link_self(item[:id])
@@ -67,7 +67,7 @@ module OpenBEL
         schema do
           type :completion_collection
           properties do |p|
-            p.completions item
+            p.completion_collection item
           end
 
           link :self,       link_self

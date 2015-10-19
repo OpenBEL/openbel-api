@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "description": "DESCRIBE COMPLETION",
+  "title": "Completion Resource",
+  "description": "A completion of a BEL expression.",
   "type": "object",
   "additionalProperties": false,
   "required": [

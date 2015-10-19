@@ -1364,36 +1364,42 @@ documentation:
         200:
           description: |
             [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+
+            **JSON Schema**
+            - [completion_collection](schemas/completion_collection.schema.json)
+            - [completion_resource](schemas/completion_resource.schema.json)
           body:
             application/json:
               example: |
                 {
-                  "completions": [
+                  "completion_collection": [
                     {
-                      "type": "namespace_prefix",
-                      "label": "HGNC",
-                      "value": "HGNC:",
-                      "highlight": {
-                        "start_position": 2,
-                        "end_position": 3,
-                        "range_type": "inclusive"
-                      },
-                      "actions": [
-                        {
-                          "delete": {
-                              "start_position": 2,
-                              "end_position": 3,
-                              "range_type": "inclusive"
-                          },
-                          "insert": {
-                              "position": 2,
-                              "value": "HGNC:"
-                          },
-                          "move_cursor": {
-                              "position": 7
+                      "completion": {
+                        "type": "namespace_prefix",
+                        "label": "HGNC",
+                        "value": "HGNC:",
+                        "highlight": {
+                          "start_position": 2,
+                          "end_position": 3,
+                          "range_type": "inclusive"
+                        },
+                        "actions": [
+                          {
+                            "delete": {
+                                "start_position": 2,
+                                "end_position": 3,
+                                "range_type": "inclusive"
+                            },
+                            "insert": {
+                                "position": 2,
+                                "value": "HGNC:"
+                            },
+                            "move_cursor": {
+                                "position": 7
+                            }
                           }
-                        }
-                      ]
+                        ]
+                      }
                     }
                   ]
                 }
