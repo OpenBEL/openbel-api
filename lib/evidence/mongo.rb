@@ -107,7 +107,9 @@ module OpenBEL
             name     = filter['name']
             value    = filter['value']
 
-            if category == 'experiment_context'
+						if category == 'fts' && name == 'search'
+              {:$text => { :$search => value }}
+            elsif category == 'experiment_context'
               {
                 :experiment_context => {
                   :$elemMatch => {
@@ -123,13 +125,6 @@ module OpenBEL
             end
           }
         }
-
-        fts_search_value = query_hash.delete("fts.search")
-        if fts_search_value
-          query_hash[:$text] = {
-            :$search => fts_search_value
-          }
-        end
 
         query_hash
       end
