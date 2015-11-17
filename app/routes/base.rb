@@ -172,6 +172,9 @@ module OpenBEL
           resource_serializer = self.class.const_get("#{type_class}ResourceSerializer")
 
           adapter = Oat::Adapters::HAL
+          if options[:adapter]
+            adapter = options[:adapter]
+          end
 
           resource = resource_serializer.new(
             type_serializer.new(obj, resource_context, adapter).to_hash,
@@ -195,6 +198,9 @@ module OpenBEL
           resource_serializer = self.class.const_get("#{type_class}CollectionSerializer")
 
           adapter = Oat::Adapters::HAL
+          if options[:adapter]
+            adapter = options[:adapter]
+          end
 
           resource = resource_serializer.new(
             collection.map { |obj|

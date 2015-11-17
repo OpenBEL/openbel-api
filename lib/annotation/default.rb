@@ -41,26 +41,29 @@ module OpenBEL
       end
 
       def find_annotation_value(annotation, value, options = {})
+        annotation = find_annotation(annotation)
+        return nil unless annotation
+
         value_uri = find_annotation_value_rdf_uri(annotation, value)
         return nil unless value_uri
 
-        annotation_value_by_uri(value_uri)
+        annotation_value_by_uri(value_uri, annotation)
       end
 
       def find_annotation_values(annotation, options = {})
-        namespace = find_annotation_rdf_uri(annotation)
+        annotation = find_annotation(annotation)
         values = @storage.triples(
-          nil, SKOS_IN_SCHEME, namespace, :only => :subject
+          nil, SKOS_IN_SCHEME, annotation.uri, :only => :subject
         ).drop((options[:offset] || 0).to_i)
         values = values.take(options[:size]) if options[:size]
 
         if block_given?
           values.each do |subject|
-            yield annotation_value_by_uri(subject)
+            yield annotation_value_by_uri(subject, annotation)
           end
         else
           values.map { |subject|
-            annotation_value_by_uri(subject)
+            annotation_value_by_uri(subject, annotation)
           }.to_a
         end
       end
@@ -71,18 +74,19 @@ module OpenBEL
         end
 
         @search.search(match, :annotation_concept, nil, nil, options).map { |result|
-          annotation_value = annotation_value_by_uri(result.uri)
+          annotation       = annotation_by_uri(result.scheme_uri)
+          annotation_value = annotation_value_by_uri(result.uri, annotation)
           annotation_value.match_text = result.snippet
           annotation_value
         }
       end
 
       def search_annotation(annotation, match, options = {})
-        annotation_uri = find_annotation_rdf_uri(annotation)
-        return nil unless annotation_uri
+        annotation = find_annotation(annotation)
+        return nil unless annotation
 
-        @search.search(match, :annotation_concept, annotation_uri, nil, options).map { |result|
-          annotation_value = annotation_value_by_uri(result.uri)
+        @search.search(match, :annotation_concept, annotation.uri, nil, options).map { |result|
+          annotation_value = annotation_value_by_uri(result.uri, annotation)
           annotation_value.match_text = result.snippet
           annotation_value
         }
@@ -157,7 +161,7 @@ module OpenBEL
         return nil unless value
 
         case value
-        when OpenBEL::Model::Namespace::NamespaceValue
+        when OpenBEL::Model::Annotation::AnnotationValue
           return value.uri
         when URI
           return value
@@ -202,10 +206,12 @@ module OpenBEL
         }
       end
 
-      def annotation_value_by_uri(uri)
-        OpenBEL::Model::Annotation::AnnotationValue.from(
+      def annotation_value_by_uri(uri, annotation)
+        annotation_value = OpenBEL::Model::Annotation::AnnotationValue.from(
           @storage.triples(uri, nil, nil).to_a
         )
+        annotation_value.annotation = annotation
+        annotation_value
       end
     end
   end

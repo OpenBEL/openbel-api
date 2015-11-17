@@ -79,7 +79,8 @@ module OpenBEL
         halt 404 if not match_results or match_results.empty?
         render_collection(
           match_results,
-          :annotation_value
+          :annotation_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
@@ -122,16 +123,21 @@ module OpenBEL
         halt 404 if not match_results or match_results.empty?
         render_collection(
           match_results,
-          :annotation_value
+          :annotation_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
       get '/api/annotations/:annotation/values/:value' do |annotation, value|
-        value = @api.find_annotation_value(annotation, value)
+        value      = @api.find_annotation_value(annotation, value)
         halt 404 unless value
 
         status 200
-        render_resource(value, :annotation_value)
+        render_resource(
+          value,
+          :annotation_value,
+          :adapter => Oat::Adapters::BasicJson
+        )
       end
     end
   end

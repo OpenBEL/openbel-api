@@ -12,6 +12,14 @@ module OpenBEL
       class AnnotationValue < OpenBEL::Model::RdfResource
         attr_accessor :inScheme, :type, :identifier, :prefLabel, :title
 
+        def annotation=(annotation)
+          @annotation = annotation
+        end
+
+        def annotation
+          @annotation
+        end
+
         def match_text=(match_text)
           @match_text = match_text
         end

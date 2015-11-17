@@ -5,6 +5,14 @@ module Oat
         # no-op to maintain interface compatibility with hypermedia adapters
       end
 
+			def link(rel, opts = {})
+        if opts.is_a?(Array)
+          data[:_links][rel] = opts.select { |link_obj| link_obj.include?(:href) }
+        else
+          data[:_links][rel] = opts if opts[:href]
+        end
+      end
+
       def properties(&block)
         data.merge! yield_props(&block)
       end

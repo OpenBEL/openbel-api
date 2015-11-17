@@ -69,12 +69,13 @@ module OpenBEL
       end
 
       class AnnotationValueSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        #adapter Oat::Adapters::HAL
         schema do
           type     :annotation_value
           property :type,            item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
           property :identifier,      item.identifier
           property :name,            item.prefLabel
+          entity   :annotation,      item.annotation, AnnotationSerializer
 
           # Support inclusion of the matched text when annotation values are filtered by
           # a full-text search.
