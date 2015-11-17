@@ -133,8 +133,6 @@ documentation:
       description: |
         Returns the *annotation_value_collection* across all *annotation* resources.
 
-        Example: *Search by filter*
-
         <br>
         **Limitations**
         
@@ -145,6 +143,21 @@ documentation:
             "name":     "search",
             "value":    "sarcoma"
         }
+        ```
+
+        <br>
+        **Nested Annotation**
+
+        All returned *annotation_value* in the *annotation_value_collection* will include the *annotation* it is found in.
+        For example if *sarcoma* is found in the *Disease Ontology* annotation then the following will be included in the value:
+
+        ```json
+        annotation": {
+          "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+          "name": "Disease Ontology",
+          "prefix": "do",
+          "domain": "disease"
+        },
         ```
 
         <br>
@@ -165,6 +178,12 @@ documentation:
                 "type": "BiologicalProcessConcept",
                 "identifier": "D012509",
                 "name": "Sarcoma",
+                "annotation": {
+                  "rdf_uri": "http://www.openbel.org/bel/namespace/mesh-diseases",
+                  "name": "Mesh Diseases",
+                  "prefix": "meshd",
+                  "domain": "disease"
+                },
                 "match_text": "...Sarcomas, Spindle Cell Soft Tissue <<Sarcoma>> Soft Tissue Sarcomas Spindle Cell <<Sarcoma>> Spindle Cell Sarcomas",
                 "_links": {
                   "self": {
@@ -183,6 +202,12 @@ documentation:
                 "type": "BiologicalProcessConcept",
                 "identifier": "1115",
                 "name": "sarcoma",
+                "annotation": {
+                  "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+                  "name": "Disease Ontology",
+                  "prefix": "do",
+                  "domain": "disease"
+                },
                 "match_text": "<<sarcoma>>",
                 "_links": {
                   "self": {
@@ -201,6 +226,12 @@ documentation:
                 "type": "BiologicalProcessConcept",
                 "identifier": "D008223",
                 "name": "Lymphoma",
+                "annotation": {
+                  "rdf_uri": "http://www.openbel.org/bel/namespace/mesh-diseases",
+                  "name": "Mesh Diseases",
+                  "prefix": "meshd",
+                  "domain": "disease"
+                },
                 "match_text": "Germinoblastic <<Sarcoma>> Germinoblastic Sarcomas Germinoblastoma Germinoblastomas Lymphoma, Malignant Lymphomas Lymphomas, Malignant Malignant Lymphoma Malignant Lymphomas...",
                 "_links": {
                   "self": {
@@ -319,19 +350,32 @@ documentation:
         description: |
           Returns the *annotation_value_collection* across the *annotation* resource identified by *{annotation}* URI parameter.
 
-          Example: *Search by filter*
+          <br>
+          **Limitations**
+          
+          This endpoint is limited to full-text searching including a *filter* like:
+          ```json
+          {
+              "category": "fts",
+              "name":     "search",
+              "value":    "sarcoma"
+          }
+          ```
 
           <br>
-           **Limitations**
-          
-           This endpoint is limited to full-text searching including a *filter* like:
-           ```json
-           {
-               "category": "fts",
-               "name":     "search",
-               "value":    "sarcoma"
-           }
-           ```
+          **Nested Annotation**
+
+          All returned *annotation_value* in the *annotation_value_collection* will include the *annotation* it is found in.
+          For example if *sarcoma* is found in the *Disease Ontology* annotation then the following will be included in the value:
+
+          ```json
+          annotation": {
+            "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+            "name": "Disease Ontology",
+            "prefix": "do",
+            "domain": "disease"
+          },
+          ```
 
           <br>
           **Additional Property**
@@ -351,6 +395,12 @@ documentation:
                   "type": "BiologicalProcessConcept",
                   "identifier": "1115",
                   "name": "sarcoma",
+                  "annotation": {
+                    "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+                    "name": "Disease Ontology",
+                    "prefix": "do",
+                    "domain": "disease"
+                  },
                   "match_text": "<<sarcoma>>",
                   "_links": {
                     "self": {
@@ -369,6 +419,12 @@ documentation:
                   "type": "BiologicalProcessConcept",
                   "identifier": "3071",
                   "name": "gliosarcoma",
+                  "annotation": {
+                    "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+                    "name": "Disease Ontology",
+                    "prefix": "do",
+                    "domain": "disease"
+                  },
                   "match_text": "...3071 a ma oma coma rcoma arcoma <<sarcoma>> osarcoma iosarcoma liosarcoma gliosarcoma toma stoma astoma...",
                   "_links": {
                     "self": {
@@ -387,6 +443,12 @@ documentation:
                   "type": "BiologicalProcessConcept",
                   "identifier": "3382",
                   "name": "liposarcoma",
+                  "annotation": {
+                    "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+                    "name": "Disease Ontology",
+                    "prefix": "do",
+                    "domain": "disease"
+                  },
                   "match_text": "2 82 382 3382 a ma oma coma rcoma arcoma <<sarcoma>> osarcoma posarcoma iposarcoma liposarcoma",
                   "_links": {
                     "self": {
@@ -470,6 +532,21 @@ documentation:
           description: |
             Returns the *annotation_value* resource identified by *{annotation}* and *{value}* URI parameters.
 
+            <br>
+            **Nested Annotation**
+
+            All returned *annotation_value* in the *annotation_value_collection* will include the *annotation* it is found in.
+            For example if *sarcoma* is found in the *Disease Ontology* annotation then the following will be included in the value:
+
+            ```json
+            annotation": {
+              "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+              "name": "Disease Ontology",
+              "prefix": "do",
+              "domain": "disease"
+            },
+            ```
+
             **Complete Example**
             
             **<sub>GET http://next.belframework.org/api/annotations/do/values/sarcoma</sub>**
@@ -480,6 +557,12 @@ documentation:
                 "type": "BiologicalProcessConcept",
                 "identifier": "1115",
                 "name": "sarcoma",
+                "annotation": {
+                  "rdf_uri": "http://www.openbel.org/bel/namespace/disease-ontology",
+                  "name": "Disease Ontology",
+                  "prefix": "do",
+                  "domain": "disease"
+                },
                 "_links": {
                   "self": {
                     "type": "annotation_value",
