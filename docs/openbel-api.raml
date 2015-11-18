@@ -1611,6 +1611,7 @@ documentation:
           Accept:
             description: Allowable HTTP methods.
             type:        string
+  get:
   /values:
     description: |
       Namespace Value collection for all Namespace resources within the API.
@@ -1832,7 +1833,7 @@ documentation:
             [501 Not Implemented](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2)
 
             Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
-  /namespaces/{namespace}:
+  /{namespace}:
     options:
       description: Returns allowable HTTP methods.
       responses:
@@ -1843,6 +1844,7 @@ documentation:
             Accept:
               description: Allowable HTTP methods.
               type:        string
+    get:
     /values:
       description: |
         Namespace Value collection within a Namespace resource identified by *{namespace}*.
@@ -2025,61 +2027,64 @@ documentation:
               [501 Not Implemented](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2)
 
               Returned if the client enabled the `faceted` query parameter. This is currently not implemented.
-  /namespaces/{namespace}/equivalents:
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          description: |
-            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
-    post:
-  /namespaces/{namespace}/orthologs:
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          description: |
-            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
-    post:
-  /namespaces/{namespace}/{value}:
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          description: |
-            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
-  /namespaces/{namespace}/{value}/equivalents/{target}:
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          description: |
-            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
-  /namespaces/{namespace}/{value}/orthologs/{target}:
-    options:
-      description: Returns allowable HTTP methods.
-      responses:
-        200:
-          description: |
-            [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
-          headers:
-            Accept:
-              description: Allowable HTTP methods.
-              type:        string
+      /{value}:
+        options:
+          description: Returns allowable HTTP methods.
+          responses:
+            200:
+              description: |
+                [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+              headers:
+                Accept:
+                  description: Allowable HTTP methods.
+                  type:        string
+        get:
+        /equivalents:
+          options:
+            description: Returns allowable HTTP methods.
+            responses:
+              200:
+                description: |
+                  [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+                headers:
+                  Accept:
+                    description: Allowable HTTP methods.
+                    type:        string
+          get:
+          /{target}:
+            options:
+              description: Returns allowable HTTP methods.
+              responses:
+                200:
+                  description: |
+                    [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+                  headers:
+                    Accept:
+                      description: Allowable HTTP methods.
+                      type:        string
+            get:
+        /orthologs:
+          options:
+            description: Returns allowable HTTP methods.
+            responses:
+              200:
+                description: |
+                  [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+                headers:
+                  Accept:
+                    description: Allowable HTTP methods.
+                    type:        string
+          get:
+          /{target}:
+            options:
+              description: Returns allowable HTTP methods.
+              responses:
+                200:
+                  description: |
+                    [200 OK](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1)
+                  headers:
+                    Accept:
+                      description: Allowable HTTP methods.
+                      type:        string
+            get:
   # vim: ft=yaml sw=2 ts=2 sts=2 expandtab:

@@ -47,27 +47,27 @@ module OpenBEL
         status 200
       end
 
-      options '/api/namespaces/:namespace/:id' do
+      options '/api/namespaces/:namespace/values/:value' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/namespaces/:namespace/:id/equivalents' do
+      options '/api/namespaces/:namespace/values/:value/equivalents' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/namespaces/:namespace/:id/equivalents/:target' do
+      options '/api/namespaces/:namespace/values/:value/equivalents/:target' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/namespaces/:namespace/:id/orthologs' do
+      options '/api/namespaces/:namespace/values/:value/orthologs' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/namespaces/:namespace/:id/orthologs/:target' do
+      options '/api/namespaces/:namespace/values/:value/orthologs/:target' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
@@ -263,7 +263,7 @@ module OpenBEL
         MultiJson.dump orth_mapping
       end
 
-      get '/api/namespaces/:namespace/:id' do |namespace, value|
+      get '/api/namespaces/:namespace/values/:value' do |namespace, value|
         value = @api.find_namespace_value(namespace, value)
 
         halt 404 unless value
@@ -276,7 +276,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/equivalents' do |namespace, value|
+      get '/api/namespaces/:namespace/values/:value/equivalents' do |namespace, value|
         equivalents = @api.find_equivalent(namespace, value)
         halt 404 if not equivalents or equivalents.empty?
 
@@ -287,7 +287,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/equivalents/:target' do |namespace, value, target|
+      get '/api/namespaces/:namespace/values/:value/equivalents/:target' do |namespace, value, target|
         equivalents = @api.find_equivalent(namespace, value, {
           target: target
         })
@@ -300,7 +300,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/orthologs' do |namespace, value|
+      get '/api/namespaces/:namespace/values/:value/orthologs' do |namespace, value|
         orthologs = @api.find_ortholog(namespace, value)
         halt 404 if not orthologs or orthologs.empty?
 
@@ -311,7 +311,7 @@ module OpenBEL
         )
       end
 
-      get '/api/namespaces/:namespace/:id/orthologs/:target' do |namespace, value, target|
+      get '/api/namespaces/:namespace/values/:value/orthologs/:target' do |namespace, value, target|
         orthologs = @api.find_ortholog(namespace, value, {
           target: target
         })
