@@ -7,7 +7,7 @@ module OpenBEL
       VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
       class NamespaceSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+#        adapter Oat::Adapters::HAL
         schema do
           type     :namespace
           property :rdf_uri, item.uri
@@ -70,7 +70,7 @@ module OpenBEL
       end
 
       class NamespaceValueSerializer < BaseSerializer
-        adapter Oat::Adapters::HAL
+        #adapter Oat::Adapters::HAL
         schema do
           type     :namespace_value
           property :rdf_uri,       item.uri
@@ -79,6 +79,7 @@ module OpenBEL
           property :name,          item.prefLabel
           property :title,         item.title
           property :species,       item.fromSpecies
+          entity   :namespace,     item.namespace, NamespaceSerializer
 
           # Support inclusion of the matched text when annotation values are filtered by
           # a full-text search.

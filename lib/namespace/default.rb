@@ -45,10 +45,11 @@ module OpenBEL
       end
 
       def find_namespace_value(namespace, value, options = {})
+        namespace = find_namespace(namespace)
         value_uri = find_namespace_value_rdf_uri(namespace, value)
         return nil unless value_uri
 
-        namespace_value_by_uri(value_uri)
+        namespace_value_by_uri(value_uri, namespace)
       end
 
       def find_namespace_values(namespace, options = {})
@@ -80,34 +81,35 @@ module OpenBEL
         return nil unless value_uri
 
         if options[:target]
-          target_uri = find_namespace_rdf_uri(options[:target])
-          return nil unless target_uri
+          target_namespace = find_namespace(options[:target])
+          return nil unless target_namespace
 
           @storage.triples(
             value_uri, SKOS_EXACT_MATCH, nil, :only => :object
           ).find_all { |object|
-            object.start_with? target_uri
+            object.start_with? target_namespace.uri
           }.map { |object|
-            namespace_value_by_uri(object)
+            namespace_value_by_uri(object, target_namespace)
           }.to_a
         else
           @storage.triples(
             value_uri, SKOS_EXACT_MATCH, nil, :only => :object
           ).map { |object|
-            namespace_value_by_uri(object)
+            namespace = namespace_for_value(object)
+            namespace_value_by_uri(object, namespace)
           }.to_a
         end
       end
 
       # TODO Refactor into reusable namespace value query + targetted (see find_orthologs)
       def find_equivalents(namespace, values, options = {})
-        options = {result: :resource}.merge options
+        #options = {result: :resource}.merge options
         namespace_uri = find_namespace_rdf_uri(namespace).to_s
-        result_func = result_function(options[:result])
+        #result_func = result_function(options[:result])
 
         if options[:target]
-          target_uri = find_namespace_rdf_uri(options[:target])
-          return nil unless target_uri
+          target_namespace = find_namespace(options[:target])
+          return nil unless target_namespace
 
           values.inject({}) { |hash, item|
             item_key = item.to_s
@@ -118,9 +120,9 @@ module OpenBEL
               hash[item_key] = @storage.triples(
                 concept_uri, SKOS_EXACT_MATCH, nil, :only => :object
               ).find_all { |object|
-                object.start_with? target_uri
+                object.start_with? target_namespace.uri
               }.map { |object|
-                result_func.call(object)
+                namespace_value_by_uri(object, target_namespace)
               }.to_a
             end
             hash
@@ -135,7 +137,8 @@ module OpenBEL
               hash[item_key] = @storage.triples(
                 concept_uri, SKOS_EXACT_MATCH, nil, :only => :object
               ).map { |object|
-                result_func.call(object)
+                namespace = namespace_for_value(object)
+                namespace_value_by_uri(object, namespace)
               }.to_a
             end
             hash
@@ -157,8 +160,8 @@ module OpenBEL
           @storage.triples(
             value_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
           ).map { |object|
-            # describe ortholog
-            ortholog = namespace_value_by_uri(object)
+            namespace = namespace_for_value(object)
+            ortholog  = namespace_value_by_uri(object, namespace)
 
             # select if species match
             if ortholog && ortholog.fromSpecies.to_s == species_tax_id
@@ -168,34 +171,35 @@ module OpenBEL
             end
           }.to_a.compact
         elsif options[:target]
-          target_uri = find_namespace_rdf_uri(options[:target])
-          return nil unless target_uri
+          target_namespace = find_namespace(options[:target])
+          return nil unless target_namespace
 
           @storage.triples(
             value_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
           ).find_all { |object|
-            object.start_with? target_uri
+            object.start_with? target_namespace.uri
           }.map { |object|
-            namespace_value_by_uri(object)
+            namespace_value_by_uri(object, target_namespace)
           }.to_a
         else
           @storage.triples(
             value_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
           ).map { |object|
-            namespace_value_by_uri(object)
+            namespace = namespace_for_value(object)
+            namespace_value_by_uri(object, namespace)
           }.to_a
         end
       end
 
       # TODO Refactor into reusable namespace value query + targetted (see find_equivalents)
       def find_orthologs(namespace, values, options = {})
-        options = {result: :resource}.merge options
+        #options = {result: :resource}.merge options
         namespace_uri = find_namespace_rdf_uri(namespace).to_s
-        result_func = result_function(options[:result])
+        #result_func = result_function(options[:result])
 
         if options[:target]
-          target_uri = find_namespace_rdf_uri(options[:target])
-          return nil unless target_uri
+          target_namespace = find_namespace(options[:target])
+          return nil unless target_namespace
 
           values.inject({}) { |hash, item|
             item_key = item.to_s
@@ -206,9 +210,9 @@ module OpenBEL
               hash[item_key] = @storage.triples(
                 concept_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
               ).find_all { |object|
-                object.start_with? target_uri
+                object.start_with? target_namespace.uri
               }.map { |object|
-                result_func.call(object)
+                namespace_value_by_uri(object, target_namespace)
               }.to_a
             end
             hash
@@ -223,7 +227,8 @@ module OpenBEL
               hash[item_key] = @storage.triples(
                 concept_uri, BEL_ORTHOLOGOUS_MATCH, nil, :only => :object
               ).map { |object|
-                result_func.call(object)
+                namespace = namespace_for_value(object)
+                namespace_value_by_uri(object, namespace)
               }.to_a
             end
             hash
@@ -243,24 +248,28 @@ module OpenBEL
           nil,
           options
         ).map { |result|
-          namespace_value = namespace_value_by_uri(result.uri)
+          namespace                  = namespace_by_uri(result.scheme_uri)
+          namespace_value            = namespace_value_by_uri(result.uri, namespace)
+          namespace_value.namespace  = namespace
           namespace_value.match_text = result.snippet
           namespace_value
         }
       end
 
       def search_namespace(namespace, match, options = {})
-        namespace_uri = find_namespace_rdf_uri(namespace)
-        return nil unless namespace_uri
+        namespace = find_namespace(namespace)
+        return nil unless namespace
 
         @search.search(
           match,
           :namespace_concept,
-          namespace_uri,
+          namespace.uri,
           nil,
           options
         ).map { |result|
-          namespace_value = namespace_value_by_uri(result.uri)
+          namespace                  = namespace_by_uri(result.scheme_uri)
+          namespace_value            = namespace_value_by_uri(result.uri, namespace)
+          namespace_value.namespace  = namespace
           namespace_value.match_text = result.snippet
           namespace_value
         }
@@ -358,6 +367,14 @@ module OpenBEL
         ).first
       end
 
+      def namespace_for_value(namespace_value_uri)
+        schemes = @storage.triples(
+          namespace_value_uri, SKOS_IN_SCHEME, nil, :only => :object
+        ).to_a
+        return nil if schemes.empty?
+        namespace_by_uri(schemes.first)
+      end
+
       def namespace_by_uri_part(label)
         NAMESPACE_PREFIX + URI.encode(label)
       end
@@ -368,10 +385,12 @@ module OpenBEL
         )
       end
 
-      def namespace_value_by_uri(uri)
-        OpenBEL::Model::Namespace::NamespaceValue.from(
+      def namespace_value_by_uri(uri, namespace)
+        namespace_value = OpenBEL::Model::Namespace::NamespaceValue.from(
           @storage.triples(uri, nil, nil).to_a
         )
+        namespace_value.namespace = namespace
+        namespace_value
       end
 
       def result_function(result)

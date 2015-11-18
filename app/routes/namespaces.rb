@@ -112,7 +112,8 @@ module OpenBEL
         halt 404 if not match_results or match_results.empty?
         render_collection(
           match_results,
-          :namespace_value
+          :namespace_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
@@ -155,7 +156,8 @@ module OpenBEL
         halt 404 if not match_results or match_results.empty?
         render_collection(
           match_results,
-          :namespace_value
+          :namespace_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
@@ -269,7 +271,8 @@ module OpenBEL
         status 200
         render_resource(
           value,
-          :namespace_value
+          :namespace_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
@@ -279,7 +282,8 @@ module OpenBEL
 
         render_collection(
           equivalents,
-          :namespace_value
+          :namespace_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
@@ -291,7 +295,8 @@ module OpenBEL
 
         render_collection(
           equivalents,
-          :namespace_value
+          :namespace_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
@@ -301,7 +306,8 @@ module OpenBEL
 
         render_collection(
           orthologs,
-          :namespace_value
+          :namespace_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
 
@@ -313,7 +319,8 @@ module OpenBEL
 
         render_collection(
           orthologs,
-          :namespace_value
+          :namespace_value,
+          :adapter => Oat::Adapters::BasicJson
         )
       end
     end

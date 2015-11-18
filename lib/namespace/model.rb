@@ -13,6 +13,14 @@ module OpenBEL
         attr_accessor :inScheme, :type, :identifier,
                       :fromSpecies, :prefLabel, :title
 
+        def namespace=(namespace)
+          @namespace = namespace
+        end
+
+        def namespace
+          @namespace
+        end
+
         def match_text=(match_text)
           @match_text = match_text
         end

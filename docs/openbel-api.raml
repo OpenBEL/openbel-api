@@ -105,7 +105,6 @@ documentation:
       - prefLabel: human-readable name
       - prefix:    short prefix
       - domain:    biological domain
-      - 
 
       The collection contains zero or more *annotation* resource objects. If the *annotation_collection* is empty then the result is an empty array.
 
@@ -1625,8 +1624,6 @@ documentation:
       description: |
         Returns the *namespace_value_collection* across all *namespace* resources.
 
-        Example: *Search by filter*
-
         <br>
         **Limitations**
 
@@ -1635,8 +1632,23 @@ documentation:
         {
             "category": "fts",
             "name":     "search",
-            "value":    "sarcoma"
+            "value":    "factor VIII"
         }
+        ```
+
+        <br>
+        **Nested Namespace**
+
+        All returned *namespace_value* in the *namespace_value_collection* will include the *namespace* it is found in.
+        For example if *factor VIII* is found in the *Hgnc Human Genes* namespace then the following will be included in the value:
+
+        ```json
+        "namespace": {
+          "rdf_uri": "http://www.openbel.org/bel/namespace/hgnc-human-genes",
+          "name": "Hgnc Human Genes",
+          "prefix": "hgnc",
+          "domain": "gene and gene product"
+        },
         ```
 
         <br>
@@ -1659,25 +1671,31 @@ documentation:
                 "name": "F8",
                 "title": "coagulation factor VIII",
                 "species": "10090",
+                "namespace": {
+                  "rdf_uri": "http://www.openbel.org/bel/namespace/mgi-mouse-genes",
+                  "name": "Mgi Mouse Genes",
+                  "prefix": "mgi",
+                  "domain": "gene and gene product"
+                },
                 "match_text": "...or tor ctor actor <<factor>> I II III <<VIII>> FVIII <<Factor>> -8 f-8 Cf-8 f8..."
               },
               "_links": {
                 "self": {
                   "type": "namespace_value",
-                  "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383"
+                  "href": "http://localhost:9000/api/namespaces/mgi-mouse-genes/88383"
                 },
                 "collection": {
                   "type": "namespace",
-                  "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes"
+                  "href": "http://localhost:9000/api/namespaces/mgi-mouse-genes"
                 },
                 "item": [
                   {
                     "type": "namespace_value_collection",
-                    "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383/equivalents"
+                    "href": "http://localhost:9000/api/namespaces/mgi-mouse-genes/88383/equivalents"
                   },
                   {
                     "type": "namespace_value_collection",
-                    "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383/orthologs"
+                    "href": "http://localhost:9000/api/namespaces/mgi-mouse-genes/88383/orthologs"
                   }
                 ]
               }
@@ -1689,25 +1707,31 @@ documentation:
                 "name": "F8",
                 "title": "coagulation factor VIII, procoagulant component",
                 "species": "10116",
+                "namespace": {
+                  "rdf_uri": "http://www.openbel.org/bel/namespace/rgd-rat-genes",
+                  "name": "Rgd Rat Genes",
+                  "prefix": "rgd",
+                  "domain": "gene and gene product"
+                },
                 "match_text": "coagulation <<factor>> <<VIII>>"
               },
               "_links": {
                 "self": {
                   "type": "namespace_value",
-                  "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845"
+                  "href": "http://localhost:9000/api/namespaces/rgd-rat-genes/727845"
                 },
                 "collection": {
                   "type": "namespace",
-                  "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes"
+                  "href": "http://localhost:9000/api/namespaces/rgd-rat-genes"
                 },
                 "item": [
                   {
                     "type": "namespace_value_collection",
-                    "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845/equivalents"
+                    "href": "http://localhost:9000/api/namespaces/rgd-rat-genes/727845/equivalents"
                   },
                   {
                     "type": "namespace_value_collection",
-                    "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845/orthologs"
+                    "href": "http://localhost:9000/api/namespaces/rgd-rat-genes/727845/orthologs"
                   }
                 ]
               }
@@ -1719,25 +1743,31 @@ documentation:
                 "name": "F8",
                 "title": "coagulation factor VIII, procoagulant component",
                 "species": "9606",
+                "namespace": {
+                  "rdf_uri": "http://www.openbel.org/bel/namespace/hgnc-human-genes",
+                  "name": "Hgnc Human Genes",
+                  "prefix": "hgnc",
+                  "domain": "gene and gene product"
+                },
                 "match_text": "coagulation <<factor>> VIII, procoagulant component...C 8C F8C I II III <<VIII>> FVIII"
               },
               "_links": {
                 "self": {
                   "type": "namespace_value",
-                  "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546"
+                  "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/3546"
                 },
                 "collection": {
                   "type": "namespace",
-                  "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes"
+                  "href": "http://localhost:9000/api/namespaces/hgnc-human-genes"
                 },
                 "item": [
                   {
                     "type": "namespace_value_collection",
-                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/equivalents"
+                    "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/3546/equivalents"
                   },
                   {
                     "type": "namespace_value_collection",
-                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/orthologs"
+                    "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/3546/orthologs"
                   }
                 ]
               }
@@ -1824,19 +1854,32 @@ documentation:
         description: |
           Returns the *namespace_value_collection* across the *namespace* resource identified by *{namespace}* URI parameter.
 
-          Example: *Search by filter*
+          <br>
+          **Limitations**
+
+          This endpoint is limited to full-text searching including a *filter* like:
+          ```json
+          {
+              "category": "fts",
+              "name":     "search",
+              "value":    "factor VIII"
+          }
+          ```
 
           <br>
-           **Limitations**
+          **Nested Namespace**
 
-           This endpoint is limited to full-text searching including a *filter* like:
-           ```json
-           {
-               "category": "fts",
-               "name":     "search",
-               "value":    "factor VIII"
-           }
-           ```
+          All returned *namespace_value* in the *namespace_value_collection* will include the *namespace* it is found in.
+          For example if *factor VIII* is found in the *Hgnc Human Genes* namespace then the following will be included in the value:
+
+          ```json
+          "namespace": {
+            "rdf_uri": "http://www.openbel.org/bel/namespace/hgnc-human-genes",
+            "name": "Hgnc Human Genes",
+            "prefix": "hgnc",
+            "domain": "gene and gene product"
+          },
+          ```
 
           <br>
           **Additional Property**
@@ -1858,25 +1901,31 @@ documentation:
                   "name": "F8",
                   "title": "coagulation factor VIII, procoagulant component",
                   "species": "9606",
+                  "namespace": {
+                    "rdf_uri": "http://www.openbel.org/bel/namespace/hgnc-human-genes",
+                    "name": "Hgnc Human Genes",
+                    "prefix": "hgnc",
+                    "domain": "gene and gene product"
+                  },
                   "match_text": "coagulation <<factor>> VIII, procoagulant component...C 8C F8C I II III <<VIII>> FVIII"
                 },
                 "_links": {
                   "self": {
                     "type": "namespace_value",
-                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546"
+                    "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/3546"
                   },
                   "collection": {
                     "type": "namespace",
-                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes"
+                    "href": "http://localhost:9000/api/namespaces/hgnc-human-genes"
                   },
                   "item": [
                     {
                       "type": "namespace_value_collection",
-                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/equivalents"
+                      "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/3546/equivalents"
                     },
                     {
                       "type": "namespace_value_collection",
-                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/orthologs"
+                      "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/3546/orthologs"
                     }
                   ]
                 }
@@ -1888,25 +1937,31 @@ documentation:
                   "name": "LMAN1",
                   "title": "lectin, mannose-binding, 1",
                   "species": "9606",
+                  "namespace": {
+                    "rdf_uri": "http://www.openbel.org/bel/namespace/hgnc-human-genes",
+                    "name": "Hgnc Human Genes",
+                    "prefix": "hgnc",
+                    "domain": "gene and gene product"
+                  },
                   "match_text": "F5F8D ERGIC53 MCFD1 MR60 gp58 ERGIC-53 FMFD1 coagulation <<factor>> V-factor <<VIII>> combined deficiency"
                 },
                 "_links": {
                   "self": {
                     "type": "namespace_value",
-                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/6631"
+                    "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/6631"
                   },
                   "collection": {
                     "type": "namespace",
-                    "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes"
+                    "href": "http://localhost:9000/api/namespaces/hgnc-human-genes"
                   },
                   "item": [
                     {
                       "type": "namespace_value_collection",
-                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/6631/equivalents"
+                      "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/6631/equivalents"
                     },
                     {
                       "type": "namespace_value_collection",
-                      "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/6631/orthologs"
+                      "href": "http://localhost:9000/api/namespaces/hgnc-human-genes/6631/orthologs"
                     }
                   ]
                 }
