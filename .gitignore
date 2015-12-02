@@ -11,3 +11,6 @@
 /tags
 node_modules
 /docs/openbel-api.html
+.flavors
+.netrwhist
+VimFlavor*
