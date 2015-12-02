@@ -26,10 +26,18 @@ module OpenBEL
       def initialize(app)
         super
 
-        rr = BEL::RdfRepository.plugins[:jena].create_repository(
+        # RdfRepository using Jena
+        @rr = BEL::RdfRepository.plugins[:jena].create_repository(
           :tdb_directory => 'biological-concepts-rdf'
         )
-        @namespaces = BEL::Resource::Namespaces.new(rr)
+
+        # Namespaces using RdfRepository
+        @namespaces = BEL::Resource::Namespaces.new(@rr)
+
+        # Resource Search
+        @search     = BEL::Resource::Search.plugins[:sqlite].create_search(
+          :database_file => 'biological-concepts-rdf.db'
+        )
       end
 
       options '/api/namespaces' do
@@ -90,7 +98,6 @@ module OpenBEL
         )
       end
 
-      # TODO Resource search.
       get '/api/namespaces/values' do
         start    = (params[:start]  ||  0).to_i
         size     = (params[:size]   || -1).to_i
@@ -110,10 +117,15 @@ module OpenBEL
         match = filter_hash['fts']['search']
         halt 404 unless match.length > 1
 
-        match_results = @api.search(match,
+        match_results = @search.search(match, :namespace_concept, nil, nil,
           :start => start,
           :size => size
-        ).to_a
+        ).map { |result|
+          value = OpenBEL::Resource::Namespaces::NamespaceValueSearchResult.new(@rr, result.uri)
+          value.namespace  = BEL::Resource::Namespace.new(@rr, result.scheme_uri)
+          value.match_text = result.snippet
+          value
+        }.to_a
 
         halt 404 if not match_results or match_results.empty?
         render_collection(
@@ -135,13 +147,15 @@ module OpenBEL
         )
       end
 
-      # TODO Resource search.
       get '/api/namespaces/:namespace/values' do |namespace|
         start    = (params[:start]  ||  0).to_i
         size     = (params[:size]   || -1).to_i
         size     = -1 if size <= 0
         faceted  = as_bool(params[:faceted])
         halt 501 if faceted
+
+        namespace = @namespaces.find(namespace).first
+        halt 404 unless namespace
 
         filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
@@ -155,10 +169,15 @@ module OpenBEL
         match = filter_hash['fts']['search']
         halt 404 unless match.length > 1
 
-        match_results = @api.search_namespace(namespace, match,
+        match_results = @search.search(match, :namespace_concept, namespace.uri.to_s, nil,
           :start => start,
           :size => size
-        ).to_a
+        ).map { |result|
+          value = OpenBEL::Resource::Namespaces::NamespaceValueSearchResult.new(@rr, result.uri)
+          value.namespace  = namespace
+          value.match_text = result.snippet
+          value
+        }.to_a
 
         halt 404 if not match_results or match_results.empty?
         render_collection(

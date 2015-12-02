@@ -13,7 +13,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.8)
     backports (3.6.7)
-    bel (0.4.0.beta.3)
+    bel (0.4.0.beta.4)
       ffi (= 1.9.8)
     bel-rdf-jena (0.4.0.beta1-java)
       rdf-jena

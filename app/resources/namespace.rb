@@ -6,6 +6,25 @@ module OpenBEL
 
       VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
+      class NamespaceValueSearchResult < BEL::Resource::NamespaceValue
+
+        def namespace=(namespace)
+          @namespace = namespace
+        end
+
+        def namespace
+          @namespace
+        end
+
+        def match_text=(match_text)
+          @match_text = match_text
+        end
+
+        def match_text
+          @match_text
+        end
+      end
+
       class NamespaceSerializer < BaseSerializer
 #        adapter Oat::Adapters::HAL
         schema do
