@@ -16,9 +16,9 @@ module OpenBEL
       def initialize(app)
         super
         @api = OpenBEL::Settings["evidence-api"].create_instance
-        annotation_api = OpenBEL::Settings["annotation-api"].create_instance
-        @annotation_transform = AnnotationTransform.new(annotation_api)
-        @annotation_grouping_transform = AnnotationGroupingTransform.new
+        # annotation_api = OpenBEL::Settings["annotation-api"].create_instance
+        # @annotation_transform = AnnotationTransform.new(annotation_api)
+        # @annotation_grouping_transform = AnnotationGroupingTransform.new
       end
 
       options '/api/evidence' do

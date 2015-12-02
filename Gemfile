@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # BEL.rb
-gem 'bel',                     '0.4.0.beta1'
+gem 'bel',                     '~> 0.4.0.beta'
 gem 'bel-search-sqlite',       '0.4.0.beta1', :platforms => :jruby
 gem 'bel-rdf-jena',            '0.4.0.beta1', :platforms => :jruby
 gem 'rdf',                     '1.99.0'
@@ -34,6 +34,7 @@ gem 'sinatra-contrib'
 # gem 'bson_ext',                '~> 1.12'
 
 # Unused
+# gem 'redlander'
 # gem 'kyotocabinet-ffi'
 # gem 'builder'
 # gem 'dot_hash'

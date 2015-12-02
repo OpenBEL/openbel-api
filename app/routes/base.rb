@@ -153,6 +153,7 @@ module OpenBEL
               media_type
             end
           response.headers['Content-Type'] = ctype
+          puts obj
           MultiJson.dump obj
         end
 

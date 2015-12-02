@@ -12,7 +12,7 @@ module OpenBEL
 
       def initialize(app)
         super
-        @api = OpenBEL::Settings["annotation-api"].create_instance
+        # @api = OpenBEL::Settings["annotation-api"].create_instance
       end
 
       options '/api/annotations' do

@@ -9,9 +9,9 @@ module OpenBEL
 
       def initialize(app)
         super
-        @namespace_api  = OpenBEL::Settings["namespace-api"].create_instance
-        @annotation_api = OpenBEL::Settings["annotation-api"].create_instance
-        @sequence_variation = SequenceVariationFunctionHasLocationPredicate.new
+        # @namespace_api  = OpenBEL::Settings["namespace-api"].create_instance
+        # @annotation_api = OpenBEL::Settings["annotation-api"].create_instance
+        # @sequence_variation = SequenceVariationFunctionHasLocationPredicate.new
       end
 
       options '/api/expressions/*/completions' do

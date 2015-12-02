@@ -6,46 +6,6 @@ plugin_paths:
   - 'lib/plugin/search'
   - 'lib/plugin/storage'
 
-rdf-cache:
-  type:   'cache'
-  plugin: 'kyotocabinet'
-  options:
-    type: 'file-hash'
-    mode:
-      - 'writer'
-      - 'create'
-
-rdf-storage:
-  type:   'storage'
-  plugin: 'redland'
-  extensions:
-    cache: 'rdf-cache'
-  options:
-    storage:     'sqlite'
-    name:        'rdf.db'
-    new:         'no'
-    synchronous: 'no'
-
-rdf-search:
-  type:   'search'
-  plugin: 'sqlite3_search'
-  options:
-    file: 'rdf.db'
-
-annotation-api:
-  type:   'annotation'
-  plugin: 'annotation'
-  extensions:
-    storage: 'rdf-storage'
-    search:  'rdf-search'
-
-namespace-api:
-  type:   'namespace'
-  plugin: 'namespace'
-  extensions:
-    storage: 'rdf-storage'
-    search:  'rdf-search'
-
 evidence-api:
   type:   'evidence'
   plugin: 'evidence'

@@ -74,7 +74,7 @@ module OpenBEL
         schema do
           type     :namespace_value
           property :rdf_uri,       item.uri
-          property :type,          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+          property :type,          item.type
           property :identifier,    item.identifier
           property :name,          item.prefLabel
           property :title,         item.title

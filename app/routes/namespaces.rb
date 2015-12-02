@@ -1,3 +1,4 @@
+require 'bel'
 require 'cgi'
 require 'multi_json'
 require 'uri'
@@ -24,7 +25,11 @@ module OpenBEL
 
       def initialize(app)
         super
-        @api = OpenBEL::Settings["namespace-api"].create_instance
+
+        rr = BEL::RdfRepository.plugins[:jena].create_repository(
+          :tdb_directory => 'biological-concepts-rdf'
+        )
+        @namespaces = BEL::Resource::Namespaces.new(rr)
       end
 
       options '/api/namespaces' do
@@ -73,7 +78,7 @@ module OpenBEL
       end
 
       get '/api/namespaces' do
-        namespaces = @api.find_namespaces
+        namespaces = @namespaces.each.to_a
 
         halt 404 if not namespaces or namespaces.empty?
 
@@ -85,6 +90,7 @@ module OpenBEL
         )
       end
 
+      # TODO Resource search.
       get '/api/namespaces/values' do
         start    = (params[:start]  ||  0).to_i
         size     = (params[:size]   || -1).to_i
@@ -118,17 +124,18 @@ module OpenBEL
       end
 
       get '/api/namespaces/:namespace' do |namespace|
-        ns = @api.find_namespace(namespace)
+        namespace = @namespaces.find(namespace).first
 
-        halt 404 unless ns
+        halt 404 unless namespace
 
         status 200
         render_resource(
-          ns,
+          namespace,
           :namespace
         )
       end
 
+      # TODO Resource search.
       get '/api/namespaces/:namespace/values' do |namespace|
         start    = (params[:start]  ||  0).to_i
         size     = (params[:size]   || -1).to_i
@@ -161,6 +168,7 @@ module OpenBEL
         )
       end
 
+      # TODO Requires a Namespace API to retrieve equivalents for matched values.
       get '/api/namespaces/:namespace/equivalents' do |namespace|
         halt 400 unless request.params['value']
 
@@ -182,6 +190,7 @@ module OpenBEL
         MultiJson.dump eq_mapping
       end
 
+      # TODO Requires a Namespace API to retrieve equivalents for matched values.
       post '/api/namespaces/:namespace/equivalents' do |namespace|
         halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
 
@@ -212,6 +221,7 @@ module OpenBEL
         MultiJson.dump eq_mapping
       end
 
+      # TODO Requires a Namespace API to retrieve orthologs for matched values.
       get '/api/namespaces/:namespace/orthologs' do |namespace|
         halt 400 unless request.params['value']
 
@@ -233,6 +243,7 @@ module OpenBEL
         MultiJson.dump orth_mapping
       end
 
+      # TODO Requires a Namespace API to retrieve orthologs for matched values.
       post '/api/namespaces/:namespace/orthologs' do |namespace|
         halt 400 unless request.media_type == 'application/x-www-form-urlencoded'
 
@@ -264,8 +275,10 @@ module OpenBEL
       end
 
       get '/api/namespaces/:namespace/values/:value' do |namespace, value|
-        value = @api.find_namespace_value(namespace, value)
+        namespace = @namespaces.find(namespace).first
+        halt 404 unless namespace
 
+        value = namespace.find(value).first
         halt 404 unless value
 
         status 200
@@ -277,7 +290,13 @@ module OpenBEL
       end
 
       get '/api/namespaces/:namespace/values/:value/equivalents' do |namespace, value|
-        equivalents = @api.find_equivalent(namespace, value)
+        namespace = @namespaces.find(namespace).first
+        halt 404 unless namespace
+
+        value = namespace.find(value).first
+        halt 404 unless value
+
+        equivalents = value.equivalents.to_a
         halt 404 if not equivalents or equivalents.empty?
 
         render_collection(
@@ -287,6 +306,7 @@ module OpenBEL
         )
       end
 
+      # TODO Update equivalents NamespaceValue API to take optional target namespace.
       get '/api/namespaces/:namespace/values/:value/equivalents/:target' do |namespace, value, target|
         equivalents = @api.find_equivalent(namespace, value, {
           target: target
@@ -301,7 +321,13 @@ module OpenBEL
       end
 
       get '/api/namespaces/:namespace/values/:value/orthologs' do |namespace, value|
-        orthologs = @api.find_ortholog(namespace, value)
+        namespace = @namespaces.find(namespace).first
+        halt 404 unless namespace
+
+        value = namespace.find(value).first
+        halt 404 unless value
+
+        orthologs = value.orthologs.to_a
         halt 404 if not orthologs or orthologs.empty?
 
         render_collection(
@@ -311,6 +337,7 @@ module OpenBEL
         )
       end
 
+      # TODO Update orthologs NamespaceValue API to take optional target namespace.
       get '/api/namespaces/:namespace/values/:value/orthologs/:target' do |namespace, value, target|
         orthologs = @api.find_ortholog(namespace, value, {
           target: target
