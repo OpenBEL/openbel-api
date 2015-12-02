@@ -1,7 +1,6 @@
 require 'bel'
 require 'json_schema'
 require 'multi_json'
-require 'namespace/model'
 require 'app/resources/annotation'
 require 'app/resources/completion'
 require 'app/resources/evidence'

@@ -8,14 +8,6 @@ module OpenBEL
 
       class NamespaceValueSearchResult < BEL::Resource::NamespaceValue
 
-        def namespace=(namespace)
-          @namespace = namespace
-        end
-
-        def namespace
-          @namespace
-        end
-
         def match_text=(match_text)
           @match_text = match_text
         end

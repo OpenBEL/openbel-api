@@ -122,7 +122,6 @@ module OpenBEL
           :size => size
         ).map { |result|
           value = OpenBEL::Resource::Namespaces::NamespaceValueSearchResult.new(@rr, result.uri)
-          value.namespace  = BEL::Resource::Namespace.new(@rr, result.scheme_uri)
           value.match_text = result.snippet
           value
         }.to_a
@@ -148,14 +147,14 @@ module OpenBEL
       end
 
       get '/api/namespaces/:namespace/values' do |namespace|
+        namespace = @namespaces.find(namespace).first
+        halt 404 unless namespace
+
         start    = (params[:start]  ||  0).to_i
         size     = (params[:size]   || -1).to_i
         size     = -1 if size <= 0
         faceted  = as_bool(params[:faceted])
         halt 501 if faceted
-
-        namespace = @namespaces.find(namespace).first
-        halt 404 unless namespace
 
         filter_hash = Hash.new{ |h,k| h[k] = Hash.new(&h.default_proc) }
         filter_params = CGI::parse(env["QUERY_STRING"])['filter']
@@ -174,7 +173,6 @@ module OpenBEL
           :size => size
         ).map { |result|
           value = OpenBEL::Resource::Namespaces::NamespaceValueSearchResult.new(@rr, result.uri)
-          value.namespace  = namespace
           value.match_text = result.snippet
           value
         }.to_a
