@@ -5,6 +5,9 @@ Bundler.setup
 $: << File.expand_path('../', __FILE__)
 $: << File.expand_path('../lib', __FILE__)
 
+# TODO This should probably be in app-config.rb.
+require 'jrjackson'
+
 require 'config/config'
 require 'app/util'
 

@@ -15,10 +15,20 @@ module OpenBEL
 
       def initialize(app)
         super
+
+        # TODO Remove this from config.yml; put in app-config.rb as an "evidence-store" component.
         @api = OpenBEL::Settings["evidence-api"].create_instance
-        # annotation_api = OpenBEL::Settings["annotation-api"].create_instance
-        # @annotation_transform = AnnotationTransform.new(annotation_api)
-        # @annotation_grouping_transform = AnnotationGroupingTransform.new
+
+        # RdfRepository using Jena
+        @rr = BEL::RdfRepository.plugins[:jena].create_repository(
+            :tdb_directory => 'biological-concepts-rdf'
+        )
+
+        # Annotations using RdfRepository
+        annotations = BEL::Resource::Annotations.new(@rr)
+
+        @annotation_transform = AnnotationTransform.new(annotations)
+        @annotation_grouping_transform = AnnotationGroupingTransform.new
       end
 
       options '/api/evidence' do

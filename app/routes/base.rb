@@ -95,9 +95,8 @@ module OpenBEL
         end
 
         def read_evidence
-          fmt = ::BEL::Extension::Format.formatters(request.media_type)
-          halt 415 unless fmt
-          ::BEL::Format.evidence(request.body, request.media_type)
+          halt 415 unless ::BEL.translator(request.media_type)
+          ::BEL.evidence(request.body, request.media_type, :symbolize_keys => true)
         end
 
         def resolve_supported_content_type(request)
