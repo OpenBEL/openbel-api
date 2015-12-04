@@ -15,6 +15,10 @@ module OpenBEL
         db               = options.delete(:database)
         @db              = MongoClient.new(host, port).db(db)
         @collection      = @db[:evidence]
+        @collection.ensure_index(
+          {:"$**" => Mongo::TEXT },
+          :background => true
+        )
         @evidence_facets = EvidenceFacets.new(
           :host     => host,
           :port     => port,
