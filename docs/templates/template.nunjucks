@@ -193,7 +193,7 @@
                 {% endif %}
 
                 <div class="panel-group">
-                  {% include "resource.nunjucks" %}
+                  {% include "./resource.nunjucks" %}
                 </div>
               </div>
             </div>

@@ -17,8 +17,7 @@ export PATH="$GOSH_CONTRIB_NODE_NPM_MODPATH/node_modules/.bin":$PATH
 echo -en "Generating RAML page... "
 OUT=$(mktemp)
 raml2html \
-    --templatesPath "$DOCS"/templates \
-    --template template.nunjucks \
+    --template "$DOCS"/templates/template.nunjucks \
     "$DOCS"/openbel-api.raml > "$OUT"
 EC=$?
 if [ $EC -ne 0 ]; then
