@@ -23,10 +23,10 @@ default OUT_TEST_RESULTS        "$OUT"/test-results
 ### SERVER PARAMETERS ###
 default PID_FILE                "$DIR"/server.pid
 default PORT_START              9000
-default WORKER_COUNT            4
+default WORKER_COUNT            1
 default THREADED                1
-default THREAD_MIN              0
-default THREAD_MAX              2
+default THREAD_MIN              1
+default THREAD_MAX              8
 default SERVER_AS_DAEMON        0
 default OUT_SERVER_STDOUT       "$OUT"/api-stdout.log
 default OUT_SERVER_STDERR       "$OUT"/api-stderr.log
