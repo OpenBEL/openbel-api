@@ -21,7 +21,7 @@ module OpenBEL
 #        adapter Oat::Adapters::HAL
         schema do
           type     :namespace
-          property :rdf_uri, item.uri
+          property :rdf_uri, item.uri.to_s
           property :name,    item.prefLabel
           property :prefix,  item.prefix
           property :domain,  item.domain
@@ -84,7 +84,7 @@ module OpenBEL
         #adapter Oat::Adapters::HAL
         schema do
           type     :namespace_value
-          property :rdf_uri,       item.uri
+          property :rdf_uri,       item.uri.to_s
           property :type,          item.type
           property :identifier,    item.identifier
           property :name,          item.prefLabel
