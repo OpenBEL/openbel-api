@@ -85,7 +85,7 @@ module OpenBEL
         schema do
           type     :namespace_value
           property :rdf_uri,       item.uri.to_s
-          property :type,          item.type
+          property :type,          [item.type].flatten.map(&:to_s)
           property :identifier,    item.identifier
           property :name,          item.prefLabel
           property :title,         item.title
