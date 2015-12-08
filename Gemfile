@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+# TODO More version specifiers so dependencies don't vary much.
+
 # BEL.rb
 gem 'bel',                     '~> 0.4.0.beta'
 gem 'bel-search-sqlite',       '0.4.0.beta1', :platforms => :jruby
@@ -11,6 +13,7 @@ gem 'uuid',                    '~> 2.3'
 # Mongo
 gem 'mongo',                   '~> 1.12'
 gem 'bson',                    '~> 1.12'
+#gem 'em-mongo',                :git => 'https://github.com/fl00r/em-mongo.git'
 
 # JSON
 gem 'multi_json',              '~> 1.10'
@@ -27,18 +30,6 @@ gem 'rack'
 gem 'rack-cors'
 gem 'rack-handlers'
 gem 'sinatra'
-#gem 'sinatra-advanced-routes',            :require => 'sinatra/advanced_routes'
-#gem 'sinatra-contrib'
-
-# Cannot use on JRuby
-# gem 'bson_ext',                '~> 1.12'
-
-# Unused
-# gem 'oj',                      '~> 2.10', :platforms => [:ruby, :rbx]
-# gem 'redlander'
-# gem 'kyotocabinet-ffi'
-# gem 'builder'
-# gem 'dot_hash'
 
 group :test do
   gem 'faraday_middleware'
