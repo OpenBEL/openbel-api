@@ -187,8 +187,11 @@ module OpenBEL
           # group by category/name
           hashed_values = Hash.new { |hash, key| hash[key] = [] }
           facets.each { |facet|
-            filter = read_filter(facet['_id'])
-            key = filter.values_at('category', 'name').map(&:to_sym)
+            filter         = read_filter(facet['_id'])
+            category, name = filter.values_at('category', 'name')
+            next if !category || !name
+
+            key = [category.to_sym, name.to_sym]
             facet_obj = {
               :value    => filter['value'],
               :filter   => facet['_id'],
