@@ -16,7 +16,7 @@ GEM
       ffi (= 1.9.8)
     bel-rdf-jena (0.4.0.beta1-java)
       rdf-jena
-    bel-search-sqlite (0.4.0.beta1-java)
+    bel-search-sqlite (0.4.0.beta2-java)
       jdbc-sqlite3 (= 3.8.11.2)
       sequel (= 4.28.0)
     bson (1.12.5-java)
@@ -129,7 +129,7 @@ DEPENDENCIES
   addressable (~> 2.3)
   bel (~> 0.4.0.beta)
   bel-rdf-jena (= 0.4.0.beta1)
-  bel-search-sqlite (= 0.4.0.beta1)
+  bel-search-sqlite (= 0.4.0.beta2)
   bson (~> 1.12)
   faraday_middleware
   hyperclient

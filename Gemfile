@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 # BEL.rb
 gem 'bel',                     '~> 0.4.0.beta'
-gem 'bel-search-sqlite',       '0.4.0.beta1', :platforms => :jruby
+gem 'bel-search-sqlite',       '0.4.0.beta2', :platforms => :jruby
 gem 'bel-rdf-jena',            '0.4.0.beta1', :platforms => :jruby
 gem 'rdf',                     '1.99.0'
 gem 'addressable',             '~> 2.3'
