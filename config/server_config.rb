@@ -2,24 +2,22 @@
 
 tag 'OBP - API'
 
-pidfile ENV['PID_FILE']
+pidfile 'openbel-api.pid'
 
-if ENV['SERVER_AS_DAEMON'].to_i == 1
-  daemonize true
+# if ENV['SERVER_AS_DAEMON'].to_i == 1
+#   daemonize true
+#
+#   require 'fileutils'
+#   stdout_file = ENV['OUT_SERVER_STDOUT']
+#   FileUtils.mkdir_p File.dirname(stdout_file)
+#   stderr_file = ENV['OUT_SERVER_STDERR']
+#   FileUtils.mkdir_p File.dirname(stderr_file)
+#   stdout_redirect stdout_file, stderr_file
+# end
 
-  require 'fileutils'
-  stdout_file = ENV['OUT_SERVER_STDOUT']
-  FileUtils.mkdir_p File.dirname(stdout_file)
-  stderr_file = ENV['OUT_SERVER_STDERR']
-  FileUtils.mkdir_p File.dirname(stderr_file)
-  stdout_redirect stdout_file, stderr_file
-end
+bind 'tcp://0.0.0.0:9000'
 
-bind "tcp://0.0.0.0:#{ENV['PORT_START']}"
-
-if ENV['THREADED'].to_i == 1
-  threads ENV['THREAD_MIN'].to_i, ENV['THREAD_MAX'].to_i
-end
+threads 1, 8
 
 # The directory to operate out of.
 #

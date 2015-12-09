@@ -20,6 +20,11 @@ module OpenBEL
         # Namespaces using RdfRepository
         @namespaces = BEL::Resource::Namespaces.new(@rr)
 
+        # Resource Search
+        @search     = BEL::Resource::Search.plugins[:sqlite].create_search(
+            :database_file => 'biological-concepts-rdf.db'
+        )
+
         @sequence_variation = SequenceVariationFunctionHasLocationPredicate.new
       end
 
@@ -68,9 +73,9 @@ module OpenBEL
         def statement_components(bel_statement, flatten = false)
           obj = {}
           if flatten
-            obj[:subject]      = bel_statement ? bel_statement.subject.to_bel : nil
+            obj[:subject]      = bel_statement.subject ? bel_statement.subject.to_bel : nil
             obj[:relationship] = normalize_relationship(bel_statement.relationship)
-            obj[:object]       = bel_statement ? bel_statement.object.to_bel : nil
+            obj[:object]       = bel_statement.object ? bel_statement.object.to_bel : nil
           else
             obj[:subject]      = term_components(bel_statement.subject)
             obj[:relationship] = normalize_relationship(bel_statement.relationship)
@@ -118,7 +123,7 @@ module OpenBEL
         halt 400 unless bel and caret_position
 
         begin
-          completions = BEL::Completion.complete(bel, @namespaces, caret_position)
+          completions = BEL::Completion.complete(bel, @search, caret_position)
         rescue IndexError => ex
           halt(
             400,

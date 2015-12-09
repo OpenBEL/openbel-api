@@ -1,26 +1,20 @@
 require 'rubygems'
-require 'bundler'
-
-Bundler.setup
-$: << File.expand_path('../', __FILE__)
-$: << File.expand_path('../lib', __FILE__)
 
 # TODO This should probably be in app-config.rb.
 require 'jrjackson'
 
-require 'config/config'
-require 'app/util'
+require_relative 'util'
 
 require 'rack/cors'
-
 require 'sinatra/base'
-require 'app/routes/base'
-require 'app/routes/root'
-require 'app/routes/annotations'
-require 'app/routes/evidence'
-require 'app/routes/expressions'
-require 'app/routes/functions'
-require 'app/routes/namespaces'
+
+require_relative 'routes/base'
+require_relative 'routes/root'
+require_relative 'routes/annotations'
+require_relative 'routes/evidence'
+require_relative 'routes/expressions'
+require_relative 'routes/functions'
+require_relative 'routes/namespaces'
 
 module OpenBEL
 
@@ -30,10 +24,10 @@ module OpenBEL
       # pass
     end
 
-    configure do
-      config = OpenBEL::Config::load('config.yml')
-      OpenBEL.const_set :Settings, config
-    end
+    # configure do
+    #   config = OpenBEL::Config::load('config.yml')
+    #   OpenBEL.const_set :Settings, config
+    # end
 
     use Rack::Deflater
     use Rack::Cors do

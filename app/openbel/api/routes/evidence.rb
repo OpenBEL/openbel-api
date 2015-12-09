@@ -1,8 +1,9 @@
 require 'bel'
 require 'cgi'
-require 'lib/evidence/facet_filter'
-require 'app/resources/evidence_transform'
-require 'app/helpers/pager'
+require 'openbel/api/evidence/mongo'
+require 'openbel/api/evidence/facet_filter'
+require_relative '../resources/evidence_transform'
+require_relative '../helpers/pager'
 
 module OpenBEL
   module Routes
@@ -16,7 +17,11 @@ module OpenBEL
         super
 
         # TODO Remove this from config.yml; put in app-config.rb as an "evidence-store" component.
-        @api = OpenBEL::Settings["evidence-api"].create_instance
+        @api = OpenBEL::Evidence::Evidence.new(
+            :host     => 'localhost',
+            :port     => 27017,
+            :database => 'openbel'
+        )
 
         # RdfRepository using Jena
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(

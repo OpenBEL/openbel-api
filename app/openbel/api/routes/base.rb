@@ -1,13 +1,13 @@
 require 'bel'
 require 'json_schema'
 require 'multi_json'
-require 'app/resources/annotation'
-require 'app/resources/completion'
-require 'app/resources/evidence'
-require 'app/resources/function'
-require 'app/resources/match_result'
-require 'app/resources/namespace'
-require 'app/schemas'
+require_relative '../resources/annotation'
+require_relative '../resources/completion'
+require_relative '../resources/evidence'
+require_relative '../resources/function'
+require_relative '../resources/match_result'
+require_relative '../resources/namespace'
+require_relative '../schemas'
 
 module OpenBEL
   module Routes

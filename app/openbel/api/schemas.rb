@@ -2,15 +2,11 @@ require 'pathname'
 require 'multi_json'
 require 'json_schema'
 
-unless Dir.exist?(ENV['DOC_SCHEMAS'])
-  fail RuntimeError.new 'The DOC_SCHEMAS directory does not exist.'
-end
-
 module OpenBEL
   module Schemas
 
     COMPILED_SCHEMAS = {}
-    SCHEMA_DIR = ENV['DOC_SCHEMAS']
+    SCHEMA_DIR = File.join(File.expand_path('..', File.dirname(__FILE__)), 'schemas')
     SUFFIX     = ".schema.json"
 
     def validate(data, type)
