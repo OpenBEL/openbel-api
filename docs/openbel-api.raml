@@ -1512,40 +1512,115 @@ documentation:
           - *p(HGNC:AKT1)* yields:
 
             ```json
-            {
+              {
                 "expression_components": {
-                    "subject":      "p(HGNC:AKT1)",
-                    "relationship": null,
-                    "object":       null
-                }
-            }
+                  "subject": {
+                    "term": {
+                      "fx": "proteinAbundance",
+                      "arguments": [
+                        {
+                          "parameter": {
+                            "ns": "HGNC",
+                            "value": "AKT1"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "relationship": null,
+                  "object": null
+                },
+                "statement_short_form": "p(HGNC:AKT1)"
+              }
             ```
 
           - *p(HGNC:AKT1) -> bp(MESHPP:Apoptosis)* yields:
 
             ```json
-            {
+              {
                 "expression_components": {
-                    "subject":      "p(HGNC:AKT1)",
-                    "relationship": "increases",
-                    "object":       "bp(MESHPP:Apoptosis)"
-                }
-            }
+                  "subject": {
+                    "term": {
+                      "fx": "proteinAbundance",
+                      "arguments": [
+                        {
+                          "parameter": {
+                            "ns": "HGNC",
+                            "value": "AKT1"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "relationship": "increases",
+                  "object": {
+                    "term": {
+                      "fx": "biologicalProcess",
+                      "arguments": [
+                        {
+                          "parameter": {
+                            "ns": "MESHPP",
+                            "value": "Apoptosis"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "statement_short_form": "p(HGNC:AKT1) -> bp(MESHPP:Apoptosis)"
+              }
             ```
 
           - *a(CHEBI:"phosphatidyl-L-serine") increases pep(p(HGNC:F3))* yields:
 
             ```json
-            {
+              {
                 "expression_components": {
-                    "subject":      "a(CHEBI:\"phosphatidyl-L-serine\")",
-                    "relationship": "increases",
-                    "object":       "pep(p(HGNC:F3))"
-                }
-            }
+                  "subject": {
+                    "term": {
+                      "fx": "abundance",
+                      "arguments": [
+                        {
+                          "parameter": {
+                            "ns": "CHEBI",
+                            "value": "phosphatidyl-L-serine"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "relationship": "increases",
+                  "object": {
+                    "term": {
+                      "fx": "peptidaseActivity",
+                      "arguments": [
+                        {
+                          "term": {
+                            "fx": "proteinAbundance",
+                            "arguments": [
+                              {
+                                "parameter": {
+                                  "ns": "HGNC",
+                                  "value": "F3"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "statement_short_form": "a(CHEBI:\"phosphatidyl-L-serine\") increases pep(p(HGNC:F3))"
+              }
             ```
-
       queryParameters:
+        flatten:
+          type: string
+          description: |
+            The boolean indicator to flatten subject and object to strings. The default is to expand down to the terms and parameters.
+          enum: [ 'true', 'yes', '1', 'on' ]
+          example: yes
       responses:
         200:
           description: |
@@ -1554,11 +1629,12 @@ documentation:
             application/json:
               example: |
                 {
-                    "expression_components": {
-                        "subject":      "p(HGNC:AKT1)",
-                        "relationship": "increases",
-                        "object":       "bp(MESHPP:Apoptosis)"
-                    }
+                  "expression_components": {
+                    "subject": "a(CHEBI:\"phosphatidyl-L-serine\")",
+                    "relationship": "increases",
+                    "object": "pep(p(HGNC:F3))"
+                  },
+                  "statement_short_form": "a(CHEBI:\"phosphatidyl-L-serine\") increases pep(p(HGNC:F3))"
                 }
 /functions:
   description: Retrieve the BEL function resource collection.

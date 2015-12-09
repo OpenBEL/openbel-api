@@ -65,10 +65,17 @@ module OpenBEL
           BEL::Language::RELATIONSHIPS[relationship.to_sym]
         end
 
-        def statement_components(bel_statement, obj = {})
-          obj[:subject]      = term_components(bel_statement.subject)
-          obj[:relationship] = normalize_relationship(bel_statement.relationship)
-          obj[:object]       = term_components(bel_statement.object)
+        def statement_components(bel_statement, flatten = false)
+          obj = {}
+          if flatten
+            obj[:subject]      = bel_statement ? bel_statement.subject.to_bel : nil
+            obj[:relationship] = normalize_relationship(bel_statement.relationship)
+            obj[:object]       = bel_statement ? bel_statement.object.to_bel : nil
+          else
+            obj[:subject]      = term_components(bel_statement.subject)
+            obj[:relationship] = normalize_relationship(bel_statement.relationship)
+            obj[:object]       = term_components(bel_statement.object)
+          end
           obj
         end
 
@@ -130,7 +137,8 @@ module OpenBEL
       end
 
       get '/api/expressions/*/components/?' do
-        bel = params[:splat].first
+        bel     = params[:splat].first
+        flatten = as_bool(params[:flatten])
 
         statement = BEL::Script.parse(bel).find { |obj|
           obj.is_a? BEL::Model::Statement
@@ -139,7 +147,7 @@ module OpenBEL
 
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump({
-          :expression_components => statement_components(statement),
+          :expression_components => statement_components(statement, flatten),
           :statement_short_form  => statement.to_s
         })
       end
