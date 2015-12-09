@@ -6,11 +6,22 @@ module OpenBEL
 
       VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
+      class AnnotationValueSearchResult < BEL::Resource::AnnotationValue
+
+        def match_text=(match_text)
+          @match_text = match_text
+        end
+
+        def match_text
+          @match_text
+        end
+      end
+
       class AnnotationSerializer < BaseSerializer
 #        adapter Oat::Adapters::HAL
         schema do
           type     :annotation
-          property :rdf_uri,    item.uri
+          property :rdf_uri,    item.uri.to_s
           property :name,       item.prefLabel
           property :prefix,     item.prefix
           property :domain,     item.domain
@@ -72,7 +83,8 @@ module OpenBEL
         #adapter Oat::Adapters::HAL
         schema do
           type     :annotation_value
-          property :type,            item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+          property :rdf_uri,         item.uri.to_s
+          property :type,            [item.type].flatten.map(&:to_s)
           property :identifier,      item.identifier
           property :name,            item.prefLabel
           entity   :annotation,      item.annotation, AnnotationSerializer

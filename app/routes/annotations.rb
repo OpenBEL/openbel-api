@@ -12,7 +12,19 @@ module OpenBEL
 
       def initialize(app)
         super
-        @api = OpenBEL::Settings["annotation-api"].create_instance
+
+        # RdfRepository using Jena
+        @rr = BEL::RdfRepository.plugins[:jena].create_repository(
+          :tdb_directory => 'biological-concepts-rdf'
+        )
+
+        # Annotations using RdfRepository
+        @annotations = BEL::Resource::Annotations.new(@rr)
+
+        # Resource Search
+        @search     = BEL::Resource::Search.plugins[:sqlite].create_search(
+          :database_file => 'biological-concepts-rdf.db'
+        )
       end
 
       options '/api/annotations' do
@@ -41,7 +53,7 @@ module OpenBEL
       end
 
       get '/api/annotations' do
-        annotations = @api.find_annotations
+        annotations = @annotations.each.to_a
         halt 404 if not annotations or annotations.empty?
 
         render_collection(
@@ -71,10 +83,14 @@ module OpenBEL
         match = filter_hash['fts']['search']
         halt 404 unless match.length > 1
 
-        match_results = @api.search(match,
+        match_results = @search.search(match, :annotation_concept, nil, nil,
           :start => start,
           :size => size
-        ).to_a
+        ).map { |result|
+          value = OpenBEL::Resource::Annotations::AnnotationValueSearchResult.new(@rr, result.uri)
+          value.match_text = result.snippet
+          value
+        }.to_a
 
         halt 404 if not match_results or match_results.empty?
         render_collection(
@@ -85,7 +101,7 @@ module OpenBEL
       end
 
       get '/api/annotations/:annotation' do |annotation|
-        annotation = @api.find_annotation(annotation)
+        annotation = @annotations.find(annotation).first
         halt 404 unless annotation
 
         status 200
@@ -93,13 +109,12 @@ module OpenBEL
       end
 
       get '/api/annotations/:annotation/values' do |annotation|
-        annotation = @api.find_annotation(annotation)
+        annotation = @annotations.find(annotation).first
         halt 404 unless annotation
 
         start    = (params[:start]  ||  0).to_i
         size     = (params[:size]   || -1).to_i
         size     = -1 if size <= 0
-
         faceted  = as_bool(params[:faceted])
         halt 501 if faceted
 
@@ -115,10 +130,14 @@ module OpenBEL
         match = filter_hash['fts']['search']
         halt 404 unless match.length > 1
 
-        match_results = @api.search_annotation(annotation, match,
+        match_results = @search.search(match, :annotation_concept, annotation.uri.to_s, nil,
           :start => start,
           :size => size
-        ).to_a
+        ).map { |result|
+          value = OpenBEL::Resource::Annotations::AnnotationValueSearchResult.new(@rr, result.uri)
+          value.match_text = result.snippet
+          value
+        }.to_a
 
         halt 404 if not match_results or match_results.empty?
         render_collection(
@@ -129,7 +148,10 @@ module OpenBEL
       end
 
       get '/api/annotations/:annotation/values/:value' do |annotation, value|
-        value      = @api.find_annotation_value(annotation, value)
+        annotation = @annotations.find(annotation).first
+        halt 404 unless annotation
+
+        value = annotation.find(value).first
         halt 404 unless value
 
         status 200

@@ -6,11 +6,22 @@ module OpenBEL
 
       VOCABULARY_RDF = 'http://www.openbel.org/vocabulary/'
 
+      class NamespaceValueSearchResult < BEL::Resource::NamespaceValue
+
+        def match_text=(match_text)
+          @match_text = match_text
+        end
+
+        def match_text
+          @match_text
+        end
+      end
+
       class NamespaceSerializer < BaseSerializer
 #        adapter Oat::Adapters::HAL
         schema do
           type     :namespace
-          property :rdf_uri, item.uri
+          property :rdf_uri, item.uri.to_s
           property :name,    item.prefLabel
           property :prefix,  item.prefix
           property :domain,  item.domain
@@ -73,8 +84,8 @@ module OpenBEL
         #adapter Oat::Adapters::HAL
         schema do
           type     :namespace_value
-          property :rdf_uri,       item.uri
-          property :type,          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
+          property :rdf_uri,       item.uri.to_s
+          property :type,          [item.type].flatten.map(&:to_s)
           property :identifier,    item.identifier
           property :name,          item.prefLabel
           property :title,         item.title

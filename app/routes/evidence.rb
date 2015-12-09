@@ -3,7 +3,6 @@ require 'cgi'
 require 'lib/evidence/facet_filter'
 require 'app/resources/evidence_transform'
 require 'app/helpers/pager'
-require 'mongo'
 
 module OpenBEL
   module Routes
@@ -15,10 +14,67 @@ module OpenBEL
 
       def initialize(app)
         super
+
+        # TODO Remove this from config.yml; put in app-config.rb as an "evidence-store" component.
         @api = OpenBEL::Settings["evidence-api"].create_instance
-        annotation_api = OpenBEL::Settings["annotation-api"].create_instance
-        @annotation_transform = AnnotationTransform.new(annotation_api)
+
+        # RdfRepository using Jena
+        @rr = BEL::RdfRepository.plugins[:jena].create_repository(
+            :tdb_directory => 'biological-concepts-rdf'
+        )
+
+        # Annotations using RdfRepository
+        annotations = BEL::Resource::Annotations.new(@rr)
+
+        @annotation_transform = AnnotationTransform.new(annotations)
         @annotation_grouping_transform = AnnotationGroupingTransform.new
+      end
+
+      helpers do
+
+        def stream_evidence_objects(cursor)
+
+          stream :keep_open do |response|
+            cursor.each do |evidence|
+              evidence.delete('facets')
+
+              response << render_resource(
+                  evidence,
+                  :evidence,
+                  :as_array => false,
+                  :_id      => evidence['_id'].to_s
+              )
+            end
+          end
+        end
+
+        def stream_evidence_array(cursor)
+          stream :keep_open do |response|
+            current = 0
+
+            # determine true size of cursor given cursor limit/count
+            if cursor.limit.zero?
+              total = cursor.total
+            else
+              total = [cursor.limit, cursor.count].min
+            end
+
+            response << '['
+            cursor.each do |evidence|
+              evidence.delete('facets')
+
+              response << render_resource(
+                  evidence,
+                  :evidence,
+                  :as_array => false,
+                  :_id      => evidence['_id'].to_s
+              )
+              current += 1
+              response << ',' if current < total
+            end
+            response << ']'
+          end
+        end
       end
 
       options '/api/evidence' do
@@ -51,6 +107,33 @@ module OpenBEL
         status 201
         headers "Location" => "#{base_url}/api/evidence/#{_id}"
       end
+
+			get '/api/evidence-stream', provides: 'application/json' do
+        start                = (params[:start] || 0).to_i
+        size                 = (params[:size]  || 0).to_i
+        group_as_array       = as_bool(params[:group_as_array])
+
+        # check filters
+        filters = []
+        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
+        filter_params.each do |filter|
+          filter = read_filter(filter)
+          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
+
+          if filter['category'] == 'fts' && filter['name'] == 'search'
+            halt 400 unless filter['value'].to_s.length > 1
+          end
+
+          filters << filter
+        end
+
+        cursor  = @api.find_evidence(filters, start, size, false)[:cursor]
+        if group_as_array
+          stream_evidence_array(cursor)
+        else
+          stream_evidence_objects(cursor)
+        end
+			end
 
       get '/api/evidence' do
         start                = (params[:start]  || 0).to_i

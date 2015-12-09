@@ -1,31 +1,35 @@
 source 'https://rubygems.org'
 
-gem 'bel',                     '>=0.3.4'
-gem 'bson_ext',                '~> 1.12'
-gem 'builder'
-gem 'dot_hash'
-gem 'jrjackson',               '~> 0.2',  :platforms => :jruby
-gem 'json_schema'
-gem 'kyotocabinet-ffi'
+# TODO More version specifiers so dependencies don't vary much.
+
+# BEL.rb
+gem 'bel',                     '~> 0.4.0.beta'
+gem 'bel-search-sqlite',       '0.4.0.beta2', :platforms => :jruby
+gem 'bel-rdf-jena',            '0.4.0.beta1', :platforms => :jruby
+gem 'rdf',                     '1.99.0'
+gem 'addressable',             '~> 2.3'
+gem 'uuid',                    '~> 2.3'
+
+# Mongo
 gem 'mongo',                   '~> 1.12'
+gem 'bson',                    '~> 1.12'
+#gem 'em-mongo',                :git => 'https://github.com/fl00r/em-mongo.git'
+
+# JSON
 gem 'multi_json',              '~> 1.10'
+gem 'jrjackson',               '~> 0.3',  :platforms => :jruby
+gem 'json_schema'
+
+# XML
 gem 'nokogiri'
+
+# Web
 gem 'oat'
-gem 'oj',                      '~> 2.10', :platforms => [:ruby, :rbx]
 gem 'puma',                    '~> 2.14'
 gem 'rack'
 gem 'rack-cors'
 gem 'rack-handlers'
-gem 'redlander',               '>=0.6.2'
 gem 'sinatra'
-gem 'sinatra-advanced-routes',            :require => 'sinatra/advanced_routes'
-gem 'sinatra-contrib'
-gem 'sqlite3'
-
-# Needed for BEL::RDF bel.rb plugin. Used in /api/expressions/{bel}/components
-gem 'addressable'
-gem 'rdf'
-gem 'uuid'
 
 group :test do
   gem 'faraday_middleware'
@@ -37,10 +41,9 @@ end
 group :development do
   gem 'POpen4'
   gem 'pry'
-  gem 'byebug'
-  gem 'pry-byebug'
-  gem 'ripper-tags'
-  gem 'starscope'
-  gem 'term-ansicolor'
+  gem 'pry-doc'
+  gem 'ruby-debug'
+  gem 'ruby-debug-base'
+  gem 'ruby-debug-ide'
 end
 # vim: ts=2 sw=2

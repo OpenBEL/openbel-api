@@ -14,8 +14,8 @@ module OpenBEL
         ]
         ANNOTATION_VALUE_URI = "%s/api/annotations/%s/values/%s"
 
-        def initialize(annotation_api)
-          @annotation_api = annotation_api
+        def initialize(annotations)
+          @annotations = annotations
         end
 
         def transform_evidence!(evidence, base_url)
@@ -60,21 +60,19 @@ module OpenBEL
         end
 
         def structured_annotation(name, value, base_url)
-          annotation = @annotation_api.find_annotation(name)
+          annotation = @annotations.find(name).first
           if annotation
-            annotation_label = annotation.prefix
             if value.respond_to?(:each)
               {
                 :name  => annotation.prefLabel,
                 :value => value.map { |v|
-                  mapped = @annotation_api.find_annotation_value(annotation, v)
+                  mapped = annotation.find(v).first
                   mapped ? mapped.prefLabel : v
                 }
               }
             else
-              annotation_value = @annotation_api.find_annotation_value(annotation, value)
+              annotation_value = annotation.find(value).first
               if annotation_value
-                value_label = annotation_value.identifier
                 {
                   :name  => annotation.prefLabel,
                   :value => annotation_value.prefLabel,

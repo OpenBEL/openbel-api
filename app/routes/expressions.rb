@@ -9,8 +9,17 @@ module OpenBEL
 
       def initialize(app)
         super
-        @namespace_api  = OpenBEL::Settings["namespace-api"].create_instance
-        @annotation_api = OpenBEL::Settings["annotation-api"].create_instance
+
+        # RdfRepository using Jena
+        @rr = BEL::RdfRepository.plugins[:jena].create_repository(
+            :tdb_directory => 'biological-concepts-rdf'
+        )
+
+        # Annotations using RdfRepository
+        @annotations = BEL::Resource::Annotations.new(@rr)
+        # Namespaces using RdfRepository
+        @namespaces = BEL::Resource::Namespaces.new(@rr)
+
         @sequence_variation = SequenceVariationFunctionHasLocationPredicate.new
       end
 
@@ -19,33 +28,54 @@ module OpenBEL
         status 200
       end
 
-      options '/api/expressions/*/ortholog' do
+      options '/api/expressions/*/components/?' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/expressions/*/ortholog/:species' do
+      options '/api/expressions/*/components/terms?' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
+
+      options '/api/expressions/*/syntax-validations/?' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      options '/api/expressions/*/semantic-validations/?' do
+        response.headers['Allow'] = 'OPTIONS,GET'
+        status 200
+      end
+
+      # options '/api/expressions/*/ortholog' do
+      #   response.headers['Allow'] = 'OPTIONS,GET'
+      #   status 200
+      # end
+
+      # options '/api/expressions/*/ortholog/:species' do
+      #   response.headers['Allow'] = 'OPTIONS,GET'
+      #   status 200
+      # end
 
       helpers do
 
         def normalize_relationship(relationship)
-          match = BEL::RDF::RELATIONSHIP_TYPE.select { |k, v|
-            v == BEL::RDF::RELATIONSHIP_TYPE[relationship.to_s]
-          }.
-          find { |k, v|
-            k =~ /^[a-z]/
-          }
-
-          match ? match.first : nil
+          return nil unless relationship
+          BEL::Language::RELATIONSHIPS[relationship.to_sym]
         end
 
-        def statement_components(bel_statement, obj = {})
-          obj[:subject]      = term_components(bel_statement.subject)
-          obj[:relationship] = normalize_relationship(bel_statement.relationship)
-          obj[:object]       = term_components(bel_statement.object)
+        def statement_components(bel_statement, flatten = false)
+          obj = {}
+          if flatten
+            obj[:subject]      = bel_statement ? bel_statement.subject.to_bel : nil
+            obj[:relationship] = normalize_relationship(bel_statement.relationship)
+            obj[:object]       = bel_statement ? bel_statement.object.to_bel : nil
+          else
+            obj[:subject]      = term_components(bel_statement.subject)
+            obj[:relationship] = normalize_relationship(bel_statement.relationship)
+            obj[:object]       = term_components(bel_statement.object)
+          end
           obj
         end
 
@@ -70,12 +100,12 @@ module OpenBEL
           }
         end
 
-        def parameter_components(bel_parameter, obj = {})
+        def parameter_components(bel_parameter)
           return nil unless bel_parameter
 
           {
             :parameter => {
-              :ns        => bel_parameter.ns,
+              :ns        => bel_parameter.ns ? bel_parameter.ns.prefix : nil,
               :value     => bel_parameter.value.to_s
             }
           }
@@ -88,7 +118,7 @@ module OpenBEL
         halt 400 unless bel and caret_position
 
         begin
-          completions = BEL::Completion.complete(bel, @namespace_api, caret_position)
+          completions = BEL::Completion.complete(bel, @namespaces, caret_position)
         rescue IndexError => ex
           halt(
             400,
@@ -107,7 +137,8 @@ module OpenBEL
       end
 
       get '/api/expressions/*/components/?' do
-        bel = params[:splat].first
+        bel     = params[:splat].first
+        flatten = as_bool(params[:flatten])
 
         statement = BEL::Script.parse(bel).find { |obj|
           obj.is_a? BEL::Model::Statement
@@ -116,7 +147,7 @@ module OpenBEL
 
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump({
-          :expression_components => statement_components(statement),
+          :expression_components => statement_components(statement, flatten),
           :statement_short_form  => statement.to_s
         })
       end
@@ -161,71 +192,83 @@ module OpenBEL
         end
       end
 
-      get '/api/expressions/*/ortholog/:species' do
-        bel           = params[:splat].first
-        species       = params[:species]
-        species  = @annotation_api.find_annotation_value(
-          'taxon',
-          params[:species].to_s
-        )
-        if species
-          species = species.identifier.to_s
-        else
-          halt(
-            400,
-            { 'Content-Type' => 'application/json' },
-            render_json({
-              :status => 400,
-              :msg    => %Q{Could not find species "#{params[:species]}"}
-            })
-          )
-        end
-
-        bel_ast = BEL::Parser.parse(bel)
-
-        if bel_ast.any?([@sequence_variation])
-          msg = 'Could not orthologize sequence variation terms with location'
-          halt(
-            404,
-            { 'Content-Type' => 'application/json' },
-            render_json({
-              :status => 404,
-              :msg    => msg
-            })
-          )
-        end
-
-        param_transform = ParameterOrthologTransform.new(
-          @namespace_api, @annotation_api, species
-        )
-        transformed_ast = bel_ast.transform_tree([param_transform])
-
-        if !param_transform.parameter_errors.empty?
-          parameters = param_transform.parameter_errors.map { |p|
-            p.join(':')
-          }.join(', ')
-          halt(
-            404,
-            { 'Content-Type' => 'application/json' },
-            render_json({
-              :status => 404,
-              :msg    => "Could not orthologize #{parameters}"
-            })
-          )
-        end
-
-        # serialize AST to BEL
-        bel_serialization = BELSerializationTransform.new
-        transformed_ast.transform_tree([bel_serialization])
-
-        # write response
-        response.headers['Content-Type'] = 'application/json'
-        MultiJson.dump({
-          :original     => bel,
-          :species      => params[:species],
-          :orthologized => bel_serialization.bel_string
-        })
-      end
+      # TODO Relies on LibBEL.bel_parse_statement which is not currently supported.
+      # get '/api/expressions/*/ortholog/:species' do
+      #   bel              = params[:splat].first
+      #   species          = params[:species]
+      #   taxon_annotation = @annotations.find('taxon').first
+      #
+      #   unless taxon_annotation
+      #     halt(
+      #       404,
+      #       { 'Content-Type' => 'application/json' },
+      #       render_json({
+      #         :status => 404,
+      #         :msg    => 'Could not find NCBI Taxonomy annotation.'
+      #       })
+      #     )
+      #   end
+      #
+      #   species = taxon_annotation.find(species).first
+      #
+      #   if species
+      #     species = species.identifier.to_s
+      #   else
+      #     halt(
+      #       400,
+      #       { 'Content-Type' => 'application/json' },
+      #       render_json({
+      #         :status => 400,
+      #         :msg    => %Q{Could not find species "#{params[:species]}"}
+      #       })
+      #     )
+      #   end
+      #
+      #   bel_ast = BEL::Parser.parse(bel)
+      #
+      #   if bel_ast.any?([@sequence_variation])
+      #     msg = 'Could not orthologize sequence variation terms with location'
+      #     halt(
+      #       404,
+      #       { 'Content-Type' => 'application/json' },
+      #       render_json({
+      #         :status => 404,
+      #         :msg    => msg
+      #       })
+      #     )
+      #   end
+      #
+      #   param_transform = ParameterOrthologTransform.new(
+      #       @namespaces, @annotations, species
+      #   )
+      #   transformed_ast = bel_ast.transform_tree([param_transform])
+      #
+      #   if !param_transform.parameter_errors.empty?
+      #     parameters = param_transform.parameter_errors.map { |p|
+      #       p.join(':')
+      #     }.join(', ')
+      #     halt(
+      #       404,
+      #       { 'Content-Type' => 'application/json' },
+      #       render_json({
+      #         :status => 404,
+      #         :msg    => "Could not orthologize #{parameters}"
+      #       })
+      #     )
+      #   end
+      #
+      #   # serialize AST to BEL
+      #   bel_serialization = BELSerializationTransform.new
+      #   transformed_ast.transform_tree([bel_serialization])
+      #
+      #   # write response
+      #   response.headers['Content-Type'] = 'application/json'
+      #   MultiJson.dump({
+      #     :original     => bel,
+      #     :species      => params[:species],
+      #     :orthologized => bel_serialization.bel_string
+      #   })
+      # end
 
       # BEL Syntax Validation
       # TODO Move out to a separate route.
@@ -316,10 +359,10 @@ module OpenBEL
           "egid",
         ]
 
-        def initialize(namespace_api, annotation_api, species_tax_id)
-          @namespace_api = namespace_api
+        def initialize(namespaces, annotations, species_tax_id)
+          @namespaces = namespaces
           @orthology = OrthologAdapter.new(
-            namespace_api, annotation_api, species_tax_id
+            namespaces, species_tax_id
           )
           @species_tax_id = species_tax_id
           @parameter_errors = []
@@ -355,9 +398,13 @@ module OpenBEL
               # the namespace value is either not known or its species differs
               # from our target
               if ns_value[0] != nil
-                nsv_object = @namespace_api.find_namespace_value(*ns_value)
-                if !nsv_object || nsv_object.fromSpecies != @species_tax_id
-                  @parameter_errors << ns_value
+                namespace, value = ns_value
+                namespace        = @namespaces.find(namespace).first
+                if namespace
+                  value = namespace.find(value).first
+                  if !value || value.fromSpecies != @species_tax_id
+                    @parameter_errors << value
+                  end
                 end
               end
             end
@@ -471,8 +518,8 @@ module OpenBEL
 
         EMPTY = [].freeze
 
-        def initialize(namespace_api, annotation_api, species_tax_id)
-          @namespace_api = namespace_api
+        def initialize(namespaces, species_tax_id)
+          @namespaces = namespaces
           @species_tax_id = species_tax_id
         end
 
@@ -482,21 +529,23 @@ module OpenBEL
           if value.start_with?('"') && value.end_with?('"')
             value = value[1...-1]
           end
-          orthologs = @namespace_api.find_ortholog(
-            namespace,
-            value,
-            :species => @species_tax_id
-          )
-          if !orthologs
-            EMPTY
-          else
-            orthologs.map! { |ortholog_value|
-              [
-                @namespace_api.find_namespace(URI(ortholog_value.inScheme)).prefix,
-                ortholog_value.prefLabel
-              ]
-            }
-          end
+
+          namespace = @namespaces.find(namespace).first
+          return EMPTY unless namespace
+          value     = namespace.find(value).first
+          return EMPTY unless value
+          orthologs = value.orthologs.select { |orth|
+            orth.fromSpecies == @species_tax_id
+          }.to_a
+          return EMPTY if orthologs.empty?
+
+          orthologs.map! { |ortholog_value|
+            [
+              ortholog_value.namespace.prefix,
+              ortholog_value.prefLabel
+            ]
+          }
+          orthologs
         end
       end
     end
