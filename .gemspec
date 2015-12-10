@@ -47,6 +47,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'bson',              '1.12.5'
 
   ## REST API dependencies
+  spec.add_runtime_dependency 'dot_hash',          '0.5.9'
   spec.add_runtime_dependency 'jrjackson',         '0.3.7'
   spec.add_runtime_dependency 'json_schema',       '0.10.0'
   spec.add_runtime_dependency 'multi_json',        '1.11.2'

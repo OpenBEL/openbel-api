@@ -8,6 +8,7 @@ require_relative 'util'
 require 'rack/cors'
 require 'sinatra/base'
 
+require_relative 'config'
 require_relative 'routes/base'
 require_relative 'routes/root'
 require_relative 'routes/annotations'
@@ -25,10 +26,10 @@ module OpenBEL
       # pass
     end
 
-    # configure do
-    #   config = OpenBEL::Config::load('config.yml')
-    #   OpenBEL.const_set :Settings, config
-    # end
+    configure do
+      config = OpenBEL::Config::load!
+      OpenBEL.const_set :Settings, config
+    end
 
     use Rack::Deflater
     use Rack::Cors do
