@@ -36,15 +36,15 @@ module OpenBEL
       end
 
       # Hang on to the Rack IO in order to do unbuffered reads.
-      use Rack::Config do |env|
-        env['rack.input'], env['data.input'] = StringIO.new, env['rack.input']
-      end
+      # use Rack::Config do |env|
+      #   env['rack.input'], env['data.input'] = StringIO.new, env['rack.input']
+      # end
 
       helpers do
 
-        def check_dataset(io)
+        def check_dataset(io, type)
           begin
-            evidence         = BEL.evidence(io, request.media_type).each.first
+            evidence         = BEL.evidence(io, type).each.first
             void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{self.generate_uuid}")
 
             void_dataset = evidence.to_void_dataset(void_dataset_uri)
@@ -165,18 +165,28 @@ module OpenBEL
       end
 
       post '/api/datasets' do
-        io = request.env['data.input']
-        io.rewind
+        unless params['file']
+          halt(
+            400,
+            { 'Content-Type' => 'application/json' },
+            render_json({ :status => 400, :msg => "You must POST a 'file' parameter using multipart/form-data." })
+          )
+        end
+
+        io, type = params['file'].values_at(:tempfile, :type)
+
+        halt 415 unless ['application/bel', 'application/xml', 'application/json'].include?(type)
 
         # Check dataset in request for suitability and conflict with existing resources.
-        void_dataset_uri, void_dataset = check_dataset(io)
+        void_dataset_uri, void_dataset = check_dataset(io, type)
 
         # Create dataset in RDF.
         @rr.insert_statements(void_dataset)
 
         # Add slices of read evidence objects; save to Mongo and RDF.
-        BEL.evidence(io, request.media_type).each.lazy.each_slice(500) do |slice|
+        BEL.evidence(io, type).each.lazy.each_slice(500) do |slice|
           slice.map! do |ev|
+            # Standardize annotations from experiment_context.
             @annotation_transform.transform_evidence!(ev, base_url)
 
             facets           = map_evidence_facets(ev)
