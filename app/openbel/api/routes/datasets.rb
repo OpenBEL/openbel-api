@@ -44,7 +44,7 @@ module OpenBEL
 
         def check_dataset(io)
           begin
-            evidence         = BEL.evidence(io, :bel).each.first
+            evidence         = BEL.evidence(io, request.media_type).each.first
             void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{self.generate_uuid}")
 
             void_dataset = evidence.to_void_dataset(void_dataset_uri)
@@ -95,7 +95,7 @@ module OpenBEL
               )
             end
 
-            void_dataset_uri
+            [void_dataset_uri, void_dataset]
           ensure
             io.rewind
           end
@@ -112,13 +112,21 @@ module OpenBEL
         status 200
       end
 
-      post '/api/dataset_mongo' do
+      post '/api/datasets' do
         io = request.env['data.input']
         io.rewind
 
         s = Time.now
+        void_dataset_uri, void_dataset = check_dataset(io)
+
+        # Create dataset in RDF.
+        @rr.insert_statements(void_dataset)
+        e = Time.now
+        puts "Create VoID dataset in #{e - s} seconds."
+
+        s = Time.now
         count = 0
-        BEL.evidence(io, :bel).each.lazy.each_slice(1000) do |slice|
+        BEL.evidence(io, request.media_type).each.lazy.each_slice(500) do |slice|
           slice.map! do |ev|
             @annotation_transform.transform_evidence!(ev, base_url)
 
@@ -128,57 +136,168 @@ module OpenBEL
             hash[:facets]    = facets
             hash
           end
-          @api.create_evidence(slice)
-          count += 1000
 
+          _ids = @api.create_evidence(slice)
+
+          startt = Time.now
+          dataset_parts = _ids.map { |object_id|
+            RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, object_id.to_s)
+          }
+          @rr.insert_statements(dataset_parts)
+          endt = Time.now
+          puts "Create hasPart relationships in VoID dataset in #{endt - startt} seconds."
+
+          count += 500
           puts "Saved #{count}"
         end
         e = Time.now
         puts "Saved to Mongo in #{e - s} seconds."
 
         status 201
-        headers 'Location' => 'http://localhost:9000/api/datasets/1'
-      end
-
-      post '/api/datasets' do
-        io = request.env['data.input']
-        io.rewind
-
-        void_dataset_uri = check_dataset(io)
-
-        Tempfile.create('dataset_rdf') do |temp_file|
-          s = Time.now
-          BEL.translate(io, :bel, :rdf, temp_file, :void_dataset_uri => void_dataset_uri)
-          e = Time.now
-          puts "Converted to RDF, #{e - s} seconds."
-
-          temp_file.rewind
-
-          puts 'Load RDF'
-          s = Time.now
-          @rr.insert_reader(temp_file)
-          e = Time.now
-          puts "Loaded into evidence store, #{e - s} seconds."
-        end
-
-        status 201
-        headers 'Location' => void_dataset_uri
-      end
-
-      get '/api/datasets' do
+        headers 'Location' => void_dataset_uri.to_s
       end
 
       get '/api/datasets/:id' do
         id = params[:id]
+        void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{id}")
+
+        exists = @rr.has_statement?(
+          RDF::Statement.new(void_dataset_uri, RDF.type, RDF::VOID.Dataset)
+        )
+        halt 404 unless exists
+
+        dataset = {}
+        identifier = @rr.query(
+          RDF::Statement.new(void_dataset_uri, RDF::DC.identifier, nil)
+        ).first
+        dataset[:identifier] = identifier.object.to_s if identifier
+
+        title = @rr.query(
+            RDF::Statement.new(void_dataset_uri, RDF::DC.title, nil)
+        ).first
+        dataset[:title] = title.object.to_s if title
+
+        description = @rr.query(
+            RDF::Statement.new(void_dataset_uri, RDF::DC.description, nil)
+        ).first
+        dataset[:description] = description.object.to_s if description
+
+        status 200
+        render_json({
+          :dataset => dataset,
+          :_links => {
+            :self => {
+                :type => 'dataset',
+                :href => void_dataset_uri.to_s
+            },
+            :evidence_collection => {
+              :type => 'evidence_collection',
+              :href => "#{base_url}/api/datasets/#{id}/evidence"
+            }
+          }
+        })
       end
 
-      put '/api/datasets/:id' do
-        id = params[:id]
-        status 202
+      get '/api/datasets' do
+        dataset_uris = @rr.query(
+          RDF::Statement.new(nil, RDF.type, RDF::VOID.Dataset)
+        ).map { |statement|
+          statement.subject
+        }.to_a
+        halt 404 if dataset_uris.empty?
+
+        dataset_collection = dataset_uris.map { |uri|
+          dataset = {}
+          identifier = @rr.query(
+              RDF::Statement.new(uri, RDF::DC.identifier, nil)
+          ).first
+          dataset[:identifier] = identifier.object.to_s if identifier
+
+          title = @rr.query(
+              RDF::Statement.new(uri, RDF::DC.title, nil)
+          ).first
+          dataset[:title] = title.object.to_s if title
+
+          description = @rr.query(
+              RDF::Statement.new(uri, RDF::DC.description, nil)
+          ).first
+          dataset[:description] = description.object.to_s if description
+
+          {
+            :dataset => dataset,
+            :_links => {
+                :self => {
+                    :type => 'dataset',
+                    :href => uri.to_s
+                },
+                :evidence_collection => {
+                    :type => 'evidence_collection',
+                    :href => "#{uri}/evidence"
+                }
+            }
+          }
+        }
+
+        status 200
+        render_json({ :dataset_collection => dataset_collection })
       end
 
       delete '/api/datasets/:id' do
         id = params[:id]
+        void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{id}")
+
+        exists = @rr.has_statement?(
+            RDF::Statement.new(void_dataset_uri, RDF.type, RDF::VOID.Dataset)
+        )
+        halt 404 unless exists
+
+        evidence_parts = @rr.query(
+          RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, nil)
+        )
+
+        evidence_parts.each.lazy.each_slice(500) do |slice|
+          slice.map! { |part_statement|
+            part_statement.object.to_s
+          }
+          slice.compact!
+
+          @api.delete_evidence(slice)
+        end
+
+        @rr.delete_statement(
+          RDF::Statement.new(void_dataset_uri, nil, nil)
+        )
+
+        status 202
+      end
+
+      delete '/api/datasets' do
+        datasets = @rr.query(
+          RDF::Statement.new(nil, RDF.type, RDF::VOID.Dataset)
+        ).map { |stmt|
+          stmt.subject
+        }.to_a
+        halt 404 if datasets.empty?
+
+        datasets.each do |void_dataset_uri|
+          evidence_parts = @rr.query(
+            RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, nil)
+          )
+
+          evidence_parts.each.lazy.each_slice(500) do |slice|
+            slice.map! { |part_statement|
+              part_statement.object.to_s
+            }
+            slice.compact!
+
+            @api.delete_evidence(slice)
+          end
+
+          @rr.delete_statement(
+            RDF::Statement.new(void_dataset_uri, nil, nil)
+          )
+        end
+
         status 202
       end
 
