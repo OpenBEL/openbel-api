@@ -168,16 +168,13 @@ module OpenBEL
         io = request.env['data.input']
         io.rewind
 
-        s = Time.now
+        # Check dataset in request for suitability and conflict with existing resources.
         void_dataset_uri, void_dataset = check_dataset(io)
 
         # Create dataset in RDF.
         @rr.insert_statements(void_dataset)
-        e = Time.now
-        puts "Create VoID dataset in #{e - s} seconds."
 
-        s = Time.now
-        count = 0
+        # Add slices of read evidence objects; save to Mongo and RDF.
         BEL.evidence(io, request.media_type).each.lazy.each_slice(500) do |slice|
           slice.map! do |ev|
             @annotation_transform.transform_evidence!(ev, base_url)
@@ -191,19 +188,11 @@ module OpenBEL
 
           _ids = @api.create_evidence(slice)
 
-          startt = Time.now
           dataset_parts = _ids.map { |object_id|
             RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, object_id.to_s)
           }
           @rr.insert_statements(dataset_parts)
-          endt = Time.now
-          puts "Create hasPart relationships in VoID dataset in #{endt - startt} seconds."
-
-          count += 500
-          puts "Saved #{count}"
         end
-        e = Time.now
-        puts "Saved to Mongo in #{e - s} seconds."
 
         status 201
         headers 'Location' => void_dataset_uri.to_s
