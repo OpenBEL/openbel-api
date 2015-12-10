@@ -28,11 +28,16 @@ module OpenBEL
 
       def create_evidence(evidence)
         # insert evidence; acknowledge journal
-        _id = @collection.insert(evidence.to_h, :j => true)
+        if evidence.respond_to?(:each)
+          @collection.insert(evidence.to_a, :w => 1, :j => false)
+        else
+          evidence.bel_statement = evidence.bel_statement.to_s
+          _id = @collection.insert(evidence.to_h, :w => 0, :j => false)
 
-        # remove evidence_facets after insert to facets
-        remove_evidence_facets(_id)
-        _id
+          # remove evidence_facets after insert to facets
+          remove_evidence_facets(_id)
+          _id
+        end
       end
 
       def find_evidence_by_id(value)
