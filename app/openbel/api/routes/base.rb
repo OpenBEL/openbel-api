@@ -57,6 +57,10 @@ module OpenBEL
           value == nil ? false : value.to_s =~ (/^(true|t|yes|y|1|on)$/i)
         end
 
+        def wildcard_match(match)
+          match.to_s.split(/\W/).map { |v| "*#{v}*"}.join(' ')
+        end
+
         def path(*args)
           return nil if args.empty?
           tokens = args.flatten

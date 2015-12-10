@@ -83,7 +83,7 @@ module OpenBEL
         match = filter_hash['fts']['search']
         halt 404 unless match.length > 1
 
-        match_results = @search.search(match, :annotation_concept, nil, nil,
+        match_results  = @search.search(wildcard_match(match), :annotation_concept, nil, nil,
           :start => start,
           :size => size
         ).map { |result|
@@ -130,7 +130,7 @@ module OpenBEL
         match = filter_hash['fts']['search']
         halt 404 unless match.length > 1
 
-        match_results = @search.search(match, :annotation_concept, annotation.uri.to_s, nil,
+        match_results = @search.search(wildcard_match(match), :annotation_concept, annotation.uri.to_s, nil,
           :start => start,
           :size => size
         ).map { |result|
