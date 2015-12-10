@@ -12,6 +12,13 @@ module OpenBEL
       include OpenBEL::Evidence::FacetFilter
       include OpenBEL::Resource::Evidence
 
+      ACCEPTED_TYPES = {
+        :bel  => 'application/bel',
+        :xml  => 'application/xml',
+        :xbel => 'application/xml',
+        :json => 'application/json',
+      }
+
       def initialize(app)
         super
 
@@ -39,6 +46,12 @@ module OpenBEL
       # use Rack::Config do |env|
       #   env['rack.input'], env['data.input'] = StringIO.new, env['rack.input']
       # end
+
+      configure do
+        ACCEPTED_TYPES.each do |ext, mime_type|
+          mime_type(ext, mime_type)
+        end
+      end
 
       helpers do
 
@@ -173,9 +186,12 @@ module OpenBEL
           )
         end
 
-        io, type = params['file'].values_at(:tempfile, :type)
+        io, filename, type = params['file'].values_at(:tempfile, :filename, :type)
+        unless ACCEPTED_TYPES.values.include?(type)
+          type = mime_type(File.extname(filename))
+        end
 
-        halt 415 unless ['application/bel', 'application/xml', 'application/json'].include?(type)
+        halt 415 unless ACCEPTED_TYPES.values.include?(type)
 
         # Check dataset in request for suitability and conflict with existing resources.
         void_dataset_uri, void_dataset = check_dataset(io, type)
