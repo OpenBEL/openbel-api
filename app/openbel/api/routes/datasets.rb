@@ -100,6 +100,58 @@ module OpenBEL
             io.rewind
           end
         end
+
+        def dataset_exists?(uri)
+          @rr.has_statement?(
+            RDF::Statement.new(uri, RDF.type, RDF::VOID.Dataset)
+          )
+        end
+
+        def retrieve_dataset(uri)
+          dataset = {}
+          identifier = @rr.query(
+            RDF::Statement.new(uri, RDF::DC.identifier, nil)
+          ).first
+          dataset[:identifier] = identifier.object.to_s if identifier
+
+          title = @rr.query(
+            RDF::Statement.new(uri, RDF::DC.title, nil)
+          ).first
+          dataset[:title] = title.object.to_s if title
+
+          description = @rr.query(
+            RDF::Statement.new(uri, RDF::DC.description, nil)
+          ).first
+          dataset[:description] = description.object.to_s if description
+
+          waiver = @rr.query(
+            RDF::Statement.new(uri, RDF::URI('http://vocab.org/waiver/terms/waiver'), nil)
+          ).first
+          dataset[:waiver] = waiver.object.to_s if waiver
+
+          creator = @rr.query(
+            RDF::Statement.new(uri, RDF::DC.creator, nil)
+          ).first
+          dataset[:creator] = creator.object.to_s if creator
+
+          license = @rr.query(
+            RDF::Statement.new(uri, RDF::DC.license, nil)
+          ).first
+          dataset[:license] = license.object.to_s if license
+
+          publisher = @rr.query(
+            RDF::Statement.new(uri, RDF::DC.publisher, nil)
+          ).first
+          if publisher
+            publisher.object
+            contact_info = @rr.query(
+              RDF::Statement.new(publisher.object, RDF::FOAF.mbox, nil)
+            ).first
+            dataset[:contact_info] = contact_info.object.to_s if contact_info
+          end
+
+          dataset
+        end
       end
 
       options '/api/datasets' do
@@ -160,31 +212,11 @@ module OpenBEL
       get '/api/datasets/:id' do
         id = params[:id]
         void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{id}")
-
-        exists = @rr.has_statement?(
-          RDF::Statement.new(void_dataset_uri, RDF.type, RDF::VOID.Dataset)
-        )
-        halt 404 unless exists
-
-        dataset = {}
-        identifier = @rr.query(
-          RDF::Statement.new(void_dataset_uri, RDF::DC.identifier, nil)
-        ).first
-        dataset[:identifier] = identifier.object.to_s if identifier
-
-        title = @rr.query(
-            RDF::Statement.new(void_dataset_uri, RDF::DC.title, nil)
-        ).first
-        dataset[:title] = title.object.to_s if title
-
-        description = @rr.query(
-            RDF::Statement.new(void_dataset_uri, RDF::DC.description, nil)
-        ).first
-        dataset[:description] = description.object.to_s if description
+        halt 404 unless dataset_exists?(void_dataset_uri)
 
         status 200
         render_json({
-          :dataset => dataset,
+          :dataset => retrieve_dataset(void_dataset_uri),
           :_links => {
             :self => {
                 :type => 'dataset',
@@ -207,24 +239,8 @@ module OpenBEL
         halt 404 if dataset_uris.empty?
 
         dataset_collection = dataset_uris.map { |uri|
-          dataset = {}
-          identifier = @rr.query(
-              RDF::Statement.new(uri, RDF::DC.identifier, nil)
-          ).first
-          dataset[:identifier] = identifier.object.to_s if identifier
-
-          title = @rr.query(
-              RDF::Statement.new(uri, RDF::DC.title, nil)
-          ).first
-          dataset[:title] = title.object.to_s if title
-
-          description = @rr.query(
-              RDF::Statement.new(uri, RDF::DC.description, nil)
-          ).first
-          dataset[:description] = description.object.to_s if description
-
           {
-            :dataset => dataset,
+            :dataset => retrieve_dataset(uri),
             :_links => {
                 :self => {
                     :type => 'dataset',
@@ -245,11 +261,7 @@ module OpenBEL
       delete '/api/datasets/:id' do
         id = params[:id]
         void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{id}")
-
-        exists = @rr.has_statement?(
-            RDF::Statement.new(void_dataset_uri, RDF.type, RDF::VOID.Dataset)
-        )
-        halt 404 unless exists
+        halt 404 unless dataset_exists?(void_dataset_uri)
 
         evidence_parts = @rr.query(
           RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, nil)
