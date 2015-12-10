@@ -29,10 +29,10 @@ module OpenBEL
       def create_evidence(evidence)
         # insert evidence; acknowledge journal
         if evidence.respond_to?(:each)
-          @collection.insert(evidence.to_a, :w => 1, :j => false)
+          @collection.insert(evidence.to_a, :w => 1, :j => true)
         else
           evidence.bel_statement = evidence.bel_statement.to_s
-          _id = @collection.insert(evidence.to_h, :w => 0, :j => false)
+          _id = @collection.insert(evidence.to_h, :w => 1, :j => true)
 
           # remove evidence_facets after insert to facets
           remove_evidence_facets(_id)
@@ -85,17 +85,32 @@ module OpenBEL
         nil
       end
 
+      def delete_evidence(value)
+        if value.respond_to?(:each)
+          value.each do |v|
+            delete_evidence_by_id(v)
+          end
+        else
+          delete_evidence_by_id(value)
+        end
+      end
+
       def delete_evidence_by_id(value)
         # convert to ObjectId
-        _id = to_id(value)
+        begin
+          _id = to_id(value)
+        rescue BSON::InvalidObjectId
+          # indicate that a delete was unsuccessful
+          false
+        end
 
         # remove evidence_facets before evidence removal
         remove_evidence_facets(_id)
 
-        # remove evidence
+        # remove evidence; returns true
         @collection.remove(
           {
-            :_id => to_id(value)
+              :_id => _id
           },
           :j => true
         )
