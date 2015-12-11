@@ -337,6 +337,12 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         }
         accept_type ||= DEFAULT_TYPE
 
+        if params[:format]
+          translator  = BEL::Translator.plugins[params[:format].to_sym]
+          halt 501 if !translator || translator.id == :rdf
+          accept_type = [translator.media_types].flatten.first
+        end
+
         if accept_type == DEFAULT_TYPE
           evidence          = page_results[:cursor].map { |item|
             item.delete('facets')
