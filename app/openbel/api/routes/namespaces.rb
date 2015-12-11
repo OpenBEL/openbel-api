@@ -26,17 +26,17 @@ module OpenBEL
       def initialize(app)
         super
 
-        # RdfRepository using Jena
+        # RdfRepository using Jena.
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
-          :tdb_directory => 'biological-concepts-rdf'
+          :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
         )
 
         # Namespaces using RdfRepository
         @namespaces = BEL::Resource::Namespaces.new(@rr)
 
-        # Resource Search
-        @search     = BEL::Resource::Search.plugins[:sqlite].create_search(
-          :database_file => 'biological-concepts-rdf.db'
+        # Resource Search using SQLite.
+        @search = BEL::Resource::Search.plugins[:sqlite].create_search(
+          :database_file => OpenBEL::Settings[:resource_search][:sqlite][:database_file]
         )
       end
 

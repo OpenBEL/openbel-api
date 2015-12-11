@@ -1,0 +1,26 @@
+# Configuration template for OpenBEL API
+
+# Storage of evidence through the Mongo database.
+evidence_store:
+  mongo:
+    host:     'localhost'
+    port:     27017
+    database: 'openbel'
+
+# RDF dataset for BEL datasets, annotations, and namespaces using Apache Jena.
+resource_rdf:
+  jena:
+    tdb_directory: 'biological-concepts-rdf'
+
+# Full-text search over annotation and namespace values using SQLite.
+resource_search:
+  sqlite:
+    database_file: 'biological-concepts-rdf.db'
+
+# User authentication using Auth0.
+auth:
+  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE&redirect_uri=http://localhost:9000/api/authenticate&connection=linkedin'
+  domain:   'openbel.auth0.com'
+  id:       'K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
+  # secret:   'auth0 client secret here'
+

@@ -1,9 +1,0 @@
-# Configuration template for OpenBEL API
-auth:
-  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE&redirect_uri=http://localhost:9000/api/authenticate&connection=linkedin'
-  domain: 'openbel.auth0.com'
-  id: 'K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
-  # secret: 'auth0 client secret here'
-
-# vim: ts=2 sts=2 sw=2
-# encoding: utf-8

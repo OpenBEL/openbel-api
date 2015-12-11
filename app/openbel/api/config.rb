@@ -4,11 +4,10 @@ module OpenBEL
   module Config
     include DotHash
 
-    CFG_VAR = 'OPENBEL_SERVER_CONFIG'
-    DEFAULT = 'config.yml'
+    CFG_VAR = 'OPENBEL_API_CONFIG_FILE'
 
     def self.load!
-      config_file = ENV[CFG_VAR] || DEFAULT
+      config_file = ENV[CFG_VAR] || raise('No OpenBEL API configuration found. Set the OPENBEL_API_CONFIG_FILE environment variable.')
       config = {}
       File.open(config_file, 'r:UTF-8') do |cf|
         config = YAML::load(cf)

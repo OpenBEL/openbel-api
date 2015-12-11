@@ -16,16 +16,15 @@ module OpenBEL
       def initialize(app)
         super
 
-        # TODO Remove this from config.yml; put in app-config.rb as an "evidence-store" component.
         @api = OpenBEL::Evidence::Evidence.new(
-            :host     => 'localhost',
-            :port     => 27017,
-            :database => 'openbel'
+          :host     => OpenBEL::Settings[:evidence_store][:mongo][:host],
+          :port     => OpenBEL::Settings[:evidence_store][:mongo][:port],
+          :database => OpenBEL::Settings[:evidence_store][:mongo][:database]
         )
 
         # RdfRepository using Jena
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
-            :tdb_directory => 'biological-concepts-rdf'
+          :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
         )
 
         # Annotations using RdfRepository
