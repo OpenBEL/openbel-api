@@ -178,20 +178,47 @@ module OpenBEL
       end
 
       post '/api/datasets' do
-        unless params['file']
+        if request.media_type == 'multipart/form-data' && params['file']
+          io, filename, type = params['file'].values_at(:tempfile, :filename, :type)
+          unless ACCEPTED_TYPES.values.include?(type)
+            type = mime_type(File.extname(filename))
+          end
+
+          puts "Form post: #{type || filename}"
+
+          halt(
+            415,
+            { 'Content-Type' => 'application/json' },
+            render_json({
+                          :status => 415,
+                          :msg => %Q{
+[Form data] Do not support content type for "#{type || filename}" when processing datasets from the "file" form parameter.
+The following content types are allowed: #{ACCEPTED_TYPES.values.join(', ')}. The "file" form parameter type can also be inferred by the following file extensions: #{ACCEPTED_TYPES.keys.join(', ')}} })
+          ) unless ACCEPTED_TYPES.values.include?(type)
+        elsif ACCEPTED_TYPES.values.include?(request.media_type)
+          type = request.media_type
+          io   = request.body
+
+          puts "POST data: #{type}"
+
+          halt(
+            415,
+            { 'Content-Type' => 'application/json' },
+            render_json({
+                          :status => 415,
+                          :msg => %Q{[POST data] Do not support content type #{type} when processing datasets. The following content types
+are allowed in the "Content-Type" header: #{ACCEPTED_TYPES.values.join(', ')}} })
+          ) unless ACCEPTED_TYPES.values.include?(type)
+        else
           halt(
             400,
             { 'Content-Type' => 'application/json' },
-            render_json({ :status => 400, :msg => "You must POST a 'file' parameter using multipart/form-data." })
+            render_json({
+              :status => 400,
+              :msg => %Q{Please POST data using a supported "Content-Type" or a "file" parameter using
+the "multipart/form-data" content type. Allowed dataset content types are: #{ACCEPTED_TYPES.values.join(', ')}} })
           )
         end
-
-        io, filename, type = params['file'].values_at(:tempfile, :filename, :type)
-        unless ACCEPTED_TYPES.values.include?(type)
-          type = mime_type(File.extname(filename))
-        end
-
-        halt 415 unless ACCEPTED_TYPES.values.include?(type)
 
         # Check dataset in request for suitability and conflict with existing resources.
         void_dataset_uri, void_dataset = check_dataset(io, type)
