@@ -5,7 +5,7 @@ require 'puma/cli'
 
 ORIGINAL_ARGV = ARGV.dup
 OPENBEL_ARGV  = ARGV.slice_before('--').to_a[0]
-PUMA_ARGV     = ARGV.slice_after('--').to_a[1]
+PUMA_ARGV     = ARGV.slice_after('--').to_a[1] || []
 
 ROOT          = File.expand_path('..', File.dirname(__FILE__))
 config_file   = ENV['OPENBEL_API_CONFIG_FILE']
@@ -45,6 +45,8 @@ Puma run:
 
   openbel-api -- --help
 
+OpenBEL API Options
+===================
 	}
 
 	opts.on('-f', '--file FILE', 'The file where the configuration will be written.') do |file|
