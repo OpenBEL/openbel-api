@@ -70,6 +70,33 @@ module OpenBEL
         results
       end
 
+      def find_dataset_evidence(dataset, filters = [], offset = 0, length = 0, facet = false)
+        query_hash = to_query(filters)
+        query_hash[:$and] ||= []
+        query_hash[:$and].unshift({
+          :_dataset => dataset[:identifier]
+        })
+
+        query_opts = query_options(
+          query_hash,
+          :skip  => offset,
+          :limit => length,
+          :sort  => [
+            [:bel_statement, :asc]
+          ]
+        )
+
+        results = {
+          :cursor => @collection.find(query_hash, query_opts)
+        }
+        if facet
+          facets_doc = @evidence_facets.find_facets(query_hash, filters)
+          results[:facets] = facets_doc["facets"]
+        end
+
+        results
+      end
+
       def count_evidence(filters = [])
         query_hash = to_query(filters)
         @collection.count(:query => query_hash)
@@ -141,11 +168,9 @@ module OpenBEL
 
       private
 
-      EMPTY_HASH = {}
-
       def to_query(filters = [])
         if !filters || filters.empty?
-          return EMPTY_HASH
+          return {}
         end
 
         query_hash = {

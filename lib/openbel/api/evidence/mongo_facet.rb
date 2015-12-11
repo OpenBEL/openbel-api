@@ -20,8 +20,15 @@ module OpenBEL
         @evidence_facets = @db[:evidence_facets]
       end
 
-      def create_facets(evidence)
-        map_evidence_facets(evidence)
+      def create_facets(_id, query_hash)
+        # create and save facets, identified by query
+        facets_doc = _id.merge({
+          :facets => evidence_facets(query_hash)
+        })
+        @evidence_facets.save(facets_doc, :j => true)
+
+        # return facets document
+        facets_doc
       end
 
       def find_facets(query_hash, filters)
@@ -52,16 +59,6 @@ module OpenBEL
         %r{.*#{Regexp.escape(filter_s)}.*}
       end
 
-      def create_facets(_id, query_hash)
-        # create and save facets, identified by query
-        facets_doc = _id.merge({
-          "facets" => evidence_facets(query_hash)
-        })
-        @evidence_facets.save(facets_doc, :j => true)
-
-        # return facets document
-        facets_doc
-      end
 
       def to_facets_id(filters)
         filters.map { |filter|
@@ -72,7 +69,7 @@ module OpenBEL
       def evidence_facets(query_hash = nil)
         pipeline =
           if query_hash.is_a?(Hash) && !query_hash.empty?
-            pipeline = [{:'$match' => query_hash}] + AGGREGATION_PIPELINE
+            [{:'$match' => query_hash}] + AGGREGATION_PIPELINE
           else
             AGGREGATION_PIPELINE
           end

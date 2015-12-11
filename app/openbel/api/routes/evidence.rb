@@ -294,6 +294,7 @@ module OpenBEL
         @api.delete_evidence_by_id(object_id)
         status 202
       end
+
     end
   end
 end

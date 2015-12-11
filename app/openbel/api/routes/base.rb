@@ -23,6 +23,10 @@ module OpenBEL
 
       DEFAULT_CONTENT_TYPE   = 'application/hal+json'
       SPOKEN_CONTENT_TYPES   = %w[application/hal+json application/json]
+      SPOKEN_CONTENT_TYPES.concat(
+        BEL::Translator.plugins.values.flat_map { |p| p.media_types.map(&:to_s) }
+      )
+
       SCHEMA_BASE_URL        = 'http://next.belframework.org/schemas/'
       RESOURCE_SERIALIZERS   = {
         :annotation                 => AnnotationResourceSerializer,
@@ -59,12 +63,6 @@ module OpenBEL
 
         def wildcard_match(match)
           match.to_s.split(/\W/).map { |v| "*#{v}*"}.join(' ')
-        end
-
-        def path(*args)
-          return nil if args.empty?
-          tokens = args.flatten
-          tokens.reduce(Pathname(tokens.shift)) { |path, t| path += t }
         end
 
         def request_headers
@@ -224,7 +222,7 @@ module OpenBEL
           }.merge(options)
 
           serializer_class = RESOURCE_SERIALIZERS[type]
-          if not serializer_class
+          unless serializer_class
             raise NotImplementedError.new("Cannot serialize the #{type} resource.")
           end
 
@@ -248,7 +246,7 @@ module OpenBEL
 
         def stream_resource_collection(type, collection, facets, options = {})
           serializer_class = RESOURCE_SERIALIZERS[type]
-          if not serializer_class
+          unless serializer_class
             raise NotImplementedError.new("Cannot serialize the #{type} resource collection.")
           end
 
