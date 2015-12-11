@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.email                 = %q{abargnesi@selventa.com}
   spec.files                 = [
                                  Dir.glob('app/**/*.{json,rb,ru}'),
-                                 Dir.glob('config/**/*.rb'),
+                                 Dir.glob('config/**/*.{rb,yml}'),
                                  Dir.glob('lib/**/*.rb'),
                                  __FILE__,
                                  'CHANGELOG.md',
