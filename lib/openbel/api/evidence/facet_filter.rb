@@ -39,7 +39,7 @@ module OpenBEL
               # otherwise we would have each data value unrolled
               [[:experiment_context, name, value]]
             end
-          }.select { |(category, name, value)|
+          }.select { |(_, _, value)|
             value != nil
           }.map { |filter|
             self.make_filter(*filter)
@@ -61,7 +61,7 @@ module OpenBEL
               # otherwise we would have each data value unrolled
               [[:metadata, name, value]]
             end
-          }.select { |category, name, value|
+          }.select { |_, _, value|
             value != nil
           }.map { |filter|
             self.make_filter(*filter)

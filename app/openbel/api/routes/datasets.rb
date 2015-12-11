@@ -193,8 +193,6 @@ module OpenBEL
             type = mime_type(File.extname(filename))
           end
 
-          puts "Form post: #{type || filename}"
-
           halt(
             415,
             { 'Content-Type' => 'application/json' },
@@ -207,8 +205,6 @@ The following content types are allowed: #{ACCEPTED_TYPES.values.join(', ')}. Th
         elsif ACCEPTED_TYPES.values.include?(request.media_type)
           type = request.media_type
           io   = request.body
-
-          puts "POST data: #{type}"
 
           halt(
             415,
@@ -235,16 +231,24 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         # Create dataset in RDF.
         @rr.insert_statements(void_dataset)
 
+        dataset = retrieve_dataset(void_dataset_uri)
+
         # Add slices of read evidence objects; save to Mongo and RDF.
         BEL.evidence(io, type).each.lazy.each_slice(500) do |slice|
           slice.map! do |ev|
             # Standardize annotations from experiment_context.
             @annotation_transform.transform_evidence!(ev, base_url)
 
+            # Add filterable metadata field for dataset identifier.
+            ev.metadata[:dataset] = dataset[:identifier]
+
             facets           = map_evidence_facets(ev)
             ev.bel_statement = ev.bel_statement.to_s
             hash             = ev.to_h
             hash[:facets]    = facets
+
+            # Create dataset field for efficient removal.
+            hash[:_dataset]  = dataset[:identifier]
             hash
           end
 
@@ -314,22 +318,9 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{id}")
         halt 404 unless dataset_exists?(void_dataset_uri)
 
-        evidence_parts = @rr.query(
-          RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, nil)
-        )
-
-        evidence_parts.each.lazy.each_slice(500) do |slice|
-          slice.map! { |part_statement|
-            part_statement.object.to_s
-          }
-          slice.compact!
-
-          @api.delete_evidence(slice)
-        end
-
-        @rr.delete_statement(
-          RDF::Statement.new(void_dataset_uri, nil, nil)
-        )
+        dataset = retrieve_dataset(void_dataset_uri)
+        @api.delete_dataset(dataset[:identifier])
+        @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
 
         status 202
       end
@@ -343,22 +334,9 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         halt 404 if datasets.empty?
 
         datasets.each do |void_dataset_uri|
-          evidence_parts = @rr.query(
-            RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, nil)
-          )
-
-          evidence_parts.each.lazy.each_slice(500) do |slice|
-            slice.map! { |part_statement|
-              part_statement.object.to_s
-            }
-            slice.compact!
-
-            @api.delete_evidence(slice)
-          end
-
-          @rr.delete_statement(
-            RDF::Statement.new(void_dataset_uri, nil, nil)
-          )
+          dataset = retrieve_dataset(void_dataset_uri)
+          @api.delete_dataset(dataset[:identifier])
+          @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
         end
 
         status 202

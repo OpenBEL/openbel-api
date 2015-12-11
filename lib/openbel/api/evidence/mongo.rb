@@ -16,6 +16,10 @@ module OpenBEL
         @db              = MongoClient.new(host, port).db(db)
         @collection      = @db[:evidence]
         @collection.ensure_index(
+          {:"bel_statement" => Mongo::ASCENDING },
+          :background => true
+        )
+        @collection.ensure_index(
           {:"$**" => Mongo::TEXT },
           :background => true
         )
@@ -85,6 +89,18 @@ module OpenBEL
         nil
       end
 
+      def delete_dataset(identifier)
+        @collection.ensure_index(
+          {:"_dataset" => Mongo::ASCENDING },
+          :background => true
+        )
+
+        @collection.remove(
+          { :"_dataset" => identifier },
+          :j => true
+        )
+      end
+
       def delete_evidence(value)
         if value.respond_to?(:each)
           value.each do |v|
@@ -93,6 +109,13 @@ module OpenBEL
         else
           delete_evidence_by_id(value)
         end
+      end
+
+      def delete_evidence_by_query(query)
+        @collection.remove(
+          query,
+          :j => true
+        )
       end
 
       def delete_evidence_by_id(value)
@@ -142,6 +165,15 @@ module OpenBEL
                   }
                 }
               }
+            elsif category == 'metadata'
+              {
+                :metadata => {
+                  :$elemMatch => {
+                    :name  => name.to_s,
+                    :value => value.to_s
+                  }
+                }
+              }
             else
               {
                 "#{filter['category']}.#{filter['name']}" => filter['value'].to_s
@@ -154,7 +186,6 @@ module OpenBEL
       end
 
       def query_options(query_hash, options = {})
-
         if query_hash[:$text]
           options[:fields] = [
             {
