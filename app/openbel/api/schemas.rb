@@ -6,7 +6,7 @@ module OpenBEL
   module Schemas
 
     COMPILED_SCHEMAS = {}
-    SCHEMA_DIR = File.join(File.expand_path('..', File.dirname(__FILE__)), 'schemas')
+    SCHEMA_DIR = File.join(File.expand_path(File.dirname(__FILE__)), 'schemas')
     SUFFIX     = ".schema.json"
 
     def validate(data, type)

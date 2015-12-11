@@ -255,7 +255,7 @@ module OpenBEL
         object_id = params[:id]
         halt 404 unless BSON::ObjectId.legal?(object_id)
 
-        validate_media_type! "application/json", :profile => schema_url('evidence')
+        validate_media_type! "application/json"
 
         ev = @api.find_evidence_by_id(object_id)
         halt 404 unless ev
@@ -276,7 +276,8 @@ module OpenBEL
         @annotation_transform.transform_evidence!(evidence_model, base_url)
         facets = map_evidence_facets(evidence_model)
         evidence = evidence_model.to_h
-        evidence[:facets] = facets
+        evidence[:bel_statement] = evidence.fetch(:bel_statement, nil).to_s
+        evidence[:facets]        = facets
 
         @api.update_evidence_by_id(object_id, evidence)
 

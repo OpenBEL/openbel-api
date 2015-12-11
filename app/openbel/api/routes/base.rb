@@ -93,7 +93,18 @@ module OpenBEL
             valid &= (%r{profile=#{options[:profile]}} =~ ctype)
           end
 
-          halt 415 unless valid
+          unless valid
+            halt(
+              415,
+              {
+                'Content-Type' => 'application/json'
+              },
+              render_json({
+                :status => 415,
+                :msg => "Invalid media type #{ctype} (profile: #{options[:profile]})"
+              })
+            )
+          end
         end
 
         def read_evidence
