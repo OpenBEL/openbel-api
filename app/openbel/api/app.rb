@@ -57,13 +57,18 @@ module OpenBEL
     end
     disable :protection
 
+    # routes not requiring authentication
     use OpenBEL::Routes::Root
     use OpenBEL::Routes::Annotations
-    use OpenBEL::Routes::Evidence
     use OpenBEL::Routes::Expressions
-    use OpenBEL::Routes::Datasets
     use OpenBEL::Routes::Functions
     use OpenBEL::Routes::Namespaces
+    use OpenBEL::Routes::Authenticate
+
+    # routes requiring authentication
+    use OpenBEL::Middleware::JWT::Authentication
+    use OpenBEL::Routes::Datasets
+    use OpenBEL::Routes::Evidence
   end
 end
 # vim: ts=2 sts=2 sw=2
