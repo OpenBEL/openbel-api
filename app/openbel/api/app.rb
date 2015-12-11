@@ -7,6 +7,7 @@ require_relative 'util'
 
 require 'rack/cors'
 require 'sinatra/base'
+require "sinatra/reloader"
 
 require_relative 'config'
 require_relative 'routes/base'
@@ -17,13 +18,15 @@ require_relative 'routes/datasets'
 require_relative 'routes/expressions'
 require_relative 'routes/functions'
 require_relative 'routes/namespaces'
+require_relative 'routes/authenticate'
+require_relative 'middleware/auth'
 
 module OpenBEL
 
   class Server < Sinatra::Application
 
     configure :development do
-      # pass
+      register Sinatra::Reloader
     end
 
     configure do
