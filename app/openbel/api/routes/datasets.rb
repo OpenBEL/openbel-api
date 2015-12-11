@@ -58,6 +58,15 @@ module OpenBEL
         def check_dataset(io, type)
           begin
             evidence         = BEL.evidence(io, type).each.first
+
+            unless evidence
+              halt(
+                400,
+                { 'Content-Type' => 'application/json' },
+                render_json({ :status => 400, :msg => 'No BEL evidence was provided. Evidence is required to infer dataset information.' })
+              )
+            end
+
             void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{self.generate_uuid}")
 
             void_dataset = evidence.to_void_dataset(void_dataset_uri)
