@@ -15,20 +15,33 @@ module OpenBEL
 
     def self.check_cookie(env)
       cookie_hdr = env['HTTP_COOKIE']
-      if cookie_hdr.nil?
-        raise 'missing authorization cookie'
+      auth_hdr = env['HTTP_AUTHORIZATION']
+      if cookie_hdr.nil? and auth_hdr.nil?
+        raise 'missing authorization cookie/header'
       end
 
-      cookies = cookie_hdr.split('; ')
-      selected = cookies.select {|x| x.start_with?('jwt=') }
-      if selected.size > 0
-        tokens = selected[0].split('=')
-        if tokens.size > 1
-          token = tokens[1]
+      if not cookie_hdr.nil?
+        cookies = cookie_hdr.split('; ')
+        selected = cookies.select {|x| x.start_with?('jwt=') }
+        if selected.size > 0
+          tokens = selected[0].split('=')
+          if tokens.size > 1
+            token = tokens[1]
+          end
+        end
+        if token.nil?
+          raise 'missing authorization cookie'
         end
       end
-      if token.nil?
-        raise 'missing authorization cookie'
+
+      if not auth_hdr.nil?
+        tokens = auth_hdr.split('Bearer ')
+        if tokens.size == 2
+          token = tokens[1]
+        end
+        if token.nil?
+          raise 'missing authorization header'
+        end
       end
 
       secret = OpenBEL::Settings[:auth][:secret]

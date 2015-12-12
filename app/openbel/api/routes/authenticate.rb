@@ -20,10 +20,14 @@ module OpenBEL
     class Authenticate < Base
 
       get '/api/authenticate' do
+        state = params[:state]
         code = params[:code]
         if code.nil?
           default_connection = OpenBEL::Settings[:auth][:default_connection]
           default_auth_url = current_path(env) + "/#{default_connection}"
+          if not state.nil?
+            default_auth_url += "?state=#{state}"
+          end
           redirect to(default_auth_url)
         end
 
@@ -70,16 +74,24 @@ module OpenBEL
         hdrs = {'Content-Type' => 'application/json'}
         msg = {success: email}
         cookies[:jwt] = jwt
-        return [200, hdrs, [msg.to_json]]
+        if not state.nil?
+          redirect to(state + "?jwt=#{jwt}")
+        else
+          [200, hdrs, [msg.to_json]]
+        end
       end
 
       get '/api/authenticate/:connection' do
+        state = params[:state]
         redirect_setting = OpenBEL::Settings[:auth][:redirect]
         connection = params[:connection]
         redirect_uri = current_host(env) + '/api/authenticate'
         auth_url = "#{redirect_setting}"
         auth_url += "&redirect_uri=#{redirect_uri}"
         auth_url += "&connection=#{connection}"
+        if not state.nil?
+          auth_url += "&state=#{state}"
+        end
         redirect to(auth_url)
       end
     end
