@@ -63,43 +63,33 @@
           "title":       "Experiment Context",
           "description": "An experiment context specifies the experiment's parameters where this interaction was observed.",
           "items": {
-            "oneOf": [
-              {
-                "type":       "object",
-                "required":   ["name", "value"],
-                "properties": {
-                  "name": {
-                    "type":        "string",
-                    "title":       "Annotation Type",
-                    "description": "Annotation type listing - sourced from the BEL Annotation resource names"
-                  },
-                  "value": {
-                    "type":        ["string", "number", "boolean", "array"],
-                    "title":       "Annotations",
-                    "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
-                    "items": {
-                      "type": ["string", "number", "boolean"]
-                    }
-                  }
+            "type":       "object",
+            "required":   ["name", "value"],
+            "properties": {
+              "name": {
+                "type":        "string",
+                "title":       "Annotation Type",
+                "description": "Annotation type listing - sourced from the BEL Annotation resource names"
+              },
+              "value": {
+                "type":        ["string", "number", "boolean", "array"],
+                "title":       "Annotations",
+                "description": "Annotations such as Homo sapiens, cancer, epithelial tissue sourced from the BEL Annotation resources",
+                "items": {
+                  "type": ["string", "number", "boolean"]
                 }
               },
-              {
-                "type":        "object",
-                "required":    [ "uri" ],
-                "title":       "Annotation URI(s)",
-                "description": "URI(s) for Annotations",
-                "properties": {
-                  "uri": {
-                    "type":   ["string", "array"],
-                    "format": "uri",
-                    "items": {
-                      "type":   "string",
-                      "format": "uri"
-                    }
-                  }
+              "uri": {
+                "type":        "string",
+                "title":       "Annotation URI",
+                "description": "URI for Annotation",
+                "format":      "uri",
+                "items": {
+                  "type":   "string",
+                  "format": "uri"
                 }
               }
-            ]
+            }
           }
         },
         "summary_text": {
