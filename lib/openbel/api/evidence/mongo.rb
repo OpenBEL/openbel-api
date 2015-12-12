@@ -1,3 +1,4 @@
+require 'bel'
 require 'mongo'
 require_relative 'api'
 require_relative 'mongo_facet'
@@ -32,15 +33,16 @@ module OpenBEL
 
       def create_evidence(evidence)
         # insert evidence; acknowledge journal
-        if evidence.respond_to?(:each)
-          @collection.insert(evidence.to_a, :w => 1, :j => true)
-        else
-          evidence.bel_statement = evidence.bel_statement.to_s
-          _id = @collection.insert(evidence.to_h, :w => 1, :j => true)
+        if evidence.respond_to?(:each_pair)
+          _id = @collection.insert(evidence, :w => 1, :j => true)
 
           # remove evidence_facets after insert to facets
           remove_evidence_facets(_id)
           _id
+        elsif evidence.respond_to?(:each)
+          @collection.insert(evidence.to_a, :w => 1, :j => true)
+        else
+          raise "Evidence type #{evidence.class} cannot be inserted into Mongo."
         end
       end
 
