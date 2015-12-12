@@ -17,9 +17,13 @@ resource_search:
   sqlite:
     database_file: 'biological-concepts-rdf.db'
 
+# Set a secret used during session creation....
+session_secret: 'changeme'
+
 # User authentication using Auth0.
 auth:
-  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE&redirect_uri=http://localhost:9000/api/authenticate&connection=linkedin'
+  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
+  default_connection: 'linkedin'
   domain:   'openbel.auth0.com'
   id:       'K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
   # secret:   'auth0 client secret here'
