@@ -1,6 +1,19 @@
 require 'uri'
 require 'rest-client'
 
+def current_host(env)
+  scheme = env['rack.url_scheme'] || 'http'
+  host = env['HTTP_HOST']
+  "#{scheme}://#{host}"
+end
+
+def current_path(env)
+  scheme = env['rack.url_scheme'] || 'http'
+  host = env['HTTP_HOST']
+  path = env['PATH_INFO']
+  "#{scheme}://#{host}#{path}"
+end
+
 module OpenBEL
   module Routes
 
@@ -9,17 +22,16 @@ module OpenBEL
       get '/api/authenticate' do
         code = params[:code]
         if code.nil?
-          redirect to(OpenBEL::Settings[:auth][:redirect])
+          default_connection = OpenBEL::Settings[:auth][:default_connection]
+          default_auth_url = current_path(env) + "/#{default_connection}"
+          redirect to(default_auth_url)
         end
 
         domain = OpenBEL::Settings[:auth][:domain]
         id = OpenBEL::Settings[:auth][:id]
         secret = OpenBEL::Settings[:auth][:secret]
-        scheme = env['rack.url_scheme'] || 'http'
-        host = env['HTTP_HOST']
-        path = env['PATH_INFO']
-        callback_url = "#{scheme}://#{host}#{path}"
 
+        callback_url = current_path(env)
         payload =  {
             client_id: id,
             client_secret: secret,
@@ -56,8 +68,19 @@ module OpenBEL
 
         email = JSON.parse(user_response)['email']
         hdrs = {'Content-Type' => 'application/json'}
-        msg = {success: email, token: jwt }
+        msg = {success: email}
+        cookies[:jwt] = jwt
         return [200, hdrs, [msg.to_json]]
+      end
+
+      get '/api/authenticate/:connection' do
+        redirect_setting = OpenBEL::Settings[:auth][:redirect]
+        connection = params[:connection]
+        redirect_uri = current_host(env) + '/api/authenticate'
+        auth_url = "#{redirect_setting}"
+        auth_url += "&redirect_uri=#{redirect_uri}"
+        auth_url += "&connection=#{connection}"
+        redirect to(auth_url)
       end
     end
   end
