@@ -8,6 +8,7 @@ require_relative 'util'
 require 'rack/cors'
 require 'sinatra/base'
 require "sinatra/reloader"
+require "sinatra/cookies"
 
 require_relative 'config'
 require_relative 'routes/base'
@@ -19,7 +20,7 @@ require_relative 'routes/expressions'
 require_relative 'routes/functions'
 require_relative 'routes/namespaces'
 require_relative 'routes/authenticate'
-#require_relative 'middleware/auth'
+require_relative 'middleware/auth'
 
 module OpenBEL
 
@@ -33,6 +34,9 @@ module OpenBEL
       config = OpenBEL::Config::load!
       OpenBEL.const_set :Settings, config
     end
+
+    enable :sessions
+    set :session_secret, OpenBEL::Settings['session_secret']
 
     use Rack::Deflater
     use Rack::Cors do
@@ -66,7 +70,7 @@ module OpenBEL
     use OpenBEL::Routes::Authenticate
 
     # routes requiring authentication
-#    use OpenBEL::Middleware::JWT::Authentication
+    use OpenBEL::JWTMiddleware::Authentication
     use OpenBEL::Routes::Datasets
     use OpenBEL::Routes::Evidence
   end
