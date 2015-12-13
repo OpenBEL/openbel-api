@@ -115,7 +115,7 @@ module OpenBEL
         def read_json
           request.body.rewind
           begin
-            MultiJson.load request.body.read
+            MultiJson.load(request.body.read, :symbolize_keys => true)
           rescue MultiJson::ParseError => ex
             halt(
               400,

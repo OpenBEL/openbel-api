@@ -79,6 +79,24 @@ module OpenBEL
             response << ']'
           end
         end
+
+        def keys_to_s_deep(hash)
+          hash.inject({}) do |new_hash, (key, value)|
+            kstr           = key.to_s
+            if value.kind_of?(Hash)
+              new_hash[kstr] = keys_to_s_deep(value)
+            elsif value.kind_of?(Array)
+              new_hash[kstr] = value.map do |item|
+                item.kind_of?(Hash) ?
+                  keys_to_s_deep(item) :
+                  item
+              end
+            else
+              new_hash[kstr] = value
+            end
+            new_hash
+          end
+        end
       end
 
       options '/api/evidence' do
@@ -92,22 +110,32 @@ module OpenBEL
       end
 
       post '/api/evidence' do
-        _id = nil
-        read_evidence.each do |evidence|
-          @annotation_transform.transform_evidence!(evidence, base_url)
+        # Validate JSON Evidence.
+        validate_media_type! "application/json"
+        evidence_obj = read_json
 
-          # XXX Not sure we need to group values together. Instead we split
-          # multi-valued items into individual objects.
-          # Wait and see what breaks.
-          #@annotation_grouping_transform.transform_evidence!(evidence)
-
-          facets = map_evidence_facets(evidence)
-          hash = evidence.to_h
-          hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
-          hash[:facets]        = facets
-          _id = @api.create_evidence(hash)
+        schema_validation = validate_schema(keys_to_s_deep(evidence_obj), :evidence)
+        unless schema_validation[0]
+          halt(
+            400,
+            { 'Content-Type' => 'application/json' },
+            render_json({ :status => 400, :msg => schema_validation[1].join("\n") })
+          )
         end
 
+        evidence = ::BEL::Model::Evidence.create(evidence_obj[:evidence])
+
+        # Standardize annotations.
+        @annotation_transform.transform_evidence!(evidence, base_url)
+
+        # Build facets.
+        facets = map_evidence_facets(evidence)
+        hash = evidence.to_h
+        hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
+        hash[:facets]        = facets
+        _id = @api.create_evidence(hash)
+
+        # Return Location information (201).
         status 201
         headers "Location" => "#{base_url}/api/evidence/#{_id}"
       end
@@ -261,7 +289,7 @@ module OpenBEL
         halt 404 unless ev
 
         evidence_obj = read_json
-        schema_validation = validate_schema(evidence_obj, :evidence)
+        schema_validation = validate_schema(keys_to_s_deep(evidence_obj), :evidence)
         unless schema_validation[0]
           halt(
             400,
@@ -271,7 +299,7 @@ module OpenBEL
         end
 
         # transformation
-        evidence          = evidence_obj['evidence']
+        evidence          = evidence_obj[:evidence]
         evidence_model    = ::BEL::Model::Evidence.create(evidence)
         @annotation_transform.transform_evidence!(evidence_model, base_url)
         facets = map_evidence_facets(evidence_model)
