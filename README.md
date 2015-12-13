@@ -18,12 +18,6 @@ The OpenBEL API provides RESTful API access to your BEL content. It is part of [
    - Retrieve equivalent namespace values from the individual.
    - Retrieve orthologous namespace values from the individual.
 
-## API Documentation
-
-The REST API is defined by a [RAML][RAML] specification. The specification is published [here][OpenBEL API RAML specification].
-
-API documentation with *Try it* functionality is available [here][OpenBEL API documentation].
-
 ## Vocabulary
 
 *Annotation*
@@ -50,7 +44,41 @@ A biological interaction curated from scientific literature. It is comprised of 
 
 *Evidence Store*: A database used for *Evidence*. It facilitates storage, filtering, and transformation of *Evidence*.
 
+## Technical requirements
+
+The OpenBEL API is built to run with [JRuby][JRuby] and [Java 8][Java 8].
+
+*System Requirements*
+
+- [Java 8][Java 8]
+- [JRuby][JRuby], 1.7.x or 9.x series (9.0.x.0 is recommended)
+  - Follow [JRuby Getting Started][JRuby Getting Started] for installation instructions.
+- [SQLite][SQLite]
+  - Following [SQLite download] page for download and installation instructions. 
+
 ## Getting up and Running
+
+### Installation
+
+The OpenBEL API is packaged and installed as a Ruby gem. A Ruby gem is packed library or application that runs on the Ruby virtual machine. In this case OpenBEL API runs only on [JRuby][JRuby].
+
+Installation uses the [RubyGems][RubyGems] site to download and install the gem from. To install the OpenBEL API gem run the `gem install` command available within your [JRuby][JRuby] installation.
+
+```bash
+gem install openbel-api
+```
+
+All of the application dependencies needed by `openbel-api` will be installed during this process.
+
+### Configuration
+
+### Running the OpenBEL API
+
+## API Documentation
+
+The REST API is defined by a [RAML][RAML] specification. The specification is published [here][OpenBEL API RAML specification].
+
+API documentation with *Try it* functionality is available [here][OpenBEL API documentation].
 
 -----
 
@@ -62,4 +90,10 @@ Built with collaboration and :heart: by the [OpenBEL][OpenBEL] community.
 [OpenBEL API RAML specification]: http://next.belframework.org/openbel-api.raml
 [OpenBEL API documentation]: http://next.belframework.org/
 [Evidence API documentation]: http://next.belframework.org/#evidence
+[JRuby]: http://jruby.org
+[JRuby Getting Started]: http://jruby.org/getting-started
+[Java 8]: http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html
+[SQLite]: https://www.sqlite.org
+[SQLite download]: https://www.sqlite.org/download.html
+[RubyGems]: https://rubygems.org
 
