@@ -112,13 +112,6 @@ module OpenBEL
           ::BEL.evidence(request.body, request.media_type, :symbolize_keys => true)
         end
 
-        def resolve_supported_content_type(request)
-          accept_match = request.accept.find { |accept_entry|
-            SPOKEN_CONTENT_TYPES.include?(accept_entry.to_s)
-          }
-          accept_match || DEFAULT_CONTENT_TYPE
-        end
-
         def read_json
           request.body.rewind
           begin
@@ -163,7 +156,7 @@ module OpenBEL
             else
               media_type
             end
-          response.headers['Content-Type'] = ctype
+          response.headers['Content-Type'] = ctype.to_s
           MultiJson.dump obj
         end
 
@@ -172,7 +165,7 @@ module OpenBEL
         end
 
         def render_resource(obj, type, options = {})
-          media_type = resolve_supported_content_type(request)
+          media_type = 'application/hal+json'
           resource_context = {
             :base_url => base_url,
             :url      => url
@@ -197,7 +190,7 @@ module OpenBEL
         end
 
         def render_collection(collection, type, options = {})
-          media_type = resolve_supported_content_type(request)
+          media_type = 'application/hal+json'
           resource_context = {
             :base_url => base_url,
             :url      => url
@@ -226,7 +219,7 @@ module OpenBEL
         end
 
         def render(obj, type, options = {})
-          media_type = resolve_supported_content_type(request)
+          media_type = 'application/hal+json'
           resource_context = {
             :base_url => base_url,
             :url      => url
