@@ -35,8 +35,10 @@ module OpenBEL
       OpenBEL.const_set :Settings, config
     end
 
-    enable :sessions
-    set :session_secret, OpenBEL::Settings['session_secret']
+    if OpenBEL::Settings[:auth][:enabled]
+      enable :sessions
+      set :session_secret, OpenBEL::Settings['session_secret']
+    end
 
     use Rack::Deflater
     use Rack::Cors do
@@ -70,7 +72,9 @@ module OpenBEL
     use OpenBEL::Routes::Authenticate
 
     # routes requiring authentication
-    use OpenBEL::JWTMiddleware::Authentication
+    if OpenBEL::Settings[:auth][:enabled]
+      use OpenBEL::JWTMiddleware::Authentication
+    end
     use OpenBEL::Routes::Datasets
     use OpenBEL::Routes::Evidence
   end
