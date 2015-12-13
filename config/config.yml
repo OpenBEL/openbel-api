@@ -22,6 +22,7 @@ session_secret: 'changeme'
 
 # User authentication using Auth0.
 auth:
+  enabled: false
   redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
   default_connection: 'linkedin'
   domain:   'openbel.auth0.com'
