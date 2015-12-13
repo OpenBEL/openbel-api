@@ -64,27 +64,27 @@ module OpenBEL
           if annotation
             if value.respond_to?(:each)
               {
-                :name  => annotation.prefLabel,
+                :name  => annotation.prefLabel.to_s,
                 :value => value.map { |v|
                   mapped = annotation.find(v).first
-                  mapped ? mapped.prefLabel : v
+                  mapped ? mapped.prefLabel.to_s : v
                 }
               }
             else
               annotation_value = annotation.find(value).first
               if annotation_value
                 {
-                  :name  => annotation.prefLabel,
-                  :value => annotation_value.prefLabel,
+                  :name  => annotation.prefLabel.to_s,
+                  :value => annotation_value.prefLabel.to_s,
                   :uri   => ANNOTATION_VALUE_URI % [
                     base_url,
-                    annotation.prefix,
-                    annotation_value.identifier
+                    annotation.prefix.to_s,
+                    annotation_value.identifier.to_s
                   ]
                 }
               else
                 {
-                  :name  => annotation.prefLabel,
+                  :name  => annotation.prefLabel.to_s,
                   :value => value
                 }
               end
