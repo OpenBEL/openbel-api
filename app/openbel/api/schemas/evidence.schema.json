@@ -33,17 +33,17 @@
               "description": "The citation identifier (PubMed ID, ISBN, DOI, URL) of the reference."
             },
             "name": {
-              "type":        "string",
+              "type":        ["string", "null"],
               "title":       "Citation Name",
               "description": "The citation name of the reference."
             },
             "date": {
-              "type":        "string",
+              "type":        ["string", "null"],
               "title":       "Citation Date",
               "description": "The citation date of the reference."
             },
             "authors": {
-              "type":        "array",
+              "type":        ["array", "null"],
               "title":       "Citation Authors",
               "description": "The citation authors of the reference.",
               "items": {
@@ -52,7 +52,7 @@
               }
             },
             "comment": {
-              "type":        "string",
+              "type":        ["string", "null"],
               "title":       "Citation Comment",
               "description": "The citation comment of the reference."
             }
