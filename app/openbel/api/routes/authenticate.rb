@@ -94,6 +94,13 @@ module OpenBEL
         end
         redirect to(auth_url)
       end
+
+      get '/api/authentication-enabled' do
+        enabled = OpenBEL::Settings[:auth][:enabled]
+        hdrs = {'Content-Type' => 'application/json'}
+        msg = {enabled: enabled}
+        return [200, hdrs, [msg.to_json]]
+      end
     end
   end
 end
