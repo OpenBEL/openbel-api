@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name                  = 'openbel-api'
-  spec.version               = '0.2.0'
+  spec.version               = '0.4.0'
   spec.summary               = %q{The OpenBEL API provided over RESTful HTTP endpoints.}
   spec.description           = %q{The OpenBEL API provides a RESTful API over HTTP to manage BEL knowledge.}
   spec.license               = 'Apache-2.0'
@@ -31,13 +31,13 @@ Gem::Specification.new do |spec|
   # Dependencies
 
   ## bel.rb
-  spec.add_runtime_dependency 'bel',               '~> 0.4.0.beta'
+  spec.add_runtime_dependency 'bel',               '0.4.0'
 
   ## bel.rb plugin - annotation/namespace search
-  spec.add_runtime_dependency 'bel-search-sqlite', '~> 0.4.0.beta'
+  spec.add_runtime_dependency 'bel-search-sqlite', '0.4.0'
 
   ## bel.rb plugin - RDF repository using Apache Jena
-  spec.add_runtime_dependency 'bel-rdf-jena',      '~> 0.4.0.beta'
+  spec.add_runtime_dependency 'bel-rdf-jena',      '0.4.0'
 
   ## RDF - RDF abstraction
   spec.add_runtime_dependency 'rdf',               '1.99.0'
