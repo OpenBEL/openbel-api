@@ -67,17 +67,18 @@ The OpenBEL API is packaged and installed as a Ruby gem. A Ruby gem is packed li
 *JRuby Configuration*
 
 - Unpack JRuby archive.
-- Set the JRUBY_HOME environment variable to the unpacked JRuby archive directory.
+- Export the JRUBY_HOME environment variable to the unpacked JRuby archive directory.
 - Add "$JRUBY_HOME/bin" to your PATH environment variable.
-- Set the GEM_HOME and GEM_PATH environment variable to any directory accessible to the current user. This is where JRuby gems will be installed. The OpenBEL API and dependencies will be installed into this directory for isolation from other Ruby applications running on the system.
+- Export the GEM_HOME and GEM_PATH environment variable to any directory accessible to the current user. This is where JRuby gems will be installed. The OpenBEL API and dependencies will be installed into this directory for isolation from other Ruby applications running on the system.
 
 *Example JRuby Configuration*
 
 Assume that we have unpacked JRuby to `/opt/jruby`. We should then:
 
-- Set `JRUBY_HOME` to `/opt/jruby`.
+- Export `JRUBY_HOME` to `/opt/jruby`.
 - Add `$JRUBY_HOME/bin` to our `PATH` environment variable.
-- Set both `GEM_HOME` and `GEM_PATH` to `/opt/jruby/gems`.
+- Export both `GEM_HOME` and `GEM_PATH` to `/opt/jruby/gems`.
+- Add `$GEM_HOME/bin` to our `PATH` environment variable.
 - Proceed with *Installation of OpenBEL API*.
 
 *Installation of OpenBEL API*
@@ -89,6 +90,9 @@ gem install openbel-api
 ```
 
 All of the application dependencies needed by `openbel-api` will be installed during this process.
+
+**Tip**
+If the `openbel-api` executable is not available make sure `$GEM_HOME/bin` is included on your `PATH`. See *JRuby Configuration* above.
 
 ### Configuration
 
