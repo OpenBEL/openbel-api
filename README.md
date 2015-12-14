@@ -53,8 +53,10 @@ The OpenBEL API is built to run with [JRuby][JRuby] and [Java 8][Java 8].
 - [Java 8][Java 8]
 - [JRuby][JRuby], 1.7.x or 9.x series (9.0.x.0 is recommended)
   - Follow [JRuby Getting Started][JRuby Getting Started] for installation instructions.
-- [SQLite][SQLite]
-  - Following [SQLite download] page for download and installation instructions. 
+- [MongoDB][MongoDB], version 3.0 or greater
+  - Follow [MongoDB download][MongoDB download] page for download and installation instructions.
+- [SQLite][SQLite], version 3.8.0 or greater
+  - Follow [SQLite download][SQLite download] page for download and installation instructions. 
 
 ## Getting up and Running
 
@@ -93,6 +95,8 @@ Built with collaboration and :heart: by the [OpenBEL][OpenBEL] community.
 [JRuby]: http://jruby.org
 [JRuby Getting Started]: http://jruby.org/getting-started
 [Java 8]: http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html
+[MongoDB]: https://www.mongodb.org/
+[MongoDB download]: https://www.mongodb.org/downloads#production
 [SQLite]: https://www.sqlite.org
 [SQLite download]: https://www.sqlite.org/download.html
 [RubyGems]: https://rubygems.org
