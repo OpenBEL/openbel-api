@@ -74,7 +74,100 @@ All of the application dependencies needed by `openbel-api` will be installed du
 
 ### Configuration
 
+The OpenBEL API requires a configuration file to set up a few things. You can create an initial configuration file using the `openbel-config` command.
+
+```bash
+openbel-config --file openbel-api-config.yml
+```
+
+*Configure the Evidence Store*
+The Evidence Store is backed by a [MongoDB][MongoDB] database. You will need to provide the *host*, *port*, and *database* option.
+
+The default configuration is:
+
+```yaml
+evidence_store:
+  mongo:
+    host:     'localhost'
+    port:     27017
+    database: 'openbel'
+```
+
+*Resource RDF data*
+Annotations, namespaces, and dataset storage are represented as [RDF][RDF] data. The data is stored in an on-disk database using Apache Jena (Java library included with `openbel-api`).
+
+You will need to configure the location of the Apache Jena TDB database that holds this data.
+
+The default configuration is:
+
+```yaml
+resource_rdf:
+  jena:
+    tdb_directory: 'biological-concepts-rdf'
+```
+
+*Resource search*
+Annotations and namespaces can be full-text searched using a [SQLite][SQLite] database. The data is stored in an on-disk file.
+
+The default configuration is:
+
+```yaml
+resource_search:
+  sqlite:
+    database_file: 'biological-concepts-rdf.db'
+```
+
+*Token-based authentication*
+The OpenBEL API is equipped to require authentication for specific API paths (e.g. Evidence, Datasets). The implementation uses [Auth0][Auth0] as a single sign-on service.
+
+By default authentication is disabled.
+
+The default configuration is:
+
+```yaml
+# Set a secret used during session creation....
+session_secret: 'changeme'
+
+# User authentication using Auth0.
+auth:
+  enabled: false
+  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
+  default_connection: 'linkedin'
+  domain:   'openbel.auth0.com'
+  id:       'K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
+  # secret:   'auth0 client secret here'
+```
+
 ### Running the OpenBEL API
+
+The OpenBEL API can be run using the `openbel-api` command and passing a configuration file.
+
+The configuration file can be provided in two ways:
+- Command option (`--file`)
+- Environment variable named `OPENBEL_API_CONFIG_FILE`
+
+*Command option*
+```
+openbel-api --file "/path/to/openbel-api-config.yml"
+```
+
+*Environment variable*
+```
+export OPENBEL_API_CONFIG_FILE="/path/to/openbel-api-config.yml"
+
+openbel-api
+```
+
+To configure server options such as port, background execution, or number of threads you will need to provide an extra set of arguments to the `openbel-api` command. These options help configure the [Puma HTTP server][Puma HTTP server] that is included with OpenBEL API.
+
+*Example running on port 9000 with up to 16 threads.*
+
+```bash
+openbel-api --file openbel-api-config.yml -- --port 9000 --threads 1:16
+```
+
+**Note**
+Run `openbel-api --help` for more information and options.
 
 ## API Documentation
 
@@ -100,4 +193,7 @@ Built with collaboration and :heart: by the [OpenBEL][OpenBEL] community.
 [SQLite]: https://www.sqlite.org
 [SQLite download]: https://www.sqlite.org/download.html
 [RubyGems]: https://rubygems.org
+[RDF]: http://www.w3.org/RDF/
+[Auth0]: https://auth0.com/
+[Puma HTTP server]: http://puma.io/
 
