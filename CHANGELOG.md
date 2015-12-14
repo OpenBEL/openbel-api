@@ -1,39 +1,22 @@
 # Change Log
-All notable changes to bel.rb will be documented in this file. The curated log begins at changes to version 0.3.2.
+All notable changes to openbel-api will be documented in this file. The curated log begins at changes to version 0.4.0.
 
-This project adheres to [Semantic Versioning](http://semver.org/).
+This project adheres to [Semantic Versioning][Semantic Versioning].
 
-## [0.3.3][0.3.3] - 2015-08-07
-### Fixed
-- ResourceIndex integration test causes intermittent timeouts ([Issue #61][61]).
-- Support running on JRuby, including libbel native library ([Issue #68][68]).
-
-## [0.3.2][0.3.2] - 2015-07-31
-### Fixed
-- Allow whitespace (space/tab) within blank lines ([Issue #13][13]).
-- Parse CRLF line terminators (i.e. Windows) when parsing BEL Script ([Issue #21][21]).
-- Allow whitespace before BEL Script records ([Issue #25][25]).
-- Support RDF conversion of unicode string literals ([Issue #40][40]).
-- Support translation from and to RDF ([Issue #51][51]).
-- (Regression) Unable to parse BEL files on Windows ([Issue #59][59]).
-- RDF "hasConcept" property triple is missing namespace ([Issue #64][64]).
-
-### Changed
-- Updates defined namespaces to reflect the [20150611][20150611] resources.
-- Full support for all BEL functions and relationships during RDF conversion.
-
+## [0.4.0][0.4.0] - 2015-12-14
 ### Added
-- Development gem dependencies (i.e. byebug, pry, pry-byebug) for debugging.
+- Evidence Store
+  - Storage of evidence including creation, retrieval, modification, and deletion actions.
+  - Flexible filtering of stored, evidence based on user's custom data requirements.
+  - Upload a document (e.g. BEL script, XBEL, or Evidence JSON), to the Evidence Store, as a dataset. These can later be retrieved or deleted from the Evidence Store.
+  - Flexible filtering of evidence contained within a dataset.
+  - Download a document (e.g. BEL script, XBEL, or Evidence JSON) from a dataset.
+- BEL Expressions
+  - Autocomplete a BEL term expression.
+  - Retrieve the structural components of a BEL expression.
+- Annotations and Namespaces
+  - Retrieve annotation (e.g. Disease Ontology) and namespace (e.g. GO) data.
+  - Retrieve equivalent namespace values from the individual.
+  - Retrieve orthologous namespace values from the individual.
 
-[0.3.2]:    https://github.com/OpenBEL/bel.rb/compare/0.3.1...0.3.2
-[0.3.3]:    https://github.com/OpenBEL/bel.rb/compare/0.3.2...0.3.3
-[13]:       https://github.com/OpenBEL/bel.rb/issues/13
-[21]:       https://github.com/OpenBEL/bel.rb/issues/21
-[25]:       https://github.com/OpenBEL/bel.rb/issues/25
-[40]:       https://github.com/OpenBEL/bel.rb/issues/40
-[51]:       https://github.com/OpenBEL/bel.rb/issues/51
-[59]:       https://github.com/OpenBEL/bel.rb/issues/59
-[61]:       https://github.com/OpenBEL/bel.rb/issues/61
-[64]:       https://github.com/OpenBEL/bel.rb/issues/64
-[68]:       https://github.com/OpenBEL/bel.rb/issues/68
-[20150611]: http://resource.belframework.org/belframework/20150611/
+[Semantic Versioning]: http://semver.org
