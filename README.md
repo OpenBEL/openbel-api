@@ -52,7 +52,7 @@ The OpenBEL API is built to run with [JRuby][JRuby] and [Java 8][Java 8].
 
 - [Java 8][Java 8]
 - [JRuby][JRuby], 1.7.x or 9.x series (9.0.x.0 is recommended)
-  - Follow [JRuby Getting Started][JRuby Getting Started] for installation instructions.
+  - See "Installation" below for configuring JRuby and isolating the openbel-api application.
 - [MongoDB][MongoDB], version 3.0 or greater
   - Follow [MongoDB download][MongoDB download] page for download and installation instructions.
 - [SQLite][SQLite], version 3.8.0 or greater
@@ -63,6 +63,24 @@ The OpenBEL API is built to run with [JRuby][JRuby] and [Java 8][Java 8].
 ### Installation
 
 The OpenBEL API is packaged and installed as a Ruby gem. A Ruby gem is packed library or application that runs on the Ruby virtual machine. In this case OpenBEL API runs only on [JRuby][JRuby].
+
+*JRuby Configuration*
+
+- Unpack JRuby archive.
+- Set the JRUBY_HOME environment variable to the unpacked JRuby archive directory.
+- Add "$JRUBY_HOME/bin" to your PATH environment variable.
+- Set the GEM_HOME and GEM_PATH environment variable to any directory accessible to the current user. This is where JRuby gems will be installed. The OpenBEL API and dependencies will be installed into this directory for isolation from other Ruby applications running on the system.
+
+*Example JRuby Configuration*
+
+Assume that we have unpacked JRuby to `/opt/jruby`. We should then:
+
+- Set `JRUBY_HOME` to `/opt/jruby`.
+- Add `$JRUBY_HOME/bin` to our `PATH` environment variable.
+- Set both `GEM_HOME` and `GEM_PATH` to `/opt/jruby/gems`.
+- Proceed with *Installation of OpenBEL API*.
+
+*Installation of OpenBEL API*
 
 Installation uses the [RubyGems][RubyGems] site to download and install the gem from. To install the OpenBEL API gem run the `gem install` command available within your [JRuby][JRuby] installation.
 
