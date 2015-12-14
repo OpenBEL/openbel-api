@@ -106,6 +106,9 @@ resource_rdf:
     tdb_directory: 'biological-concepts-rdf'
 ```
 
+**Tip**
+You can obtain the latest Resource RDF database (20150611) from the [OpenBEL build server][Resource RDF 20150611].
+
 *Resource search*
 Annotations and namespaces can be full-text searched using a [SQLite][SQLite] database. The data is stored in an on-disk file.
 
@@ -116,6 +119,10 @@ resource_search:
   sqlite:
     database_file: 'biological-concepts-rdf.db'
 ```
+
+
+**Tip**
+You can obtain the latest Resource Search database (20150611) from the [OpenBEL build server][Resource Search 20150611].
 
 *Token-based authentication*
 The OpenBEL API is equipped to require authentication for specific API paths (e.g. Evidence, Datasets). The implementation uses [Auth0][Auth0] as a single sign-on service.
@@ -196,4 +203,6 @@ Built with collaboration and :heart: by the [OpenBEL][OpenBEL] community.
 [RDF]: http://www.w3.org/RDF/
 [Auth0]: https://auth0.com/
 [Puma HTTP server]: http://puma.io/
+[Resource RDF 20150611]: http://build.openbel.org/browse/OR-RRD2/latestSuccessful/artifact
+[Resource Search 20150611]: http://build.openbel.org/browse/OR-RSD2/latestSuccessful/artifact
 
