@@ -198,9 +198,36 @@ openbel-api --file openbel-api-config.yml -- --port 9000 --threads 1:16
 **Note**
 Run `openbel-api --help` for more information and options.
 
+### Running behind Nginx (or another reverse proxy)
+
+The OpenBEL API beings at the `/api` path. If you plan OpenBEL API behing a reverse proxy then you will want to setup a route to `/api`.
+
+For example the following [Nginx][Nginx] configuration will proxy from `http://$hostname/api` to `http://localhost:9000/api`.
+
+```
+server {
+    listen        0.0.0.0:80;
+    server_name   $hostname;
+    access_log    /var/log/nginx/access.log main;
+    error_log     /var/log/nginx/error.log info;
+
+    location /api {
+        proxy_pass               http://localhost:9000;
+        proxy_set_header         Host $host;
+        proxy_set_header         X-Real-IP $remote_addr;
+        proxy_set_header         X-Real-Base-URL $scheme://$host;
+        proxy_set_header         X-Real-URL $scheme://$host$request_uri;
+        proxy_buffer_size        128k;
+        proxy_buffers            4 256k;
+        proxy_busy_buffers_size  256k;
+        client_max_body_size     50M;
+    }
+}
+```
+
 ## API Documentation
 
-The REST API is defined by a [RAML][RAML] specification. The specification is published [here][OpenBEL API RAML specification].
+The REST API is defined by a [RAML][RAML] specification. Th                is published [here][OpenBEL API RAML specification].
 
 API documentation with *Try it* functionality is available [here][OpenBEL API documentation].
 
@@ -227,4 +254,4 @@ Built with collaboration and :heart: by the [OpenBEL][OpenBEL] community.
 [Puma HTTP server]: http://puma.io/
 [Resource RDF 20150611]: http://build.openbel.org/browse/OR-RRD2/latestSuccessful/artifact
 [Resource Search 20150611]: http://build.openbel.org/browse/OR-RSD2/latestSuccessful/artifact
-
+[Nginx]: http://nginx.org/
