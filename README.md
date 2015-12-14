@@ -64,7 +64,7 @@ The OpenBEL API is built to run with [JRuby][JRuby] and [Java 8][Java 8].
 
 The OpenBEL API is packaged and installed as a Ruby gem. A Ruby gem is packed library or application that runs on the Ruby virtual machine. In this case OpenBEL API runs only on [JRuby][JRuby].
 
-*JRuby Configuration*
+#### JRuby Configuration
 
 - Unpack JRuby archive.
 - Export the JRUBY_HOME environment variable to the unpacked JRuby archive directory.
@@ -81,7 +81,7 @@ Assume that we have unpacked JRuby to `/opt/jruby`. We should then:
 - Add `$GEM_HOME/bin` to our `PATH` environment variable.
 - Proceed with *Installation of OpenBEL API*.
 
-*Installation of OpenBEL API*
+#### Installation of OpenBEL API
 
 Installation uses the [RubyGems][RubyGems] site to download and install the gem from. To install the OpenBEL API gem run the `gem install` command available within your [JRuby][JRuby] installation.
 
