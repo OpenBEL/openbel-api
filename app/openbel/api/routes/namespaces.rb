@@ -118,8 +118,9 @@ module OpenBEL
         halt 404 unless match.length > 1
 
         match_results = @search.search(wildcard_match(match), :namespace_concept, nil, nil,
-          :start => start,
-          :size => size
+          :start                      => start,
+          :size                       => size,
+          :exclude_identifier_schemes => false
         ).map { |result|
           value = OpenBEL::Resource::Namespaces::NamespaceValueSearchResult.new(@rr, result.uri)
           value.match_text = result.snippet
@@ -169,8 +170,9 @@ module OpenBEL
         halt 404 unless match.length > 1
 
         match_results = @search.search(wildcard_match(match), :namespace_concept, namespace.uri.to_s, nil,
-          :start => start,
-          :size => size
+          :start                      => start,
+          :size                       => size,
+          :exclude_identifier_schemes => false
         ).map { |result|
           value = OpenBEL::Resource::Namespaces::NamespaceValueSearchResult.new(@rr, result.uri)
           value.match_text = result.snippet

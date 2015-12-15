@@ -84,8 +84,9 @@ module OpenBEL
         halt 404 unless match.length > 1
 
         match_results  = @search.search(wildcard_match(match), :annotation_concept, nil, nil,
-          :start => start,
-          :size => size
+          :start                      => start,
+          :size                       => size,
+          :exclude_identifier_schemes => false
         ).map { |result|
           value = OpenBEL::Resource::Annotations::AnnotationValueSearchResult.new(@rr, result.uri)
           value.match_text = result.snippet
@@ -131,8 +132,9 @@ module OpenBEL
         halt 404 unless match.length > 1
 
         match_results = @search.search(wildcard_match(match), :annotation_concept, annotation.uri.to_s, nil,
-          :start => start,
-          :size => size
+          :start                      => start,
+          :size                       => size,
+          :exclude_identifier_schemes => false
         ).map { |result|
           value = OpenBEL::Resource::Annotations::AnnotationValueSearchResult.new(@rr, result.uri)
           value.match_text = result.snippet
