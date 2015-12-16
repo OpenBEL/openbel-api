@@ -22,7 +22,10 @@ module OpenBEL
         if block_given?
           yield failure[1]
         else
-          fail "Configuration error: #{failure[1]}"
+          fail(<<-ERR.gsub(/^\s+/, ''))
+            Configuration error within #{File.expand_path(config_file)}:
+            #{failure[1]}
+          ERR
         end
       end
 
@@ -32,7 +35,92 @@ module OpenBEL
     private
 
     def self.validate(cfg)
+      # validate evidence_store block
+      evidence_store = cfg[:evidence_store]
+      unless evidence_store
+        return [
+          true, <<-ERR
+            An "evidence_store" is not configured.
+            #{boilerplate_help}
+          ERR
+        ]
+      end
+      evidence_failure = self.validate_evidence_store(cfg[:evidence_store])
+      return evidence_failure if evidence_failure
+
       nil
+    end
+
+    def self.validate_evidence_store(evidence_store)
+      mongo = evidence_store[:mongo]
+      unless mongo
+        return [
+          true, <<-ERR
+            The "evidence_store.mongo" configuration block is not configured.
+            #{boilerplate_help}
+          ERR
+        ]
+      end
+
+      required = [:host, :port, :database]
+
+      required.each do |setting|
+        unless mongo[setting]
+          return [
+            true, <<-ERR
+              The "evidence_store.mongo.#{setting}" setting is not configured.
+              #{boilerplate_help}
+            ERR
+          ]
+        end
+      end
+
+      # Test connection to the MongoDB instance.
+      require 'mongo'
+      begin
+        mongo_client = Mongo::MongoClient.new(mongo[:host], mongo[:port])
+        mongo_client.connect
+      rescue Mongo::ConnectionFailure => e
+        return [
+          true, <<-ERR
+            Unable to connect to MongoDB at host "#{mongo[:host]}" and port "#{mongo[:port]}".
+            #{boilerplate_help}
+
+            MongoDB error:
+            #{e}
+          ERR
+        ]
+      end
+
+      # Attempt access of database.
+      db = mongo_client.db(mongo[:database])
+
+      # Authenticate user if provided.
+      if mongo[:username] && mongo[:password]
+        auth_db = mongo[:authentication_database] || mongo[:database]
+        begin
+          db.authenticate(mongo[:username], mongo[:password], nil, auth_db)
+        rescue Mongo::AuthenticationError => e
+          return [
+            true, <<-ERR
+              Unable to authenticate "#{mongo[:username]}" against the "#{auth_db}" authentication database.
+              #{boilerplate_help}
+
+              MongoDB error:
+              #{e}
+            ERR
+          ]
+        end
+      end
+
+      nil
+    end
+
+    def self.boilerplate_help
+      <<-ERR.gsub(/^\s+/, '')
+        Run the "openbel-config" command to see an example configuration.
+        See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store for details on how to configure an Evidence Store.
+      ERR
     end
 
     class SilentProperties < Properties

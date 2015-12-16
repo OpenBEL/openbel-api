@@ -28,11 +28,8 @@ module OpenBEL
         super
 
         # Evidence API using Mongo.
-        @api = OpenBEL::Evidence::Evidence.new(
-          :host     => OpenBEL::Settings[:evidence_store][:mongo][:host],
-          :port     => OpenBEL::Settings[:evidence_store][:mongo][:port],
-          :database => OpenBEL::Settings[:evidence_store][:mongo][:database]
-        )
+        mongo = OpenBEL::Settings[:evidence_store][:mongo]
+        @api  = OpenBEL::Evidence::Evidence.new(mongo)
 
         # RdfRepository using Jena.
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(

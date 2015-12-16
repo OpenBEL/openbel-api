@@ -15,6 +15,15 @@ module OpenBEL
         port             = options.delete(:port)
         db               = options.delete(:database)
         @db              = MongoClient.new(host, port).db(db)
+
+        # Authenticate user if provided.
+        username = options.delete(:username)
+        password = options.delete(:password)
+        if username && password
+          auth_db = options.delete(:authentication_database) || db
+          db.authenticate(username, password, nil, auth_db)
+        end
+
         @collection      = @db[:evidence]
         @collection.ensure_index(
           {:"bel_statement" => Mongo::ASCENDING },
