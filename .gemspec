@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
                                  'Nick Bargnesi',
                                  'William Hayes'
                                ]
-  spec.date                  = %q{2015-12-02}
+  spec.date                  = %q{2015-12-17}
   spec.email                 = %q{abargnesi@selventa.com}
   spec.files                 = [
                                  Dir.glob('app/**/*.{json,rb,ru}'),
