@@ -52,6 +52,13 @@ OpenBEL API Options
 	opts.on('-f', '--file FILE', 'The file where the configuration will be written.') do |file|
 		options[:file] = file
 	end
+
+  opts.on('-v', '--version', 'The version of the OpenBEL API.') do
+    require 'openbel/api/version'
+
+    $stdout.puts OpenBEL::Version
+    exit
+  end
 end
 
 parser.default_argv = OPENBEL_ARGV
@@ -59,6 +66,15 @@ parser.parse!
 
 if options[:file]
 	config_file = options[:file]
+end
+
+unless config_file
+  $stderr.puts <<-ERR.gsub(/^\s+/, '')
+    The OpenBEL API configuration file was not set.
+    Run the "openbel-api --help" command to review the options for setting the configuration file.
+    See https://github.com/OpenBEL/openbel-api/wiki/OpenBEL-API-Config for further details on the OpenBEL API configuration file.
+  ERR
+  exit 1
 end
 
 begin

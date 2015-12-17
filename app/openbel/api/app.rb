@@ -10,6 +10,7 @@ require 'sinatra/base'
 require "sinatra/reloader"
 require "sinatra/cookies"
 
+require_relative 'version'
 require_relative 'config'
 require_relative 'routes/base'
 require_relative 'routes/root'
@@ -20,6 +21,7 @@ require_relative 'routes/expressions'
 require_relative 'routes/functions'
 require_relative 'routes/namespaces'
 require_relative 'routes/authenticate'
+require_relative 'routes/version'
 require_relative 'middleware/auth'
 
 module OpenBEL
@@ -65,6 +67,7 @@ module OpenBEL
 
     # routes not requiring authentication
     use OpenBEL::Routes::Root
+    use OpenBEL::Routes::Version
     use OpenBEL::Routes::Annotations
     use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Functions

@@ -15,6 +15,13 @@ OptionParser.new do |opts|
   opts.on('-f', '--file FILE', 'The file where the configuration will be written.') do |file|
     options[:file] = file
   end
+
+  opts.on('-v', '--version', 'The version of the OpenBEL API.') do
+    require 'openbel/api/version'
+
+    $stdout.puts OpenBEL::Version
+    exit
+  end
 end.parse!
 
 # resolve path for config.yml template

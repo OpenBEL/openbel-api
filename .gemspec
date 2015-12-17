@@ -1,6 +1,8 @@
 Gem::Specification.new do |spec|
   spec.name                  = 'openbel-api'
-  spec.version               = '0.4.0'
+  spec.version               = File.read(
+                                 File.join(File.expand_path(File.dirname(__FILE__)), 'VERSION')
+                               )
   spec.summary               = %q{The OpenBEL API provided over RESTful HTTP endpoints.}
   spec.description           = %q{The OpenBEL API provides a RESTful API over HTTP to manage BEL knowledge.}
   spec.license               = 'Apache-2.0'
@@ -16,6 +18,7 @@ Gem::Specification.new do |spec|
                                  Dir.glob('config/**/*.{rb,yml}'),
                                  Dir.glob('lib/**/*.rb'),
                                  __FILE__,
+                                 'VERSION',
                                  'CHANGELOG.md',
                                  'LICENSE',
                                  'INSTALL.md',

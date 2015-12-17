@@ -49,12 +49,6 @@ module OpenBEL
 
       disable :protection
 
-      before do
-        unless request.preferred_type(SPOKEN_CONTENT_TYPES)
-          halt 406
-        end
-      end
-
       helpers do
 
         def as_bool(value)
