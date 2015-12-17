@@ -116,7 +116,7 @@ evidence_store:
     database: 'openbel'
 ```
 
-There are also settings for user authentication. See [MongoDB User Authentication[MongoDB User Authentication] on the wiki.
+There are also settings for user authentication. See [MongoDB User Authentication][MongoDB User Authentication] on the wiki.
 
 *Resource RDF data*
 Annotations, namespaces, and dataset storage are represented as [RDF][RDF] data. The data is stored in an on-disk database using Apache Jena (Java library included with `openbel-api`).
