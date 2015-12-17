@@ -37,10 +37,10 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'bel',               '0.4.1'
 
   ## bel.rb plugin - annotation/namespace search
-  spec.add_runtime_dependency 'bel-search-sqlite', '0.4.1'
+  spec.add_runtime_dependency 'bel-search-sqlite', '0.4.2'
 
   ## bel.rb plugin - RDF repository using Apache Jena
-  spec.add_runtime_dependency 'bel-rdf-jena',      '0.4.0'
+  spec.add_runtime_dependency 'bel-rdf-jena',      '0.4.1'
 
   ## RDF - RDF abstraction
   spec.add_runtime_dependency 'rdf',               '1.99.0'
