@@ -10,7 +10,7 @@ module OpenBEL
                               '..', '..','..',
                               'VERSION'
                             )
-                          ).freeze
+                          ).chomp.freeze
 
     # The frozen {Fixnum version numbers}. See {Object#freeze}.
     MAJOR, MINOR, PATCH = STRING.split('.').map(&:freeze)
