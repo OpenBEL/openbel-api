@@ -11,17 +11,17 @@ module OpenBEL
       include Mongo
 
       def initialize(options = {})
-        host             = options.delete(:host)
-        port             = options.delete(:port)
-        db               = options.delete(:database)
+        host             = options[:host]
+        port             = options[:port]
+        db               = options[:database]
         @db              = MongoClient.new(host, port).db(db)
 
         # Authenticate user if provided.
-        username = options.delete(:username)
-        password = options.delete(:password)
+        username = options[:username]
+        password = options[:password]
         if username && password
-          auth_db = options.delete(:authentication_database) || db
-          db.authenticate(username, password, nil, auth_db)
+          auth_db = options[:authentication_database] || db
+          @db.authenticate(username, password, nil, auth_db)
         end
 
         @collection      = @db[:evidence]
