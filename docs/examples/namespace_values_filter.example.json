@@ -1,0 +1,94 @@
+{
+  "namespace_value_collection": [
+    {
+      "namespace_value": {
+        "type": "ProteinConcept",
+        "identifier": "88383",
+        "name": "F8",
+        "title": "coagulation factor VIII",
+        "species": "10090",
+        "match_text": "...or tor ctor actor <<factor>> I II III <<VIII>> FVIII <<Factor>> -8 f-8 Cf-8 f8..."
+      },
+      "_links": {
+        "self": {
+          "type": "namespace_value",
+          "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383"
+        },
+        "collection": {
+          "type": "namespace",
+          "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes"
+        },
+        "item": [
+          {
+            "type": "namespace_value_collection",
+            "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383/equivalents"
+          },
+          {
+            "type": "namespace_value_collection",
+            "href": "http://next.belframework.org/api/namespaces/mgi-mouse-genes/88383/orthologs"
+          }
+        ]
+      }
+    },
+    {
+      "namespace_value": {
+        "type": "ProteinConcept",
+        "identifier": "727845",
+        "name": "F8",
+        "title": "coagulation factor VIII, procoagulant component",
+        "species": "10116",
+        "match_text": "coagulation <<factor>> <<VIII>>"
+      },
+      "_links": {
+        "self": {
+          "type": "namespace_value",
+          "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845"
+        },
+        "collection": {
+          "type": "namespace",
+          "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes"
+        },
+        "item": [
+          {
+            "type": "namespace_value_collection",
+            "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845/equivalents"
+          },
+          {
+            "type": "namespace_value_collection",
+            "href": "http://next.belframework.org/api/namespaces/rgd-rat-genes/727845/orthologs"
+          }
+        ]
+      }
+    },
+    {
+      "namespace_value": {
+        "type": "ProteinConcept",
+        "identifier": "3546",
+        "name": "F8",
+        "title": "coagulation factor VIII, procoagulant component",
+        "species": "9606",
+        "match_text": "coagulation <<factor>> VIII, procoagulant component...C 8C F8C I II III <<VIII>> FVIII"
+      },
+      "_links": {
+        "self": {
+          "type": "namespace_value",
+          "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546"
+        },
+        "collection": {
+          "type": "namespace",
+          "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes"
+        },
+        "item": [
+          {
+            "type": "namespace_value_collection",
+            "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/equivalents"
+          },
+          {
+            "type": "namespace_value_collection",
+            "href": "http://next.belframework.org/api/namespaces/hgnc-human-genes/3546/orthologs"
+          }
+        ]
+      }
+    }
+  ]
+}

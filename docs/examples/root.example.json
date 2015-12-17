@@ -1,0 +1,26 @@
+{
+    "_links": {
+        "item": [
+            {
+                "type": "annotation_collection",
+                "href": "http://next.belframework.org/api/annotations"
+            },
+            {
+                "type": "evidence_collection",
+                "href": "http://next.belframework.org/api/evidence"
+            },
+            {
+                "type": "expression_collection",
+                "href": "http://next.belframework.org/api/expressions"
+            },
+            {
+                "type": "function_collection",
+                "href": "http://next.belframework.org/api/functions"
+            },
+            {
+                "type": "namespace_collection",
+                "href": "http://next.belframework.org/api/namespaces"
+            }
+        ]
+    }
+}

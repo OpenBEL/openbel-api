@@ -1,0 +1,94 @@
+#!/usr/bin/env jruby
+
+require 'optparse'
+require 'puma/cli'
+
+ORIGINAL_ARGV = ARGV.dup
+OPENBEL_ARGV  = ARGV.slice_before('--').to_a[0]
+PUMA_ARGV     = ARGV.slice_after('--').to_a[1] || []
+
+ROOT          = File.expand_path('..', File.dirname(__FILE__))
+config_file   = ENV['OPENBEL_API_CONFIG_FILE']
+
+exec('puma', '--help') if ['-h', '--help'].any? {|opt| PUMA_ARGV.include?(opt) }
+
+# Parse OpenBEL API arguments.
+options = {}
+parser  = OptionParser.new do |opts|
+	opts.banner = %Q{
+Runs the OpenBEL API application using the Puma HTTP server (Ruby).
+
+Usage:
+
+    openbel-api -f [FILE] -- [Puma options]
+
+Detail:
+
+The command-line is divided into OpenBEL API and Puma options. These options
+are divided using the "--" delimiter.
+
+OpenBEL API
+===========
+
+The first set of options pertain to the OpenBEL API.
+
+A configuration file must be provided for the OpenBEL API application.
+This can be provided by setting the OPENBEL_API_CONFIG_FILE environment
+variable or by passing the "-f" option.
+
+Puma HTTP Server
+================
+
+The second set of options pertain to the Puma HTTP server. This includes
+settings like bind interface, port, PID file, etc. To see all options for
+Puma run:
+
+  openbel-api -- --help
+
+OpenBEL API Options
+===================
+	}
+
+	opts.on('-f', '--file FILE', 'The file where the configuration will be written.') do |file|
+		options[:file] = file
+	end
+
+  opts.on('-v', '--version', 'The version of the OpenBEL API.') do
+    require 'openbel/api/version'
+
+    $stdout.puts OpenBEL::Version
+    exit
+  end
+end
+
+parser.default_argv = OPENBEL_ARGV
+parser.parse!
+
+if options[:file]
+	config_file = options[:file]
+end
+
+unless config_file
+  $stderr.puts <<-ERR.gsub(/^\s+/, '')
+    The OpenBEL API configuration file was not set.
+    Run the "openbel-api --help" command to review the options for setting the configuration file.
+    See https://github.com/OpenBEL/openbel-api/wiki/OpenBEL-API-Config for further details on the OpenBEL API configuration file.
+  ERR
+  exit 1
+end
+
+begin
+	File.open(config_file, 'r')
+rescue SystemCallError => err
+	if err.class.name.start_with?('Errno::')
+		$stderr.puts %Q{The configuration file "#{File.expand_path(config_file)}" cannot be read.\nError: #{err.message}}
+		exit 1
+	else
+		raise err
+	end
+end
+
+ENV['OPENBEL_API_CONFIG_FILE'] = config_file
+
+# Run Puma.
+exec('puma', *PUMA_ARGV, "#{File.join(ROOT, 'app', 'openbel', 'api', 'config.ru')}")

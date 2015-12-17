@@ -1,0 +1,58 @@
+{
+  "annotation_value_collection": [
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "D012509",
+        "name": "Sarcoma",
+        "match_text": "...Sarcomas, Spindle Cell Soft Tissue &lt;&lt;Sarcoma&gt;&gt; Soft Tissue Sarcomas Spindle Cell &lt;&lt;Sarcoma&gt;&gt; Spindle Cell Sarcomas",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases/values/D012509"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases"
+          }
+        }
+      }
+    },
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "1115",
+        "name": "sarcoma",
+        "match_text": "&lt;&lt;sarcoma&gt;&gt;",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology/values/1115"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/disease-ontology"
+          }
+        }
+      }
+    },
+    {
+      "annotation_value": {
+        "type": "BiologicalProcessConcept",
+        "identifier": "D008223",
+        "name": "Lymphoma",
+        "match_text": "Germinoblastic &lt;&lt;Sarcoma&gt;&gt; Germinoblastic Sarcomas Germinoblastoma Germinoblastomas Lymphoma, Malignant Lymphomas Lymphomas, Malignant Malignant Lymphoma Malignant Lymphomas...",
+        "_links": {
+          "self": {
+            "type": "annotation_value",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases/values/D008223"
+          },
+          "collection": {
+            "type": "annotation",
+            "href": "http://next.belframework.org/api/annotations/mesh-diseases"
+          }
+        }
+      }
+    }
+  ]
+}

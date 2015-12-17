@@ -9,6 +9,6 @@
     "url" : "https://github.com/OpenBEL/openbel-server"
   },
   "dependencies": {
-    "raml2html": "~1.1.0"
+    "raml2html": "*"
   }
 }

@@ -1,0 +1,62 @@
+# Configuration template for OpenBEL API
+
+# Storage of evidence through the Mongo database.
+evidence_store:
+  mongo:
+
+    # The MongoDB host to connect to. For example if MongoDB's net.bindIp
+    # setting is configured as 127.0.0.1 we should be able to connect using
+    # localhost.
+    host:                     'localhost'
+
+    # The default MongoDB port. Configured under MongoDB's `net.port` setting.
+    port:                     27017
+
+    # The name of your database. We think "openbel-evidence" should be fine,
+    # but it's up to you.
+    database:                 'openbel-evidence'
+
+    # MongoDB authentication and role assignment. These settings are necessary
+    # if you would like to have a MongoDB user authenticated and authorized to
+    # use the configure database.
+
+    #First, you will need to create a MongoDB user with the "readWrite" and
+    #"dbAdmin" roles for the "database" value set above. This is to allow read,
+    #write, and index creation in the OpenBEL API application.
+    #See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store#adding-the-openbel-user
+    #username:                'openbel-user'
+
+    #Second, you will need to set a password for the MongoDB user set above.
+    #MongoDB passwords are hashed using SCRAM-SHA-1 on the client and server.
+    #This is the default hashing strategy on MongoDB 3.0 and after.
+    #See https://docs.mongodb.org/v3.0/core/security-scram-sha-1/
+    #password:                'changeme'
+
+    # If your MongoDB users are managed in a separate Mongo database then you
+    # will need to set it here. This can be useful if you are managing users in
+    # a separate Mongo database from the application's database.
+    # Optional; defaults to the "database" set above.
+    #authentication_database: 'openbel'
+
+# RDF dataset for BEL datasets, annotations, and namespaces using Apache Jena.
+resource_rdf:
+  jena:
+    tdb_directory: 'biological-concepts-rdf'
+
+# Full-text search over annotation and namespace values using SQLite.
+resource_search:
+  sqlite:
+    database_file: 'biological-concepts-rdf.db'
+
+# Set a secret used during session creation....
+session_secret: 'changeme'
+
+# User authentication using Auth0.
+auth:
+  enabled: false
+  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
+  default_connection: 'linkedin'
+  domain:   'openbel.auth0.com'
+  id:       'K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
+  # secret:   'auth0 client secret here'
+

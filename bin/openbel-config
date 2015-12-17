@@ -1,0 +1,53 @@
+#!/usr/bin/env jruby
+require 'optparse'
+
+# options; any default go here
+options = {}
+
+# parse options from cli
+OptionParser.new do |opts|
+  opts.banner = %Q{
+    Writes an OpenBEL configuration file (YAML format).
+
+    Usage: openbel-config -f [FILE]
+  }.gsub(/^ +/, '')
+
+  opts.on('-f', '--file FILE', 'The file where the configuration will be written.') do |file|
+    options[:file] = file
+  end
+
+  opts.on('-v', '--version', 'The version of the OpenBEL API.') do
+    require 'openbel/api/version'
+
+    $stdout.puts OpenBEL::Version
+    exit
+  end
+end.parse!
+
+# resolve path for config.yml template
+CONFIG = File.join(File.expand_path('..', File.dirname(__FILE__)), 'config', 'config.yml')
+
+# sanity check
+unless File.readable?(CONFIG)
+  $stderr.puts %Q{The configuration template cannot be read. Path was "#{CONFIG}".}
+  exit 1
+end
+
+# write out the config
+if options[:file]
+  begin
+    File.open(options[:file], 'w') do |f|
+      f.write(File.read(CONFIG))
+    end
+  rescue SystemCallError => err
+    if err.class.name.start_with?('Errno::')
+      $stderr.puts %Q{The file option "#{options[:file]}" cannot be written.\nError: #{err.message}}
+      exit 1
+    else
+      raise err
+    end
+  end
+  $stdout.puts "Wrote configuration template to path #{options[:file]}."
+else
+  $stdout.puts(File.read(CONFIG))
+end
