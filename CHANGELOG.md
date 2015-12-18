@@ -3,6 +3,12 @@ All notable changes to openbel-api will be documented in this file. The curated 
 
 This project adheres to [Semantic Versioning][Semantic Versioning].
 
+## [0.5.1][0.5.1] - 2015-12-18
+### Fixed
+- Authentication error for MongoDB user when faceting on `GET /api/evidence` ([Issue #93][93]).
+
+-----
+
 ## [0.5.0][0.5.0] - 2015-12-17
 ### Added
 - Report API version from executables (`openbel-api`, `openbel-config`) and REST API (`GET /api/version`) ([Issue #91][91]).
@@ -34,8 +40,10 @@ This project adheres to [Semantic Versioning][Semantic Versioning].
   - Retrieve equivalent namespace values from the individual.
   - Retrieve orthologous namespace values from the individual.
 
+[0.5.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.5.0...0.5.1
 [0.5.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.4.0...0.5.0
 [Semantic Versioning]:         http://semver.org
 [MongoDB User Authentication]: https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store#mongodb-user-authentication
 [91]:                          https://github.com/OpenBEL/openbel-api/issues/91
 [92]:                          https://github.com/OpenBEL/openbel-api/issues/92
+[93]:                          https://github.com/OpenBEL/openbel-api/issues/93
