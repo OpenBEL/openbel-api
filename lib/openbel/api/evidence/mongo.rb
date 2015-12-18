@@ -33,11 +33,7 @@ module OpenBEL
           {:"$**" => Mongo::TEXT },
           :background => true
         )
-        @evidence_facets = EvidenceFacets.new(
-          :host     => host,
-          :port     => port,
-          :database => db
-        )
+        @evidence_facets = EvidenceFacets.new(options)
       end
 
       def create_evidence(evidence)
