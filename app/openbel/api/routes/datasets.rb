@@ -16,13 +16,14 @@ module OpenBEL
       include OpenBEL::Helpers
 
       DEFAULT_TYPE = 'application/hal+json'
-
       ACCEPTED_TYPES = {
         :bel  => 'application/bel',
         :xml  => 'application/xml',
         :xbel => 'application/xml',
         :json => 'application/json',
       }
+
+      EVIDENCE_BATCH = 500
 
       def initialize(app)
         super
@@ -233,33 +234,47 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         # Create dataset in RDF.
         @rr.insert_statements(void_dataset)
 
-        dataset = retrieve_dataset(void_dataset_uri)
+        dataset    = retrieve_dataset(void_dataset_uri)
+        dataset_id = dataset[:identifier]
 
-        # Add slices of read evidence objects; save to Mongo and RDF.
-        BEL.evidence(io, type).each.lazy.each_slice(500) do |slice|
-          slice.map! do |ev|
-            # Standardize annotations from experiment_context.
-            @annotation_transform.transform_evidence!(ev, base_url)
+        # Add batches of read evidence objects; save to Mongo and RDF.
+        # TODO Add JRuby note regarding Enumerator threading.
+        evidence_batch = []
+        BEL.evidence(io, type).each do |ev|
+          # Standardize annotations from experiment_context.
+          @annotation_transform.transform_evidence!(ev, base_url)
 
-            # Add filterable metadata field for dataset identifier.
-            ev.metadata[:dataset] = dataset[:identifier]
+          ev.metadata[:dataset] = dataset_id
+          facets                = map_evidence_facets(ev)
+          ev.bel_statement      = ev.bel_statement.to_s
+          hash                  = ev.to_h
+          hash[:facets]         = facets
+          # Create dataset field for efficient removal.
+          hash[:_dataset]       = dataset_id
 
-            facets           = map_evidence_facets(ev)
-            ev.bel_statement = ev.bel_statement.to_s
-            hash             = ev.to_h
-            hash[:facets]    = facets
+          evidence_batch << hash
 
-            # Create dataset field for efficient removal.
-            hash[:_dataset]  = dataset[:identifier]
-            hash
+          if evidence_batch.size == EVIDENCE_BATCH
+            _ids = @api.create_evidence(evidence_batch)
+
+            dataset_parts = _ids.map { |object_id|
+              RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, object_id.to_s)
+            }
+            @rr.insert_statements(dataset_parts)
+
+            evidence_batch.clear
           end
+        end
 
-          _ids = @api.create_evidence(slice)
+        unless evidence_batch.empty?
+          _ids = @api.create_evidence(evidence_batch)
 
           dataset_parts = _ids.map { |object_id|
             RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, object_id.to_s)
           }
           @rr.insert_statements(dataset_parts)
+
+          evidence_batch.clear
         end
 
         status 201
