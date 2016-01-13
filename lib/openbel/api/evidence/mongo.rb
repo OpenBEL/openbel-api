@@ -11,10 +11,10 @@ module OpenBEL
       include Mongo
 
       def initialize(options = {})
-        host             = options[:host]
-        port             = options[:port]
-        db               = options[:database]
-        @db              = MongoClient.new(host, port).db(db)
+        host = options[:host]
+        port = options[:port]
+        db   = options[:database]
+        @db  = MongoClient.new(host, port, :op_timeout => 120).db(db)
 
         # Authenticate user if provided.
         username = options[:username]
@@ -25,15 +25,10 @@ module OpenBEL
         end
 
         @collection      = @db[:evidence]
-        @collection.ensure_index(
-          {:"bel_statement" => Mongo::ASCENDING },
-          :background => true
-        )
-        @collection.ensure_index(
-          {:"$**" => Mongo::TEXT },
-          :background => true
-        )
         @evidence_facets = EvidenceFacets.new(options)
+
+        # ensure all indexes are created and maintained
+        ensure_all_indexes
       end
 
       def create_evidence(evidence)
@@ -55,7 +50,7 @@ module OpenBEL
         @collection.find_one(to_id(value))
       end
 
-      def find_evidence(filters = [], offset = 0, length = 0, facet = false)
+      def find_evidence(filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
         query_hash = to_query(filters)
         query_opts = query_options(
           query_hash,
@@ -70,14 +65,14 @@ module OpenBEL
           :cursor => @collection.find(query_hash, query_opts)
         }
         if facet
-          facets_doc = @evidence_facets.find_facets(query_hash, filters)
-          results[:facets] = facets_doc["facets"]
+          facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+          results[:facets] = facets_cursor.to_a
         end
 
         results
       end
 
-      def find_dataset_evidence(dataset, filters = [], offset = 0, length = 0, facet = false)
+      def find_dataset_evidence(dataset, filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
         query_hash = to_query(filters)
         query_hash[:$and] ||= []
         query_hash[:$and].unshift({
@@ -97,7 +92,7 @@ module OpenBEL
           :cursor => @collection.find(query_hash, query_opts)
         }
         if facet
-          facets_doc = @evidence_facets.find_facets(query_hash, filters)
+          facets_doc = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
           results[:facets] = facets_doc["facets"]
         end
 
@@ -123,16 +118,16 @@ module OpenBEL
         nil
       end
 
-      def delete_dataset(identifier)
-        @collection.ensure_index(
-          {:"_dataset" => Mongo::ASCENDING },
-          :background => true
-        )
+      def create_dataset
+        @evidence_facets.delete_all_facets
+      end
 
+      def delete_dataset(identifier)
         @collection.remove(
           { :"_dataset" => identifier },
           :j => true
         )
+        @evidence_facets.delete_all_facets
       end
 
       def delete_evidence(value)
@@ -170,6 +165,33 @@ module OpenBEL
               :_id => _id
           },
           :j => true
+        )
+      end
+
+      def ensure_all_indexes
+        @collection.ensure_index(
+          {:bel_statement => Mongo::ASCENDING },
+          :background => true
+        )
+        @collection.ensure_index(
+          {:"$**" => Mongo::TEXT },
+          :background => true
+        )
+        @collection.ensure_index(
+          {:_dataset => Mongo::ASCENDING },
+          :background => true
+        )
+        @collection.ensure_index([
+            [:"experiment_context.name",   Mongo::ASCENDING],
+            [:"experiment_context.value",  Mongo::ASCENDING]
+          ],
+          :background => true
+        )
+        @collection.ensure_index([
+            [:"metadata.name",   Mongo::ASCENDING],
+            [:"metadata.value",  Mongo::ASCENDING]
+          ],
+          :background => true
         )
       end
 
@@ -238,13 +260,12 @@ module OpenBEL
       end
 
       def remove_evidence_facets(_id)
-        evidence = @collection.find_one(_id, {
-          :fields => [ 'facets' ]
+        doc = @collection.find_one(_id, {
+          :fields => {:_id => 0, :facets => 1}
         })
 
-        if evidence && evidence.has_key?('facets')
-          @evidence_facets.remove_facets_by_filters(evidence['facets'])
-          @evidence_facets.remove_facets_by_filters 
+        if doc && doc.has_key?('facets')
+          @evidence_facets.delete_facets(doc['facets'])
         end
       end
     end

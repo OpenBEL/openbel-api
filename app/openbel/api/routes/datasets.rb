@@ -277,6 +277,10 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
           evidence_batch.clear
         end
 
+        # Indicates creation of dataset to evidence facets.
+        # XXX Removes all facets due to load of many evidence.
+        @api.create_dataset
+
         status 201
         headers 'Location' => void_dataset_uri.to_s
       end
@@ -484,6 +488,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         halt 404 unless dataset_exists?(void_dataset_uri)
 
         dataset = retrieve_dataset(void_dataset_uri)
+        # XXX Removes all facets due to load of many evidence.
         @api.delete_dataset(dataset[:identifier])
         @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
 
@@ -500,6 +505,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         datasets.each do |void_dataset_uri|
           dataset = retrieve_dataset(void_dataset_uri)
+          # XXX Removes all facets due to load of many evidence.
           @api.delete_dataset(dataset[:identifier])
           @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
         end

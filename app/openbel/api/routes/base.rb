@@ -143,6 +143,10 @@ module OpenBEL
           end
         end
 
+        def write_filter(filter)
+          MultiJson.dump(filter)
+        end
+
         def render_json(obj, media_type = 'application/hal+json', profile = nil)
           ctype =
             if profile
