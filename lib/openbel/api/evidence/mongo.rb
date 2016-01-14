@@ -92,8 +92,8 @@ module OpenBEL
           :cursor => @collection.find(query_hash, query_opts)
         }
         if facet
-          facets_doc = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
-          results[:facets] = facets_doc["facets"]
+          facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+          results[:facets] = facets_cursor.to_a
         end
 
         results
