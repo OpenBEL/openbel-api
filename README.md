@@ -54,7 +54,7 @@ The OpenBEL API is built to run with [JRuby][JRuby] and [Java 8][Java 8].
 - [JRuby][JRuby], 9.x series (9.0.x.0 is recommended)
   - The 9.x series is required due to a Ruby language 2.0 requirement.
   - See "Installation" below for configuring JRuby and isolating the openbel-api application.
-- [MongoDB][MongoDB], version 3.0 or greater
+- [MongoDB][MongoDB], version 3.2 or greater
   - Follow [MongoDB download][MongoDB download] page for download and installation instructions.
 - [SQLite][SQLite], version 3.8.0 or greater
   - Follow [SQLite download][SQLite download] page for download and installation instructions. 
