@@ -177,6 +177,23 @@ module OpenBEL
 
           dataset
         end
+
+        def keys_to_symbols(obj)
+          case obj
+						when Array
+							obj.inject([]) {|new_array, v|
+                new_array << keys_to_symbols(v)
+                new_array
+              }
+						when Hash
+							obj.inject({}) {|new_hash, (k, v)|
+                new_hash[k.to_sym] = keys_to_symbols(v)
+                new_hash
+              }
+            else
+              obj
+          end
+        end
       end
 
       options '/api/datasets' do
@@ -404,9 +421,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
             json_evidence_enum = cursor.lazy.map { |evidence|
               evidence.delete('facets')
               evidence.delete('_id')
-              evidence.keys.each do |key|
-                evidence[key.to_sym] = evidence.delete(key)
-              end
+              evidence = keys_to_symbols(evidence)
               BEL::Model::Evidence.create(evidence)
             }
 

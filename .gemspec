@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   # Dependencies
 
   ## bel.rb
-  spec.add_runtime_dependency 'bel',               '0.4.1'
+  spec.add_runtime_dependency 'bel',               '0.4.3'
 
   ## bel.rb plugin - annotation/namespace search
   spec.add_runtime_dependency 'bel-search-sqlite', '0.4.2'
