@@ -6,6 +6,7 @@ require 'openbel/api/evidence/mongo'
 require 'openbel/api/evidence/facet_filter'
 require_relative '../resources/evidence_transform'
 require_relative '../helpers/pager'
+require_relative '../helpers/translators'
 
 module OpenBEL
   module Routes
@@ -36,9 +37,6 @@ module OpenBEL
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
           :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
         )
-
-        # Load RDF monkeypatches.
-        BEL::Translator.plugins[:rdf].create_translator
 
         # Annotations using RdfRepository
         annotations = BEL::Resource::Annotations.new(@rr)
@@ -365,18 +363,12 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         filtered_total    = @api.count_evidence(filters)
         page_results      = @api.find_dataset_evidence(dataset, filters, start, size, faceted, max_values_per_facet)
 
-        accept_type = request.accept.find { |accept_entry|
-          ACCEPTED_TYPES.values.include?(accept_entry.to_s)
-        }
-        accept_type ||= DEFAULT_TYPE
+        translator        = Translators.requested_translator(request, params)
+        translator_plugin = Translators.requested_translator_plugin(request, params)
 
-        if params[:format]
-          translator  = BEL::Translator.plugins[params[:format].to_sym]
-          halt 501 if !translator || translator.id == :rdf
-          accept_type = [translator.media_types].flatten.first
-        end
-
-        if accept_type == DEFAULT_TYPE
+        # Serialize to HAL if they [Accept]ed it, specified it as ?format, or
+        # no translator was found to match request.
+        if wants_default? || !translator
           evidence          = page_results[:cursor].map { |item|
             item.delete('facets')
             item
@@ -410,24 +402,21 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
           render_collection(evidence, :evidence, options)
         else
-          out_translator = BEL.translator(accept_type)
-          extension      = ACCEPTED_TYPES.key(accept_type.to_s)
+          extension = translator_plugin.file_extensions.first
 
-          response.headers['Content-Type'] = accept_type
+          response.headers['Content-Type'] = translator_plugin.media_types.first
           status 200
           attachment "#{dataset[:identifier].gsub(/[^\w]/, '_')}.#{extension}"
           stream :keep_open do |response|
             cursor             = page_results[:cursor]
-            json_evidence_enum = cursor.lazy.map { |evidence|
+            dataset_evidence = cursor.lazy.map { |evidence|
               evidence.delete('facets')
               evidence.delete('_id')
               evidence = keys_to_symbols(evidence)
               BEL::Model::Evidence.create(evidence)
             }
 
-            out_translator.write(json_evidence_enum) do |converted_evidence|
-              response << converted_evidence
-            end
+            translator.write(dataset_evidence, response)
           end
         end
       end

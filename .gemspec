@@ -34,7 +34,16 @@ Gem::Specification.new do |spec|
   # Dependencies
 
   ## bel.rb
-  spec.add_runtime_dependency 'bel',               '0.4.3'
+  spec.add_runtime_dependency 'bel',               '0.5.0'
+
+  ## bel.rb translator dependencies
+  spec.add_runtime_dependency 'json-ld',           '1.99.0'
+  spec.add_runtime_dependency 'rdf-json',          '1.99.0'
+  spec.add_runtime_dependency 'rdf-rdfa',          '1.99.0'
+  spec.add_runtime_dependency 'rdf-rdfxml',        '1.99.0'
+  spec.add_runtime_dependency 'rdf-trig',          '1.99.0.1'
+  spec.add_runtime_dependency 'rdf-trix',          '1.99.0'
+  spec.add_runtime_dependency 'rdf-turtle',        '1.99.0'
 
   ## bel.rb plugin - annotation/namespace search
   spec.add_runtime_dependency 'bel-search-sqlite', '0.4.2'
