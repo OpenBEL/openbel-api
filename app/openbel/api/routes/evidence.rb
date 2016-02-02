@@ -142,19 +142,7 @@ module OpenBEL
         size                 = (params[:size]  || 0).to_i
         group_as_array       = as_bool(params[:group_as_array])
 
-        # check filters
-        filters = []
-        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        filter_params.each do |filter|
-          filter = read_filter(filter)
-          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-
-          if filter['category'] == 'fts' && filter['name'] == 'search'
-            halt 400 unless filter['value'].to_s.length > 1
-          end
-
-          filters << filter
-        end
+        filters = validate_filters!
 
         cursor  = @api.find_evidence(filters, start, size, false)[:cursor]
         if group_as_array
@@ -170,19 +158,7 @@ module OpenBEL
         faceted              = as_bool(params[:faceted])
         max_values_per_facet = (params[:max_values_per_facet] || -1).to_i
 
-        # check filters
-        filters = []
-        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        filter_params.each do |filter|
-          filter = read_filter(filter)
-          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-
-          if filter['category'] == 'fts' && filter['name'] == 'search'
-            halt 400 unless filter['value'].to_s.length > 1
-          end
-
-          filters << filter
-        end
+        filters = validate_filters!
 
         collection_total  = @api.count_evidence()
         filtered_total    = @api.count_evidence(filters)
@@ -201,7 +177,7 @@ module OpenBEL
           :facets   => facets,
           :start    => start,
           :size     => size,
-          :filters  => filter_params,
+          :filters  => filters,
           :metadata => {
             :collection_paging => {
               :total                  => collection_total,
