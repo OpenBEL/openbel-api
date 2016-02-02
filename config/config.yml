@@ -51,12 +51,8 @@ resource_search:
 # Set a secret used during session creation....
 session_secret: 'changeme'
 
-# User authentication using Auth0.
+# User authentication via JWTs; see http://jwt.io/introduction/ for more
 auth:
   enabled: false
-  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
-  default_connection: 'linkedin'
-  domain:   'openbel.auth0.com'
-  id:       'K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
-  # secret:   'auth0 client secret here'
+  #secret:   'JWT secret here'
 
