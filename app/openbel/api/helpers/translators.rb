@@ -7,17 +7,19 @@ module OpenBEL
     # type.
     module Translators
 
-      # Patch {::Sinatra::Helpers::Stream} to respect the +puts+ and +write+
-      # method. This is necessary because the RDF.rb writers will call theseon
-      # the IO object (in this case {::Sinatra::Helpers::Stream}).
+      # Open {::Sinatra::Helpers::Stream} and add the +puts+, +write+, and
+      # +flush+ methods. This is necessary because the RDF.rb writers will call
+      # these methods on the IO (in this case {::Sinatra::Helpers::Stream}).
       class ::Sinatra::Helpers::Stream
 
+        # Write each string in +args*, new-line delimited, to the stream.
         def puts(*args)
           self << (
             args.map { |string| "#{string.encode(Encoding::UTF_8)}\n" }.join
           )
         end
 
+        # Write the string to the stream.
         def write(string)
           self << string.encode(Encoding::UTF_8)
         end
