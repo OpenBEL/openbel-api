@@ -5,9 +5,9 @@ require 'multi_json'
 require 'openbel/api/evidence/mongo'
 require 'openbel/api/evidence/facet_filter'
 require_relative '../resources/evidence_transform'
+require_relative '../helpers/evidence'
 require_relative '../helpers/filters'
 require_relative '../helpers/pager'
-require_relative '../helpers/translators'
 
 module OpenBEL
   module Routes
@@ -176,23 +176,6 @@ module OpenBEL
 
           dataset
         end
-
-        def keys_to_symbols(obj)
-          case obj
-						when Array
-							obj.inject([]) {|new_array, v|
-                new_array << keys_to_symbols(v)
-                new_array
-              }
-						when Hash
-							obj.inject({}) {|new_hash, (k, v)|
-                new_hash[k.to_sym] = keys_to_symbols(v)
-                new_hash
-              }
-            else
-              obj
-          end
-        end
       end
 
       options '/api/datasets' do
@@ -339,63 +322,12 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         collection_total  = @api.count_evidence
         filtered_total    = @api.count_evidence(filters)
         page_results      = @api.find_dataset_evidence(dataset, filters, start, size, faceted, max_values_per_facet)
+        name              = dataset[:identifier].gsub(/[^\w]/, '_')
 
-        translator        = Translators.requested_translator(request, params)
-        translator_plugin = Translators.requested_translator_plugin(request, params)
-
-        # Serialize to HAL if they [Accept]ed it, specified it as ?format, or
-        # no translator was found to match request.
-        if wants_default? || !translator
-          evidence          = page_results[:cursor].map { |item|
-            item.delete('facets')
-            item
-          }.to_a
-
-          facets            = page_results[:facets]
-
-          halt 404 if evidence.empty?
-
-          pager = Pager.new(start, size, filtered_total)
-
-          options = {
-            :facets   => facets,
-            :start    => start,
-            :size     => size,
-            :filters  => filters,
-            :metadata => {
-              :collection_paging => {
-                :total                  => collection_total,
-                :total_filtered         => pager.total_size,
-                :total_pages            => pager.total_pages,
-                :current_page           => pager.current_page,
-                :current_page_size      => evidence.size,
-              }
-            }
-          }
-
-          # pager links
-          options[:previous_page] = pager.previous_page
-          options[:next_page]     = pager.next_page
-
-          render_collection(evidence, :evidence, options)
-        else
-          extension = translator_plugin.file_extensions.first
-
-          response.headers['Content-Type'] = translator_plugin.media_types.first
-          status 200
-          attachment "#{dataset[:identifier].gsub(/[^\w]/, '_')}.#{extension}"
-          stream :keep_open do |response|
-            cursor             = page_results[:cursor]
-            dataset_evidence = cursor.lazy.map { |evidence|
-              evidence.delete('facets')
-              evidence.delete('_id')
-              evidence = keys_to_symbols(evidence)
-              BEL::Model::Evidence.create(evidence)
-            }
-
-            translator.write(dataset_evidence, response)
-          end
-        end
+        render_evidence_collection(
+          name, page_results, start, size, filters,
+          filtered_total, collection_total
+        )
       end
 
       get '/api/datasets' do

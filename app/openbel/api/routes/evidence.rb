@@ -3,6 +3,8 @@ require 'cgi'
 require 'openbel/api/evidence/mongo'
 require 'openbel/api/evidence/facet_filter'
 require_relative '../resources/evidence_transform'
+require_relative '../helpers/evidence'
+require_relative '../helpers/filters'
 require_relative '../helpers/pager'
 
 module OpenBEL
@@ -163,37 +165,11 @@ module OpenBEL
         collection_total  = @api.count_evidence()
         filtered_total    = @api.count_evidence(filters)
         page_results      = @api.find_evidence(filters, start, size, faceted, max_values_per_facet)
-        evidence          = page_results[:cursor].map { |item|
-          item.delete('facets')
-          item
-        }.to_a
-        facets            = page_results[:facets]
 
-        halt 404 if evidence.empty?
-
-        pager = Pager.new(start, size, filtered_total)
-
-        options = {
-          :facets   => facets,
-          :start    => start,
-          :size     => size,
-          :filters  => filters,
-          :metadata => {
-            :collection_paging => {
-              :total                  => collection_total,
-              :total_filtered         => pager.total_size,
-              :total_pages            => pager.total_pages,
-              :current_page           => pager.current_page,
-              :current_page_size      => evidence.size,
-            }
-          }
-        }
-
-        # pager links
-        options[:previous_page] = pager.previous_page
-        options[:next_page]     = pager.next_page
-
-        render_collection(evidence, :evidence, options)
+        render_evidence_collection(
+          'evidence-export', page_results, start, size, filters,
+          filtered_total, collection_total
+        )
       end
 
       get '/api/evidence/:id' do
