@@ -236,7 +236,7 @@ API documentation with *Try it* functionality is available [here][OpenBEL API do
 
 -----
 
-Built with collaboration and lots of :heart: by the [OpenBEL][OpenBEL] community.
+Built with collaboration and a lot of :heart: by the [OpenBEL][OpenBEL] community.
 
 [OpenBEL]: http://www.openbel.org
 [OpenBEL Platform]: https://github.com/OpenBEL/openbel-platform
