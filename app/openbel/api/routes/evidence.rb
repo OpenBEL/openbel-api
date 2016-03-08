@@ -168,7 +168,7 @@ module OpenBEL
 
         render_evidence_collection(
           'evidence-export', page_results, start, size, filters,
-          filtered_total, collection_total
+          filtered_total, collection_total, @api
         )
       end
 

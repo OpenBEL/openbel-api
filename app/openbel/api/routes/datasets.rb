@@ -30,6 +30,8 @@ module OpenBEL
       def initialize(app)
         super
 
+        BEL.translator(:rdf)
+
         # Evidence API using Mongo.
         mongo = OpenBEL::Settings[:evidence_store][:mongo]
         @api  = OpenBEL::Evidence::Evidence.new(mongo)

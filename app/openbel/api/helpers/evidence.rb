@@ -6,7 +6,7 @@ module OpenBEL
 
     def render_evidence_collection(
       name, page_results, start, size, filters,
-      filtered_total, collection_total
+      filtered_total, collection_total, evidence_api
     )
       # see if the user requested a BEL translator (Accept header or ?format)
       translator        = Translators.requested_translator(request, params)
@@ -50,6 +50,9 @@ module OpenBEL
       else
         extension = translator_plugin.file_extensions.first
 
+        annotation_references = evidence_api.find_all_annotation_references
+        namespace_references  = evidence_api.find_all_namespace_references
+
         response.headers['Content-Type'] = translator_plugin.media_types.first
         status 200
         attachment "#{name}.#{extension}"
@@ -58,11 +61,16 @@ module OpenBEL
           dataset_evidence = cursor.lazy.map { |evidence|
             evidence.delete('facets')
             evidence.delete('_id')
-            evidence = keys_to_symbols(evidence)
-            BEL::Model::Evidence.create(evidence)
+            evidence = BEL::Model::Evidence.create(keys_to_symbols(evidence))
+            evidence.bel_statement = BEL::Model::Evidence.parse_statement(evidence)
+            evidence
           }
 
-          translator.write(dataset_evidence, response)
+          translator.write(
+            dataset_evidence, response,
+            :annotation_reference_map => annotation_references,
+            :namespace_reference_map  => namespace_references
+          )
         end
       end
     end
