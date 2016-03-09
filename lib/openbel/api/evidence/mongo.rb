@@ -269,27 +269,23 @@ module OpenBEL
 
       def ensure_all_indexes
         @collection.ensure_index(
-          {:bel_statement => Mongo::ASCENDING },
+          { :bel_statement => Mongo::ASCENDING },
           :background => true
         )
         @collection.ensure_index(
-          {:"$**" => Mongo::TEXT },
+          { :"$**" => Mongo::TEXT },
           :background => true
         )
         @collection.ensure_index(
-          {:_dataset => Mongo::ASCENDING },
+          { :_dataset => Mongo::ASCENDING },
           :background => true
         )
-        @collection.ensure_index([
-            [:"experiment_context.name",   Mongo::ASCENDING],
-            [:"experiment_context.value",  Mongo::ASCENDING]
-          ],
+        @collection.ensure_index(
+          { :"experiment_context.name" => Mongo::ASCENDING },
           :background => true
         )
-        @collection.ensure_index([
-            [:"metadata.name",   Mongo::ASCENDING],
-            [:"metadata.value",  Mongo::ASCENDING]
-          ],
+        @collection.ensure_index(
+          { :"metadata.name" => Mongo::ASCENDING },
           :background => true
         )
       end
