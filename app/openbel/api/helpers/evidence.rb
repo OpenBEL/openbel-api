@@ -50,9 +50,6 @@ module OpenBEL
       else
         extension = translator_plugin.file_extensions.first
 
-        annotation_references = evidence_api.find_all_annotation_references
-        namespace_references  = evidence_api.find_all_namespace_references
-
         response.headers['Content-Type'] = translator_plugin.media_types.first
         status 200
         attachment "#{name}.#{extension}"
@@ -68,8 +65,8 @@ module OpenBEL
 
           translator.write(
             dataset_evidence, response,
-            :annotation_reference_map => annotation_references,
-            :namespace_reference_map  => namespace_references
+            :annotation_reference_map => evidence_api.find_all_annotation_references,
+            :namespace_reference_map  => evidence_api.find_all_namespace_references
           )
         end
       end
