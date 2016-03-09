@@ -48,7 +48,7 @@ module OpenBEL
         if params && params[:format]
           self.plugin_for(params[:format])
         else
-          request.accept.map { |accept_entry|
+          request.accept.flat_map { |accept_entry|
             self.plugin_for(accept_entry)
           }.compact.first
         end
@@ -58,7 +58,7 @@ module OpenBEL
         if params && params[:format]
           self.for(params[:format])
         else
-          request.accept.map { |accept_entry|
+          request.accept.flat_map { |accept_entry|
             self.for(accept_entry)
           }.compact.first
         end
