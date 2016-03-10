@@ -15,7 +15,12 @@ module OpenBEL
         host = options[:host]
         port = options[:port]
         db   = options[:database]
-        @db  = MongoClient.new(host, port, :op_timeout => 120).db(db)
+        @db  = MongoClient.new(
+          host,
+          port,
+          :op_timeout => 120,
+          :pool_size  => 30
+        ).db(db)
 
         # Authenticate user if provided.
         username = options[:username]
