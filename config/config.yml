@@ -53,6 +53,8 @@ session_secret: 'changeme'
 
 # User authentication via JWTs; see http://jwt.io/introduction/ for more
 auth:
+  # Controls whether the API requires authentication
   enabled: false
+  # Used by the auth middleware to decode and verify the JWT
   #secret:   'JWT secret here'
 
