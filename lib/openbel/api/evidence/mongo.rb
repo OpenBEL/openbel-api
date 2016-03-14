@@ -222,7 +222,7 @@ module OpenBEL
         nil
       end
 
-      def create_dataset
+      def delete_facets
         @evidence_facets.delete_all_facets
       end
 

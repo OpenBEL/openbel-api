@@ -25,7 +25,8 @@ module OpenBEL
         :json => 'application/json',
       }
 
-      EVIDENCE_BATCH = 500
+      MONGO_BATCH     = 500
+      FACET_THRESHOLD = 10000
 
       def initialize(app)
         super
@@ -240,7 +241,12 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         # Add batches of read evidence objects; save to Mongo and RDF.
         # TODO Add JRuby note regarding Enumerator threading.
+        evidence_count = 0
         evidence_batch = []
+
+        # Clear out all facets before loading dataset.
+        @api.delete_facets
+
         BEL.evidence(io, type).each do |ev|
           # Standardize annotations from experiment_context.
           @annotation_transform.transform_evidence!(ev, base_url)
@@ -255,7 +261,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
           evidence_batch << hash
 
-          if evidence_batch.size == EVIDENCE_BATCH
+          if evidence_batch.size == MONGO_BATCH
             _ids = @api.create_evidence(evidence_batch)
 
             dataset_parts = _ids.map { |object_id|
@@ -264,6 +270,13 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
             @rr.insert_statements(dataset_parts)
 
             evidence_batch.clear
+
+            # Clear out all facets after FACET_THRESHOLD nanopubs have been seen.
+            evidence_count += MONGO_BATCH
+            if evidence_count >= FACET_THRESHOLD
+              @api.delete_facets
+              evidence_count = 0
+            end
           end
         end
 
@@ -278,9 +291,8 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
           evidence_batch.clear
         end
 
-        # Indicates creation of dataset to evidence facets.
-        # XXX Removes all facets due to load of many evidence.
-        @api.create_dataset
+        # Clear out all facets after the dataset is completely loaded.
+        @api.delete_facets
 
         status 201
         headers 'Location' => void_dataset_uri.to_s
