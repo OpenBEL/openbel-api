@@ -71,7 +71,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'sinatra',           '1.4.6'
   spec.add_runtime_dependency 'sinatra-contrib',   '1.4.6'
   spec.add_runtime_dependency 'jwt',               '1.5.2'
-  spec.add_runtime_dependency 'rest-client',       '1.8.0'
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8
