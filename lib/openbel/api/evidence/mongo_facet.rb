@@ -18,7 +18,7 @@ module OpenBEL
         @db  = MongoClient.new(
           host,
           port,
-          :op_timeout => 120,
+          :op_timeout => nil,
           :pool_size  => 30
         ).db(db)
 
