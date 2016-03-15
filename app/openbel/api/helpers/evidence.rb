@@ -12,6 +12,8 @@ module OpenBEL
       translator        = Translators.requested_translator(request, params)
       translator_plugin = Translators.requested_translator_plugin(request, params)
 
+      halt 404 unless page_results[:cursor].has_next?
+
       # Serialize to HAL if they [Accept]ed it, specified it as ?format, or
       # no translator was found to match request.
       if wants_default? || !translator
@@ -21,8 +23,6 @@ module OpenBEL
         }.to_a
 
         facets            = page_results[:facets]
-
-        halt 404 if evidence.empty?
 
         pager = Pager.new(start, size, filtered_total)
 
