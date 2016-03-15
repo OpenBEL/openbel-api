@@ -1,3 +1,4 @@
+require          'bel/util'
 require_relative 'base'
 require_relative 'translators'
 
@@ -17,14 +18,12 @@ module OpenBEL
       # Serialize to HAL if they [Accept]ed it, specified it as ?format, or
       # no translator was found to match request.
       if wants_default? || !translator
-        evidence          = page_results[:cursor].map { |item|
-          item.delete('facets')
-          item
-        }.to_a
-
-        facets            = page_results[:facets]
-
-        pager = Pager.new(start, size, filtered_total)
+        facets   = page_results[:facets]
+        pager    = Pager.new(start, size, filtered_total)
+        evidence = page_results[:cursor].map { |item|
+                     item.delete('facets')
+                     item
+                   }.to_a
 
         options = {
           :facets   => facets,
@@ -58,7 +57,7 @@ module OpenBEL
           dataset_evidence = cursor.lazy.map { |evidence|
             evidence.delete('facets')
             evidence.delete('_id')
-            evidence = BEL::Model::Evidence.create(keys_to_symbols(evidence))
+            evidence = BEL::Model::Evidence.create(BEL.keys_to_symbols(evidence))
             evidence.bel_statement = BEL::Model::Evidence.parse_statement(evidence)
             evidence
           }
@@ -69,23 +68,6 @@ module OpenBEL
             :namespace_reference_map  => evidence_api.find_all_namespace_references
           )
         end
-      end
-    end
-
-    def keys_to_symbols(obj)
-      case obj
-        when Array
-          obj.inject([]) {|new_array, v|
-            new_array << keys_to_symbols(v)
-            new_array
-          }
-        when Hash
-          obj.inject({}) {|new_hash, (k, v)|
-            new_hash[k.to_sym] = keys_to_symbols(v)
-            new_hash
-          }
-        else
-          obj
       end
     end
   end

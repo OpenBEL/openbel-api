@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel/util'
 require 'rdf'
 require 'cgi'
 require 'multi_json'
@@ -254,7 +255,9 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
           ev.metadata[:dataset] = dataset_id
           facets                = map_evidence_facets(ev)
           ev.bel_statement      = ev.bel_statement.to_s
-          hash                  = ev.to_h
+          hash                  = BEL.object_convert(String, ev.to_h) { |str|
+                                    str.gsub(/\n/, "\\n").gsub(/\r/, "\\r")
+                                  }
           hash[:facets]         = facets
           # Create dataset field for efficient removal.
           hash[:_dataset]       = dataset_id
