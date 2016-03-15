@@ -8,6 +8,8 @@ This files contains documentation for upgrading to specific versions of OpenBEL 
 
 This release requires MongoDB >= 3.2. The latest MongoDB release is version [3.2.3](https://www.mongodb.com/mongodb-3.2) as of March 15th, 2016. OpenBEL API will fail to start (with message) if for MongoDB's version is less than 3.2.
 
+Note: MongoDB 3.2 uses the *wiredTiger* storage engine by default. If you previously used the *mmapv1* storage engine for OpenBEL API then do not set *storage.engine* in your MongoDB configuration. MongoDB will determine the *storage.engine* by the data in your *dbPath*. See this [MongoDB article](https://docs.mongodb.org/manual/core/wiredtiger/) for details.
+
 -----
 
 ### MongoDB Migration
