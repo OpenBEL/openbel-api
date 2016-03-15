@@ -340,7 +340,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         render_evidence_collection(
           name, page_results, start, size, filters,
-          filtered_total, collection_total
+          filtered_total, collection_total, @api
         )
       end
 
