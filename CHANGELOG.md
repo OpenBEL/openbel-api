@@ -3,9 +3,24 @@ All notable changes to openbel-api will be documented in this file. The curated 
 
 This project adheres to [Semantic Versioning][Semantic Versioning].
 
+## [0.6.0][0.6.0] - 2016-02-03
+### Added
+- Retrieve evidence in a format supported by BEL translator plugins ([Issue 44][44]).
+- Retrieve dataset evidence in a format supported by BEL translator plugins ([Issue 99][99]).
+### Fixed
+- Dataset evidence collection is missing annotation/namespace URIs ([Issue 95][95]).
+- Facets are not created for evidence uploaded through a dataset.
+### Changed
+- MongoDB version 3.2.0 is now required due to use of `$slice` operator in Aggregation queries.
+
+-----
+
 ## [0.5.1][0.5.1] - 2015-12-18
 ### Fixed
 - Authentication error for MongoDB user when faceting on `GET /api/evidence` ([Issue #93][93]).
+
+### Changed
+- MongoDB version 3.2.0 is now required due to use of `$slice` operator in Aggregation queries ([Issue ?][]).
 
 -----
 
@@ -44,6 +59,9 @@ This project adheres to [Semantic Versioning][Semantic Versioning].
 [0.5.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.4.0...0.5.0
 [Semantic Versioning]:         http://semver.org
 [MongoDB User Authentication]: https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store#mongodb-user-authentication
+[44]:                          https://github.com/OpenBEL/openbel-api/issues/44
 [91]:                          https://github.com/OpenBEL/openbel-api/issues/91
 [92]:                          https://github.com/OpenBEL/openbel-api/issues/92
 [93]:                          https://github.com/OpenBEL/openbel-api/issues/93
+[95]:                          https://github.com/OpenBEL/openbel-api/issues/95
+[99]:                          https://github.com/OpenBEL/openbel-api/issues/99

@@ -72,11 +72,11 @@ module OpenBEL
       end
 
       def make_filter(category, name, value)
-        MultiJson.dump({
+        {
           :category => category,
           :name     => name,
-          :value    => value,
-        })
+          :value    => value
+        }
       end
     end
   end

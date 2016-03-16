@@ -12,10 +12,15 @@ module OpenBEL
       include FacetFilter
 
       def initialize(options = {})
-        host             = options[:host]
-        port             = options[:port]
-        db               = options[:database]
-        @db              = MongoClient.new(host, port).db(db)
+        host = options[:host]
+        port = options[:port]
+        db   = options[:database]
+        @db  = MongoClient.new(
+          host,
+          port,
+          :op_timeout => nil,
+          :pool_size  => 30
+        ).db(db)
 
         # Authenticate user if provided.
         username = options[:username]
@@ -25,90 +30,192 @@ module OpenBEL
           @db.authenticate(username, password, nil, auth_db)
         end
 
-        @evidence        = @db[:evidence]
-        @evidence_facets = @db[:evidence_facets]
+        @evidence             = @db[:evidence]
+        @evidence_facet_cache = @db[:evidence_facet_cache]
+
+        # ensure all indexes are created and maintained
+        ensure_all_indexes
       end
 
-      def create_facets(_id, query_hash)
-        # create and save facets, identified by query
-        facets_doc = _id.merge({
-          :facets => evidence_facets(query_hash)
-        })
-        @evidence_facets.save(facets_doc, :j => true)
+      def find_facets(query, filters, facet_value_limit = -1)
+        sorted_filters = sort_filters(filters)
+        cache_collection = facet_cache_collection(sorted_filters)
 
-        # return facets document
-        facets_doc
-      end
+        if no_collection?(cache_collection)
+          cache_collection = "evidence_facet_cache_#{EvidenceFacets.generate_uuid}"
+          create_aggr      = create_aggregation(cache_collection, query)
+          @evidence.aggregate(create_aggr[:pipeline], create_aggr[:options])
+          @evidence_facet_cache.insert({
+            :filters          => sorted_filters,
+            :cache_collection => cache_collection
+          })
+        end
 
-      def find_facets(query_hash, filters)
-        _id = {:_id => to_facets_id(filters)}
-        @evidence_facets.find_one(_id) || create_facets(_id, query_hash)
-      end
+        # set up field projection based on value limit
+        field_projection = {
+          :_id      => 0,
+          :category => 1,
+          :name     => 1,
+          :values   => 1
+        }
+        if facet_value_limit > 0
+          field_projection[:values] = {:$slice => facet_value_limit}
+        end
 
-      def remove_facets_by_filters(filters = [], options = {})
-        remove_spec =
-          if filters.empty?
-            { :_id => "" }
-          else
-            {
-              :_id => {
-                :$in => filters.map { |filter|
-                  to_regexp(MultiJson.load(filter))
-                }
-              }
-            }
+        # cursor facets and apply "filter"
+        @db[cache_collection].find({}, :fields => field_projection).map { |facet_doc|
+          category, name     = facet_doc.values_at('category', 'name')
+          facet_doc['values'].each do |value|
+            value[:filter] = MultiJson.dump({
+              :category => category,
+              :name     => name,
+              :value    => value['value']
+            })
           end
-        @evidence_facets.remove(remove_spec, :j => true)
+          facet_doc
+        }
+      end
+
+      def delete_facets(facets)
+        # Add zero-filter to facets; clears the default search
+        facets = facets.to_a
+        facets.unshift([])
+
+        # Drop facet cache collections
+        @evidence_facet_cache.find(
+          {:filters => {:$in => facets}},
+          :fields => {:_id => 0, :cache_collection => 1}
+        ).each do |doc|
+          cache_collection = doc['cache_collection']
+          @db[cache_collection].drop()
+        end
+
+        # remove filter match entries in evidence_facet_cache
+        @evidence_facet_cache.remove({:filters => {:$in => facets}})
+      end
+
+      def delete_all_facets
+        @evidence_facet_cache.find(
+          {},
+          :fields => {:_id => 0, :cache_collection => 1}
+        ).each do |doc|
+          cache_collection = doc['cache_collection']
+          @db[cache_collection].drop()
+        end
+
+        # remove all entries in evidence_facet_cache
+        @evidence_facet_cache.remove({})
+      end
+
+      def ensure_all_indexes
+        @evidence_facet_cache.ensure_index([
+            [:"filters.category",   Mongo::ASCENDING],
+            [:"filters.name",       Mongo::ASCENDING]
+          ],
+          :background => true
+        )
       end
 
       private
 
-      def to_regexp(filter)
-        filter_s = "#{filter['category']}|#{filter['name']}|#{filter['value']}"
-        %r{.*#{Regexp.escape(filter_s)}.*}
+      def no_collection?(collection)
+        !collection || !@db.collection_names.include?(collection)
       end
 
+      def sort_filters(filters)
+        filters.sort { |f1, f2|
+          f1_array = f1.values_at(:category, :name, :value)
+          f2_array = f2.values_at(:cat, :name, :value)
 
-      def to_facets_id(filters)
-        filters.map { |filter|
-          "#{filter['category']}|#{filter['name']}|#{filter['value']}"
-        }.sort.join(',')
+          f1_array <=> f2_array
+        }
       end
 
-      def evidence_facets(query_hash = nil)
-        pipeline =
-          if query_hash.is_a?(Hash) && !query_hash.empty?
-            [{:'$match' => query_hash}] + AGGREGATION_PIPELINE
-          else
-            AGGREGATION_PIPELINE
-          end
-        @evidence.aggregate(pipeline)
+      def facet_cache_collection(filters)
+        result = @evidence_facet_cache.find_one(
+          {:filters => filters},
+          :fields => {:cache_collection => 1, :_id => 0}
+        )
+
+        result && result['cache_collection']
       end
 
-      AGGREGATION_PIPELINE = [
+      def create_aggregation(out_collection, match_query = {}, options = {})
+        pipeline = CREATE_AGGREGATION[:pipeline] + [{ :$out => out_collection }]
+        unless match_query.empty?
+          pipeline.unshift({ :$match => match_query })
+        end
+
         {
-          :'$project' => {
-            :_id => 0,
-            :facets => 1
-          }
-        },
-        {
-          :'$unwind' => '$facets'
-        },
-        {
-          :'$group' => {
-            :_id => '$facets',
-            :count => {
-              :'$sum' => 1
+          :pipeline => pipeline,
+          :options  => CREATE_AGGREGATION[:options].merge(options)
+        }
+      end
+
+      # Define the aggregation pipeline
+      CREATE_AGGREGATION = {
+        :pipeline => [
+          {
+            :$project => {
+              :_id => 0,
+              :facets => 1
+            }
+          },
+          {
+            :$unwind => '$facets'
+          },
+          {
+            :$group => {
+              :_id => '$facets',
+              :count => {
+                :$sum => 1
+              }
+            }
+          },
+          {
+            :$sort => {
+              :count => -1
+            }
+          },
+          {
+            :$group => {
+              :_id => {
+                :category => '$_id.category',
+                :name     => '$_id.name'
+              },
+              :values => {
+                :$push => {
+                  :value => '$_id.value',
+                  :count => '$count'
+                }
+              }
+            }
+          },
+          {
+            :$project => {
+              :category => '$_id.category',
+              :name     => '$_id.name',
+              :values   => { :$slice => ['$values', 1000] }
             }
           }
-        },
-        {
-          :'$sort' => {
-            :count => -1
-          }
+        ],
+        :options => {
+          :allowDiskUse => true
         }
-      ]
+      }
+
+      # Define UUID implementation based on Ruby.
+      if RUBY_ENGINE =~ /^jruby/i
+        java_import 'java.util.UUID'
+        define_singleton_method(:generate_uuid) do
+          Java::JavaUtil::UUID.random_uuid.to_s
+        end
+      else
+        require 'uuid'
+        define_singleton_method(:generate_uuid) do
+          UUID.generate
+        end
+      end
     end
   end
 end

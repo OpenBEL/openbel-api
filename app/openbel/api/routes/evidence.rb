@@ -3,6 +3,8 @@ require 'cgi'
 require 'openbel/api/evidence/mongo'
 require 'openbel/api/evidence/facet_filter'
 require_relative '../resources/evidence_transform'
+require_relative '../helpers/evidence'
+require_relative '../helpers/filters'
 require_relative '../helpers/pager'
 
 module OpenBEL
@@ -142,19 +144,7 @@ module OpenBEL
         size                 = (params[:size]  || 0).to_i
         group_as_array       = as_bool(params[:group_as_array])
 
-        # check filters
-        filters = []
-        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        filter_params.each do |filter|
-          filter = read_filter(filter)
-          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-
-          if filter['category'] == 'fts' && filter['name'] == 'search'
-            halt 400 unless filter['value'].to_s.length > 1
-          end
-
-          filters << filter
-        end
+        filters = validate_filters!
 
         cursor  = @api.find_evidence(filters, start, size, false)[:cursor]
         if group_as_array
@@ -168,93 +158,18 @@ module OpenBEL
         start                = (params[:start]  || 0).to_i
         size                 = (params[:size]   || 0).to_i
         faceted              = as_bool(params[:faceted])
-        max_values_per_facet = (params[:max_values_per_facet] || 0).to_i
+        max_values_per_facet = (params[:max_values_per_facet] || -1).to_i
 
-        # check filters
-        filters = []
-        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        filter_params.each do |filter|
-          filter = read_filter(filter)
-          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-
-          if filter['category'] == 'fts' && filter['name'] == 'search'
-            halt 400 unless filter['value'].to_s.length > 1
-          end
-
-          filters << filter
-        end
+        filters = validate_filters!
 
         collection_total  = @api.count_evidence()
         filtered_total    = @api.count_evidence(filters)
-        page_results      = @api.find_evidence(filters, start, size, faceted)
-        evidence          = page_results[:cursor].map { |item|
-          item.delete('facets')
-          item
-        }.to_a
-        facets            = page_results[:facets]
+        page_results      = @api.find_evidence(filters, start, size, faceted, max_values_per_facet)
 
-        halt 404 if evidence.empty?
-
-        pager = Pager.new(start, size, filtered_total)
-
-        options = {
-          :start    => start,
-          :size     => size,
-          :filters  => filter_params,
-          :metadata => {
-            :collection_paging => {
-              :total                  => collection_total,
-              :total_filtered         => pager.total_size,
-              :total_pages            => pager.total_pages,
-              :current_page           => pager.current_page,
-              :current_page_size      => evidence.size,
-            }
-          }
-        }
-
-        if facets
-          # group by category/name
-          hashed_values = Hash.new { |hash, key| hash[key] = [] }
-          facets.each { |facet|
-            filter         = read_filter(facet['_id'])
-            category, name = filter.values_at('category', 'name')
-            next if !category || !name
-
-            key = [category.to_sym, name.to_sym]
-            facet_obj = {
-              :value    => filter['value'],
-              :filter   => facet['_id'],
-              :count    => facet['count']
-            }
-            hashed_values[key] << facet_obj
-          }
-
-          if max_values_per_facet == 0
-            facet_hashes = hashed_values.map { |(category, name), value_objects|
-              {
-                :category => category,
-                :name     => name,
-                :values   => value_objects
-              }
-            }
-          else
-            facet_hashes = hashed_values.map { |(category, name), value_objects|
-              {
-                :category => category,
-                :name     => name,
-                :values   => value_objects.take(max_values_per_facet)
-              }
-            }
-          end
-
-          options[:facets] = facet_hashes
-        end
-
-        # pager links
-        options[:previous_page] = pager.previous_page
-        options[:next_page]     = pager.next_page
-
-        render_collection(evidence, :evidence, options)
+        render_evidence_collection(
+          'evidence-export', page_results, start, size, filters,
+          filtered_total, collection_total, @api
+        )
       end
 
       get '/api/evidence/:id' do

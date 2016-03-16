@@ -94,23 +94,11 @@ module OpenBEL
 
         def free_annotation(name, value)
           {
-            :name  => normalize_annotation_name(name),
+            :name  => name,
             :value => value
           }
         end
 
-        def normalize_annotation_name(name, options = {})
-          name_s = name.to_s
-
-          if name_s.empty?
-            nil
-          else
-            name_s.
-              split(%r{[^a-zA-Z0-9]+}).
-              map! { |word| word.capitalize }.
-              join
-          end
-        end
       end
 
       class AnnotationGroupingTransform

@@ -12,7 +12,7 @@ describe 'API Evidence' do
     expect(response.status).to eql(404)
   end
 
-  it 'returns an array when the resource collection is non-empty' do
+  it 'returns an object when the resource collection is non-empty' do
     # create
     response = api_conn.post('/api/evidence') { |req|
       req.headers['Content-Type'] = 'application/json; charset=utf-8'
@@ -22,8 +22,9 @@ describe 'API Evidence' do
     expect(response['Location']).not_to be_empty
     location = response['Location']
 
-    expect(evidence_api._resource['evidence']).to      be_an(Array)
-    expect(evidence_api._resource['evidence'].size).to eql(1)
+    expect(evidence_api._resource._response.body).to         be_a(Hash)
+    expect(evidence_api._resource._response.body).to         include('evidence_collection')
+    expect(evidence_api._resource['evidence_collection']).to be_an(Array)
 
     # clean up
     api_conn.delete location
@@ -65,8 +66,8 @@ describe 'API Evidence' do
       evidence_resource = api_conn.get { |req|
         req.url '/api/evidence'
       }.body
-      expect(evidence_resource['evidence']).not_to be_nil
-      expect(evidence_resource['evidence'].size).to eql(10)
+      expect(evidence_resource['evidence_collection']).not_to be_nil
+      expect(evidence_resource['evidence_collection'].size).to eql(10)
       expect(evidence_resource['metadata']).not_to be_nil
       expect(evidence_resource['metadata']['collection_paging']).not_to be_nil
       paging = evidence_resource['metadata']['collection_paging']
@@ -120,8 +121,8 @@ describe 'API Evidence' do
           }
         )
       }.body
-      expect(evidence_resource['evidence']).not_to be_nil
-      expect(evidence_resource['evidence'].size).to eql(5)
+      expect(evidence_resource['evidence_collection']).not_to be_nil
+      expect(evidence_resource['evidence_collection'].size).to eql(5)
       expect(evidence_resource['metadata']).not_to be_nil
       expect(evidence_resource['metadata']['collection_paging']).not_to be_nil
       paging = evidence_resource['metadata']['collection_paging']

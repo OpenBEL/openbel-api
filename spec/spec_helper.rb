@@ -8,17 +8,18 @@ ENV['RANTLY_VERBOSE'] = '0'
 HAL                   = 'application/hal+json'
 HAL_REGEX             = Regexp.escape(HAL)
 HTTP_OK               = 200
+TEST_DEBUG            = ENV['TEST_DEBUG']
 
 def api_root
   ENV['API_ROOT_URL'] || (raise RuntimeError.new('API_ROOT_URL is not set'))
 end
 
 def root_resource(resource_name)
-  api_client                         = Hyperclient.new(api_root) do |c|
+  api_client = Hyperclient.new(api_root) do |c|
     c.connection do |conn|
       conn.adapter  Faraday.default_adapter
-      #conn.response :logger
       conn.response :json, :content_type => 'application/hal+json'
+      conn.response :logger if TEST_DEBUG
     end
   end
   api_client.headers['Content-Type'] = 'application/json'
@@ -37,8 +38,8 @@ end
 def api_conn
   Faraday.new(:url => api_root) do |builder|
     builder.adapter  Faraday.default_adapter
-    #builder.response :logger
     builder.response :json, :content_type => 'application/hal+json'
+    builder.response :logger if TEST_DEBUG
   end
 end
 

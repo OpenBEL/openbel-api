@@ -92,6 +92,18 @@ module OpenBEL
         ]
       end
 
+      # Check Mongo server version >= 3.2.
+      # The aggregation framework's $slice operator is used which requires 3.2.
+      if mongo_client.server_version.to_s !~ /^3.2/
+        return [
+          true, <<-ERR
+            MongoDB version 3.2 or greater is required.
+
+            MongoDB version: #{mongo_client.server_version}
+          ERR
+        ]
+      end
+
       # Attempt access of database.
       db = mongo_client.db(mongo[:database])
 

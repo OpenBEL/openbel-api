@@ -6,7 +6,7 @@
       "name": "Trends in molecular medicine",
       "id": "12928037",
       "date": "2003-08-09",
-      "authors": "de Nigris F|Lerman A|Ignarro LJ|Williams-Ignarro S|Sica V|Baker AH|Lerman LO|Geng YJ|Napoli C",
+      "authors": ["de Nigris F", "Lerman A"],
       "comment": "Primary literature from (Trends in Molecular Medicine)."
     },
     "summary_text": "Aging, one of the major predictors for atherosclerotic lesion formation, increases\nthe sensitivity of endothelial cells to apoptosis induced by in vitro and in vivo\nstimuli [35–37].",
@@ -14,98 +14,40 @@
       {
         "name": "Disease",
         "value": "atherosclerosis",
-        "uri": "http://www.openbel.org/bel/namespace/disease-ontology/atherosclerosis",
-        "url": "http://www.openbel.org/bel/namespace/disease-ontology"
-      },
-      {
-        "name": "Anatomy",
-        "value": "artery",
-        "uri": "http://www.openbel.org/bel/namespace/uberon/artery",
-        "url": "http://www.openbel.org/bel/namespace/uberon"
-      },
-      {
-        "name": "TextLocation",
-        "value": "Review"
-      },
-      {
-        "name": "Cell",
-        "value": "endothelial cell",
-        "uri": "http://www.openbel.org/bel/namespace/cell-ontology/endothelial cell",
-        "url": "http://www.openbel.org/bel/namespace/cell-ontology"
-      },
-      {
-        "name": "MeSHAnatomy",
-        "value": "Muscle, Smooth, Vascular",
-        "uri": "http://www.openbel.org/bel/namespace/mesh-anatomy/Muscle, Smooth, Vascular",
-        "url": "http://www.openbel.org/bel/namespace/mesh-anatomy"
+        "uri": "http://www.openbel.org/bel/namespace/disease-ontology/atherosclerosis"
       }
     ],
-    "metadata": {
-      "document_header": {
-        "Name": "BEL Framework Small Corpus Document",
-        "Description": "Approximately 2000 hand curated statements drawn from 57 PubMeds.",
-        "Version": "20131211",
-        "Copyright": "Copyright (c) 2011-2012, Selventa. All Rights Reserved.",
-        "Authors": "Selventa",
-        "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License",
-        "ContactInfo": "support@belframework.org"
-      },
-      "namespace_definitions": {
-        "CHEBI": "http://www.openbel.org/bel/namespace/chebi",
-        "CHEBIID": "http://www.openbel.org/bel/namespace/chebi",
-        "EGID": "http://www.openbel.org/bel/namespace/entrez-gene",
-        "GOBP": "http://www.openbel.org/bel/namespace/go-biological-process",
-        "HGNC": "http://www.openbel.org/bel/namespace/hgnc-human-genes",
-        "MESHCS": "http://www.openbel.org/bel/namespace/mesh-cellular-structures",
-        "MESHD": "http://www.openbel.org/bel/namespace/mesh-diseases",
-        "MESHPP": "http://www.openbel.org/bel/namespace/mesh-processes",
-        "MGI": "http://www.openbel.org/bel/namespace/mgi-mouse-genes",
-        "RGD": "http://www.openbel.org/bel/namespace/rgd-rat-genes",
-        "SCHEM": "http://www.openbel.org/bel/namespace/selventa-legacy-chemicals",
-        "SCOMP": "http://www.openbel.org/bel/namespace/selventa-named-complexes",
-        "SDIS": "http://www.openbel.org/bel/namespace/selventa-legacy-diseases",
-        "SFAM": "http://www.openbel.org/bel/namespace/selventa-protein-families",
-        "SPAC": "http://www.openbel.org/bel/namespace/swissprot"
-      },
-      "annotation_definitions": {
-        "Anatomy": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/uberon"
-        },
-        "Cell": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/cell-ontology"
-        },
-        "CellLine": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/cell-line-ontology"
-        },
-        "CellStructure": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/mesh-cellular-structures"
-        },
-        "Disease": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/disease-ontology"
-        },
-        "MeSHAnatomy": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/mesh-anatomy"
-        },
-        "Species": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/ncbi-taxonomy"
-        },
-        "TextLocation": {
-          "type": "list",
-          "domain": [
-            "Abstract",
-            "Results",
-            "Legend",
-            "Review"
-          ]
+    "metadata": [
+      {
+        "name": "document_header",
+        "value": {
+          "Name": "BEL Framework Small Corpus Document",
+          "Description": "Approximately 2000 hand curated statements drawn from 57 PubMeds.",
+          "Version": "20131211",
+          "Copyright": "Copyright (c) 2011-2012, Selventa. All Rights Reserved.",
+          "Authors": "Selventa",
+          "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License",
+          "ContactInfo": "support@belframework.org"
         }
+      },
+      {
+        "name": "dataset",
+        "value": "BEL Framework Example 1 Document"
       }
+    ],
+    "references": {
+      "namespaces": [
+        {
+          "keyword": "GOBP",
+          "uri": "http://www.openbel.org/bel/namespace/go-biological-process"
+        }
+      ],
+      "annotations": [
+        {
+          "keyword": "Disease",
+          "uri": "http://www.openbel.org/bel/namespace/disease-ontology"
+        }
+      ]
     }
   }
 }

@@ -15,6 +15,14 @@ module OpenBEL
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
+      def find_all_namespace_references
+        fail NotImplementedError, "#{__method__} is not implemented"
+      end
+
+      def find_all_annotation_references
+        fail NotImplementedError, "#{__method__} is not implemented"
+      end
+
       def count_evidence(filters = [])
         fail NotImplementedError, "#{__method__} is not implemented"
       end

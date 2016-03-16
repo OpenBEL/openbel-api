@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel/evidence_model/util'
 require 'mongo'
 require_relative 'api'
 require_relative 'mongo_facet'
@@ -11,10 +12,15 @@ module OpenBEL
       include Mongo
 
       def initialize(options = {})
-        host             = options[:host]
-        port             = options[:port]
-        db               = options[:database]
-        @db              = MongoClient.new(host, port).db(db)
+        host = options[:host]
+        port = options[:port]
+        db   = options[:database]
+        @db  = MongoClient.new(
+          host,
+          port,
+          :op_timeout => nil,
+          :pool_size  => 30
+        ).db(db)
 
         # Authenticate user if provided.
         username = options[:username]
@@ -25,15 +31,10 @@ module OpenBEL
         end
 
         @collection      = @db[:evidence]
-        @collection.ensure_index(
-          {:"bel_statement" => Mongo::ASCENDING },
-          :background => true
-        )
-        @collection.ensure_index(
-          {:"$**" => Mongo::TEXT },
-          :background => true
-        )
         @evidence_facets = EvidenceFacets.new(options)
+
+        # ensure all indexes are created and maintained
+        ensure_all_indexes
       end
 
       def create_evidence(evidence)
@@ -55,29 +56,16 @@ module OpenBEL
         @collection.find_one(to_id(value))
       end
 
-      def find_evidence(filters = [], offset = 0, length = 0, facet = false)
-        query_hash = to_query(filters)
-        query_opts = query_options(
-          query_hash,
-          :skip  => offset,
-          :limit => length,
-          :sort  => [
-            [:bel_statement, :asc]
-          ]
-        )
-
-        results = {
-          :cursor => @collection.find(query_hash, query_opts)
-        }
-        if facet
-          facets_doc = @evidence_facets.find_facets(query_hash, filters)
-          results[:facets] = facets_doc["facets"]
+      def find_evidence(filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
+        if includes_fts_search?(filters)
+          text_search = get_fts_search(filters)
+          evidence_aggregate(text_search, filters, offset, length, facet, facet_value_limit)
+        else
+          evidence_query(filters, offset, length, facet, facet_value_limit)
         end
-
-        results
       end
 
-      def find_dataset_evidence(dataset, filters = [], offset = 0, length = 0, facet = false)
+      def find_dataset_evidence(dataset, filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
         query_hash = to_query(filters)
         query_hash[:$and] ||= []
         query_hash[:$and].unshift({
@@ -97,11 +85,122 @@ module OpenBEL
           :cursor => @collection.find(query_hash, query_opts)
         }
         if facet
-          facets_doc = @evidence_facets.find_facets(query_hash, filters)
-          results[:facets] = facets_doc["facets"]
+          facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+          results[:facets] = facets_cursor.to_a
         end
 
         results
+      end
+
+      def find_all_namespace_references
+        references = @collection.aggregate(
+          [
+            {
+              :$project => {
+                "references.namespaces" => 1
+              }
+            },
+            {
+              :$unwind => "$references.namespaces"
+            },
+            {   
+              :$project => {
+                keyword: "$references.namespaces.keyword",
+                uri: "$references.namespaces.uri"
+              }
+            },
+            {
+              :$group => {
+                _id: "$keyword", uri: {
+                  :$addToSet => "$uri"
+                }
+              }
+            },
+            {
+              :$unwind => "$uri"
+            },
+            {
+              :$project => {
+                keyword: "$_id", uri: "$uri", _id: 0
+              }
+            }
+          ],
+          {
+            allowDiskUse: true,
+            cursor: {}
+          }
+        )
+
+        union = []
+        remap = {}
+        references.each do |obj|
+          obj = obj.to_h
+          obj[:keyword] = obj.delete("keyword")
+          obj[:uri]     = obj.delete("uri")
+          union, new_remap = BEL::Model.union_namespace_references(union, [obj], 'incr')
+          remap.merge!(new_remap)
+        end
+
+        remap
+      end
+
+      def find_all_annotation_references
+        references = @collection.aggregate(
+          [
+            {
+              :$project => {"references.annotations" => 1}
+            },
+            {
+              :$unwind => "$references.annotations"
+            },
+            {   
+              :$project => {
+                keyword: "$references.annotations.keyword",
+                type:    "$references.annotations.type",
+                domain:  "$references.annotations.domain"
+              }
+            },
+            {
+              :$group => {
+                _id: "$keyword",
+                type: {
+                  :$addToSet => "$type"
+                },
+                domain: {
+                  :$addToSet => "$domain"
+                }
+              }
+            },
+            {
+              :$unwind => "$type"
+            },
+            {
+              :$unwind => "$domain"
+            },
+            {
+              :$project => {
+                keyword: "$_id", type: "$type", domain: "$domain", _id: 0
+              }
+            }
+          ],
+          {
+            allowDiskUse: true,
+            cursor: {}
+          }
+        )
+
+        union = []
+        remap = {}
+        references.each do |obj|
+          obj = obj.to_h
+          obj[:keyword] = obj.delete("keyword")
+          obj[:type]    = obj.delete("type")
+          obj[:domain]  = obj.delete("domain")
+          union, new_remap = BEL::Model.union_annotation_references(union, [obj], 'incr')
+          remap.merge!(new_remap)
+        end
+
+        remap
       end
 
       def count_evidence(filters = [])
@@ -123,16 +222,16 @@ module OpenBEL
         nil
       end
 
-      def delete_dataset(identifier)
-        @collection.ensure_index(
-          {:"_dataset" => Mongo::ASCENDING },
-          :background => true
-        )
+      def delete_facets
+        @evidence_facets.delete_all_facets
+      end
 
+      def delete_dataset(identifier)
         @collection.remove(
           { :"_dataset" => identifier },
           :j => true
         )
+        @evidence_facets.delete_all_facets
       end
 
       def delete_evidence(value)
@@ -173,7 +272,169 @@ module OpenBEL
         )
       end
 
+      def ensure_all_indexes
+        @collection.ensure_index(
+          { :bel_statement => Mongo::ASCENDING },
+          :background => true
+        )
+        @collection.ensure_index(
+          { :"$**" => Mongo::TEXT },
+          :background => true
+        )
+        @collection.ensure_index(
+          { :_dataset => Mongo::ASCENDING },
+          :background => true
+        )
+        @collection.ensure_index(
+          { :"experiment_context.name" => Mongo::ASCENDING },
+          :background => true
+        )
+        @collection.ensure_index(
+          { :"metadata.name" => Mongo::ASCENDING },
+          :background => true
+        )
+      end
+
       private
+
+      def evidence_query(filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
+        query_hash = to_query(filters)
+        query_opts = query_options(
+          query_hash,
+          :skip  => offset,
+          :limit => length,
+          :sort  => [
+            [:bel_statement, :asc]
+          ]
+        )
+
+        results = {
+          :cursor => @collection.find(query_hash, query_opts)
+        }
+        if facet
+          facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+          results[:facets] = facets_cursor.to_a
+        end
+
+        results
+      end
+
+      def evidence_aggregate(text_search, filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
+        match_filters = filters.select { |filter|
+          filter['category'] != 'fts'
+        }
+        match = build_filter_query(match_filters)
+        match[:$and].unshift({
+          :$text => {
+            :$search => text_search
+          }
+        })
+
+        pipeline = [
+          {
+            :$match => match
+          },
+          {
+            :$project => {
+              :_id           => 1,
+              :bel_statement => 1,
+              :score => {
+                :$meta => 'textScore'
+              }
+            }
+          },
+          {
+            :$sort => {
+              :score => {
+                :$meta => 'textScore'
+              },
+              :bel_statement => 1
+            }
+          }
+        ]
+
+        if offset > 0
+          pipeline << {
+            :$skip => offset
+          }
+        end
+
+        if length > 0
+          pipeline << {
+            :$limit => length
+          }
+        end
+
+        fts_cursor = @collection.aggregate(pipeline, {
+          :allowDiskUse => true,
+          :cursor       => {
+            :batchSize => 0
+          }
+        })
+        _ids = fts_cursor.map { |doc| doc['_id'] }
+
+        facets =
+          if facet
+            query_hash = to_query(filters)
+            facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+            facets_cursor.to_a
+          else
+            nil
+          end
+
+        {
+          :cursor => @collection.find({:_id => {:$in => _ids}}),
+          :facets => facets
+        }
+      end
+
+      def includes_fts_search?(filters)
+        filters.any? { |filter|
+          filter['category'] == 'fts' && filter['name'] == 'search'
+        }
+      end
+
+      def get_fts_search(filters)
+        fts_filter = filters.find { |filter|
+          filter['category'] == 'fts' && filter['name'] == 'search'
+        }
+        fts_filter.fetch('value', '')
+      end
+
+      def build_filter_query(filters = [])
+        {
+          :$and => filters.map { |filter|
+            category = filter['category']
+            name     = filter['name']
+            value    = filter['value']
+
+            case category
+            when 'experiment_context'
+              {
+                :experiment_context => {
+                  :$elemMatch => {
+                    :name  => name.to_s,
+                    :value => value.to_s
+                  }
+                }
+              }
+            when 'metadata'
+              {
+                :metadata => {
+                  :$elemMatch => {
+                    :name  => name.to_s,
+                    :value => value.to_s
+                  }
+                }
+              }
+            else
+              {
+                "#{filter['category']}.#{filter['name']}" => filter['value'].to_s
+              }
+            end
+          }
+        }
+      end
 
       def to_query(filters = [])
         if !filters || filters.empty?
@@ -238,13 +499,12 @@ module OpenBEL
       end
 
       def remove_evidence_facets(_id)
-        evidence = @collection.find_one(_id, {
-          :fields => [ 'facets' ]
+        doc = @collection.find_one(_id, {
+          :fields => {:_id => 0, :facets => 1}
         })
 
-        if evidence && evidence.has_key?('facets')
-          @evidence_facets.remove_facets_by_filters(evidence['facets'])
-          @evidence_facets.remove_facets_by_filters 
+        if doc && doc.has_key?('facets')
+          @evidence_facets.delete_facets(doc['facets'])
         end
       end
     end

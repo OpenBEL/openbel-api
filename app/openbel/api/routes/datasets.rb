@@ -1,10 +1,13 @@
 require 'bel'
+require 'bel/util'
 require 'rdf'
 require 'cgi'
 require 'multi_json'
 require 'openbel/api/evidence/mongo'
 require 'openbel/api/evidence/facet_filter'
 require_relative '../resources/evidence_transform'
+require_relative '../helpers/evidence'
+require_relative '../helpers/filters'
 require_relative '../helpers/pager'
 
 module OpenBEL
@@ -23,10 +26,13 @@ module OpenBEL
         :json => 'application/json',
       }
 
-      EVIDENCE_BATCH = 500
+      MONGO_BATCH     = 500
+      FACET_THRESHOLD = 10000
 
       def initialize(app)
         super
+
+        BEL.translator(:rdf)
 
         # Evidence API using Mongo.
         mongo = OpenBEL::Settings[:evidence_store][:mongo]
@@ -36,9 +42,6 @@ module OpenBEL
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
           :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
         )
-
-        # Load RDF monkeypatches.
-        BEL::Translator.plugins[:rdf].create_translator
 
         # Annotations using RdfRepository
         annotations = BEL::Resource::Annotations.new(@rr)
@@ -239,7 +242,12 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         # Add batches of read evidence objects; save to Mongo and RDF.
         # TODO Add JRuby note regarding Enumerator threading.
+        evidence_count = 0
         evidence_batch = []
+
+        # Clear out all facets before loading dataset.
+        @api.delete_facets
+
         BEL.evidence(io, type).each do |ev|
           # Standardize annotations from experiment_context.
           @annotation_transform.transform_evidence!(ev, base_url)
@@ -247,14 +255,16 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
           ev.metadata[:dataset] = dataset_id
           facets                = map_evidence_facets(ev)
           ev.bel_statement      = ev.bel_statement.to_s
-          hash                  = ev.to_h
+          hash                  = BEL.object_convert(String, ev.to_h) { |str|
+                                    str.gsub(/\n/, "\\n").gsub(/\r/, "\\r")
+                                  }
           hash[:facets]         = facets
           # Create dataset field for efficient removal.
           hash[:_dataset]       = dataset_id
 
           evidence_batch << hash
 
-          if evidence_batch.size == EVIDENCE_BATCH
+          if evidence_batch.size == MONGO_BATCH
             _ids = @api.create_evidence(evidence_batch)
 
             dataset_parts = _ids.map { |object_id|
@@ -263,6 +273,13 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
             @rr.insert_statements(dataset_parts)
 
             evidence_batch.clear
+
+            # Clear out all facets after FACET_THRESHOLD nanopubs have been seen.
+            evidence_count += MONGO_BATCH
+            if evidence_count >= FACET_THRESHOLD
+              @api.delete_facets
+              evidence_count = 0
+            end
           end
         end
 
@@ -276,6 +293,9 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
           evidence_batch.clear
         end
+
+        # Clear out all facets after the dataset is completely loaded.
+        @api.delete_facets
 
         status 201
         headers 'Location' => void_dataset_uri.to_s
@@ -312,142 +332,19 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         start                = (params[:start]  || 0).to_i
         size                 = (params[:size]   || 0).to_i
         faceted              = as_bool(params[:faceted])
-        max_values_per_facet = (params[:max_values_per_facet] || 0).to_i
+        max_values_per_facet = (params[:max_values_per_facet] || -1).to_i
 
-        # check filters
-        filters = []
-        filter_params = CGI::parse(env["QUERY_STRING"])['filter']
-        filter_params.each do |filter|
-          filter = read_filter(filter)
-          halt 400 unless ['category', 'name', 'value'].all? { |f| filter.include? f}
-
-          if filter['category'] == 'fts' && filter['name'] == 'search'
-            unless filter['value'].to_s.length > 1
-              halt(
-                400,
-                { 'Content-Type' => 'application/json' },
-                render_json({
-                  :status => 400,
-                  :msg => 'Full-text search filter values must be larger than one.'
-                })
-              )
-            end
-          end
-
-          # Remove dataset filters since we're filtering a specific one already.
-          next if filter.values_at('category', 'name') == ['metadata', 'dataset']
-
-          filters << filter
-        end
+        filters = validate_filters!
 
         collection_total  = @api.count_evidence
         filtered_total    = @api.count_evidence(filters)
-        page_results      = @api.find_dataset_evidence(dataset, filters, start, size, faceted)
+        page_results      = @api.find_dataset_evidence(dataset, filters, start, size, faceted, max_values_per_facet)
+        name              = dataset[:identifier].gsub(/[^\w]/, '_')
 
-        accept_type = request.accept.find { |accept_entry|
-          ACCEPTED_TYPES.values.include?(accept_entry.to_s)
-        }
-        accept_type ||= DEFAULT_TYPE
-
-        if params[:format]
-          translator  = BEL::Translator.plugins[params[:format].to_sym]
-          halt 501 if !translator || translator.id == :rdf
-          accept_type = [translator.media_types].flatten.first
-        end
-
-        if accept_type == DEFAULT_TYPE
-          evidence          = page_results[:cursor].map { |item|
-            item.delete('facets')
-            item
-          }.to_a
-
-          facets            = page_results[:facets]
-
-          halt 404 if evidence.empty?
-
-          pager = Pager.new(start, size, filtered_total)
-
-          options = {
-            :start    => start,
-            :size     => size,
-            :filters  => filter_params,
-            :metadata => {
-              :collection_paging => {
-                :total                  => collection_total,
-                :total_filtered         => pager.total_size,
-                :total_pages            => pager.total_pages,
-                :current_page           => pager.current_page,
-                :current_page_size      => evidence.size,
-              }
-            }
-          }
-
-          if facets
-            # group by category/name
-            hashed_values = Hash.new { |hash, key| hash[key] = [] }
-            facets.each { |facet|
-              filter         = read_filter(facet['_id'])
-              category, name = filter.values_at('category', 'name')
-              next if !category || !name
-
-              key = [category.to_sym, name.to_sym]
-              facet_obj = {
-                :value    => filter['value'],
-                :filter   => facet['_id'],
-                :count    => facet['count']
-              }
-              hashed_values[key] << facet_obj
-            }
-
-            if max_values_per_facet == 0
-              facet_hashes = hashed_values.map { |(category, name), value_objects|
-                {
-                  :category => category,
-                  :name     => name,
-                  :values   => value_objects
-                }
-              }
-            else
-              facet_hashes = hashed_values.map { |(category, name), value_objects|
-                {
-                  :category => category,
-                  :name     => name,
-                  :values   => value_objects.take(max_values_per_facet)
-                }
-              }
-            end
-
-            options[:facets] = facet_hashes
-          end
-
-          # pager links
-          options[:previous_page] = pager.previous_page
-          options[:next_page]     = pager.next_page
-
-          render_collection(evidence, :evidence, options)
-        else
-          out_translator = BEL.translator(accept_type)
-          extension      = ACCEPTED_TYPES.key(accept_type.to_s)
-
-          response.headers['Content-Type'] = accept_type
-          status 200
-          attachment "#{dataset[:identifier].gsub(/[^\w]/, '_')}.#{extension}"
-          stream :keep_open do |response|
-            cursor             = page_results[:cursor]
-            json_evidence_enum = cursor.lazy.map { |evidence|
-              evidence.delete('facets')
-              evidence.delete('_id')
-              evidence.keys.each do |key|
-                evidence[key.to_sym] = evidence.delete(key)
-              end
-              BEL::Model::Evidence.create(evidence)
-            }
-
-            out_translator.write(json_evidence_enum) do |converted_evidence|
-              response << converted_evidence
-            end
-          end
-        end
+        render_evidence_collection(
+          name, page_results, start, size, filters,
+          filtered_total, collection_total, @api
+        )
       end
 
       get '/api/datasets' do
@@ -484,6 +381,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         halt 404 unless dataset_exists?(void_dataset_uri)
 
         dataset = retrieve_dataset(void_dataset_uri)
+        # XXX Removes all facets due to load of many evidence.
         @api.delete_dataset(dataset[:identifier])
         @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
 
@@ -500,6 +398,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         datasets.each do |void_dataset_uri|
           dataset = retrieve_dataset(void_dataset_uri)
+          # XXX Removes all facets due to load of many evidence.
           @api.delete_dataset(dataset[:identifier])
           @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
         end

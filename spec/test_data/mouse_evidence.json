@@ -6,7 +6,7 @@
       "name": "Cell",
       "id": "16962653",
       "date": "2006-10-07",
-      "authors": "Jacinto E|Facchinetti V|Liu D|Soto N|Wei S|Jung SY|Huang Q|Qin J|Su B",
+      "authors": ["de Nigris F", "Lerman A"],
       "comment": ""
     },
     "summary_text": "We next examined the Akt T-loop Thr308 phosphorylation in wild-type and SIN1−/− cells. We found that although Ser473 phosphorylation was completely abolished in the SIN1−/− cells, Thr308 phosphorylation of Akt was not blocked (Figure 3A).",
@@ -16,72 +16,37 @@
         "value": "Mus musculus"
       }
     ],
-    "metadata": {
-      "document_header": {
-        "Name": "BEL Framework Small Corpus Document",
-        "Description": "Approximately 2000 hand curated statements drawn from 57 PubMeds.",
-        "Version": "20131211",
-        "Copyright": "Copyright (c) 2011-2012, Selventa. All Rights Reserved.",
-        "Authors": "Selventa",
-        "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License",
-        "ContactInfo": "support@belframework.org"
-      },
-      "namespace_definitions": {
-        "CHEBI": "http://www.openbel.org/bel/namespace/chebi",
-        "CHEBIID": "http://www.openbel.org/bel/namespace/chebi",
-        "EGID": "http://www.openbel.org/bel/namespace/entrez-gene",
-        "GOBP": "http://www.openbel.org/bel/namespace/go-biological-process",
-        "HGNC": "http://www.openbel.org/bel/namespace/hgnc-human-genes",
-        "MESHCS": "http://www.openbel.org/bel/namespace/mesh-cellular-structures",
-        "MESHD": "http://www.openbel.org/bel/namespace/mesh-diseases",
-        "MESHPP": "http://www.openbel.org/bel/namespace/mesh-processes",
-        "MGI": "http://www.openbel.org/bel/namespace/mgi-mouse-genes",
-        "RGD": "http://www.openbel.org/bel/namespace/rgd-rat-genes",
-        "SCHEM": "http://www.openbel.org/bel/namespace/selventa-legacy-chemicals",
-        "SCOMP": "http://www.openbel.org/bel/namespace/selventa-named-complexes",
-        "SDIS": "http://www.openbel.org/bel/namespace/selventa-legacy-diseases",
-        "SFAM": "http://www.openbel.org/bel/namespace/selventa-protein-families",
-        "SPAC": "http://www.openbel.org/bel/namespace/swissprot"
-      },
-      "annotation_definitions": {
-        "Anatomy": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/uberon"
-        },
-        "Cell": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/cell-ontology"
-        },
-        "CellLine": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/cell-line-ontology"
-        },
-        "CellStructure": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/mesh-cellular-structures"
-        },
-        "Disease": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/disease-ontology"
-        },
-        "MeSHAnatomy": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/mesh-anatomy"
-        },
-        "Species": {
-          "type": "url",
-          "domain": "http://www.openbel.org/bel/namespace/ncbi-taxonomy"
-        },
-        "TextLocation": {
-          "type": "list",
-          "domain": [
-            "Abstract",
-            "Results",
-            "Legend",
-            "Review"
-          ]
+    "metadata": [
+      {
+        "name": "document_header",
+        "value": {
+          "Name": "BEL Framework Small Corpus Document",
+          "Description": "Approximately 2000 hand curated statements drawn from 57 PubMeds.",
+          "Version": "20131211",
+          "Copyright": "Copyright (c) 2011-2012, Selventa. All Rights Reserved.",
+          "Authors": "Selventa",
+          "Licenses": "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License",
+          "ContactInfo": "support@belframework.org"
         }
+      },
+      {
+        "name": "dataset",
+        "value": "BEL Framework Example 1 Document"
       }
+    ],
+    "references": {
+      "namespaces": [
+        {
+          "keyword": "MGI",
+          "uri": "http://www.openbel.org/bel/namespace/mgi-mouse-genes"
+        }
+      ],
+      "annotations": [
+        {
+          "keyword": "Ncbi Taxonomy",
+          "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy"
+        }
+      ]
     }
   }
 }

@@ -34,16 +34,25 @@ Gem::Specification.new do |spec|
   # Dependencies
 
   ## bel.rb
-  spec.add_runtime_dependency 'bel',               '0.4.1'
+  spec.add_runtime_dependency 'bel',               '0.6.0'
+
+  ## bel.rb translator dependencies
+  spec.add_runtime_dependency 'json-ld',           '1.99.0'
+  spec.add_runtime_dependency 'rdf-json',          '1.99.0'
+  spec.add_runtime_dependency 'rdf-rdfa',          '1.99.0'
+  spec.add_runtime_dependency 'rdf-rdfxml',        '1.99.0'
+  spec.add_runtime_dependency 'rdf-trig',          '1.99.0.1'
+  spec.add_runtime_dependency 'rdf-trix',          '1.99.0'
+  spec.add_runtime_dependency 'rdf-turtle',        '1.99.0'
 
   ## bel.rb plugin - annotation/namespace search
   spec.add_runtime_dependency 'bel-search-sqlite', '0.4.2'
 
   ## bel.rb plugin - RDF repository using Apache Jena
-  spec.add_runtime_dependency 'bel-rdf-jena',      '0.4.1'
+  spec.add_runtime_dependency 'bel-rdf-jena',      '0.4.2'
 
   ## RDF - RDF abstraction
-  spec.add_runtime_dependency 'rdf',               '1.99.0'
+  spec.add_runtime_dependency 'rdf',               '1.99.1'
 
   ## Mongo - Faceted search of evidence.
   spec.add_runtime_dependency 'mongo',             '1.12.5'
@@ -55,14 +64,13 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'json_schema',       '0.10.0'
   spec.add_runtime_dependency 'multi_json',        '1.11.2'
   spec.add_runtime_dependency 'oat',               '0.4.6'
-  spec.add_runtime_dependency 'puma',              '2.15.3'
+  spec.add_runtime_dependency 'puma',              '3.1.0'
   spec.add_runtime_dependency 'rack',              '1.6.4'
   spec.add_runtime_dependency 'rack-cors',         '0.4.0'
   spec.add_runtime_dependency 'rack-handlers',     '0.7.0'
   spec.add_runtime_dependency 'sinatra',           '1.4.6'
   spec.add_runtime_dependency 'sinatra-contrib',   '1.4.6'
   spec.add_runtime_dependency 'jwt',               '1.5.2'
-  spec.add_runtime_dependency 'rest-client',       '1.8.0'
 end
 # vim: ts=2 sw=2:
 # encoding: utf-8

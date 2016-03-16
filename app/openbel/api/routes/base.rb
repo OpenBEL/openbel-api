@@ -21,14 +21,14 @@ module OpenBEL
       include OpenBEL::Resource::Namespaces
       include OpenBEL::Schemas
 
-      DEFAULT_CONTENT_TYPE   = 'application/hal+json'
-      SPOKEN_CONTENT_TYPES   = %w[application/hal+json application/json]
+      DEFAULT_CONTENT_TYPE    = 'application/hal+json'
+      DEFAULT_CONTENT_TYPE_ID = :hal
+      SPOKEN_CONTENT_TYPES    = %w[application/hal+json application/json]
       SPOKEN_CONTENT_TYPES.concat(
         BEL::Translator.plugins.values.flat_map { |p| p.media_types.map(&:to_s) }
       )
-
-      SCHEMA_BASE_URL        = 'http://next.belframework.org/schemas/'
-      RESOURCE_SERIALIZERS   = {
+      SCHEMA_BASE_URL         = 'http://next.belframework.org/schemas/'
+      RESOURCE_SERIALIZERS    = {
         :annotation                 => AnnotationResourceSerializer,
         :annotation_collection      => AnnotationCollectionSerializer,
         :annotation_value           => AnnotationValueResourceSerializer,
@@ -78,6 +78,16 @@ module OpenBEL
 
         def schema_url(name)
           SCHEMA_BASE_URL + "#{name}.schema.json"
+        end
+
+        def wants_default?
+          if params[:format]
+            return params[:format] == DEFAULT_CONTENT_TYPE
+          end
+
+          request.accept.any? { |accept_entry|
+            accept_entry.to_s == DEFAULT_CONTENT_TYPE
+          }
         end
 
         def validate_media_type!(content_type, options = {})
@@ -141,6 +151,10 @@ module OpenBEL
               })
             )
           end
+        end
+
+        def write_filter(filter)
+          MultiJson.dump(filter)
         end
 
         def render_json(obj, media_type = 'application/hal+json', profile = nil)
