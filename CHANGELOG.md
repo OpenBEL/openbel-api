@@ -7,11 +7,18 @@ This project adheres to [Semantic Versioning][Semantic Versioning].
 ### Added
 - Retrieve evidence in a format supported by BEL translator plugins ([Issue 44][44]).
 - Retrieve dataset evidence in a format supported by BEL translator plugins ([Issue 99][99]).
+
 ### Fixed
 - Dataset evidence collection is missing annotation/namespace URIs ([Issue 95][95]).
 - Facets are not created for evidence uploaded through a dataset.
+
 ### Changed
 - MongoDB version 3.2.0 is now required due to use of `$slice` operator in Aggregation queries.
+
+### Known Issue
+Datasets are stored with a URI computed from the scheme and host that is serving the OpenBEL API. For example if OpenBEL API is served from `http://web.site.com` then dataset URIs will be of the form `http://web.site.com/api/datasets/{UUID}`. If you change the scheme and host these URIs will be inconsistent and you will not be able to retrieve your datasets. You will have to re-import your documents.
+
+  - See [Issue #102][102].
 
 -----
 
@@ -65,3 +72,4 @@ This project adheres to [Semantic Versioning][Semantic Versioning].
 [93]:                          https://github.com/OpenBEL/openbel-api/issues/93
 [95]:                          https://github.com/OpenBEL/openbel-api/issues/95
 [99]:                          https://github.com/OpenBEL/openbel-api/issues/99
+[102]:                         https://github.com/OpenBEL/openbel-api/issues/102
