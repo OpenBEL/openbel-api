@@ -2,6 +2,14 @@
 
 This files contains documentation for upgrading to specific versions of OpenBEL API.
 
+## 0.6.2 Upgrade (2016-03-23)
+
+Follow the instructions to upgrade to 0.6.0
+
+### Installation
+
+Install OpenBEL API 0.6.2 with `gem install openbel-api --version 0.6.2`.
+
 ## 0.6.1 Upgrade (2016-03-16)
 
 Follow the instructions to upgrade to 0.6.0.
