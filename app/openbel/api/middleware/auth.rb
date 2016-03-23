@@ -30,18 +30,16 @@ module OpenBEL
           end
         end
         if token.nil?
-          raise 'missing authorization cookie'
+          raise 'malformed authorization cookie'
         end
       end
 
       if not auth_hdr.nil?
         tokens = auth_hdr.split('Bearer ')
-        if tokens.size == 2
-          token = tokens[1]
+        if tokens.size != 2
+            raise 'malformed authorization header'
         end
-        if token.nil?
-          raise 'missing authorization header'
-        end
+        token = tokens[1]
       end
 
       secret = OpenBEL::Settings[:auth][:secret]
