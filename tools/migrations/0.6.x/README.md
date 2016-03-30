@@ -1,6 +1,6 @@
-## MongoDB Migrations for 0.6.0
+## MongoDB Migrations for 0.6.x
 
-The 0.6.0 version of OpenBEL API introduces a change to how evidence facets are stored in MongoDB.
+The 0.6.x version of OpenBEL API introduces a change to how evidence facets are stored in MongoDB.
 
 ### Change Detail
 
@@ -13,7 +13,7 @@ Collections:
 - `evidence_facets`
   - Stores evidence facet objects for all searches.
 
-#### 0.6.0
+#### 0.6.x
 
 Collections:
 
@@ -34,8 +34,8 @@ It is recommended to stop OpenBEL API and MongoDB before migrating.
 2. Stop MongoDB daemon.
 3. Clone OpenBEL API repository.
   - `git clone https://github.com/OpenBEL/openbel-api.git`
-4. Change directory to the 0.6.0 migrations directory.
-  - `cd openbel-api/tools/migrations/0.6.0`
+4. Change directory to the 0.6.x migrations directory.
+  - `cd openbel-api/tools/migrations/0.6.x`
 5. Run *migrate_evidence_facets.rb* to update evidence.facets to JSON objects.
   - `./migrate_evidence_facets.rb YOUR_CONFIG.yml` or `jruby migrate_evidence_facets.rb YOUR_CONFIG.yml`
 6. Run *drop_unused_collection.rb* to remove the old *evidence_facets* collection.
