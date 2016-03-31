@@ -13,7 +13,7 @@ module OpenBEL
       ::JWT.decode(token, secret, verify, options)
     end
 
-    def self.check_cookie(env)
+    def self.check_token(env)
       cookie_hdr = env['HTTP_COOKIE']
       auth_hdr = env['HTTP_AUTHORIZATION']
       token_param = params['token']
@@ -44,7 +44,7 @@ module OpenBEL
       end
 
       if not token_param.nil?
-          token = token_param
+        token = token_param
       end
 
       secret = OpenBEL::Settings[:auth][:secret]
@@ -95,7 +95,7 @@ module OpenBEL
 
         if check
           begin
-            JWTMiddleware.check_cookie(env)
+            JWTMiddleware.check_token(env)
           rescue Exception => e
             return _401(e.message)
           end

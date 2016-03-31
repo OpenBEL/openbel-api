@@ -2,6 +2,14 @@
 
 This files contains documentation for upgrading to specific versions of OpenBEL API.
 
+## 0.6.2 Upgrade (2016-03-23)
+
+Follow the instructions to upgrade to 0.6.0
+
+### Installation
+
+Install OpenBEL API 0.6.2 with `gem install openbel-api --version 0.6.2`.
+
 ## 0.6.1 Upgrade (2016-03-16)
 
 Follow the instructions to upgrade to 0.6.0.
@@ -35,7 +43,7 @@ Collections:
 - `evidence_facets`
   - Stores evidence facet objects for all searches.
 
-##### 0.6.0
+##### 0.6.x
 
 Collections:
 
@@ -56,8 +64,8 @@ It is recommended to stop OpenBEL API and MongoDB before migrating.
 2. Stop MongoDB daemon.
 3. Clone OpenBEL API repository.
   - `git clone https://github.com/OpenBEL/openbel-api.git`
-4. Change directory to the 0.6.0 migrations directory.
-  - `cd openbel-api/tools/migrations/0.6.0`
+4. Change directory to the 0.6.x migrations directory.
+  - `cd openbel-api/tools/migrations/0.6.x`
 5. Run *migrate_evidence_facets.rb* to update evidence.facets to JSON objects.
   - `./migrate_evidence_facets.rb YOUR_CONFIG.yml` or `jruby migrate_evidence_facets.rb YOUR_CONFIG.yml`
 6. Run *drop_unused_collection.rb* to remove the old *evidence_facets* collection.

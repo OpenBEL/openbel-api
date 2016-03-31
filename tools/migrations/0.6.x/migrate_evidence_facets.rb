@@ -14,7 +14,7 @@
 require 'openbel/api/config'
 require 'openbel/api/version'
 
-VERSION_REQUIREMENT = "0.6.0"
+VERSION_REQUIREMENT = /^0.6/
 ACTIVE_VERSION      = OpenBEL::Version::STRING
 
 ENV['OPENBEL_API_CONFIG_FILE'] ||= (ARGV.first || ENV['OPENBEL_API_CONFIG_FILE'])
@@ -87,18 +87,14 @@ def migrate(mongo)
   true
 end
 
-case ACTIVE_VERSION
-when VERSION_REQUIREMENT
-
+if ACTIVE_VERSION =~ VERSION_REQUIREMENT
   cfg = OpenBEL::Config.load!
   migrate(
     setup_mongo(cfg[:evidence_store][:mongo])
   )
-
   $stdout.puts %Q{Successfully migrated "facets" field of documents in "evidence" collection from strings to full objects.}
   exit 0
 else
-
   $stderr.puts %Q{Migration is intended for version "#{VERSION_REQUIREMENT}".}
   $stderr.puts %Q{Version "#{ACTIVE_VERSION}" is currently installed.}
   exit 1
