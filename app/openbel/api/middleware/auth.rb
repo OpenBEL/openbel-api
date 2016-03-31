@@ -16,8 +16,9 @@ module OpenBEL
     def self.check_cookie(env)
       cookie_hdr = env['HTTP_COOKIE']
       auth_hdr = env['HTTP_AUTHORIZATION']
-      if cookie_hdr.nil? and auth_hdr.nil?
-        raise 'missing authorization cookie/header'
+      token_param = params['token']
+      if cookie_hdr.nil? and auth_hdr.nil? and token_param.nil?
+        raise 'missing authorization cookie, header, or parameter'
       end
 
       if not cookie_hdr.nil?
@@ -40,6 +41,10 @@ module OpenBEL
             raise 'malformed authorization header'
         end
         token = tokens[1]
+      end
+
+      if not token_param.nil?
+          token = token_param
       end
 
       secret = OpenBEL::Settings[:auth][:secret]
