@@ -3,7 +3,7 @@ All notable changes to openbel-api will be documented in this file. The curated 
 
 This project adheres to [Semantic Versioning][Semantic Versioning].
 
-## [0.6.3][0.6.3] - TBD
+## [1.0.0][1.0.0] - TBD
 ### Added
 - Support JWT authentication via *token* query parameter ([PR #108][108]).
 
@@ -74,7 +74,7 @@ Datasets are stored with a URI computed from the scheme and host that is serving
   - Retrieve equivalent namespace values from the individual.
   - Retrieve orthologous namespace values from the individual.
 
-[0.6.3]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...0.6.3
+[1.0.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.0
 [0.6.2]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.1...0.6.2
 [0.6.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.0...0.6.1
 [0.6.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.5.1...0.6.0
