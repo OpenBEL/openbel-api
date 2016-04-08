@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel_parser'
 
 module OpenBEL
   module Routes
@@ -6,9 +7,11 @@ module OpenBEL
     class Functions < Base
       include BEL::Language
 
-      SORTED_FUNCTIONS = FUNCTIONS.values.uniq.sort_by { |fx|
-        fx[:short_form]
-      }
+      def initialize(app)
+        super
+        bel_version = OpenBEL::Settings[:bel][:version]
+        @spec       = BELParser::Language.specification(bel_version)
+      end
 
       options '/api/functions' do
         response.headers['Allow'] = 'OPTIONS,GET'
@@ -21,18 +24,15 @@ module OpenBEL
       end
 
       get '/api/functions' do
-        render(SORTED_FUNCTIONS, :function_collection)
+        render_collection(
+          @spec.functions.sort_by(&:long),
+          :function)
       end
 
-      # BEL Completion
       get '/api/functions/:fx' do
-        fx_match = FUNCTIONS[params[:fx].to_sym]
-        halt 404 unless fx_match
-
-        render(
-          [fx_match],
-          :function_collection
-        )
+        function = @spec.function(params[:fx].to_sym)
+        halt 404 unless function
+        render_resource(function, :function)
       end
     end
   end
