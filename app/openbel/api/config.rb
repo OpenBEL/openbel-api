@@ -1,4 +1,5 @@
 require 'dot_hash'
+require 'bel_parser'
 
 module OpenBEL
   module Config
@@ -35,6 +36,20 @@ module OpenBEL
     private
 
     def self.validate(cfg)
+      # validate BEL version
+      bel = cfg[:bel]
+      unless bel
+        return [
+          true, <<-ERR.gsub(/ {12}/, '')
+            The "bel" section has not been configured.
+            You will need to supply a "bel.version" configuration block.
+            #{boilerplate_help}
+          ERR
+        ]
+      end
+      bel_failure = self.validate_bel(bel)
+      return bel_failure if bel_failure
+      
       # validate evidence_store block
       evidence_store = cfg[:evidence_store]
       unless evidence_store
@@ -47,6 +62,33 @@ module OpenBEL
       end
       evidence_failure = self.validate_evidence_store(cfg[:evidence_store])
       return evidence_failure if evidence_failure
+
+      nil
+    end
+
+    def self.validate_bel(bel)
+      unless bel[:version]
+        return [
+          true, <<-ERR
+            The "bel.version" setting is not configured. This is required to
+            indicate which BEL version is supported by this OpenBEL API
+            instance.
+            #{boilerplate_help}
+          ERR
+        ]
+      end
+
+      version = bel[:version]
+      unless BELParser::Language.defines_version?(version)
+        defined_versions = BELParser::Language.versions
+        return [
+          true, <<-ERR
+            The "bel.version" setting of "#{version}" is not a defined BEL version. Allowed values: #{defined_versions}
+            #{boilerplate_help}
+          ERR
+        ]
+        
+      end
 
       nil
     end

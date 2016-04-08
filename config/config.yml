@@ -1,5 +1,15 @@
 # Configuration template for OpenBEL API
 
+# BEL configuration.
+bel:
+  # The BEL version supported by this OpenBEL API instance.
+  # Allowed values:
+  #   1.0
+  #     (BEL version 1.0 specification)
+  #   2.0
+  #     (BEL version 2.0 specification)
+  version: 2.0
+
 # Storage of evidence through the Mongo database.
 evidence_store:
   mongo:
