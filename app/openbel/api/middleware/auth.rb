@@ -16,8 +16,9 @@ module OpenBEL
     def self.check_token(env)
       cookie_hdr = env['HTTP_COOKIE']
       auth_hdr = env['HTTP_AUTHORIZATION']
-      token_param = params['token']
-      if cookie_hdr.nil? and auth_hdr.nil? and token_param.nil?
+      req = Rack::Request.new(env)
+      token_param = req.params['token']
+      if cookie_hdr.nil? && auth_hdr.nil? && token_param.nil?
         raise 'missing authorization cookie, header, or parameter'
       end
 
