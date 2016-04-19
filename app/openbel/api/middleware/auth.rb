@@ -28,7 +28,6 @@ module OpenBEL
           tokens = selected[0].split('=')
           token = tokens[1] if tokens.size > 1
         end
-        raise 'malformed authorization cookie' if token.nil?
       end
 
       unless auth_hdr.nil?
