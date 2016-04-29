@@ -1,6 +1,7 @@
 require 'bel'
 require 'bel/util'
 require 'rdf'
+require 'rdf/vocab'
 require 'cgi'
 require 'multi_json'
 require 'openbel/api/evidence/mongo'
@@ -28,6 +29,9 @@ module OpenBEL
 
       MONGO_BATCH     = 500
       FACET_THRESHOLD = 10000
+      DC              = ::RDF::Vocab::DC
+      VOID            = ::RDF::Vocab::VOID
+      FOAF            = ::RDF::Vocab::FOAF
 
       def initialize(app)
         super
@@ -85,7 +89,7 @@ module OpenBEL
             end
 
             identifier_statement = void_dataset.query(
-                RDF::Statement.new(void_dataset_uri, RDF::DC.identifier, nil)
+                RDF::Statement.new(void_dataset_uri, DC.identifier, nil)
             ).to_a.first
             unless identifier_statement
               halt(
@@ -100,10 +104,10 @@ module OpenBEL
               )
             end
 
-            datasets         = @rr.query_pattern(RDF::Statement.new(nil, RDF.type, RDF::VOID.Dataset))
+            datasets         = @rr.query_pattern(RDF::Statement.new(nil, RDF.type, VOID.Dataset))
             existing_dataset = datasets.find { |dataset_statement|
               @rr.has_statement?(
-                  RDF::Statement.new(dataset_statement.subject, RDF::DC.identifier, identifier_statement.object)
+                  RDF::Statement.new(dataset_statement.subject, DC.identifier, identifier_statement.object)
               )
             }
 
@@ -131,24 +135,24 @@ module OpenBEL
 
         def dataset_exists?(uri)
           @rr.has_statement?(
-            RDF::Statement.new(uri, RDF.type, RDF::VOID.Dataset)
+            RDF::Statement.new(uri, RDF.type, VOID.Dataset)
           )
         end
 
         def retrieve_dataset(uri)
           dataset = {}
           identifier = @rr.query(
-            RDF::Statement.new(uri, RDF::DC.identifier, nil)
+            RDF::Statement.new(uri, DC.identifier, nil)
           ).first
           dataset[:identifier] = identifier.object.to_s if identifier
 
           title = @rr.query(
-            RDF::Statement.new(uri, RDF::DC.title, nil)
+            RDF::Statement.new(uri, DC.title, nil)
           ).first
           dataset[:title] = title.object.to_s if title
 
           description = @rr.query(
-            RDF::Statement.new(uri, RDF::DC.description, nil)
+            RDF::Statement.new(uri, DC.description, nil)
           ).first
           dataset[:description] = description.object.to_s if description
 
@@ -158,22 +162,22 @@ module OpenBEL
           dataset[:waiver] = waiver.object.to_s if waiver
 
           creator = @rr.query(
-            RDF::Statement.new(uri, RDF::DC.creator, nil)
+            RDF::Statement.new(uri, DC.creator, nil)
           ).first
           dataset[:creator] = creator.object.to_s if creator
 
           license = @rr.query(
-            RDF::Statement.new(uri, RDF::DC.license, nil)
+            RDF::Statement.new(uri, DC.license, nil)
           ).first
           dataset[:license] = license.object.to_s if license
 
           publisher = @rr.query(
-            RDF::Statement.new(uri, RDF::DC.publisher, nil)
+            RDF::Statement.new(uri, DC.publisher, nil)
           ).first
           if publisher
             publisher.object
             contact_info = @rr.query(
-              RDF::Statement.new(publisher.object, RDF::FOAF.mbox, nil)
+              RDF::Statement.new(publisher.object, FOAF.mbox, nil)
             ).first
             dataset[:contact_info] = contact_info.object.to_s if contact_info
           end
@@ -268,7 +272,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
             _ids = @api.create_evidence(evidence_batch)
 
             dataset_parts = _ids.map { |object_id|
-              RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, object_id.to_s)
+              RDF::Statement.new(void_dataset_uri, DC.hasPart, object_id.to_s)
             }
             @rr.insert_statements(dataset_parts)
 
@@ -287,7 +291,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
           _ids = @api.create_evidence(evidence_batch)
 
           dataset_parts = _ids.map { |object_id|
-            RDF::Statement.new(void_dataset_uri, RDF::DC.hasPart, object_id.to_s)
+            RDF::Statement.new(void_dataset_uri, DC.hasPart, object_id.to_s)
           }
           @rr.insert_statements(dataset_parts)
 
@@ -349,7 +353,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
       get '/api/datasets' do
         dataset_uris = @rr.query(
-          RDF::Statement.new(nil, RDF.type, RDF::VOID.Dataset)
+          RDF::Statement.new(nil, RDF.type, VOID.Dataset)
         ).map { |statement|
           statement.subject
         }.to_a
@@ -390,7 +394,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
       delete '/api/datasets' do
         datasets = @rr.query(
-          RDF::Statement.new(nil, RDF.type, RDF::VOID.Dataset)
+          RDF::Statement.new(nil, RDF.type, VOID.Dataset)
         ).map { |stmt|
           stmt.subject
         }.to_a
