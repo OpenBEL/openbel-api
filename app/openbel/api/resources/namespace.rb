@@ -22,7 +22,7 @@ module OpenBEL
         schema do
           type     :namespace
           property :rdf_uri, item.uri.to_s
-          property :name,    item.prefLabel
+          property :name,    item.pref_label
           property :prefix,  item.prefix
           property :domain,  item.domain
         end
@@ -87,7 +87,7 @@ module OpenBEL
           property :rdf_uri,       item.uri.to_s
           property :type,          [item.type].flatten.map(&:to_s)
           property :identifier,    item.identifier
-          property :name,          item.prefLabel
+          property :name,          item.pref_label
           property :title,         item.title
           property :species,       item.fromSpecies
           entity   :namespace,     item.namespace, NamespaceSerializer
