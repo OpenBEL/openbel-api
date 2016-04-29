@@ -10,6 +10,10 @@ module OpenBEL
       def initialize(app)
         super
 
+        # Obtain configured BEL version.
+        bel_version = OpenBEL::Settings[:bel][:version]
+        @spec       = BELParser::Language.specification(bel_version)
+
         # RdfRepository using Jena.
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
           :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
@@ -123,7 +127,7 @@ module OpenBEL
         halt 400 unless bel and caret_position
 
         begin
-          completions = BEL::Completion.complete(bel, @search, @namespaces, caret_position)
+          completions = BEL::Completion.complete(bel, @spec, @search, @namespaces, caret_position)
         rescue IndexError => ex
           halt(
             400,
