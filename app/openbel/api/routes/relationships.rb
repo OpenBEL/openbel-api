@@ -1,4 +1,3 @@
-require 'bel'
 require 'bel_parser'
 
 module OpenBEL
@@ -18,7 +17,7 @@ module OpenBEL
         status 200
       end
 
-      options '/api/relationships/:fx' do
+      options '/api/relationships/:rel' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
@@ -29,8 +28,8 @@ module OpenBEL
           :relationship)
       end
 
-      get '/api/relationships/:fx' do
-        relationship = @spec.relationship(params[:fx].to_sym)
+      get '/api/relationships/:rel' do
+        relationship = @spec.relationship(params[:rel].to_sym)
         halt 404 unless relationship
         render_resource(relationship, :relationship)
       end

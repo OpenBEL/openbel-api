@@ -14,7 +14,6 @@ module OpenBEL
             p.short_form  item.short
             p.long_form   item.long
             p.description item.description
-            p.return_type item.return_type.to_sym
           end
         end
       end
