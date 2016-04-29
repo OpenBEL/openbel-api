@@ -5,6 +5,7 @@ require_relative '../resources/annotation'
 require_relative '../resources/completion'
 require_relative '../resources/evidence'
 require_relative '../resources/function'
+require_relative '../resources/relationship'
 require_relative '../resources/match_result'
 require_relative '../resources/namespace'
 require_relative '../schemas'
@@ -17,6 +18,7 @@ module OpenBEL
       include OpenBEL::Resource::Evidence
       include OpenBEL::Resource::Expressions
       include OpenBEL::Resource::Functions
+      include OpenBEL::Resource::Relationships
       include OpenBEL::Resource::MatchResults
       include OpenBEL::Resource::Namespaces
       include OpenBEL::Schemas
@@ -36,6 +38,8 @@ module OpenBEL
         :completion_collection      => CompletionCollectionSerializer,
         :function                   => FunctionResourceSerializer,
         :function_collection        => FunctionCollectionSerializer,
+        :relationship               => RelationshipResourceSerializer,
+        :relationship_collection    => RelationshipCollectionSerializer,
         :match_result               => MatchResultResourceSerializer,
         :match_result_collection    => MatchResultCollectionSerializer,
         :namespace                  => NamespaceResourceSerializer,

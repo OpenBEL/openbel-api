@@ -26,6 +26,9 @@ module OpenBEL
                 :href => "#{base_url}/api/functions"
               },
               {
+                :href => "#{base_url}/api/relationships"
+              },
+              {
                 :href => "#{base_url}/api/namespaces"
               }
             ]

@@ -19,6 +19,7 @@ require_relative 'routes/evidence'
 require_relative 'routes/datasets'
 require_relative 'routes/expressions'
 require_relative 'routes/functions'
+require_relative 'routes/relationships'
 require_relative 'routes/namespaces'
 require_relative 'routes/authenticate'
 require_relative 'routes/version'
@@ -71,6 +72,7 @@ module OpenBEL
     use OpenBEL::Routes::Annotations
     use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Functions
+    use OpenBEL::Routes::Relationships
     use OpenBEL::Routes::Namespaces
     use OpenBEL::Routes::Authenticate
 
