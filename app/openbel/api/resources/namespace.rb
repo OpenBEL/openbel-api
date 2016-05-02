@@ -94,8 +94,8 @@ module OpenBEL
 
           # Support inclusion of the matched text when annotation values are filtered by
           # a full-text search.
-          if item.match_text
-            property :match_text,    item.match_text
+          if item.respond_to?(:match_text) && item.match_text
+            property :match_text, item.match_text
           end
         end
       end
