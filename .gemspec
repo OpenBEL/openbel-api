@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   # Dependencies
 
   ## bel.rb
-  spec.add_runtime_dependency 'bel',               '0.7.0'
+  spec.add_runtime_dependency 'bel',               '1.0.0'
 
   ## bel.rb translator dependencies
   spec.add_runtime_dependency 'json-ld',           '2.0.0'
