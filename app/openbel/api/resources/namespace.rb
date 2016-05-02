@@ -163,7 +163,7 @@ module OpenBEL
           property :identifier,    item.identifier
           property :title,         item.title
           property :species,       item.from_species
-          property :namespace_uri, item.inScheme
+          property :namespace_uri, item.in_scheme
 
           property :value_equivalence_collection, item.equivalences, NamespaceValueSerializer
         end
