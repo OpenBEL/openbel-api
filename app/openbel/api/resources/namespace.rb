@@ -22,9 +22,9 @@ module OpenBEL
         schema do
           type     :namespace
           property :rdf_uri, item.uri.to_s
-          property :name,    item.pref_label
-          property :prefix,  item.prefix
-          property :domain,  item.domain
+          property :name,    item.pref_label.first
+          property :prefix,  item.prefix.first
+          property :domain,  item.domain.first
         end
       end
 
@@ -86,10 +86,10 @@ module OpenBEL
           type     :namespace_value
           property :rdf_uri,       item.uri.to_s
           property :type,          [item.type].flatten.map(&:to_s)
-          property :identifier,    item.identifier
-          property :name,          item.pref_label
-          property :title,         item.title
-          property :species,       item.from_species
+          property :identifier,    item.identifier.first
+          property :name,          item.pref_label.first
+          property :title,         item.title.first
+          property :species,       item.from_species.first
           entity   :namespace,     item.namespace, NamespaceSerializer
 
           # Support inclusion of the matched text when annotation values are filtered by
@@ -160,10 +160,10 @@ module OpenBEL
           type :value_equivalence
           property :value,         item.value
           property :type,          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
-          property :identifier,    item.identifier
-          property :title,         item.title
-          property :species,       item.from_species
-          property :namespace_uri, item.in_scheme
+          property :identifier,    item.identifier.first
+          property :title,         item.title.first
+          property :species,       item.from_species.first
+          property :namespace_uri, item.in_scheme.first
 
           property :value_equivalence_collection, item.equivalences, NamespaceValueSerializer
         end

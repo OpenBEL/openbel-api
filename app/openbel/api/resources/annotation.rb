@@ -22,9 +22,9 @@ module OpenBEL
         schema do
           type     :annotation
           property :rdf_uri,    item.uri.to_s
-          property :name,       item.pref_label
-          property :prefix,     item.prefix
-          property :domain,     item.domain
+          property :name,       item.pref_label.first
+          property :prefix,     item.prefix.first
+          property :domain,     item.domain.first
         end
       end
 
@@ -85,8 +85,8 @@ module OpenBEL
           type     :annotation_value
           property :rdf_uri,         item.uri.to_s
           property :type,            [item.type].flatten.map(&:to_s)
-          property :identifier,      item.identifier
-          property :name,            item.pref_label
+          property :identifier,      item.identifier.first
+          property :name,            item.pref_label.first
           entity   :annotation,      item.annotation, AnnotationSerializer
 
           # Support inclusion of the matched text when annotation values are filtered by
