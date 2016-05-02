@@ -411,7 +411,7 @@ module OpenBEL
                 namespace        = @namespaces.find(namespace).first
                 if namespace
                   value = namespace.find(value).first
-                  if !value || value.fromSpecies != @species_tax_id
+                  if !value || value.from_species != @species_tax_id
                     @parameter_errors << value
                   end
                 end
@@ -544,7 +544,7 @@ module OpenBEL
           value     = namespace.find(value).first
           return EMPTY unless value
           orthologs = value.orthologs.select { |orth|
-            orth.fromSpecies == @species_tax_id
+            orth.from_species == @species_tax_id
           }.to_a
           return EMPTY if orthologs.empty?
 

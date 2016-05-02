@@ -89,7 +89,7 @@ module OpenBEL
           property :identifier,    item.identifier
           property :name,          item.pref_label
           property :title,         item.title
-          property :species,       item.fromSpecies
+          property :species,       item.from_species
           entity   :namespace,     item.namespace, NamespaceSerializer
 
           # Support inclusion of the matched text when annotation values are filtered by
@@ -162,7 +162,7 @@ module OpenBEL
           property :type,          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
           property :identifier,    item.identifier
           property :title,         item.title
-          property :species,       item.fromSpecies
+          property :species,       item.from_species
           property :namespace_uri, item.inScheme
 
           property :value_equivalence_collection, item.equivalences, NamespaceValueSerializer
