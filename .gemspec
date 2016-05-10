@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   # Dependencies
 
   ## bel.rb
-  spec.add_runtime_dependency 'bel',               '1.0.0'
+  spec.add_runtime_dependency 'bel',               '~> 1.0.0.beta'
 
   ## bel.rb translator dependencies
   spec.add_runtime_dependency 'json-ld',           '2.0.0'
@@ -46,10 +46,10 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'rdf-turtle',        '2.0.0'
 
   ## bel.rb plugin - annotation/namespace search
-  spec.add_runtime_dependency 'bel-search-sqlite', '0.4.2'
+  spec.add_runtime_dependency 'bel-search-sqlite', '~> 1.0.0.beta'
 
   ## bel.rb plugin - RDF repository using Apache Jena
-  spec.add_runtime_dependency 'bel-rdf-jena',      '0.4.3.beta'
+  spec.add_runtime_dependency 'bel-rdf-jena',      '~> 1.0.0.beta'
 
   ## Mongo - Faceted search of evidence.
   spec.add_runtime_dependency 'mongo',             '1.12.5'
