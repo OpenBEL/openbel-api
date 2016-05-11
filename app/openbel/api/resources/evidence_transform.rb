@@ -103,7 +103,7 @@ module OpenBEL
 
       class AnnotationGroupingTransform
 
-        ExperimentContext = ::BEL::Model::ExperimentContext
+        ExperimentContext = ::BEL::Nanopub::ExperimentContext
 
         def transform_evidence!(evidence)
           experiment_context = evidence.experiment_context

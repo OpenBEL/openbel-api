@@ -1,5 +1,5 @@
 require 'bel'
-require 'bel/evidence_model/util'
+require 'bel/nanopub/util'
 require 'mongo'
 require_relative 'api'
 require_relative 'mongo_facet'
@@ -137,7 +137,7 @@ module OpenBEL
           obj = obj.to_h
           obj[:keyword] = obj.delete("keyword")
           obj[:uri]     = obj.delete("uri")
-          union, new_remap = BEL::Model.union_namespace_references(union, [obj], 'incr')
+          union, new_remap = BEL::Nanopub.union_namespace_references(union, [obj], 'incr')
           remap.merge!(new_remap)
         end
 
@@ -196,7 +196,7 @@ module OpenBEL
           obj[:keyword] = obj.delete("keyword")
           obj[:type]    = obj.delete("type")
           obj[:domain]  = obj.delete("domain")
-          union, new_remap = BEL::Model.union_annotation_references(union, [obj], 'incr')
+          union, new_remap = BEL::Nanopub.union_annotation_references(union, [obj], 'incr')
           remap.merge!(new_remap)
         end
 

@@ -150,7 +150,7 @@ module OpenBEL
         flatten = as_bool(params[:flatten])
 
         statement = BEL::Script.parse(bel).find { |obj|
-          obj.is_a? BEL::Model::Statement
+          obj.is_a? BEL::Nanopub::Statement
         }
         halt 404 unless statement
 
@@ -168,7 +168,7 @@ module OpenBEL
         inner_terms = as_bool(params[:inner_terms])
 
         terms = BEL::Script.parse(bel).select { |obj|
-          obj.is_a? BEL::Model::Term
+          obj.is_a? BEL::Nanopub::Term
         }
 
         if !functions.empty?
@@ -182,7 +182,7 @@ module OpenBEL
 
         if inner_terms
           terms = terms.flat_map { |term|
-            term.arguments.select { |arg| arg.is_a? BEL::Model::Term }
+            term.arguments.select { |arg| arg.is_a? BEL::Nanopub::Term }
           }
         end
 

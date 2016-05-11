@@ -109,7 +109,7 @@ module OpenBEL
       end
 
       post '/api/evidence' do
-        # Validate JSON Evidence.
+        # Validate JSON Nanopub.
         validate_media_type! "application/json"
         evidence_obj = read_json
 
@@ -122,7 +122,7 @@ module OpenBEL
           )
         end
 
-        evidence = ::BEL::Model::Evidence.create(evidence_obj[:evidence])
+        evidence = ::BEL::Nanopub::Nanopub.create(evidence_obj[:evidence])
 
         # Standardize annotations.
         @annotation_transform.transform_evidence!(evidence, base_url)
@@ -211,11 +211,12 @@ module OpenBEL
         end
 
         # transformation
-        evidence          = evidence_obj[:evidence]
-        evidence_model    = ::BEL::Model::Evidence.create(evidence)
-        @annotation_transform.transform_evidence!(evidence_model, base_url)
-        facets = map_evidence_facets(evidence_model)
-        evidence = evidence_model.to_h
+        evidence = evidence_obj[:evidence]
+        nanopub  = ::BEL::Nanopub::Nanopub.create(evidence)
+        @annotation_transform.transform_evidence!(nanopub, base_url)
+
+        facets                   = map_evidence_facets(nanopub)
+        evidence                 = nanopub.to_h
         evidence[:bel_statement] = evidence.fetch(:bel_statement, nil).to_s
         evidence[:facets]        = facets
 

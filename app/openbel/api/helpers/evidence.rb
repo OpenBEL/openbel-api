@@ -57,8 +57,8 @@ module OpenBEL
           dataset_evidence = cursor.lazy.map { |evidence|
             evidence.delete('facets')
             evidence.delete('_id')
-            evidence = BEL::Model::Evidence.create(BEL.keys_to_symbols(evidence))
-            evidence.bel_statement = BEL::Model::Evidence.parse_statement(evidence)
+            evidence = BEL::Nanopub::Nanopub.create(BEL.keys_to_symbols(evidence))
+            evidence.bel_statement = BEL::Nanopub::Nanopub.parse_statement(evidence)
             evidence
           }
 
