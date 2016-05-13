@@ -51,7 +51,7 @@ Gem::Specification.new do |spec|
   ## bel.rb plugin - RDF repository using Apache Jena
   spec.add_runtime_dependency 'bel-rdf-jena',      '~> 1.0.0.beta'
 
-  ## Mongo - Faceted search of evidence.
+  ## Mongo - Faceted search of nanopub.
   spec.add_runtime_dependency 'mongo',             '1.12.5'
   spec.add_runtime_dependency 'bson',              '1.12.5'
 

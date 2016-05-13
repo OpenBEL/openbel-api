@@ -17,12 +17,12 @@ This project adheres to [Semantic Versioning][Semantic Versioning].
 
 ## [0.6.0][0.6.0] - 2016-03-16
 ### Added
-- Retrieve evidence in a format supported by BEL translator plugins ([Issue 44][44]).
-- Retrieve dataset evidence in a format supported by BEL translator plugins ([Issue 99][99]).
+- Retrieve nanopub in a format supported by BEL translator plugins ([Issue 44][44]).
+- Retrieve dataset nanopub in a format supported by BEL translator plugins ([Issue 99][99]).
 
 ### Fixed
-- Dataset evidence collection is missing annotation/namespace URIs ([Issue 95][95]).
-- Facets are not created for evidence uploaded through a dataset.
+- Dataset nanopub collection is missing annotation/namespace URIs ([Issue 95][95]).
+- Facets are not created for nanopub uploaded through a dataset.
 
 ### Changed
 - MongoDB version 3.2.0 is now required due to use of `$slice` operator in Aggregation queries.
@@ -36,7 +36,7 @@ Datasets are stored with a URI computed from the scheme and host that is serving
 
 ## [0.5.1][0.5.1] - 2015-12-18
 ### Fixed
-- Authentication error for MongoDB user when faceting on `GET /api/evidence` ([Issue #93][93]).
+- Authentication error for MongoDB user when faceting on `GET /api/nanopub` ([Issue #93][93]).
 
 ### Changed
 - MongoDB version 3.2.0 is now required due to use of `$slice` operator in Aggregation queries ([Issue ?][]).
@@ -60,12 +60,12 @@ Datasets are stored with a URI computed from the scheme and host that is serving
 
 ## 0.4.0 - 2015-12-14
 ### Added
-- Evidence Store
-  - Storage of evidence including creation, retrieval, modification, and deletion actions.
-  - Flexible filtering of stored, evidence based on user's custom data requirements.
-  - Upload a document (e.g. BEL script, XBEL, or Evidence JSON), to the Evidence Store, as a dataset. These can later be retrieved or deleted from the Evidence Store.
-  - Flexible filtering of evidence contained within a dataset.
-  - Download a document (e.g. BEL script, XBEL, or Evidence JSON) from a dataset.
+- Nanopub Store
+  - Storage of nanopub including creation, retrieval, modification, and deletion actions.
+  - Flexible filtering of stored, nanopub based on user's custom data requirements.
+  - Upload a document (e.g. BEL script, XBEL, or Nanopub JSON), to the Nanopub Store, as a dataset. These can later be retrieved or deleted from the Nanopub Store.
+  - Flexible filtering of nanopub contained within a dataset.
+  - Download a document (e.g. BEL script, XBEL, or Nanopub JSON) from a dataset.
 - BEL Expressions
   - Autocomplete a BEL term expression.
   - Retrieve the structural components of a BEL expression.
@@ -81,7 +81,7 @@ Datasets are stored with a URI computed from the scheme and host that is serving
 [0.5.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.5.0...0.5.1
 [0.5.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.4.0...0.5.0
 [Semantic Versioning]:         http://semver.org
-[MongoDB User Authentication]: https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store#mongodb-user-authentication
+[MongoDB User Authentication]: https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Nanopub-Store#mongodb-user-authentication
 [44]:                          https://github.com/OpenBEL/openbel-api/issues/44
 [91]:                          https://github.com/OpenBEL/openbel-api/issues/91
 [92]:                          https://github.com/OpenBEL/openbel-api/issues/92

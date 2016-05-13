@@ -1,8 +1,8 @@
 #!/usr/bin/env jruby
 
 # Mongo migration:
-# - Drops the now unused "evidence_facets" collection.
-# - Replaced by the "evidence_facet_cache" collection plus individual UUID cache collections.
+# - Drops the now unused "nanopub_facets" collection.
+# - Replaced by the "nanopub_facet_cache" collection plus individual UUID cache collections.
 # - Idempotent (i.e. Safe to run multiple times.)
 #
 
@@ -41,11 +41,11 @@ def setup_mongo(cfg)
 end
 
 def migrate(mongo)
-  if mongo.collection_names.include?('evidence_facets')
-    mongo.drop_collection('evidence_facets')
-    puts %Q{Dropped "evidence_facets" collection (success).}
+  if mongo.collection_names.include?('nanopub_facets')
+    mongo.drop_collection('nanopub_facets')
+    puts %Q{Dropped "nanopub_facets" collection (success).}
   else
-    puts %Q{The "evidence_facets" collection does not exist. Nothing to migrate (success).}
+    puts %Q{The "nanopub_facets" collection does not exist. Nothing to migrate (success).}
   end
 
   true
@@ -54,7 +54,7 @@ end
 if ACTIVE_VERSION =~ VERSION_REQUIREMENT
   cfg = OpenBEL::Config.load!
   migrate(
-    setup_mongo(cfg[:evidence_store][:mongo])
+    setup_mongo(cfg[:nanopub_store][:mongo])
   )
   exit 0
 else

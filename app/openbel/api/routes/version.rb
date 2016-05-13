@@ -11,12 +11,12 @@ module OpenBEL
       ACCEPTED_TYPES   = {'json' => JSON, 'text' => TEXT}
       DEFAULT_TYPE     = TEXT
 
-      options '/api/version' do
+      options '/api/language/version' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      get '/api/version' do
+      get '/api/language/version' do
         accept_type = request.accept.find { |accept_entry|
           ACCEPTED_TYPES.values.include?(accept_entry.to_s)
         }

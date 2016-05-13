@@ -1,6 +1,6 @@
 {
-  "evidence": {
-    "bel_statement": "p(HGNC:TIMP3) decreases bp(GOBP:angiogenesis)",
+  "nanopub": {
+    "bel_statement": "biologicalProcess(GOBP:aging) increases biologicalProcess(GOBP:\"apoptotic process\")",
     "citation": {
       "type": "PubMed",
       "name": "Trends in molecular medicine",
@@ -9,11 +9,12 @@
       "authors": ["de Nigris F", "Lerman A"],
       "comment": "Primary literature from (Trends in Molecular Medicine)."
     },
-    "summary_text": "TIMP-3 can be anti-angiogenic by direct binding to vascular endothelial growth factor (VEGF) receptor 2 in a matrix-metalloproteinase- independent manner [94].",
+    "support": "Aging, one of the major predictors for atherosclerotic lesion formation, increases\nthe sensitivity of endothelial cells to apoptosis induced by in vitro and in vivo\nstimuli [35–37].",
     "experiment_context": [
       {
-        "name":  "Ncbi Taxonomy",
-        "value": "Homo sapiens"
+        "name": "Disease",
+        "value": "atherosclerosis",
+        "uri": "http://www.openbel.org/bel/namespace/disease-ontology/atherosclerosis"
       }
     ],
     "metadata": [
@@ -39,16 +40,12 @@
         {
           "keyword": "GOBP",
           "uri": "http://www.openbel.org/bel/namespace/go-biological-process"
-        },
-        {
-          "keyword": "HGNC",
-          "uri": "http://www.openbel.org/bel/namespace/hgnc-human-genes"
         }
       ],
       "annotations": [
         {
-          "keyword": "Ncbi Taxonomy",
-          "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy"
+          "keyword": "Disease",
+          "uri": "http://www.openbel.org/bel/namespace/disease-ontology"
         }
       ]
     }

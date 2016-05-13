@@ -1,16 +1,16 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "title": "Evidence Resource",
-  "description": "A single evidence resource.",
+  "title": "Nanopub Resource",
+  "description": "A single nanopub resource.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "evidence"
+    "nanopub"
   ],
   "properties": {
     "allOf": [
       {
-        "$ref":"evidence.schema.json"
+        "$ref":"nanopub.schema.json"
       },
       {
         "type": "object",

@@ -1,7 +1,7 @@
 #!/usr/bin/env jruby
 
 # Mongo migration:
-# - Converts "evidence.facets" from JSON strings to objects in the document:
+# - Converts "nanopub.facets" from JSON strings to objects in the document:
 # - Each facet will be expanded from a JSON string to:
 # {
 #   category: "...",
@@ -20,7 +20,7 @@ ACTIVE_VERSION      = OpenBEL::Version::STRING
 ENV['OPENBEL_API_CONFIG_FILE'] ||= (ARGV.first || ENV['OPENBEL_API_CONFIG_FILE'])
 
 unless ENV['OPENBEL_API_CONFIG_FILE']
-  $stderr.puts "usage: migrate_evidence_facets.rb [CONFIG FILE]\n"
+  $stderr.puts "usage: migrate_nanopub_facets.rb [CONFIG FILE]\n"
   $stderr.puts "Alternatively set the environment variable OPENBEL_API_CONFIG_FILE"
   exit 1
 end
@@ -50,8 +50,8 @@ def migrate(mongo)
 
   count   = 0
   skipped = 0
-  evidence_collection = mongo[:evidence]
-  evidence_collection.find do |cursor|
+  nanopub_collection = mongo[:nanopub]
+  nanopub_collection.find do |cursor|
     cursor.each do |doc|
       facets = doc['facets']
       unless facets.empty?
@@ -68,7 +68,7 @@ def migrate(mongo)
         if skip
           skipped += 1
         else
-          evidence_collection.update(
+          nanopub_collection.update(
             {:_id => doc['_id']},
             {
               :$set => {
@@ -78,21 +78,21 @@ def migrate(mongo)
           )
           count += 1
         end
-        puts "...#{count} evidence migrated" if count > 0 && (count % 100).zero?
+        puts "...#{count} nanopub migrated" if count > 0 && (count % 100).zero?
       end
     end
   end
 
-  puts "Total of #{count} evidence migrated. Skipped #{skipped} evidence (success)."
+  puts "Total of #{count} nanopub migrated. Skipped #{skipped} nanopub (success)."
   true
 end
 
 if ACTIVE_VERSION =~ VERSION_REQUIREMENT
   cfg = OpenBEL::Config.load!
   migrate(
-    setup_mongo(cfg[:evidence_store][:mongo])
+    setup_mongo(cfg[:nanopub_store][:mongo])
   )
-  $stdout.puts %Q{Successfully migrated "facets" field of documents in "evidence" collection from strings to full objects.}
+  $stdout.puts %Q{Successfully migrated "facets" field of documents in "nanopub" collection from strings to full objects.}
   exit 0
 else
   $stderr.puts %Q{Migration is intended for version "#{VERSION_REQUIREMENT}".}

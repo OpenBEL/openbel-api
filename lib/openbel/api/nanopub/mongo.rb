@@ -5,9 +5,9 @@ require_relative 'api'
 require_relative 'mongo_facet'
 
 module OpenBEL
-  module Evidence
+  module Nanopub
 
-    class Evidence
+    class Nanopub
       include API
       include Mongo
 
@@ -30,42 +30,42 @@ module OpenBEL
           @db.authenticate(username, password, nil, auth_db)
         end
 
-        @collection      = @db[:evidence]
-        @evidence_facets = EvidenceFacets.new(options)
+        @collection      = @db[:nanopub]
+        @nanopub_facets = NanopubFacets.new(options)
 
         # ensure all indexes are created and maintained
         ensure_all_indexes
       end
 
-      def create_evidence(evidence)
-        # insert evidence; acknowledge journal
-        if evidence.respond_to?(:each_pair)
-          _id = @collection.insert(evidence, :w => 1, :j => true)
+      def create_nanopub(nanopub)
+        # insert nanopub; acknowledge journal
+        if nanopub.respond_to?(:each_pair)
+          _id = @collection.insert(nanopub, :w => 1, :j => true)
 
-          # remove evidence_facets after insert to facets
-          remove_evidence_facets(_id)
+          # remove nanopub_facets after insert to facets
+          remove_nanopub_facets(_id)
           _id
-        elsif evidence.respond_to?(:each)
-          @collection.insert(evidence.to_a, :w => 1, :j => true)
+        elsif nanopub.respond_to?(:each)
+          @collection.insert(nanopub.to_a, :w => 1, :j => true)
         else
-          raise "Evidence type #{evidence.class} cannot be inserted into Mongo."
+          raise "nanopub type #{nanopub.class} cannot be inserted into Mongo."
         end
       end
 
-      def find_evidence_by_id(value)
+      def find_nanopub_by_id(value)
         @collection.find_one(to_id(value))
       end
 
-      def find_evidence(filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
+      def find_nanopub(filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
         if includes_fts_search?(filters)
           text_search = get_fts_search(filters)
-          evidence_aggregate(text_search, filters, offset, length, facet, facet_value_limit)
+          nanopub_aggregate(text_search, filters, offset, length, facet, facet_value_limit)
         else
-          evidence_query(filters, offset, length, facet, facet_value_limit)
+          nanopub_query(filters, offset, length, facet, facet_value_limit)
         end
       end
 
-      def find_dataset_evidence(dataset, filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
+      def find_dataset_nanopub(dataset, filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
         query_hash = to_query(filters)
         query_hash[:$and] ||= []
         query_hash[:$and].unshift({
@@ -85,7 +85,7 @@ module OpenBEL
           :cursor => @collection.find(query_hash, query_opts)
         }
         if facet
-          facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+          facets_cursor = @nanopub_facets.find_facets(query_hash, filters, facet_value_limit)
           results[:facets] = facets_cursor.to_a
         end
 
@@ -103,7 +103,7 @@ module OpenBEL
             {
               :$unwind => "$references.namespaces"
             },
-            {   
+            {
               :$project => {
                 keyword: "$references.namespaces.keyword",
                 uri: "$references.namespaces.uri"
@@ -153,7 +153,7 @@ module OpenBEL
             {
               :$unwind => "$references.annotations"
             },
-            {   
+            {
               :$project => {
                 keyword: "$references.annotations.keyword",
                 type:    "$references.annotations.type",
@@ -203,27 +203,27 @@ module OpenBEL
         remap
       end
 
-      def count_evidence(filters = [])
+      def count_nanopub(filters = [])
         query_hash = to_query(filters)
         @collection.count(:query => query_hash)
       end
 
-      def update_evidence_by_id(value, evidence)
+      def update_nanopub_by_id(value, nanopub)
         # add ObjectId to update
         _id = BSON::ObjectId(value)
-        evidence_h = evidence.to_h
-        evidence_h[:_id] = _id
+        nanopub_h = nanopub.to_h
+        nanopub_h[:_id] = _id
 
-        # save evidence; acknowledge journal
-        @collection.save(evidence_h, :j => true)
+        # save nanopub; acknowledge journal
+        @collection.save(nanopub_h, :j => true)
 
-        # remove evidence_facets after update to facets
-        remove_evidence_facets(_id)
+        # remove nanopub_facets after update to facets
+        remove_nanopub_facets(_id)
         nil
       end
 
       def delete_facets
-        @evidence_facets.delete_all_facets
+        @nanopub_facets.delete_all_facets
       end
 
       def delete_dataset(identifier)
@@ -231,27 +231,27 @@ module OpenBEL
           { :"_dataset" => identifier },
           :j => true
         )
-        @evidence_facets.delete_all_facets
+        @nanopub_facets.delete_all_facets
       end
 
-      def delete_evidence(value)
+      def delete_nanopub(value)
         if value.respond_to?(:each)
           value.each do |v|
-            delete_evidence_by_id(v)
+            delete_nanopub_by_id(v)
           end
         else
-          delete_evidence_by_id(value)
+          delete_nanopub_by_id(value)
         end
       end
 
-      def delete_evidence_by_query(query)
+      def delete_nanopub_by_query(query)
         @collection.remove(
           query,
           :j => true
         )
       end
 
-      def delete_evidence_by_id(value)
+      def delete_nanopub_by_id(value)
         # convert to ObjectId
         begin
           _id = to_id(value)
@@ -260,10 +260,10 @@ module OpenBEL
           false
         end
 
-        # remove evidence_facets before evidence removal
-        remove_evidence_facets(_id)
+        # remove nanopub_facets before nanopub removal
+        remove_nanopub_facets(_id)
 
-        # remove evidence; returns true
+        # remove nanopub; returns true
         @collection.remove(
           {
               :_id => _id
@@ -297,7 +297,7 @@ module OpenBEL
 
       private
 
-      def evidence_query(filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
+      def nanopub_query(filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
         query_hash = to_query(filters)
         query_opts = query_options(
           query_hash,
@@ -312,14 +312,14 @@ module OpenBEL
           :cursor => @collection.find(query_hash, query_opts)
         }
         if facet
-          facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+          facets_cursor = @nanopub_facets.find_facets(query_hash, filters, facet_value_limit)
           results[:facets] = facets_cursor.to_a
         end
 
         results
       end
 
-      def evidence_aggregate(text_search, filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
+      def nanopub_aggregate(text_search, filters = [], offset = 0, length = 0, facet = false, facet_value_limit = -1)
         match_filters = filters.select { |filter|
           filter['category'] != 'fts'
         }
@@ -376,7 +376,7 @@ module OpenBEL
         facets =
           if facet
             query_hash = to_query(filters)
-            facets_cursor = @evidence_facets.find_facets(query_hash, filters, facet_value_limit)
+            facets_cursor = @nanopub_facets.find_facets(query_hash, filters, facet_value_limit)
             facets_cursor.to_a
           else
             nil
@@ -498,13 +498,13 @@ module OpenBEL
         BSON::ObjectId(value.to_s)
       end
 
-      def remove_evidence_facets(_id)
+      def remove_nanopub_facets(_id)
         doc = @collection.find_one(_id, {
           :fields => {:_id => 0, :facets => 1}
         })
 
         if doc && doc.has_key?('facets')
-          @evidence_facets.delete_facets(doc['facets'])
+          @nanopub_facets.delete_facets(doc['facets'])
         end
       end
     end

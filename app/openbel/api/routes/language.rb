@@ -1,32 +1,26 @@
 module OpenBEL
   module Routes
 
-    class Root < Base
+    class Language < Base
 
-      options '/api' do
+      options '/api/language' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      get '/api' do
+      get '/api/language' do
         response.headers['Content-Type'] = 'application/hal+json'
         MultiJson.dump({
           :_links => {
             :item => [
               {
-                :href => "#{base_url}/api/annotations"
+                :href => "#{base_url}/api/language/functions"
               },
               {
-                :href => "#{base_url}/api/nanopub"
+                :href => "#{base_url}/api/language/relationships"
               },
               {
-                :href => "#{base_url}/api/expressions"
-              },
-              {
-                :href => "#{base_url}/api/language"
-              },
-              {
-                :href => "#{base_url}/api/namespaces"
+                :href => "#{base_url}/api/language/version"
               }
             ]
           }

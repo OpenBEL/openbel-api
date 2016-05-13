@@ -1,20 +1,20 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "description": "DESCRIBE EVIDENCE COLLECTION",
+  "description": "DESCRIBE NANOPUB COLLECTION",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "evidence_collection",
+    "nanopub_collection",
     "facets"
   ],
   "properties": {
-    "evidence_collection": {
+    "nanopub_collection": {
       "type": "array",
       "minItems": 0,
       "title": "",
       "description": "",
       "items": {
-        "$ref":"evidence_resource.schema.json"
+        "$ref":"nanopub_resource.schema.json"
       }
     },
     "facets": {
@@ -53,7 +53,7 @@
     },
     "metadata": {
       "title": "Metadata",
-      "description": "Data about the evidence collection",
+      "description": "Data about the nanopub collection",
       "type": "object",
       "additionalProperties": true,
       "properties": {

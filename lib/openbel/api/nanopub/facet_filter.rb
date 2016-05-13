@@ -1,16 +1,16 @@
 require 'multi_json'
 
 module OpenBEL
-  module Evidence
+  module Nanopub
     module FacetFilter
 
       EMPTY = []
-      EVIDENCE_PARTS = [:citation, :experiment_context, :metadata]
+      NANOPUB_PARTS = [:citation, :experiment_context, :metadata]
 
-      def map_evidence_facets(evidence)
-        EVIDENCE_PARTS.reduce([]) { |facets, evidence_part|
-          part = evidence.send(evidence_part)
-          new_facets = self.send(:"map_#{evidence_part}_facets", part)
+      def map_nanopub_facets(nanopub)
+        NANOPUB_PARTS.reduce([]) { |facets, nanopub_part|
+          part = nanopub.send(nanopub_part)
+          new_facets = self.send(:"map_#{nanopub_part}_facets", part)
           facets.concat(new_facets)
         }
       end

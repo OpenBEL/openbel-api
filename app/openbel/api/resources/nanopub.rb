@@ -3,29 +3,29 @@ require_relative 'base'
 
 module OpenBEL
   module Resource
-    module Evidence
+    module Nanopub
 
-      class EvidenceSerializer < BaseSerializer
+      class NanopubSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
-          type :evidence
+          type :nanopub
           property :bel_statement,      item['bel_statement']
           property :citation,           item['citation']
-          property :summary_text,       item['summary_text']
+          property :support,       item['support']
           property :experiment_context, item['experiment_context']
           property :metadata,           item['metadata']
           property :id,                 item['_id']
         end
       end
 
-      class EvidenceResourceSerializer < BaseSerializer
+      class NanopubResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
-          type :evidence
+          type :nanopub
           properties do |p|
-            p.evidence item
+            p.nanopub item
           end
 
           link :self,         link_self
@@ -38,25 +38,25 @@ module OpenBEL
           id = item[:id] || context[:_id]
           item.delete(:id)
           {
-            :type => :evidence,
-            :href => "#{base_url}/api/evidence/#{id}"
+            :type => :nanopub,
+            :href => "#{base_url}/api/nanopub/#{id}"
           }
         end
 
         def link_collection
           {
-            :type => :evidence_collection,
-            :href => "#{base_url}/api/evidence"
+            :type => :nanopub_collection,
+            :href => "#{base_url}/api/nanopub"
           }
         end
       end
 
-      class EvidenceCollectionSerializer < BaseSerializer
+      class NanopubCollectionSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
 
         schema do
-          type     :evidence_collection
-          property :evidence_collection,   item
+          type     :nanopub_collection
+          property :nanopub_collection,   item
           property :facets,                context[:facets]
           property :metadata,              context[:metadata]
           link     :self,                  link_self
@@ -71,16 +71,16 @@ module OpenBEL
           start  = context[:start]
           size   = context[:size]
           {
-            :type => :evidence_collection,
-            :href => "#{base_url}/api/evidence?start=#{start}&size=#{size}&#{filter_query_params.join('&')}"
+            :type => :nanopub_collection,
+            :href => "#{base_url}/api/nanopub?start=#{start}&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
 
         def link_start
           size = context[:size]
           {
-            :type => :evidence_collection,
-            :href => "#{base_url}/api/evidence?start=0&size=#{size}&#{filter_query_params.join('&')}"
+            :type => :nanopub_collection,
+            :href => "#{base_url}/api/nanopub?start=0&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
 
@@ -89,8 +89,8 @@ module OpenBEL
           return {} unless previous_page
 
           {
-            :type => :evidence_collection,
-            :href => "#{base_url}/api/evidence?start=#{previous_page.start_offset}&size=#{previous_page.page_size}&#{filter_query_params.join('&')}"
+            :type => :nanopub_collection,
+            :href => "#{base_url}/api/nanopub?start=#{previous_page.start_offset}&size=#{previous_page.page_size}&#{filter_query_params.join('&')}"
           }
         end
 
@@ -99,8 +99,8 @@ module OpenBEL
           return {} unless next_page
 
           {
-            :type => :evidence_collection,
-            :href => "#{base_url}/api/evidence?start=#{next_page.start_offset}&size=#{next_page.page_size}&#{filter_query_params.join('&')}"
+            :type => :nanopub_collection,
+            :href => "#{base_url}/api/nanopub?start=#{next_page.start_offset}&size=#{next_page.page_size}&#{filter_query_params.join('&')}"
           }
         end
 

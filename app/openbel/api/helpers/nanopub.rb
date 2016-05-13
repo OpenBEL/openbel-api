@@ -5,9 +5,9 @@ require_relative 'translators'
 module OpenBEL
   module Helpers
 
-    def render_evidence_collection(
+    def render_nanopub_collection(
       name, page_results, start, size, filters,
-      filtered_total, collection_total, evidence_api
+      filtered_total, collection_total, nanopub_api
     )
       # see if the user requested a BEL translator (Accept header or ?format)
       translator        = Translators.requested_translator(request, params)
@@ -20,7 +20,7 @@ module OpenBEL
       if wants_default? || !translator
         facets   = page_results[:facets]
         pager    = Pager.new(start, size, filtered_total)
-        evidence = page_results[:cursor].map { |item|
+        nanopub = page_results[:cursor].map { |item|
                      item.delete('facets')
                      item
                    }.to_a
@@ -36,7 +36,7 @@ module OpenBEL
               :total_filtered         => pager.total_size,
               :total_pages            => pager.total_pages,
               :current_page           => pager.current_page,
-              :current_page_size      => evidence.size,
+              :current_page_size      => nanopub.size,
             }
           }
         }
@@ -45,7 +45,7 @@ module OpenBEL
         options[:previous_page] = pager.previous_page
         options[:next_page]     = pager.next_page
 
-        render_collection(evidence, :evidence, options)
+        render_collection(nanopub, :nanopub, options)
       else
         extension = translator_plugin.file_extensions.first
 
@@ -54,18 +54,18 @@ module OpenBEL
         attachment "#{name}.#{extension}"
         stream :keep_open do |response|
           cursor             = page_results[:cursor]
-          dataset_evidence = cursor.lazy.map { |evidence|
-            evidence.delete('facets')
-            evidence.delete('_id')
-            evidence = BEL::Nanopub::Nanopub.create(BEL.keys_to_symbols(evidence))
-            evidence.bel_statement = BEL::Nanopub::Nanopub.parse_statement(evidence)
-            evidence
+          dataset_nanopub = cursor.lazy.map { |nanopub|
+            nanopub.delete('facets')
+            nanopub.delete('_id')
+            nanopub = BEL::Nanopub::Nanopub.create(BEL.keys_to_symbols(nanopub))
+            nanopub.bel_statement = BEL::Nanopub::Nanopub.parse_statement(nanopub)
+            nanopub
           }
 
           translator.write(
-            dataset_evidence, response,
-            :annotation_reference_map => evidence_api.find_all_annotation_references,
-            :namespace_reference_map  => evidence_api.find_all_namespace_references
+            dataset_nanopub, response,
+            :annotation_reference_map => nanopub_api.find_all_annotation_references,
+            :namespace_reference_map  => nanopub_api.find_all_namespace_references
           )
         end
       end

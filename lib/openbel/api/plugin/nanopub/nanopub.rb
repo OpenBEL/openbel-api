@@ -3,12 +3,12 @@ require_relative '../plugin'
 module OpenBEL
   module Plugin
 
-    class Evidence
+    class Nanopub
       include OpenBEL::Plugin
 
-      ID = 'evidence'
-      NAME = 'OpenBEL Evidence API'
-      DESC = 'API for accesing OpenBEL Evidence.'
+      ID = 'nanopub'
+      NAME = 'OpenBEL Nanopub API'
+      DESC = 'API for accesing OpenBEL Nanopub.'
 
       def id
         ID
@@ -23,7 +23,7 @@ module OpenBEL
       end
 
       def type
-        :evidence
+        :nanopub
       end
 
       def required_extensions
@@ -35,7 +35,7 @@ module OpenBEL
       end
 
       def on_load
-        require_relative '../../evidence/mongo'
+        require_relative '../../nanopub/mongo'
       end
 
       def validate(extensions = {}, options = {})
@@ -51,7 +51,7 @@ module OpenBEL
       end
 
       def create_instance
-        OpenBEL::Evidence::Evidence.new(@options)
+        OpenBEL::Nanopub::Nanopub.new(@options)
       end
     end
   end

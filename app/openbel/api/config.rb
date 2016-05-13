@@ -49,19 +49,19 @@ module OpenBEL
       end
       bel_failure = self.validate_bel(bel)
       return bel_failure if bel_failure
-      
-      # validate evidence_store block
-      evidence_store = cfg[:evidence_store]
-      unless evidence_store
+
+      # validate nanopub_store block
+      nanopub_store = cfg[:nanopub_store]
+      unless nanopub_store
         return [
           true, <<-ERR
-            An "evidence_store" is not configured.
+            An "nanopub_store" is not configured.
             #{boilerplate_help}
           ERR
         ]
       end
-      evidence_failure = self.validate_evidence_store(cfg[:evidence_store])
-      return evidence_failure if evidence_failure
+      nanopub_failure = self.validate_nanopub_store(cfg[:nanopub_store])
+      return nanopub_failure if nanopub_failure
 
       nil
     end
@@ -87,18 +87,18 @@ module OpenBEL
             #{boilerplate_help}
           ERR
         ]
-        
+
       end
 
       nil
     end
 
-    def self.validate_evidence_store(evidence_store)
-      mongo = evidence_store[:mongo]
+    def self.validate_nanopub_store(nanopub_store)
+      mongo = nanopub_store[:mongo]
       unless mongo
         return [
           true, <<-ERR
-            The "evidence_store.mongo" configuration block is not configured.
+            The "nanopub_store.mongo" configuration block is not configured.
             #{boilerplate_help}
           ERR
         ]
@@ -110,7 +110,7 @@ module OpenBEL
         unless mongo[setting]
           return [
             true, <<-ERR
-              The "evidence_store.mongo.#{setting}" setting is not configured.
+              The "nanopub_store.mongo.#{setting}" setting is not configured.
               #{boilerplate_help}
             ERR
           ]
@@ -173,7 +173,7 @@ module OpenBEL
     def self.boilerplate_help
       <<-ERR.gsub(/^\s+/, '')
         Run the "openbel-config" command to see an example configuration.
-        See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store for details on how to configure an Evidence Store.
+        See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Nanopub-Store for details on how to configure a Nanopub Store.
       ERR
     end
 

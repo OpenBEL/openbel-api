@@ -1,5 +1,5 @@
 {
-  "evidence": {
+  "nanopub": {
     "bel_statement": "p(MGI:Mapkap1) increases p(MGI:Akt1,pmod(P,S,473))",
     "citation": {
       "type": "PubMed",
@@ -9,7 +9,7 @@
       "authors": ["de Nigris F", "Lerman A"],
       "comment": ""
     },
-    "summary_text": "We next examined the Akt T-loop Thr308 phosphorylation in wild-type and SIN1−/− cells. We found that although Ser473 phosphorylation was completely abolished in the SIN1−/− cells, Thr308 phosphorylation of Akt was not blocked (Figure 3A).",
+    "support": "We next examined the Akt T-loop Thr308 phosphorylation in wild-type and SIN1−/− cells. We found that although Ser473 phosphorylation was completely abolished in the SIN1−/− cells, Thr308 phosphorylation of Akt was not blocked (Figure 3A).",
     "experiment_context": [
       {
         "name":  "Ncbi Taxonomy",

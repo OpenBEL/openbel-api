@@ -1,8 +1,8 @@
 module OpenBEL
-  module Evidence
+  module Nanopub
     module FacetAPI
 
-      def create_facets(evidence)
+      def create_facets(nanopub)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 

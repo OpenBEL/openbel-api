@@ -4,9 +4,9 @@ require_relative 'facet_api'
 require_relative 'facet_filter'
 
 module OpenBEL
-  module Evidence
+  module Nanopub
 
-    class EvidenceFacets
+    class NanopubFacets
       include FacetAPI
       include Mongo
       include FacetFilter
@@ -30,8 +30,8 @@ module OpenBEL
           @db.authenticate(username, password, nil, auth_db)
         end
 
-        @evidence             = @db[:evidence]
-        @evidence_facet_cache = @db[:evidence_facet_cache]
+        @nanopub             = @db[:nanopub]
+        @nanopub_facet_cache = @db[:nanopub_facet_cache]
 
         # ensure all indexes are created and maintained
         ensure_all_indexes
@@ -42,10 +42,10 @@ module OpenBEL
         cache_collection = facet_cache_collection(sorted_filters)
 
         if no_collection?(cache_collection)
-          cache_collection = "evidence_facet_cache_#{EvidenceFacets.generate_uuid}"
+          cache_collection = "nanopub_facet_cache_#{nanopubFacets.generate_uuid}"
           create_aggr      = create_aggregation(cache_collection, query)
-          @evidence.aggregate(create_aggr[:pipeline], create_aggr[:options])
-          @evidence_facet_cache.insert({
+          @nanopub.aggregate(create_aggr[:pipeline], create_aggr[:options])
+          @nanopub_facet_cache.insert({
             :filters          => sorted_filters,
             :cache_collection => cache_collection
           })
@@ -82,7 +82,7 @@ module OpenBEL
         facets.unshift([])
 
         # Drop facet cache collections
-        @evidence_facet_cache.find(
+        @nanopub_facet_cache.find(
           {:filters => {:$in => facets}},
           :fields => {:_id => 0, :cache_collection => 1}
         ).each do |doc|
@@ -90,12 +90,12 @@ module OpenBEL
           @db[cache_collection].drop()
         end
 
-        # remove filter match entries in evidence_facet_cache
-        @evidence_facet_cache.remove({:filters => {:$in => facets}})
+        # remove filter match entries in nanopub_facet_cache
+        @nanopub_facet_cache.remove({:filters => {:$in => facets}})
       end
 
       def delete_all_facets
-        @evidence_facet_cache.find(
+        @nanopub_facet_cache.find(
           {},
           :fields => {:_id => 0, :cache_collection => 1}
         ).each do |doc|
@@ -103,12 +103,12 @@ module OpenBEL
           @db[cache_collection].drop()
         end
 
-        # remove all entries in evidence_facet_cache
-        @evidence_facet_cache.remove({})
+        # remove all entries in nanopub_facet_cache
+        @nanopub_facet_cache.remove({})
       end
 
       def ensure_all_indexes
-        @evidence_facet_cache.ensure_index([
+        @nanopub_facet_cache.ensure_index([
             [:"filters.category",   Mongo::ASCENDING],
             [:"filters.name",       Mongo::ASCENDING]
           ],
@@ -132,7 +132,7 @@ module OpenBEL
       end
 
       def facet_cache_collection(filters)
-        result = @evidence_facet_cache.find_one(
+        result = @nanopub_facet_cache.find_one(
           {:filters => filters},
           :fields => {:cache_collection => 1, :_id => 0}
         )

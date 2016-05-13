@@ -14,9 +14,10 @@ require_relative 'config'
 require_relative 'routes/base'
 require_relative 'routes/root'
 require_relative 'routes/annotations'
-require_relative 'routes/evidence'
+require_relative 'routes/nanopub'
 require_relative 'routes/datasets'
 require_relative 'routes/expressions'
+require_relative 'routes/language'
 require_relative 'routes/functions'
 require_relative 'routes/relationships'
 require_relative 'routes/namespaces'
@@ -66,6 +67,7 @@ module OpenBEL
     use OpenBEL::Routes::Version
     use OpenBEL::Routes::Annotations
     use OpenBEL::Routes::Expressions
+    use OpenBEL::Routes::Language
     use OpenBEL::Routes::Functions
     use OpenBEL::Routes::Relationships
     use OpenBEL::Routes::Namespaces
@@ -76,7 +78,7 @@ module OpenBEL
       use OpenBEL::JWTMiddleware::Authentication
     end
     use OpenBEL::Routes::Datasets
-    use OpenBEL::Routes::Evidence
+    use OpenBEL::Routes::Nanopub
   end
 end
 # vim: ts=2 sts=2 sw=2

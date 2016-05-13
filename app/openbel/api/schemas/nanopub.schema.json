@@ -1,11 +1,11 @@
 {
   "$schema":              "http://json-schema.org/draft-04/schema",
-  "description":          "DESCRIBE EVIDENCE",
+  "description":          "DESCRIBE NANOPUB",
   "type":                 "object",
   "additionalProperties": false,
-  "required":             ["evidence"],
+  "required":             ["nanopub"],
   "properties": {
-    "evidence": {
+    "nanopub": {
       "type":                 "object",
       "additionalProperties": false,
       "required":             ["bel_statement", "citation"],
@@ -33,17 +33,17 @@
               "description": "The citation identifier (PubMed ID, ISBN, DOI, URL) of the reference."
             },
             "name": {
-              "type":        "string",
+              "type":        ["string", "null"],
               "title":       "Citation Name",
               "description": "The citation name of the reference."
             },
             "date": {
-              "type":        "string",
+              "type":        ["string", "null"],
               "title":       "Citation Date",
               "description": "The citation date of the reference."
             },
             "authors": {
-              "type":        "array",
+              "type":        ["array", "null"],
               "title":       "Citation Authors",
               "description": "The citation authors of the reference.",
               "items": {
@@ -52,7 +52,7 @@
               }
             },
             "comment": {
-              "type":        "string",
+              "type":        ["string", "null"],
               "title":       "Citation Comment",
               "description": "The citation comment of the reference."
             }
@@ -92,10 +92,10 @@
             }
           }
         },
-        "summary_text": {
+        "support": {
           "type":        ["string", "null"],
-          "title":       "Summary Text",
-          "description": "Abstract from source text to provide support for this evidence"
+          "title":       "Support",
+          "description": "Abstract from source text to provide support for this nanopub"
         },
         "references": {
           "type":        ["object", "null"],
@@ -112,7 +112,7 @@
                   "keyword": {
                     "type":        "string",
                     "title":       "Keyword",
-                    "description": "Keyword that identifies this annotation resource, but only in the context of this Evidence."
+                    "description": "Keyword that identifies this annotation resource, but only in the context of this Nanopub."
                   },
                   "uri": {
                     "type":        "string",
@@ -134,7 +134,7 @@
                   "keyword": {
                     "type":        "string",
                     "title":       "Keyword",
-                    "description": "Keyword that identifies this namespace resource, but only in the context of this Evidence."
+                    "description": "Keyword that identifies this namespace resource, but only in the context of this Nanopub."
                   },
                   "uri": {
                     "type":        "string",
@@ -150,8 +150,8 @@
         },
         "metadata": {
           "type":        ["array", "null"],
-          "title":       "Evidence resource metadata",
-          "description": "Metadata that describes the evidence resource.",
+          "title":       "Nanopub resource metadata",
+          "description": "Metadata that describes the nanopub resource.",
           "items": {
             "oneOf": [
               {

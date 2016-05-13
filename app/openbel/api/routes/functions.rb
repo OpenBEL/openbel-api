@@ -13,23 +13,23 @@ module OpenBEL
         @spec       = BELParser::Language.specification(bel_version)
       end
 
-      options '/api/functions' do
+      options '/api/language/functions' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      options '/api/functions/:fx' do
+      options '/api/language/functions/:fx' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
 
-      get '/api/functions' do
+      get '/api/language/functions' do
         render_collection(
           @spec.functions.sort_by(&:long),
           :function)
       end
 
-      get '/api/functions/:fx' do
+      get '/api/language/functions/:fx' do
         function = @spec.function(params[:fx].to_sym)
         halt 404 unless function
         render_resource(function, :function)

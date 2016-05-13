@@ -4,10 +4,10 @@ require 'rdf'
 require 'rdf/vocab'
 require 'cgi'
 require 'multi_json'
-require 'openbel/api/evidence/mongo'
-require 'openbel/api/evidence/facet_filter'
-require_relative '../resources/evidence_transform'
-require_relative '../helpers/evidence'
+require 'openbel/api/nanopub/mongo'
+require 'openbel/api/nanopub/facet_filter'
+require_relative '../resources/nanopub_transform'
+require_relative '../helpers/nanopub'
 require_relative '../helpers/filters'
 require_relative '../helpers/pager'
 
@@ -15,8 +15,8 @@ module OpenBEL
   module Routes
 
     class Datasets < Base
-      include OpenBEL::Evidence::FacetFilter
-      include OpenBEL::Resource::Evidence
+      include OpenBEL::Nanopub::FacetFilter
+      include OpenBEL::Resource::Nanopub
       include OpenBEL::Helpers
 
       DEFAULT_TYPE = 'application/hal+json'
@@ -38,9 +38,9 @@ module OpenBEL
 
         BEL.translator(:rdf)
 
-        # Evidence API using Mongo.
-        mongo = OpenBEL::Settings[:evidence_store][:mongo]
-        @api  = OpenBEL::Evidence::Evidence.new(mongo)
+        # nanopub API using Mongo.
+        mongo = OpenBEL::Settings[:nanopub_store][:mongo]
+        @api  = OpenBEL::Nanopub::Nanopub.new(mongo)
 
         # RdfRepository using Jena.
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
@@ -67,19 +67,19 @@ module OpenBEL
 
         def check_dataset(io, type)
           begin
-            evidence         = BEL.evidence(io, type).each.first
+            nanopub         = BEL.nanopub(io, type).each.first
 
-            unless evidence
+            unless nanopub
               halt(
                 400,
                 { 'Content-Type' => 'application/json' },
-                render_json({ :status => 400, :msg => 'No BEL evidence was provided. Evidence is required to infer dataset information.' })
+                render_json({ :status => 400, :msg => 'No BEL nanopub was provided. nanopub is required to infer dataset information.' })
               )
             end
 
             void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{self.generate_uuid}")
 
-            void_dataset = evidence.to_void_dataset(void_dataset_uri)
+            void_dataset = nanopub.to_void_dataset(void_dataset_uri)
             unless void_dataset
               halt(
                   400,
@@ -244,20 +244,20 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         dataset    = retrieve_dataset(void_dataset_uri)
         dataset_id = dataset[:identifier]
 
-        # Add batches of read evidence objects; save to Mongo and RDF.
+        # Add batches of read nanopub objects; save to Mongo and RDF.
         # TODO Add JRuby note regarding Enumerator threading.
-        evidence_count = 0
-        evidence_batch = []
+        nanopub_count = 0
+        nanopub_batch = []
 
         # Clear out all facets before loading dataset.
         @api.delete_facets
 
-        BEL.evidence(io, type).each do |ev|
+        BEL.nanopub(io, type).each do |ev|
           # Standardize annotations from experiment_context.
-          @annotation_transform.transform_evidence!(ev, base_url)
+          @annotation_transform.transform_nanopub!(ev, base_url)
 
           ev.metadata[:dataset] = dataset_id
-          facets                = map_evidence_facets(ev)
+          facets                = map_nanopub_facets(ev)
           ev.bel_statement      = ev.bel_statement.to_s
           hash                  = BEL.object_convert(String, ev.to_h) { |str|
                                     str.gsub(/\n/, "\\n").gsub(/\r/, "\\r")
@@ -266,36 +266,36 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
           # Create dataset field for efficient removal.
           hash[:_dataset]       = dataset_id
 
-          evidence_batch << hash
+          nanopub_batch << hash
 
-          if evidence_batch.size == MONGO_BATCH
-            _ids = @api.create_evidence(evidence_batch)
+          if nanopub_batch.size == MONGO_BATCH
+            _ids = @api.create_nanopub(nanopub_batch)
 
             dataset_parts = _ids.map { |object_id|
               RDF::Statement.new(void_dataset_uri, DC.hasPart, object_id.to_s)
             }
             @rr.insert_statements(dataset_parts)
 
-            evidence_batch.clear
+            nanopub_batch.clear
 
             # Clear out all facets after FACET_THRESHOLD nanopubs have been seen.
-            evidence_count += MONGO_BATCH
-            if evidence_count >= FACET_THRESHOLD
+            nanopub_count += MONGO_BATCH
+            if nanopub_count >= FACET_THRESHOLD
               @api.delete_facets
-              evidence_count = 0
+              nanopub_count = 0
             end
           end
         end
 
-        unless evidence_batch.empty?
-          _ids = @api.create_evidence(evidence_batch)
+        unless nanopub_batch.empty?
+          _ids = @api.create_nanopub(nanopub_batch)
 
           dataset_parts = _ids.map { |object_id|
             RDF::Statement.new(void_dataset_uri, DC.hasPart, object_id.to_s)
           }
           @rr.insert_statements(dataset_parts)
 
-          evidence_batch.clear
+          nanopub_batch.clear
         end
 
         # Clear out all facets after the dataset is completely loaded.
@@ -318,15 +318,15 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
                 :type => 'dataset',
                 :href => void_dataset_uri.to_s
             },
-            :evidence_collection => {
-              :type => 'evidence_collection',
-              :href => "#{base_url}/api/datasets/#{id}/evidence"
+            :nanopub_collection => {
+              :type => 'nanopub_collection',
+              :href => "#{base_url}/api/datasets/#{id}/nanopub"
             }
           }
         })
       end
 
-      get '/api/datasets/:id/evidence' do
+      get '/api/datasets/:id/nanopub' do
         id = params[:id]
         void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{id}")
         halt 404 unless dataset_exists?(void_dataset_uri)
@@ -340,12 +340,12 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         filters = validate_filters!
 
-        collection_total  = @api.count_evidence
-        filtered_total    = @api.count_evidence(filters)
-        page_results      = @api.find_dataset_evidence(dataset, filters, start, size, faceted, max_values_per_facet)
+        collection_total  = @api.count_nanopub
+        filtered_total    = @api.count_nanopub(filters)
+        page_results      = @api.find_dataset_nanopub(dataset, filters, start, size, faceted, max_values_per_facet)
         name              = dataset[:identifier].gsub(/[^\w]/, '_')
 
-        render_evidence_collection(
+        render_nanopub_collection(
           name, page_results, start, size, filters,
           filtered_total, collection_total, @api
         )
@@ -367,9 +367,9 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
                     :type => 'dataset',
                     :href => uri.to_s
                 },
-                :evidence_collection => {
-                    :type => 'evidence_collection',
-                    :href => "#{uri}/evidence"
+                :nanopub_collection => {
+                    :type => 'nanopub_collection',
+                    :href => "#{uri}/nanopub"
                 }
             }
           }
@@ -385,7 +385,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         halt 404 unless dataset_exists?(void_dataset_uri)
 
         dataset = retrieve_dataset(void_dataset_uri)
-        # XXX Removes all facets due to load of many evidence.
+        # XXX Removes all facets due to load of many nanopub.
         @api.delete_dataset(dataset[:identifier])
         @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
 
@@ -402,7 +402,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         datasets.each do |void_dataset_uri|
           dataset = retrieve_dataset(void_dataset_uri)
-          # XXX Removes all facets due to load of many evidence.
+          # XXX Removes all facets due to load of many nanopub.
           @api.delete_dataset(dataset[:identifier])
           @rr.delete_statement(RDF::Statement.new(void_dataset_uri, nil, nil))
         end

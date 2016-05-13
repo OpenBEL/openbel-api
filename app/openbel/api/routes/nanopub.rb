@@ -1,25 +1,25 @@
 require 'bel'
 require 'cgi'
-require 'openbel/api/evidence/mongo'
-require 'openbel/api/evidence/facet_filter'
-require_relative '../resources/evidence_transform'
-require_relative '../helpers/evidence'
+require 'openbel/api/nanopub/mongo'
+require 'openbel/api/nanopub/facet_filter'
+require_relative '../resources/nanopub_transform'
+require_relative '../helpers/nanopub'
 require_relative '../helpers/filters'
 require_relative '../helpers/pager'
 
 module OpenBEL
   module Routes
 
-    class Evidence < Base
-      include OpenBEL::Evidence::FacetFilter
-      include OpenBEL::Resource::Evidence
+    class Nanopub < Base
+      include OpenBEL::Nanopub::FacetFilter
+      include OpenBEL::Resource::Nanopub
       include OpenBEL::Helpers
 
       def initialize(app)
         super
 
-        mongo = OpenBEL::Settings[:evidence_store][:mongo]
-        @api  = OpenBEL::Evidence::Evidence.new(mongo)
+        mongo = OpenBEL::Settings[:nanopub_store][:mongo]
+        @api  = OpenBEL::Nanopub::Nanopub.new(mongo)
 
         # RdfRepository using Jena
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
@@ -35,23 +35,23 @@ module OpenBEL
 
       helpers do
 
-        def stream_evidence_objects(cursor)
+        def stream_nanopub_objects(cursor)
 
           stream :keep_open do |response|
-            cursor.each do |evidence|
-              evidence.delete('facets')
+            cursor.each do |nanopub|
+              nanopub.delete('facets')
 
               response << render_resource(
-                  evidence,
-                  :evidence,
+                  nanopub,
+                  :nanopub,
                   :as_array => false,
-                  :_id      => evidence['_id'].to_s
+                  :_id      => nanopub['_id'].to_s
               )
             end
           end
         end
 
-        def stream_evidence_array(cursor)
+        def stream_nanopub_array(cursor)
           stream :keep_open do |response|
             current = 0
 
@@ -63,14 +63,14 @@ module OpenBEL
             end
 
             response << '['
-            cursor.each do |evidence|
-              evidence.delete('facets')
+            cursor.each do |nanopub|
+              nanopub.delete('facets')
 
               response << render_resource(
-                  evidence,
-                  :evidence,
+                  nanopub,
+                  :nanopub,
                   :as_array => false,
-                  :_id      => evidence['_id'].to_s
+                  :_id      => nanopub['_id'].to_s
               )
               current += 1
               response << ',' if current < total
@@ -98,22 +98,22 @@ module OpenBEL
         end
       end
 
-      options '/api/evidence' do
+      options '/api/nanopub' do
         response.headers['Allow'] = 'OPTIONS,POST,GET'
         status 200
       end
 
-      options '/api/evidence/:id' do
+      options '/api/nanopub/:id' do
         response.headers['Allow'] = 'OPTIONS,GET,PUT,DELETE'
         status 200
       end
 
-      post '/api/evidence' do
+      post '/api/nanopub' do
         # Validate JSON Nanopub.
         validate_media_type! "application/json"
-        evidence_obj = read_json
+        nanopub_obj = read_json
 
-        schema_validation = validate_schema(keys_to_s_deep(evidence_obj), :evidence)
+        schema_validation = validate_schema(keys_to_s_deep(nanopub_obj), :nanopub)
         unless schema_validation[0]
           halt(
             400,
@@ -122,39 +122,39 @@ module OpenBEL
           )
         end
 
-        evidence = ::BEL::Nanopub::Nanopub.create(evidence_obj[:evidence])
+        nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_obj[:nanopub])
 
         # Standardize annotations.
-        @annotation_transform.transform_evidence!(evidence, base_url)
+        @annotation_transform.transform_nanopub!(nanopub, base_url)
 
         # Build facets.
-        facets = map_evidence_facets(evidence)
-        hash = evidence.to_h
+        facets = map_nanopub_facets(nanopub)
+        hash = nanopub.to_h
         hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
         hash[:facets]        = facets
-        _id = @api.create_evidence(hash)
+        _id = @api.create_nanopub(hash)
 
         # Return Location information (201).
         status 201
-        headers "Location" => "#{base_url}/api/evidence/#{_id}"
+        headers "Location" => "#{base_url}/api/nanopub/#{_id}"
       end
 
-			get '/api/evidence-stream', provides: 'application/json' do
+			get '/api/nanopub-stream', provides: 'application/json' do
         start                = (params[:start] || 0).to_i
         size                 = (params[:size]  || 0).to_i
         group_as_array       = as_bool(params[:group_as_array])
 
         filters = validate_filters!
 
-        cursor  = @api.find_evidence(filters, start, size, false)[:cursor]
+        cursor  = @api.find_nanopub(filters, start, size, false)[:cursor]
         if group_as_array
-          stream_evidence_array(cursor)
+          stream_nanopub_array(cursor)
         else
-          stream_evidence_objects(cursor)
+          stream_nanopub_objects(cursor)
         end
 			end
 
-      get '/api/evidence' do
+      get '/api/nanopub' do
         start                = (params[:start]  || 0).to_i
         size                 = (params[:size]   || 0).to_i
         faceted              = as_bool(params[:faceted])
@@ -162,46 +162,46 @@ module OpenBEL
 
         filters = validate_filters!
 
-        collection_total  = @api.count_evidence()
-        filtered_total    = @api.count_evidence(filters)
-        page_results      = @api.find_evidence(filters, start, size, faceted, max_values_per_facet)
+        collection_total  = @api.count_nanopub()
+        filtered_total    = @api.count_nanopub(filters)
+        page_results      = @api.find_nanopub(filters, start, size, faceted, max_values_per_facet)
 
-        render_evidence_collection(
-          'evidence-export', page_results, start, size, filters,
+        render_nanopub_collection(
+          'nanopub-export', page_results, start, size, filters,
           filtered_total, collection_total, @api
         )
       end
 
-      get '/api/evidence/:id' do
+      get '/api/nanopub/:id' do
         object_id = params[:id]
         halt 404 unless BSON::ObjectId.legal?(object_id)
 
-        evidence = @api.find_evidence_by_id(object_id)
-        halt 404 unless evidence
+        nanopub = @api.find_nanopub_by_id(object_id)
+        halt 404 unless nanopub
 
-        evidence.delete('facets')
+        nanopub.delete('facets')
 
         # XXX Hack to return single resource wrapped as json array
-        # XXX Need to better support evidence resource arrays in base.rb
+        # XXX Need to better support nanopub resource arrays in base.rb
         render_resource(
-          evidence,
-          :evidence,
+          nanopub,
+          :nanopub,
           :as_array => false,
           :_id      => object_id
         )
       end
 
-      put '/api/evidence/:id' do
+      put '/api/nanopub/:id' do
         object_id = params[:id]
         halt 404 unless BSON::ObjectId.legal?(object_id)
 
         validate_media_type! "application/json"
 
-        ev = @api.find_evidence_by_id(object_id)
+        ev = @api.find_nanopub_by_id(object_id)
         halt 404 unless ev
 
-        evidence_obj = read_json
-        schema_validation = validate_schema(keys_to_s_deep(evidence_obj), :evidence)
+        nanopub_obj = read_json
+        schema_validation = validate_schema(keys_to_s_deep(nanopub_obj), :nanopub)
         unless schema_validation[0]
           halt(
             400,
@@ -211,28 +211,28 @@ module OpenBEL
         end
 
         # transformation
-        evidence = evidence_obj[:evidence]
-        nanopub  = ::BEL::Nanopub::Nanopub.create(evidence)
-        @annotation_transform.transform_evidence!(nanopub, base_url)
+        nanopub = nanopub_obj[:nanopub]
+        nanopub  = ::BEL::Nanopub::Nanopub.create(nanopub)
+        @annotation_transform.transform_nanopub!(nanopub, base_url)
 
-        facets                   = map_evidence_facets(nanopub)
-        evidence                 = nanopub.to_h
-        evidence[:bel_statement] = evidence.fetch(:bel_statement, nil).to_s
-        evidence[:facets]        = facets
+        facets                   = map_nanopub_facets(nanopub)
+        nanopub                 = nanopub.to_h
+        nanopub[:bel_statement] = nanopub.fetch(:bel_statement, nil).to_s
+        nanopub[:facets]        = facets
 
-        @api.update_evidence_by_id(object_id, evidence)
+        @api.update_nanopub_by_id(object_id, nanopub)
 
         status 202
       end
 
-      delete '/api/evidence/:id' do
+      delete '/api/nanopub/:id' do
         object_id = params[:id]
         halt 404 unless BSON::ObjectId.legal?(object_id)
 
-        ev = @api.find_evidence_by_id(object_id)
+        ev = @api.find_nanopub_by_id(object_id)
         halt 404 unless ev
 
-        @api.delete_evidence_by_id(object_id)
+        @api.delete_nanopub_by_id(object_id)
         status 202
       end
 

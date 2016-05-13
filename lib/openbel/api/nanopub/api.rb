@@ -1,17 +1,17 @@
 module OpenBEL
-  module Evidence
+  module nanopub
     module API
 
       # single or array
-      def create_evidence(evidence)
+      def create_nanopub(nanopub)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def find_evidence_by_id(id)
+      def find_nanopub_by_id(id)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def find_evidence(filters = [], offset = 0, length = 0, facet = false)
+      def find_nanopub(filters = [], offset = 0, length = 0, facet = false)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
@@ -23,23 +23,23 @@ module OpenBEL
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def count_evidence(filters = [])
+      def count_nanopub(filters = [])
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def update_evidence_by_id(id, evidence_update)
+      def update_nanopub_by_id(id, nanopub_update)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def update_evidence_by_query(query, evidence_update)
+      def update_nanopub_by_query(query, nanopub_update)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def delete_evidence_by_id(id)
+      def delete_nanopub_by_id(id)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
 
-      def delete_evidence_by_query(query)
+      def delete_nanopub_by_query(query)
         fail NotImplementedError, "#{__method__} is not implemented"
       end
     end

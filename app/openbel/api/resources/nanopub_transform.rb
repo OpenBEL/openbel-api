@@ -2,7 +2,7 @@ require 'bel'
 
 module OpenBEL
   module Resource
-    module Evidence
+    module Nanopub
 
       class AnnotationTransform
 
@@ -18,9 +18,9 @@ module OpenBEL
           @annotations = annotations
         end
 
-        def transform_evidence!(evidence, base_url)
-          if evidence
-            experiment_context = evidence.experiment_context
+        def transform_nanopub!(nanopub, base_url)
+          if nanopub
+            experiment_context = nanopub.experiment_context
             if experiment_context != nil
               experiment_context.values.map! { |annotation|
                 transform_annotation(annotation, base_url)
@@ -105,10 +105,10 @@ module OpenBEL
 
         ExperimentContext = ::BEL::Nanopub::ExperimentContext
 
-        def transform_evidence!(evidence)
-          experiment_context = evidence.experiment_context
+        def transform_nanopub!(nanopub)
+          experiment_context = nanopub.experiment_context
           if experiment_context != nil
-            evidence.experiment_context = ExperimentContext.new(
+            nanopub.experiment_context = ExperimentContext.new(
               experiment_context.group_by { |annotation|
                 annotation[:name]
               }.values.map do |grouped_annotation|
