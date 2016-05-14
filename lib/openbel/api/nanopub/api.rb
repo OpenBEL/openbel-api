@@ -1,5 +1,5 @@
 module OpenBEL
-  module nanopub
+  module Nanopub
     module API
 
       # single or array
