@@ -28,19 +28,30 @@ module OpenBEL
           halt 406 unless accept_type
         end
 
-        if accept_type == JSON
-          render_json(
-            {
-              :version => {
-                :string                    => OpenBEL::Version.to_s,
-                :semantic_version_numbers  => OpenBEL::Version.to_a
-              }
+        render_json(
+          {
+            :bel_version => {
+              :string                    => OpenBEL::Version.to_s,
+              :semantic_version_numbers  => OpenBEL::Version.to_a
             }
-          )
-        else
-          response.headers['Content-Type'] = 'text/plain'
-          OpenBEL::Version.to_s
-        end
+          }
+        )
+
+        # TODO - Bug - doesn't show JSON response regardless of accept header
+
+        # if accept_type == JSON
+        #   render_json(
+        #     {
+        #       :version => {
+        #         :string                    => OpenBEL::Version.to_s,
+        #         :semantic_version_numbers  => OpenBEL::Version.to_a
+        #       }
+        #     }
+        #   )
+        # else
+        #   response.headers['Content-Type'] = 'text/plain'
+        #   OpenBEL::Version.to_s
+        # end
       end
     end
   end
