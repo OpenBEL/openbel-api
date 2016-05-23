@@ -2,6 +2,7 @@ require 'mongo'
 require 'multi_json'
 require_relative 'facet_api'
 require_relative 'facet_filter'
+require_relative '../helpers/uuid_generator'
 
 module OpenBEL
   module Nanopub
@@ -10,6 +11,7 @@ module OpenBEL
       include FacetAPI
       include Mongo
       include FacetFilter
+      include ::OpenBEL::Helpers::UUIDGenerator
 
       def initialize(options = {})
         host = options[:host]
@@ -42,7 +44,7 @@ module OpenBEL
         cache_collection = facet_cache_collection(sorted_filters)
 
         if no_collection?(cache_collection)
-          cache_collection = "nanopub_facet_cache_#{NanopubFacets.generate_uuid}"
+          cache_collection = "nanopub_facet_cache_#{generate_uuid}"
           create_aggr      = create_aggregation(cache_collection, query)
           @nanopub.aggregate(create_aggr[:pipeline], create_aggr[:options])
           @nanopub_facet_cache.insert({
@@ -203,19 +205,6 @@ module OpenBEL
           :allowDiskUse => true
         }
       }
-
-      # Define UUID implementation based on Ruby.
-      if RUBY_ENGINE =~ /^jruby/i
-        java_import 'java.util.UUID'
-        define_singleton_method(:generate_uuid) do
-          Java::JavaUtil::UUID.random_uuid.to_s
-        end
-      else
-        require 'uuid'
-        define_singleton_method(:generate_uuid) do
-          UUID.generate
-        end
-      end
     end
   end
 end

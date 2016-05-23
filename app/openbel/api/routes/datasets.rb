@@ -6,6 +6,7 @@ require 'cgi'
 require 'multi_json'
 require 'openbel/api/nanopub/mongo'
 require 'openbel/api/nanopub/facet_filter'
+require 'openbel/api/helpers/uuid_generator'
 require_relative '../resources/nanopub_transform'
 require_relative '../helpers/nanopub'
 require_relative '../helpers/filters'
@@ -18,6 +19,7 @@ module OpenBEL
       include OpenBEL::Nanopub::FacetFilter
       include OpenBEL::Resource::Nanopub
       include OpenBEL::Helpers
+      include OpenBEL::Helpers::UUIDGenerator
 
       DEFAULT_TYPE = 'application/hal+json'
       ACCEPTED_TYPES = {
@@ -77,7 +79,7 @@ module OpenBEL
               )
             end
 
-            void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{self.generate_uuid}")
+            void_dataset_uri = RDF::URI("#{base_url}/api/datasets/#{generate_uuid}")
 
             void_dataset = nanopub.to_void_dataset(void_dataset_uri)
             unless void_dataset
@@ -408,24 +410,6 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         end
 
         status 202
-      end
-
-      private
-
-      unless self.methods.include?(:generate_uuid)
-
-        # Dynamically defines an efficient UUID method for the current ruby.
-        if RUBY_ENGINE =~ /^jruby/i
-          java_import 'java.util.UUID'
-          define_method(:generate_uuid) do
-            Java::JavaUtil::UUID.random_uuid.to_s
-          end
-        else
-          require 'uuid'
-          define_method(:generate_uuid) do
-            UUID.generate
-          end
-        end
       end
     end
   end
