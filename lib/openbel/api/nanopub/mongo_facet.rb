@@ -42,7 +42,7 @@ module OpenBEL
         cache_collection = facet_cache_collection(sorted_filters)
 
         if no_collection?(cache_collection)
-          cache_collection = "nanopub_facet_cache_#{nanopubFacets.generate_uuid}"
+          cache_collection = "nanopub_facet_cache_#{NanopubFacets.generate_uuid}"
           create_aggr      = create_aggregation(cache_collection, query)
           @nanopub.aggregate(create_aggr[:pipeline], create_aggr[:options])
           @nanopub_facet_cache.insert({
