@@ -254,19 +254,19 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         # Clear out all facets before loading dataset.
         @api.delete_facets
 
-        BEL.nanopub(io, type).each do |ev|
+        BEL.nanopub(io, type).each do |nanopub|
           # Standardize annotations from experiment_context.
-          @annotation_transform.transform_nanopub!(ev, base_url)
+          @annotation_transform.transform_nanopub!(nanopub, base_url)
 
-          ev.metadata[:dataset] = dataset_id
-          facets                = map_nanopub_facets(ev)
-          ev.bel_statement      = ev.bel_statement.to_s
-          hash                  = BEL.object_convert(String, ev.to_h) { |str|
-                                    str.gsub(/\n/, "\\n").gsub(/\r/, "\\r")
-                                  }
-          hash[:facets]         = facets
+          nanopub.metadata[:dataset] = dataset_id
+          facets                     = map_nanopub_facets(nanopub)
+          hash                       = BEL.object_convert(String, nanopub.to_h) { |str|
+                                         str.gsub(/\n/, "\\n").gsub(/\r/, "\\r")
+                                       }
+          hash[:facets]              = facets
           # Create dataset field for efficient removal.
-          hash[:_dataset]       = dataset_id
+          hash[:_dataset]            = dataset_id
+          hash[:bel_statement]       = hash[:bel_statement].to_s
 
           nanopub_batch << hash
 

@@ -27,9 +27,8 @@ module OpenBEL
         )
 
         # Annotations using RdfRepository
-        annotations = BEL::Resource::Annotations.new(@rr)
-
-        @annotation_transform = AnnotationTransform.new(annotations)
+        annotations                    = BEL::Resource::Annotations.new(@rr)
+        @annotation_transform          = AnnotationTransform.new(annotations)
         @annotation_grouping_transform = AnnotationGroupingTransform.new
       end
 
@@ -132,7 +131,7 @@ module OpenBEL
         hash = nanopub.to_h
         hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
         hash[:facets]        = facets
-        _id = @api.create_nanopub(hash)
+        _id                  = @api.create_nanopub(hash)
 
         # Return Location information (201).
         status 201
@@ -215,7 +214,7 @@ module OpenBEL
         nanopub  = ::BEL::Nanopub::Nanopub.create(nanopub)
         @annotation_transform.transform_nanopub!(nanopub, base_url)
 
-        facets                   = map_nanopub_facets(nanopub)
+        facets                  = map_nanopub_facets(nanopub)
         nanopub                 = nanopub.to_h
         nanopub[:bel_statement] = nanopub.fetch(:bel_statement, nil).to_s
         nanopub[:facets]        = facets
@@ -235,7 +234,6 @@ module OpenBEL
         @api.delete_nanopub_by_id(object_id)
         status 202
       end
-
     end
   end
 end
