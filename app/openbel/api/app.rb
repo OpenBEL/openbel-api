@@ -2,6 +2,7 @@ require 'rubygems'
 
 # TODO This should probably be in app-config.rb.
 require 'jrjackson'
+require 'bel_parser'
 
 require_relative 'util'
 
@@ -32,6 +33,10 @@ module OpenBEL
     configure do
       config = OpenBEL::Config::load!
       OpenBEL.const_set :Settings, config
+
+      tdbdir = OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
+      BELParser::Resource.default_uri_reader =
+        BELParser::Resource::JenaTDBReader.new(tdbdir)
     end
 
     if OpenBEL::Settings[:auth][:enabled]
