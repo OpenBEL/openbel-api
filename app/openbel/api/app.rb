@@ -14,7 +14,7 @@ require_relative 'config'
 require_relative 'routes/base'
 require_relative 'routes/root'
 require_relative 'routes/annotations'
-require_relative 'routes/nanopub'
+require_relative 'routes/nanopubs'
 require_relative 'routes/datasets'
 require_relative 'routes/expressions'
 require_relative 'routes/language'
@@ -78,7 +78,7 @@ module OpenBEL
       use OpenBEL::JWTMiddleware::Authentication
     end
     use OpenBEL::Routes::Datasets
-    use OpenBEL::Routes::Nanopub
+    use OpenBEL::Routes::Nanopubs
   end
 end
 # vim: ts=2 sts=2 sw=2

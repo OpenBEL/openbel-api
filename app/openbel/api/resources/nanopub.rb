@@ -39,14 +39,14 @@ module OpenBEL
           item.delete(:id)
           {
             :type => :nanopub,
-            :href => "#{base_url}/api/nanopub/#{id}"
+            :href => "#{base_url}/api/nanopubs/#{id}"
           }
         end
 
         def link_collection
           {
             :type => :nanopub_collection,
-            :href => "#{base_url}/api/nanopub"
+            :href => "#{base_url}/api/nanopubs"
           }
         end
       end
@@ -72,7 +72,7 @@ module OpenBEL
           size   = context[:size]
           {
             :type => :nanopub_collection,
-            :href => "#{base_url}/api/nanopub?start=#{start}&size=#{size}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/nanopubs?start=#{start}&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
 
@@ -80,7 +80,7 @@ module OpenBEL
           size = context[:size]
           {
             :type => :nanopub_collection,
-            :href => "#{base_url}/api/nanopub?start=0&size=#{size}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/nanopubs?start=0&size=#{size}&#{filter_query_params.join('&')}"
           }
         end
 
@@ -90,7 +90,7 @@ module OpenBEL
 
           {
             :type => :nanopub_collection,
-            :href => "#{base_url}/api/nanopub?start=#{previous_page.start_offset}&size=#{previous_page.page_size}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/nanopubs?start=#{previous_page.start_offset}&size=#{previous_page.page_size}&#{filter_query_params.join('&')}"
           }
         end
 
@@ -100,7 +100,7 @@ module OpenBEL
 
           {
             :type => :nanopub_collection,
-            :href => "#{base_url}/api/nanopub?start=#{next_page.start_offset}&size=#{next_page.page_size}&#{filter_query_params.join('&')}"
+            :href => "#{base_url}/api/nanopubs?start=#{next_page.start_offset}&size=#{next_page.page_size}&#{filter_query_params.join('&')}"
           }
         end
 

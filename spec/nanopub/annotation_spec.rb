@@ -14,7 +14,7 @@ describe 'API Nanopub - Annotations' do
       'value' => '9606'
     }
 
-    post_and_get(example, '/api/nanopub') do |response|
+    post_and_get(example, '/api/nanopubs') do |response|
       resource = response.body
       expect(resource).to                   include('nanopub')
       expect(resource['nanopub']).to       be_a(Hash)
@@ -42,7 +42,7 @@ describe 'API Nanopub - Annotations' do
       }
     ]
 
-    post_and_get(example, '/api/nanopub') do |response|
+    post_and_get(example, '/api/nanopubs') do |response|
       resource = response.body
       expect(resource).to                   include('nanopub')
       expect(resource['nanopub']).to       be_a(Hash)
@@ -64,7 +64,7 @@ describe 'API Nanopub - Annotations' do
       }
     ]
 
-    post_and_get(example, '/api/nanopub') do |response|
+    post_and_get(example, '/api/nanopubs') do |response|
       resource = response.body
       expect(resource).to                   include('nanopub')
       expect(resource['nanopub']).to       be_a(Hash)
@@ -88,7 +88,7 @@ describe 'API Nanopub - Annotations' do
       }
     ]
 
-    post_and_get(example, '/api/nanopub') do |response|
+    post_and_get(example, '/api/nanopubs') do |response|
       resource = response.body
       expect(resource).to                   include('nanopub')
       expect(resource['nanopub']).to       be_a(Hash)
@@ -112,7 +112,7 @@ describe 'API Nanopub - Annotations' do
       }
     ]
 
-    post_and_get(example, '/api/nanopub') do |response|
+    post_and_get(example, '/api/nanopubs') do |response|
       resource = response.body
       expect(resource).to                   include('nanopub')
       expect(resource['nanopub']).to       be_a(Hash)

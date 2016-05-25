@@ -10,7 +10,7 @@ require_relative '../helpers/pager'
 module OpenBEL
   module Routes
 
-    class Nanopub < Base
+    class Nanopubs < Base
       include OpenBEL::Nanopub::FacetFilter
       include OpenBEL::Resource::Nanopub
       include OpenBEL::Helpers
@@ -97,18 +97,18 @@ module OpenBEL
         end
       end
 
-      options '/api/nanopub' do
+      options '/api/nanopubs' do
         response.headers['Allow'] = 'OPTIONS,POST,GET'
         status 200
       end
 
-      options '/api/nanopub/:id' do
+      options '/api/nanopubs/:id' do
         response.headers['Allow'] = 'OPTIONS,GET,PUT,DELETE'
         status 200
       end
 
-      post '/api/nanopub' do
-        # Validate JSON Nanopub.
+      post '/api/nanopubs' do
+        # Validate BNJ.
         validate_media_type! "application/json"
         nanopub_obj = read_json
 
@@ -135,10 +135,10 @@ module OpenBEL
 
         # Return Location information (201).
         status 201
-        headers "Location" => "#{base_url}/api/nanopub/#{_id}"
+        headers "Location" => "#{base_url}/api/nanopubs/#{_id}"
       end
 
-			get '/api/nanopub-stream', provides: 'application/json' do
+			get '/api/nanopubs-stream', provides: 'application/json' do
         start                = (params[:start] || 0).to_i
         size                 = (params[:size]  || 0).to_i
         group_as_array       = as_bool(params[:group_as_array])
@@ -153,7 +153,7 @@ module OpenBEL
         end
 			end
 
-      get '/api/nanopub' do
+      get '/api/nanopubs' do
         start                = (params[:start]  || 0).to_i
         size                 = (params[:size]   || 0).to_i
         faceted              = as_bool(params[:faceted])
@@ -171,7 +171,7 @@ module OpenBEL
         )
       end
 
-      get '/api/nanopub/:id' do
+      get '/api/nanopubs/:id' do
         object_id = params[:id]
         halt 404 unless BSON::ObjectId.legal?(object_id)
 
@@ -190,7 +190,7 @@ module OpenBEL
         )
       end
 
-      put '/api/nanopub/:id' do
+      put '/api/nanopubs/:id' do
         object_id = params[:id]
         halt 404 unless BSON::ObjectId.legal?(object_id)
 
@@ -224,7 +224,7 @@ module OpenBEL
         status 202
       end
 
-      delete '/api/nanopub/:id' do
+      delete '/api/nanopubs/:id' do
         object_id = params[:id]
         halt 404 unless BSON::ObjectId.legal?(object_id)
 

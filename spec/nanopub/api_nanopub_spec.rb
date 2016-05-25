@@ -8,13 +8,13 @@ describe 'API Nanopub' do
   }
 
   it 'returns 404 when the resource collection is empty' do
-    response = api_conn.get '/api/nanopub'
+    response = api_conn.get '/api/nanopubs'
     expect(response.status).to eql(404)
   end
 
   it 'returns an object when the resource collection is non-empty' do
     # create
-    response = api_conn.post('/api/nanopub') { |req|
+    response = api_conn.post('/api/nanopubs') { |req|
       req.headers['Content-Type'] = 'application/json; charset=utf-8'
       req.body                    = test_file('example_nanopub.json').read
     }
@@ -32,7 +32,7 @@ describe 'API Nanopub' do
 
   it 'instances can be retrieved by id' do
     # create
-    response = api_conn.post('/api/nanopub') { |req|
+    response = api_conn.post('/api/nanopubs') { |req|
       req.headers['Content-Type'] = 'application/json; charset=utf-8'
       req.body                    = test_file('example_nanopub.json').read
     }
@@ -54,7 +54,7 @@ describe 'API Nanopub' do
     it 'reports collection paging' do
       # create nanopub resources
       nanopub_uris = 10.times.map do |_|
-        response = api_conn.post('/api/nanopub') { |req|
+        response = api_conn.post('/api/nanopubs') { |req|
           req.headers['Content-Type'] = 'application/json; charset=utf-8'
           req.body                    = test_file('example_nanopub.json').read
         }
@@ -64,7 +64,7 @@ describe 'API Nanopub' do
       end
 
       nanopub_resource = api_conn.get { |req|
-        req.url '/api/nanopub'
+        req.url '/api/nanopubs'
       }.body
       expect(nanopub_resource['nanopub_collection']).not_to be_nil
       expect(nanopub_resource['nanopub_collection'].size).to eql(10)
@@ -90,7 +90,7 @@ describe 'API Nanopub' do
       # create nanopub resources
       human_nanopub = test_file('human_nanopub.json').read
       nanopub_uris = 10.times.map do |_|
-        response = api_conn.post('/api/nanopub') { |req|
+        response = api_conn.post('/api/nanopubs') { |req|
           req.headers['Content-Type'] = 'application/json; charset=utf-8'
           req.body                    = human_nanopub
         }
@@ -100,7 +100,7 @@ describe 'API Nanopub' do
       end
       mouse_nanopub = test_file('mouse_nanopub.json').read
       nanopub_uris += 5.times.map do |_|
-        response = api_conn.post('/api/nanopub') { |req|
+        response = api_conn.post('/api/nanopubs') { |req|
           req.headers['Content-Type'] = 'application/json; charset=utf-8'
           req.body                    = mouse_nanopub
         }
@@ -110,7 +110,7 @@ describe 'API Nanopub' do
       end
 
       nanopub_resource = api_conn.get { |req|
-        req.url '/api/nanopub',
+        req.url '/api/nanopubs',
           :start  => 0,
           :size   => 5,
           :filter => JSON.dump(
