@@ -1,8 +1,9 @@
 require 'cgi'
 require 'bel'
 require 'uri'
-require 'bel_parser/expression/parser'
 require 'bel_parser/expression/model'
+require 'bel_parser/expression/parser'
+require 'bel_parser/expression/validator'
 require 'bel_parser/resource/jena_tdb_reader'
 
 module OpenBEL
@@ -16,11 +17,10 @@ module OpenBEL
         # Obtain configured BEL version.
         bel_version   = OpenBEL::Settings[:bel][:version]
         @spec         = BELParser::Language.specification(bel_version)
-        tdb_directory = OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
 
         # RdfRepository using Jena.
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(
-          :tdb_directory => tdb_directory
+          :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
         )
 
         # Annotations using RdfRepository
@@ -33,7 +33,12 @@ module OpenBEL
           :database_file => OpenBEL::Settings[:resource_search][:sqlite][:database_file]
         )
 
-        @reader = BELParser::Resource::JenaTDBReader.new(tdb_directory)
+        namespaces = Hash[ @namespaces.each.map { |ns| [ns.prefix.first.downcase, ns.uri.to_s] } ]
+        @expression_validator = BELParser::Expression::Validator.new(
+          @spec,
+          namespaces,
+          BELParser::Resource.default_uri_reader,
+          BELParser::Resource.default_url_reader)
       end
 
       options '/api/expressions/*/completions' do
@@ -51,25 +56,10 @@ module OpenBEL
         status 200
       end
 
-      options '/api/expressions/*/syntax-validations/?' do
+      options '/api/expressions/*/validation-result/?' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200
       end
-
-      options '/api/expressions/*/semantic-validations/?' do
-        response.headers['Allow'] = 'OPTIONS,GET'
-        status 200
-      end
-
-      # options '/api/expressions/*/ortholog' do
-      #   response.headers['Allow'] = 'OPTIONS,GET'
-      #   status 200
-      # end
-
-      # options '/api/expressions/*/ortholog/:species' do
-      #   response.headers['Allow'] = 'OPTIONS,GET'
-      #   status 200
-      # end
 
       helpers do
 
@@ -129,6 +119,30 @@ module OpenBEL
               :value     => bel_parameter.value.to_s
             }
           }
+        end
+
+        def syntax_results(results)
+          results.select do |res|
+            res.is_a? BELParser::Language::Syntax::SyntaxResult
+          end
+        end
+
+        def semantics_results(results)
+          results.select do |res|
+            res.is_a? BELParser::Language::Semantics::SemanticsResult
+          end
+        end
+
+        def successfully_matched_signatures(results)
+          results.select do |res|
+            res.is_a?(BELParser::Language::Semantics::SignatureMappingSuccess)
+          end
+        end
+
+        def signature_warnings(results)
+          results.select do |res|
+            res.is_a?(BELParser::Language::Semantics::SignatureMappingWarning)
+          end
         end
       end
 
@@ -217,16 +231,19 @@ module OpenBEL
         end
       end
 
-      # BEL Syntax Validation
-      # TODO Move out to a separate route.
-      get '/api/expressions/*/syntax-validations/?' do
-        halt 501
-      end
+      # Produce validation result for BEL expression using the current language.
+      get '/api/expressions/*/validation-result/?' do
+        bel = params[:splat].first
+        response.headers['Content-Type'] = 'application/json'
 
-      # BEL Semantic Validations
-      # TODO Move out to a separate route.
-      get '/api/expressions/*/semantic-validations/?' do
-        halt 501
+        @expression_validator.each(StringIO.new("#{bel}\n")) do |(num, line, ast, results)|
+          return MultiJson.dump({
+            :syntax                => syntax_results(results).map(&:to_s),
+            :semantics             => semantics_results(results).map(&:to_s),
+            :successful_signatures => successfully_matched_signatures(results).map(&:to_s),
+            :signature_warnings    => signature_warnings(results).map(&:to_s)
+          })
+        end
       end
     end
   end
