@@ -70,12 +70,12 @@ module OpenBEL
     # routes not requiring authentication
     use OpenBEL::Routes::Root
     use OpenBEL::Routes::Version
-    use OpenBEL::Routes::Annotations
-    use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Language
     use OpenBEL::Routes::Functions
     use OpenBEL::Routes::Relationships
+    use OpenBEL::Routes::Annotations
     use OpenBEL::Routes::Namespaces
+    use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Authenticate
 
     # routes requiring authentication

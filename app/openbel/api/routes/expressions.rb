@@ -1,5 +1,6 @@
 require 'cgi'
 require 'bel'
+require 'bel/resources'
 require 'uri'
 require 'bel_parser/expression/model'
 require 'bel_parser/expression/parser'
@@ -33,10 +34,9 @@ module OpenBEL
           :database_file => OpenBEL::Settings[:resource_search][:sqlite][:database_file]
         )
 
-        namespaces = Hash[ @namespaces.each.map { |ns| [ns.prefix.first.downcase, ns.uri.to_s] } ]
         @expression_validator = BELParser::Expression::Validator.new(
           @spec,
-          namespaces,
+          BEL::Resources::DEFAULT_NAMESPACES,
           BELParser::Resource.default_uri_reader,
           BELParser::Resource.default_url_reader)
       end
@@ -232,17 +232,15 @@ module OpenBEL
       end
 
       # Produce validation result for BEL expression using the current language.
-      get '/api/expressions/*/validation-result/?' do
+      get '/api/expressions/*/validation/?' do
         bel = params[:splat].first
-        response.headers['Content-Type'] = 'application/json'
+        response.headers['Content-Type'] = 'text/plain'
 
-        @expression_validator.each(StringIO.new("#{bel}\n")) do |(num, line, ast, results)|
-          return MultiJson.dump({
-            :syntax                => syntax_results(results).map(&:to_s),
-            :semantics             => semantics_results(results).map(&:to_s),
-            :successful_signatures => successfully_matched_signatures(results).map(&:to_s),
-            :signature_warnings    => signature_warnings(results).map(&:to_s)
-          })
+        @expression_validator.each(
+          StringIO.new("#{bel}\n")
+        ) do |(num, line, ast, result)|
+
+          return result.to_s
         end
       end
     end
