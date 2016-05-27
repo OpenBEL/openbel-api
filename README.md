@@ -103,20 +103,7 @@ The OpenBEL API requires a configuration file to set up a few things. You can cr
 openbel-config --file openbel-api-config.yml
 ```
 
-*Configure the nanopub Store*
-The nanopub Store is backed by a [MongoDB][MongoDB] database. You will need to provide the *host*, *port*, and *database* option.
-
-The default configuration is:
-
-```yaml
-nanopub_store:
-  mongo:
-    host:     'localhost'
-    port:     27017
-    database: 'openbel'
-```
-
-There are also settings for user authentication. See [MongoDB User Authentication][MongoDB User Authentication] on the wiki.
+[Configuring the Nanopub Store][https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Nanopub-Store]
 
 *Resource RDF data*
 Annotations, namespaces, and dataset storage are represented as [RDF][RDF] data. The data is stored in an on-disk database using Apache Jena (Java library included with `openbel-api`).
@@ -228,11 +215,15 @@ server {
 }
 ```
 
+## Upgrading
+
+[Upgrading instructions][https://github.com/OpenBEL/openbel-api/blob/master/UPGRADING.md]
+
 ## API Documentation
 
-The REST API is defined by a [RAML][RAML] specification. Th                is published [here][OpenBEL API RAML specification].
+The REST API is defined by a [RAML][RAML] specification. This is published [here][http://openbelapi.api-docs.io/].
 
-API documentation with *Try it* functionality is available [here][OpenBEL API documentation].
+API documentation with *Try it* functionality is available [here][http://openbelapi.api-docs.io/].
 
 -----
 
