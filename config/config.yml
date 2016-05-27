@@ -11,7 +11,7 @@ bel:
   version: 2.0
 
 # Storage of nanopubs through the Mongo database.
-nanopubs_store:
+nanopub_store:
   mongo:
 
     # The MongoDB host to connect to. For example if MongoDB's net.bindIp

@@ -31,8 +31,8 @@ module OpenBEL
         render_json(
           {
             :bel_version => {
-              :string                    => OpenBEL::Version.to_s,
-              :semantic_version_numbers  => OpenBEL::Version.to_a
+              :string                    => OpenBEL::Settings[:bel][:version].to_s
+              # :semantic_version_numbers  => OpenBEL::Settings[:bel][:version].to_a
             }
           }
         )
