@@ -2019,6 +2019,101 @@ documentation:
                 - '1'
                 - 'on'
               displayName: flatten
+      /validation:
+        displayName: validation
+        description: ''
+        uriParameters: {}
+        get:
+          description: |-
+            Retrieve the validation result for the *BEL* expression fragment. The following provides expression types for *{bel}* and some validations that can return:
+
+            - *Parameters*
+              - Undefined namespace `Error`
+              - Undefined namespace value `Warning`
+            - *Terms*
+              - Invalid function `Error`
+              - Term signature `Warning`
+            - *Statements*
+              - Invalid relationship `Error`
+              - Statement signature `Warning`
+
+            Valid expressions:
+
+            - `HGNC:AKT1`
+            - `p(HGNC:AKT1, frag(5_20)`
+            - `act(p(SFAM:"RAS Family"), ma(DEFAULT:gtp))`
+
+            Invalid expressions:
+            - `HGNC:YFG` will return an undefined namespace value warning for `YFG`.
+            - `tloc(bp(HGNC:NFE2L2), fromLoc(MESHCS:Cytoplasm), toLoc(MESHCS:"Cell Nucleus"))` will return a signature mapping warning for `tloc(bp(HGNC:NFE2L2))`.
+            - `p(SFAM:"MAPK p38 Family") =| list(p(HGNC:MAPK8), p(HGNC:MAPK9))` will indicate a warning using a non-list relationship with the `list()` object.
+          headers: {}
+          responses:
+            '200':
+              body:
+                text/plain:
+                  schema: |-
+                    {
+                        "type": "object",
+                        "properties": {}
+                    }
+                  example: |+
+                    Syntax:    Valid
+                    Semantics: Valid
+
+                    Subject term - Valid signatures
+                      activity(F:abundance, F:molecularActivity)activity
+                        Info: Successful semantic validation of term.
+                        Info: Successful semantic validation of function.
+                        Info: Successful semantic validation of identifier.
+                        Info: Successful semantic validation of argument.
+                        Info: Successful semantic validation of term.
+                        Info: Successful semantic validation of function.
+                        Info: Successful semantic validation of identifier.
+                        Info: Successful semantic validation of argument.
+                        Info: Successful semantic validation of term.
+                        Info: Successful semantic validation of function.
+                        Info: Successful semantic validation of identifier.
+                      proteinAbundance(E:proteinAbundance)proteinAbundance
+                        Info: Successful semantic validation of term.
+                        Info: Successful semantic validation of function.
+                        Info: Successful semantic validation of identifier.
+                        Info: Successful semantic validation of argument.
+                        Info: Successful semantic validation of parameter.
+                        Info: Successful semantic validation of prefix.
+                        Info: Successful semantic validation of prefix.
+                        Info: Successful semantic validation of value.
+                        Info: Successful semantic validation of value.
+                      molecularActivity(E:activity)molecularActivity
+                        Info: Successful semantic validation of term.
+                        Info: Successful semantic validation of function.
+                        Info: Successful semantic validation of identifier.
+                        Info: Successful semantic validation of argument.
+                        Info: Successful semantic validation of parameter.
+                        Info: Successful semantic validation of prefix.
+                        Info: Successful semantic validation of prefix.
+                        Info: Successful semantic validation of value.
+                        Info: Successful semantic validation of value.
+
+                    Subject term - Invalid signatures
+                      activity(F:abundance)activity
+                        Expected 1 arguments, but saw 2 arguments.
+                      proteinAbundance(E:proteinAbundance,F:location)proteinAbundance
+                        Expected 2 arguments, but saw 1 arguments.
+                      proteinAbundance(E:proteinAbundance,F:fragment)proteinAbundance
+                        Expected 2 arguments, but saw 1 arguments.
+                      proteinAbundance(E:proteinAbundance,F:proteinModification...)proteinAbundance
+                        Expected 2 arguments, but saw 1 arguments.
+                      proteinAbundance(E:proteinAbundance,F:variant)proteinAbundance
+                        Expected 2 arguments, but saw 1 arguments.
+                      proteinAbundance(F:fusion)proteinAbundance
+                        Info: Successful semantic validation of term.
+                        Info: Successful semantic validation of function.
+                        Info: Successful semantic validation of identifier.
+                        Info: Successful semantic validation of argument.
+                        Expected term type, but saw parameter type.
+
+          queryParameters: {}
   /nanopubs:
     displayName: nanopubs
     description: ''
