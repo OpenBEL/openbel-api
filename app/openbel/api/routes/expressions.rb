@@ -1,10 +1,10 @@
 require 'cgi'
 require 'bel'
-require 'bel/resources'
 require 'uri'
 require 'bel_parser/expression/model'
 require 'bel_parser/expression/parser'
 require 'bel_parser/expression/validator'
+require 'bel_parser/resources'
 require 'bel_parser/resource/jena_tdb_reader'
 
 module OpenBEL
@@ -36,7 +36,7 @@ module OpenBEL
 
         @expression_validator = BELParser::Expression::Validator.new(
           @spec,
-          BEL::Resources::DEFAULT_NAMESPACES,
+          BELParser::Resources::DEFAULT_NAMESPACES,
           BELParser::Resource.default_uri_reader,
           BELParser::Resource.default_url_reader)
       end
