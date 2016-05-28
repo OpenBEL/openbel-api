@@ -103,20 +103,7 @@ The OpenBEL API requires a configuration file to set up a few things. You can cr
 openbel-config --file openbel-api-config.yml
 ```
 
-*Configure the nanopub Store*
-The nanopub Store is backed by a [MongoDB][MongoDB] database. You will need to provide the *host*, *port*, and *database* option.
-
-The default configuration is:
-
-```yaml
-nanopub_store:
-  mongo:
-    host:     'localhost'
-    port:     27017
-    database: 'openbel'
-```
-
-There are also settings for user authentication. See [MongoDB User Authentication][MongoDB User Authentication] on the wiki.
+[Configuring the Nanopub Store][https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Nanopub-Store]
 
 *Resource RDF data*
 Annotations, namespaces, and dataset storage are represented as [RDF][RDF] data. The data is stored in an on-disk database using Apache Jena (Java library included with `openbel-api`).
@@ -228,11 +215,13 @@ server {
 }
 ```
 
+## Upgrading
+
+[Upgrading instructions][Upgrading]
+
 ## API Documentation
 
-The REST API is defined by a [RAML][RAML] specification. Th                is published [here][OpenBEL API RAML specification].
-
-API documentation with *Try it* functionality is available [here][OpenBEL API documentation].
+API documentation with *Try it* functionality is available here [OpenBEL API documentation][OpenBEL API documentation].  You can download the [RAML 0.8][RAML] or Swagger specification files, try it on the webpage or generate curl, httpie, and various language templates for using the API.
 
 -----
 
@@ -241,9 +230,8 @@ Built with collaboration and a lot of :heart: by the [OpenBEL][OpenBEL] communit
 [OpenBEL]: http://www.openbel.org
 [OpenBEL Platform]: https://github.com/OpenBEL/openbel-platform
 [RAML]: http://raml.org/
-[OpenBEL API RAML specification]: http://next.belframework.org/openbel-api.raml
-[OpenBEL API documentation]: http://next.belframework.org/
-[Nanopub API documentation]: http://next.belframework.org/#nanopub
+[OpenBEL API documentation]: http://openbelapi.api-docs.io/
+[Nanopub API documentation]: http://openbelapi.api-docs.io/0.0.2/models/enWQug5KYcBtXxmPN
 [JRuby]: http://jruby.org
 [JRuby Getting Started]: http://jruby.org/getting-started
 [Java 8]: http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html
@@ -251,6 +239,7 @@ Built with collaboration and a lot of :heart: by the [OpenBEL][OpenBEL] communit
 [MongoDB download]: https://www.mongodb.org/downloads#production
 [SQLite]: https://www.sqlite.org
 [SQLite download]: https://www.sqlite.org/download.html
+[Upgrading]: https://github.com/OpenBEL/openbel-api/blob/master/UPGRADING.md
 [RubyGems]: https://rubygems.org
 [RDF]: http://www.w3.org/RDF/
 [Auth0]: https://auth0.com/
