@@ -106,7 +106,7 @@ module OpenBEL
 
         def filter_query_params
           context[:filters].map { |filter|
-            "filter=#{filter}"
+            "filter=#{MultiJson.dump(filter)}"
           }
         end
       end
