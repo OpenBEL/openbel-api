@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel_parser/expression/model'
 require 'bel/nanopub/util'
 require 'mongo'
 require_relative 'api'
@@ -192,11 +193,12 @@ module OpenBEL
         union = []
         remap = {}
         references.each do |obj|
-          obj = obj.to_h
-          obj[:keyword] = obj.delete("keyword")
-          obj[:type]    = obj.delete("type")
-          obj[:domain]  = obj.delete("domain")
-          union, new_remap = BEL::Nanopub.union_annotation_references(union, [obj], 'incr')
+          annotation =
+            BELParser::Expression::Model::Annotation.new(
+              *obj.values_at('keyword', 'type', 'domain')
+            )
+          union, new_remap =
+            BEL::Nanopub.union_annotation_references(union, [annotation], 'incr')
           remap.merge!(new_remap)
         end
 
