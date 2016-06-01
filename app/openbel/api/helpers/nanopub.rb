@@ -58,7 +58,6 @@ module OpenBEL
             nanopub.delete('facets')
             nanopub.delete('_id')
             nanopub = BEL::Nanopub::Nanopub.create(BEL.keys_to_symbols(nanopub))
-            nanopub.bel_statement = BEL::Nanopub::Nanopub.parse_statement(nanopub)
             nanopub
           }
 
