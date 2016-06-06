@@ -19,11 +19,8 @@ require_relative 'routes/nanopubs'
 require_relative 'routes/datasets'
 require_relative 'routes/expressions'
 require_relative 'routes/language'
-require_relative 'routes/functions'
-require_relative 'routes/relationships'
 require_relative 'routes/namespaces'
 require_relative 'routes/authenticate'
-require_relative 'routes/version'
 require_relative 'middleware/auth'
 
 module OpenBEL
@@ -69,14 +66,12 @@ module OpenBEL
 
     # routes not requiring authentication
     use OpenBEL::Routes::Root
-    use OpenBEL::Routes::Version
-    use OpenBEL::Routes::Language
-    use OpenBEL::Routes::Functions
-    use OpenBEL::Routes::Relationships
+    #use OpenBEL::Routes::Version
     use OpenBEL::Routes::Annotations
-    use OpenBEL::Routes::Namespaces
-    use OpenBEL::Routes::Expressions
     use OpenBEL::Routes::Authenticate
+    use OpenBEL::Routes::Expressions
+    use OpenBEL::Routes::Language
+    use OpenBEL::Routes::Namespaces
 
     # routes requiring authentication
     if OpenBEL::Settings[:auth][:enabled]
