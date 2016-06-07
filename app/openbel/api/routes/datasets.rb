@@ -40,6 +40,8 @@ module OpenBEL
 
         BEL.translator(:rdf)
 
+        @bel_version = OpenBEL::Settings[:bel][:version]
+
         # nanopub API using Mongo.
         mongo = OpenBEL::Settings[:nanopub_store][:mongo]
         @api  = OpenBEL::Nanopub::Nanopub.new(mongo)
@@ -254,7 +256,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         # Clear out all facets before loading dataset.
         @api.delete_facets
 
-        BEL.nanopub(io, type).each do |nanopub|
+        BEL.nanopub(io, type, :language => @bel_version).each do |nanopub|
           # Standardize annotations from experiment_context.
           @annotation_transform.transform_nanopub!(nanopub, base_url)
 
