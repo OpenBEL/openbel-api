@@ -3,9 +3,18 @@ All notable changes to openbel-api will be documented in this file. The curated 
 
 This project adheres to [Semantic Versioning][Semantic Versioning].
 
-## [1.0.0][1.0.0] - TBD
+## [1.0.1][1.0.1] - 2016-06-08
 ### Added
-- Support JWT authentication via *token* query parameter ([PR #108][108]).
+- Renaming APIs and code on [new terminology][new terminology].
+
+- BEL specification version can be set in configuration file which controls the BEL version used as input/output. Affected APIs:
+
+  - */api/datasets*
+  - */api/expressions*
+  - */api/nanopubs*
+
+- Support storage of BEL 2.0 nanopubs.
+- Added */api/expressions/validation* API that returns syntax and signature validations for a BEL expression.
 
 ## [0.6.2][0.6.2] - 2016-03-23
 ### Fixed
@@ -74,7 +83,7 @@ Datasets are stored with a URI computed from the scheme and host that is serving
   - Retrieve equivalent namespace values from the individual.
   - Retrieve orthologous namespace values from the individual.
 
-[1.0.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.0
+[1.0.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.1
 [0.6.2]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.1...0.6.2
 [0.6.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.0...0.6.1
 [0.6.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.5.1...0.6.0
@@ -91,3 +100,4 @@ Datasets are stored with a URI computed from the scheme and host that is serving
 [102]:                         https://github.com/OpenBEL/openbel-api/issues/102
 [105]:                         https://github.com/OpenBEL/openbel-api/issues/105
 [108]:                         https://github.com/OpenBEL/openbel-api/issues/108
+[new terminology]:             https://github.com/OpenBEL/openbel-api#vocabulary
