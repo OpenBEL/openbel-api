@@ -223,6 +223,40 @@ server {
 
 API documentation with *Try it* functionality is available here [OpenBEL API documentation][OpenBEL API documentation].  You can download the [RAML 0.8][RAML] or Swagger specification files, try it on the webpage or generate curl, httpie, and various language templates for using the API.
 
+## Development
+
+### branches
+
+- master branch
+  - Contains stable code. Releases are created from this branch using a tag (e.g. `MAJOR.MINOR.PATCH`).
+
+- next branch
+  - Contains unstable code. Commits should be merged into master after it stabilizes.
+
+### releases
+
+Releases of *openbel-api* should follow these steps:
+
+1. Update the version in the `VERSION` file.
+
+2. Add changes for this version to the `CHANGELOG` file. This file is modelled after http://keepachangelog.com/.
+
+3. Push the changes for `VERSION` and `CHANGELOG` on the master branch.
+
+4. Ensure the *master* branch has all of the required changes.
+
+5. Create a git tag, named after the version, on the *master* branch. Push this tag to GitHub.
+
+6. Create the Ruby and Java RubyGem for *openbel-api*.
+
+  `gem build .gemspec`
+
+7. Create a release on GitHub for this version and attach the gem file.
+
+8. Push gems to RubyGems.
+
+  `gem push openbel-api-VERSION-java.gem`
+
 -----
 
 Built with collaboration and a lot of :heart: by the [OpenBEL][OpenBEL] community.
