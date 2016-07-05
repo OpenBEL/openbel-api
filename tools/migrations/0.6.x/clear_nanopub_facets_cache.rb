@@ -1,9 +1,12 @@
 #!/usr/bin/env jruby
 
+# Clears out nanopub facet caches that may have been built before nanopub
+# documents were migrated for 0.6.0.
+#
 # Mongo migration:
-# - Drops the now unused "nanopub_facets" collection.
-# - Replaced by the "nanopub_facet_cache" collection plus individual UUID cache collections.
-# - Idempotent (i.e. Safe to run multiple times.)
+# - Drops all nanopub_facet_cache_* collections.
+# - Removes all documents from nanopub_facet_caches that referenced the
+#   dropped collections.
 #
 
 require 'openbel/api/config'
@@ -15,7 +18,7 @@ ACTIVE_VERSION      = OpenBEL::Version::STRING
 ENV['OPENBEL_API_CONFIG_FILE'] ||= (ARGV.first || ENV['OPENBEL_API_CONFIG_FILE'])
 
 unless ENV['OPENBEL_API_CONFIG_FILE']
-  $stderr.puts "usage: drop_unused_collection.rb [CONFIG FILE]\n"
+  $stderr.puts "usage: clear_nanopub_facets_cache.rb [CONFIG FILE]\n"
   $stderr.puts "Alternatively set the environment variable OPENBEL_API_CONFIG_FILE"
   exit 1
 end
@@ -41,11 +44,16 @@ def setup_mongo(cfg)
 end
 
 def migrate(mongo)
-  if mongo.collection_names.include?('nanopub_facets')
-    mongo.drop_collection('nanopub_facets')
-    puts %Q{Dropped "nanopub_facets" collection (success).}
-  else
-    puts %Q{The "nanopub_facets" collection does not exist. Nothing to migrate (success).}
+  if mongo.collection_names.include?('nanopub_facet_cache')
+    mongo['nanopub_facet_cache'].remove({})
+    puts %Q{Removing documents from "nanopub_facet_cache" (success).}
+  end
+
+  mongo.collection_names.select { |name|
+    name =~ /^nanopub_facet_cache_[0-9a-f\-]+$/
+  }.each do |name|
+    mongo.drop_collection(name)
+    puts %Q{Dropped "#{name}" collection (success).}
   end
 
   true

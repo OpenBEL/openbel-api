@@ -3,8 +3,9 @@ require 'json_schema'
 require 'multi_json'
 require_relative '../resources/annotation'
 require_relative '../resources/completion'
-require_relative '../resources/evidence'
+require_relative '../resources/nanopub'
 require_relative '../resources/function'
+require_relative '../resources/relationship'
 require_relative '../resources/match_result'
 require_relative '../resources/namespace'
 require_relative '../schemas'
@@ -14,9 +15,10 @@ module OpenBEL
 
     class Base < Sinatra::Application
       include OpenBEL::Resource::Annotations
-      include OpenBEL::Resource::Evidence
+      include OpenBEL::Resource::Nanopub
       include OpenBEL::Resource::Expressions
       include OpenBEL::Resource::Functions
+      include OpenBEL::Resource::Relationships
       include OpenBEL::Resource::MatchResults
       include OpenBEL::Resource::Namespaces
       include OpenBEL::Schemas
@@ -36,15 +38,17 @@ module OpenBEL
         :completion_collection      => CompletionCollectionSerializer,
         :function                   => FunctionResourceSerializer,
         :function_collection        => FunctionCollectionSerializer,
+        :relationship               => RelationshipResourceSerializer,
+        :relationship_collection    => RelationshipCollectionSerializer,
         :match_result               => MatchResultResourceSerializer,
         :match_result_collection    => MatchResultCollectionSerializer,
         :namespace                  => NamespaceResourceSerializer,
         :namespace_collection       => NamespaceCollectionSerializer,
         :namespace_value            => NamespaceValueResourceSerializer,
         :namespace_value_collection => NamespaceValueCollectionSerializer,
-        :evidence                   => EvidenceSerializer,
-        :evidence_resource          => EvidenceResourceSerializer,
-        :evidence_collection        => EvidenceCollectionSerializer
+        :nanopub                    => NanopubSerializer,
+        :nanopub_resource           => NanopubResourceSerializer,
+        :nanopub_collection         => NanopubCollectionSerializer
       }
 
       disable :protection
@@ -111,9 +115,9 @@ module OpenBEL
           end
         end
 
-        def read_evidence
+        def read_nanopub
           halt 415 unless ::BEL.translator(request.media_type)
-          ::BEL.evidence(request.body, request.media_type, :symbolize_keys => true)
+          ::BEL.nanopub(request.body, request.media_type, :symbolize_keys => true)
         end
 
         def read_json

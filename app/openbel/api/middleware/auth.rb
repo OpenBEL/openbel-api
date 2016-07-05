@@ -4,7 +4,6 @@ require 'jwt'
 
 module OpenBEL
   module JWTMiddleware
-
     def self.encode(payload, secret)
       ::JWT.encode(payload, secret, 'HS256')
     end
@@ -16,31 +15,28 @@ module OpenBEL
     def self.check_token(env)
       cookie_hdr = env['HTTP_COOKIE']
       auth_hdr = env['HTTP_AUTHORIZATION']
-      if cookie_hdr.nil? and auth_hdr.nil?
-        raise 'missing authorization cookie/header'
+      req = Rack::Request.new(env)
+      token_param = req.params['token']
+      if cookie_hdr.nil? && auth_hdr.nil? && token_param.nil?
+        raise 'missing authorization cookie, header, or parameter'
       end
 
-      if not cookie_hdr.nil?
+      unless cookie_hdr.nil?
         cookies = cookie_hdr.split('; ')
-        selected = cookies.select {|x| x.start_with?('jwt=') }
-        if selected.size > 0
+        selected = cookies.select { |x| x.start_with?('jwt=') }
+        unless selected.empty?
           tokens = selected[0].split('=')
-          if tokens.size > 1
-            token = tokens[1]
-          end
-        end
-        if token.nil?
-          raise 'malformed authorization cookie'
+          token = tokens[1] if tokens.size > 1
         end
       end
 
-      if not auth_hdr.nil?
+      unless auth_hdr.nil?
         tokens = auth_hdr.split('Bearer ')
-        if tokens.size != 2
-            raise 'malformed authorization header'
-        end
+        raise 'malformed authorization header' if tokens.size != 2
         token = tokens[1]
       end
+
+      token = token_param unless token_param.nil?
 
       secret = OpenBEL::Settings[:auth][:secret]
       secret = Base64.decode64(secret)
@@ -52,6 +48,7 @@ module OpenBEL
       begin
         decoded_token = decode(token, secret, verify, options)
       rescue ::JWT::VerificationError => ve
+        puts ve.inspect
         raise 'invalid authorization token'
       rescue ::JWT::DecodeError => je
         puts je.inspect
@@ -62,30 +59,26 @@ module OpenBEL
 
       exp = env['jwt.payload']['exp']
       now = Time.now.to_i
-      if now > exp
-        raise 'token expired'
-      end
+      raise 'token expired' if now > exp
 
       env['email'] = env['jwt.payload']['email']
     end
 
     class Authentication
       def initialize(app, opts = {})
-        @app          = app
-        @paths       = opts.fetch(:paths, [])
+        @app = app
+        @paths = opts.fetch(:paths, [])
       end
 
       def call(env)
         check = false
-        if @paths.size == 0
+        if @paths.empty?
           # w/out paths, always check for token
           check = true
         else
           path = env['PATH_INFO']
           # w/ paths, only check for token iff matched
-          if @paths.any? {|x| path.start_with?(x)}
-            check = true
-          end
+          check = true if @paths.any? { |x| path.start_with?(x) }
         end
 
         if check
@@ -101,8 +94,8 @@ module OpenBEL
       private
 
       def _401(message)
-        hdrs = {'Content-Type' => 'application/json'}
-        msg = {error: message }
+        hdrs = { 'Content-Type' => 'application/json' }
+        msg = { error: message }
         [401, hdrs, [msg.to_json]]
       end
     end

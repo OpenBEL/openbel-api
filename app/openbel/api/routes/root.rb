@@ -17,13 +17,13 @@ module OpenBEL
                 :href => "#{base_url}/api/annotations"
               },
               {
-                :href => "#{base_url}/api/evidence"
+                :href => "#{base_url}/api/nanopub"
               },
               {
                 :href => "#{base_url}/api/expressions"
               },
               {
-                :href => "#{base_url}/api/functions"
+                :href => "#{base_url}/api/language"
               },
               {
                 :href => "#{base_url}/api/namespaces"

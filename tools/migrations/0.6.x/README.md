@@ -1,6 +1,6 @@
 ## MongoDB Migrations for 0.6.x
 
-The 0.6.x version of OpenBEL API introduces a change to how evidence facets are stored in MongoDB.
+The 0.6.x version of OpenBEL API introduces a change to how nanopub facets are stored in MongoDB.
 
 ### Change Detail
 
@@ -8,21 +8,21 @@ The 0.6.x version of OpenBEL API introduces a change to how evidence facets are 
 
 Collections:
 
-- `evidence`
-  - Stores evidence.facets as strings.
-- `evidence_facets`
-  - Stores evidence facet objects for all searches.
+- `nanopub`
+  - Stores nanopub.facets as strings.
+- `nanopub_facets`
+  - Stores nanopub facet objects for all searches.
 
 #### 0.6.x
 
 Collections:
 
-- `evidence`
-  - Stores evidence.facets as JSON objects for use in Mongo aggregation operations.
-- `evidence_facet_cache`
-  - Stores the facet collection name for each unique evidence search.
-- `evidence_facet_cache_{UUID}`
-  - Stores evidence facet objects for a specific evidence search.
+- `nanopub`
+  - Stores nanopub.facets as JSON objects for use in Mongo aggregation operations.
+- `nanopub_facet_cache`
+  - Stores the facet collection name for each unique nanopub search.
+- `nanopub_facet_cache_{UUID}`
+  - Stores nanopub facet objects for a specific nanopub search.
 
 ### Migration Procedure
 
@@ -36,9 +36,9 @@ It is recommended to stop OpenBEL API and MongoDB before migrating.
   - `git clone https://github.com/OpenBEL/openbel-api.git`
 4. Change directory to the 0.6.x migrations directory.
   - `cd openbel-api/tools/migrations/0.6.x`
-5. Run *migrate_evidence_facets.rb* to update evidence.facets to JSON objects.
-  - `./migrate_evidence_facets.rb YOUR_CONFIG.yml` or `jruby migrate_evidence_facets.rb YOUR_CONFIG.yml`
-6. Run *drop_unused_collection.rb* to remove the old *evidence_facets* collection.
+5. Run *migrate_nanopub_facets.rb* to update nanopub.facets to JSON objects.
+  - `./migrate_nanopub_facets.rb YOUR_CONFIG.yml` or `jruby migrate_nanopub_facets.rb YOUR_CONFIG.yml`
+6. Run *drop_unused_collection.rb* to remove the old *nanopub_facets* collection.
   - `./drop_unused_collection.rb YOUR_CONFIG.yml` or `jruby drop_unused_collection.rb YOUR_CONFIG.yml`
 7. Start MongoDB daemon.
 8. Start OpenBEL API.

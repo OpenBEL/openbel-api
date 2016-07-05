@@ -22,9 +22,9 @@ module OpenBEL
         schema do
           type     :namespace
           property :rdf_uri, item.uri.to_s
-          property :name,    item.prefLabel
-          property :prefix,  item.prefix
-          property :domain,  item.domain
+          property :name,    item.pref_label.first
+          property :prefix,  item.prefix.first
+          property :domain,  item.domain.first
         end
       end
 
@@ -86,16 +86,16 @@ module OpenBEL
           type     :namespace_value
           property :rdf_uri,       item.uri.to_s
           property :type,          [item.type].flatten.map(&:to_s)
-          property :identifier,    item.identifier
-          property :name,          item.prefLabel
-          property :title,         item.title
-          property :species,       item.fromSpecies
+          property :identifier,    item.identifier.first
+          property :name,          item.pref_label.first
+          property :title,         item.title.first
+          property :species,       item.from_species.first
           entity   :namespace,     item.namespace, NamespaceSerializer
 
           # Support inclusion of the matched text when annotation values are filtered by
           # a full-text search.
-          if item.match_text
-            property :match_text,    item.match_text
+          if item.respond_to?(:match_text) && item.match_text
+            property :match_text, item.match_text
           end
         end
       end
@@ -160,10 +160,10 @@ module OpenBEL
           type :value_equivalence
           property :value,         item.value
           property :type,          item.type ? item.type.sub(VOCABULARY_RDF, '') : nil
-          property :identifier,    item.identifier
-          property :title,         item.title
-          property :species,       item.fromSpecies
-          property :namespace_uri, item.inScheme
+          property :identifier,    item.identifier.first
+          property :title,         item.title.first
+          property :species,       item.from_species.first
+          property :namespace_uri, item.in_scheme.first
 
           property :value_equivalence_collection, item.equivalences, NamespaceValueSerializer
         end

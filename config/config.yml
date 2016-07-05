@@ -1,7 +1,17 @@
 # Configuration template for OpenBEL API
 
-# Storage of evidence through the Mongo database.
-evidence_store:
+# BEL configuration.
+bel:
+  # The BEL version supported by this OpenBEL API instance.
+  # Allowed values:
+  #   1.0
+  #     (BEL version 1.0 specification)
+  #   2.0
+  #     (BEL version 2.0 specification)
+  version: 2.0
+
+# Storage of nanopubs through the Mongo database.
+nanopub_store:
   mongo:
 
     # The MongoDB host to connect to. For example if MongoDB's net.bindIp
@@ -12,9 +22,9 @@ evidence_store:
     # The default MongoDB port. Configured under MongoDB's `net.port` setting.
     port:                     27017
 
-    # The name of your database. We think "openbel-evidence" should be fine,
+    # The name of your database. We think "openbel-nanopubs" should be fine,
     # but it's up to you.
-    database:                 'openbel-evidence'
+    database:                 'openbel-nanopubs'
 
     # MongoDB authentication and role assignment. These settings are necessary
     # if you would like to have a MongoDB user authenticated and authorized to
@@ -23,7 +33,7 @@ evidence_store:
     #First, you will need to create a MongoDB user with the "readWrite" and
     #"dbAdmin" roles for the "database" value set above. This is to allow read,
     #write, and index creation in the OpenBEL API application.
-    #See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store#adding-the-openbel-user
+    #See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Nanopub-Store#adding-the-openbel-user
     #username:                'openbel-user'
 
     #Second, you will need to set a password for the MongoDB user set above.

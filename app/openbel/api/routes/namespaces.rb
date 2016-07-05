@@ -18,7 +18,7 @@ module OpenBEL
 
       RESULT_TYPES = {
         :resource => :all,
-        :name => :prefLabel,
+        :name => :pref_label,
         :identifier => :identifier,
         :title => :title
       }
@@ -92,7 +92,7 @@ module OpenBEL
 
         render_collection(
           namespaces.sort { |x,y|
-            x.prefLabel.to_s <=> y.prefLabel.to_s
+            x.pref_label.to_s <=> y.pref_label.to_s
           },
           :namespace
         )

@@ -34,27 +34,24 @@ Gem::Specification.new do |spec|
   # Dependencies
 
   ## bel.rb
-  spec.add_runtime_dependency 'bel',               '0.6.0'
+  spec.add_runtime_dependency 'bel',               '~> 1.0.0'
 
   ## bel.rb translator dependencies
-  spec.add_runtime_dependency 'json-ld',           '1.99.0'
-  spec.add_runtime_dependency 'rdf-json',          '1.99.0'
-  spec.add_runtime_dependency 'rdf-rdfa',          '1.99.0'
-  spec.add_runtime_dependency 'rdf-rdfxml',        '1.99.0'
-  spec.add_runtime_dependency 'rdf-trig',          '1.99.0.1'
-  spec.add_runtime_dependency 'rdf-trix',          '1.99.0'
-  spec.add_runtime_dependency 'rdf-turtle',        '1.99.0'
+  spec.add_runtime_dependency 'json-ld',           '2.0.0'
+  spec.add_runtime_dependency 'rdf-json',          '2.0.0'
+  spec.add_runtime_dependency 'rdf-rdfa',          '2.0.0'
+  spec.add_runtime_dependency 'rdf-rdfxml',        '2.0.0'
+  spec.add_runtime_dependency 'rdf-trig',          '2.0.0'
+  spec.add_runtime_dependency 'rdf-trix',          '2.0.0'
+  spec.add_runtime_dependency 'rdf-turtle',        '2.0.0'
 
   ## bel.rb plugin - annotation/namespace search
-  spec.add_runtime_dependency 'bel-search-sqlite', '0.4.2'
+  spec.add_runtime_dependency 'bel-search-sqlite', '~> 1.0.0'
 
   ## bel.rb plugin - RDF repository using Apache Jena
-  spec.add_runtime_dependency 'bel-rdf-jena',      '0.4.2'
+  spec.add_runtime_dependency 'bel-rdf-jena',      '~> 1.0.0'
 
-  ## RDF - RDF abstraction
-  spec.add_runtime_dependency 'rdf',               '1.99.1'
-
-  ## Mongo - Faceted search of evidence.
+  ## Mongo - Faceted search of nanopub.
   spec.add_runtime_dependency 'mongo',             '1.12.5'
   spec.add_runtime_dependency 'bson',              '1.12.5'
 

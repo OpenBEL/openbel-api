@@ -1,4 +1,5 @@
 require 'dot_hash'
+require 'bel_parser'
 
 module OpenBEL
   module Config
@@ -35,28 +36,69 @@ module OpenBEL
     private
 
     def self.validate(cfg)
-      # validate evidence_store block
-      evidence_store = cfg[:evidence_store]
-      unless evidence_store
+      # validate BEL version
+      bel = cfg[:bel]
+      unless bel
         return [
-          true, <<-ERR
-            An "evidence_store" is not configured.
+          true, <<-ERR.gsub(/ {12}/, '')
+            The "bel" section has not been configured.
+            You will need to supply a "bel.version" configuration block.
             #{boilerplate_help}
           ERR
         ]
       end
-      evidence_failure = self.validate_evidence_store(cfg[:evidence_store])
-      return evidence_failure if evidence_failure
+      bel_failure = self.validate_bel(bel)
+      return bel_failure if bel_failure
+
+      # validate nanopub_store block
+      nanopub_store = cfg[:nanopub_store]
+      unless nanopub_store
+        return [
+          true, <<-ERR
+            An "nanopub_store" is not configured.
+            #{boilerplate_help}
+          ERR
+        ]
+      end
+      nanopub_failure = self.validate_nanopub_store(cfg[:nanopub_store])
+      return nanopub_failure if nanopub_failure
 
       nil
     end
 
-    def self.validate_evidence_store(evidence_store)
-      mongo = evidence_store[:mongo]
+    def self.validate_bel(bel)
+      unless bel[:version]
+        return [
+          true, <<-ERR
+            The "bel.version" setting is not configured. This is required to
+            indicate which BEL version is supported by this OpenBEL API
+            instance.
+            #{boilerplate_help}
+          ERR
+        ]
+      end
+
+      version = bel[:version]
+      unless BELParser::Language.defines_version?(version)
+        defined_versions = BELParser::Language.versions
+        return [
+          true, <<-ERR
+            The "bel.version" setting of "#{version}" is not a defined BEL version. Allowed values: #{defined_versions}
+            #{boilerplate_help}
+          ERR
+        ]
+
+      end
+
+      nil
+    end
+
+    def self.validate_nanopub_store(nanopub_store)
+      mongo = nanopub_store[:mongo]
       unless mongo
         return [
           true, <<-ERR
-            The "evidence_store.mongo" configuration block is not configured.
+            The "nanopub_store.mongo" configuration block is not configured.
             #{boilerplate_help}
           ERR
         ]
@@ -68,7 +110,7 @@ module OpenBEL
         unless mongo[setting]
           return [
             true, <<-ERR
-              The "evidence_store.mongo.#{setting}" setting is not configured.
+              The "nanopub_store.mongo.#{setting}" setting is not configured.
               #{boilerplate_help}
             ERR
           ]
@@ -131,7 +173,7 @@ module OpenBEL
     def self.boilerplate_help
       <<-ERR.gsub(/^\s+/, '')
         Run the "openbel-config" command to see an example configuration.
-        See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Evidence-Store for details on how to configure an Evidence Store.
+        See https://github.com/OpenBEL/openbel-api/wiki/Configuring-the-Nanopub-Store for details on how to configure a Nanopub Store.
       ERR
     end
 

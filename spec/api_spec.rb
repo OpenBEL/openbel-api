@@ -23,11 +23,11 @@ describe 'API Spec' do
     expect(api._links.to_h.keys).to eql(['item'])
   end
 
-  it 'can navigate to "evidence" resource' do
-    evidence_link = api._links.item.find { |item|
-      item._url =~ %r{/evidence$}
+  it 'can navigate to "nanopub" resource' do
+    nanopub_link = api._links.item.find { |item|
+      item._url =~ %r{/nanopub$}
     }
-    expect(evidence_link._options._response.status).to  eq(HTTP_OK)
-    expect(evidence_link._options._response[:allow]).to eq('OPTIONS,POST,GET')
+    expect(nanopub_link._options._response.status).to  eq(HTTP_OK)
+    expect(nanopub_link._options._response[:allow]).to eq('OPTIONS,POST,GET')
   end
 end
