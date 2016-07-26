@@ -82,6 +82,7 @@ module OpenBEL
                 end
               }
             end
+            io.rewind
 
             nanopub         = BEL.nanopub(io, type).each.first
 
