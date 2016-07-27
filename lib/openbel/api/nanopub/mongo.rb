@@ -141,10 +141,17 @@ module OpenBEL
         union = []
         remap = {}
         references.each do |obj|
-          namespace =
-            BELParser::Expression::Model::Namespace.new(
-              *obj.values_at('keyword', 'type', 'domain')
-            )
+          keyword = obj['keyword']
+          type = obj['type']
+          domain = obj['domain']
+          uri = url = nil
+          if type == :url
+              url = domain
+          elsif type == :uri
+              uri = domain
+          end
+          args = [keyword, uri, url]
+          namespace = BELParser::Expression::Model::Namespace.new(*args)
           union, new_remap =
             BEL::Nanopub.union_namespace_references(union, [namespace], 'incr')
           remap.merge!(new_remap)
