@@ -16,6 +16,10 @@ This project adheres to [Semantic Versioning][Semantic Versioning].
 - Support storage of BEL 2.0 nanopubs.
 - Added */api/expressions/validation* API that returns syntax and signature validations for a BEL expression.
 
+## [1.0.0][1.0.0] - TBD
+### Added
+- Support JWT authentication via *token* query parameter ([PR #108][108]).
+
 ## [0.6.2][0.6.2] - 2016-03-23
 ### Fixed
 - Missing authorization header reported when header is malformed ([Issue #105][105]).
@@ -84,6 +88,7 @@ Datasets are stored with a URI computed from the scheme and host that is serving
   - Retrieve orthologous namespace values from the individual.
 
 [1.0.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.1
+[1.0.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.0
 [0.6.2]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.1...0.6.2
 [0.6.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.0...0.6.1
 [0.6.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.5.1...0.6.0
@@ -101,3 +106,4 @@ Datasets are stored with a URI computed from the scheme and host that is serving
 [105]:                         https://github.com/OpenBEL/openbel-api/issues/105
 [108]:                         https://github.com/OpenBEL/openbel-api/issues/108
 [new terminology]:             https://github.com/OpenBEL/openbel-api#vocabulary
+

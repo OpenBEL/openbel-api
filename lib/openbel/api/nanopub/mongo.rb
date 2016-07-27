@@ -97,9 +97,7 @@ module OpenBEL
         references = @collection.aggregate(
           [
             {
-              :$project => {
-                "references.namespaces" => 1
-              }
+              :$project => {"references.namespaces" => 1}
             },
             {
               :$unwind => "$references.namespaces"
@@ -107,22 +105,30 @@ module OpenBEL
             {
               :$project => {
                 keyword: "$references.namespaces.keyword",
-                uri: "$references.namespaces.uri"
+                type:    "$references.namespaces.type",
+                domain:  "$references.namespaces.domain"
               }
             },
             {
               :$group => {
-                _id: "$keyword", uri: {
-                  :$addToSet => "$uri"
+                _id: "$keyword",
+                type: {
+                  :$addToSet => "$type"
+                },
+                domain: {
+                  :$addToSet => "$domain"
                 }
               }
             },
             {
-              :$unwind => "$uri"
+              :$unwind => "$type"
+            },
+            {
+              :$unwind => "$domain"
             },
             {
               :$project => {
-                keyword: "$_id", uri: "$uri", _id: 0
+                keyword: "$_id", type: "$type", domain: "$domain", _id: 0
               }
             }
           ],
@@ -135,10 +141,19 @@ module OpenBEL
         union = []
         remap = {}
         references.each do |obj|
-          obj = obj.to_h
-          obj[:keyword] = obj.delete("keyword")
-          obj[:uri]     = obj.delete("uri")
-          union, new_remap = BEL::Nanopub.union_namespace_references(union, [obj], 'incr')
+          keyword = obj['keyword']
+          type = obj['type']
+          domain = obj['domain']
+          uri = url = nil
+          if type == :url
+              url = domain
+          elsif type == :uri
+              uri = domain
+          end
+          args = [keyword, uri, url]
+          namespace = BELParser::Expression::Model::Namespace.new(*args)
+          union, new_remap =
+            BEL::Nanopub.union_namespace_references(union, [namespace], 'incr')
           remap.merge!(new_remap)
         end
 
