@@ -72,16 +72,26 @@ module OpenBEL
         def check_dataset(io, type)
           begin
 
-            # See https://github.com/OpenBEL/openbel-api/issues/120
-            BEL.nanopub(io, type, :language => @bel_version).each do |nanopub|
-              BEL.object_convert(String, nanopub.to_h) { |str|
-                unless str.valid_encoding?
-                  msg = 'Invalid encoding. UTF-8 is required.'
-                  response = render_json({:status => 415, :msg => msg})
-                  halt(415, { 'Content-Type' => 'application/json' }, response)
-                end
-              }
+            begin
+              # See https://github.com/OpenBEL/openbel-api/issues/120
+              BEL.nanopub(io, type, :language => @bel_version).each do |nanopub|
+                BEL.object_convert(String, nanopub.to_h) { |str|
+                  unless str.valid_encoding?
+                    msg = 'Invalid encoding. UTF-8 is required.'
+                    response = render_json({:status => 415, :msg => msg})
+                    halt(415, { 'Content-Type' => 'application/json' }, response)
+                  end
+                }
+              end
+            rescue Exception => e
+              puts e.message
+              puts e.backtrace.inspect
+              msg = 'Failed to parse the posted BEL nanopub.'
+              response = render_json({:status => 400, :msg => msg})
+              halt(400, { 'Content-Type' => 'application/json' }, response)
             end
+
+
             io.rewind
 
             nanopub         = BEL.nanopub(io, type).each.first
