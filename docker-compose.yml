@@ -25,4 +25,5 @@ services:
     volumes:
       - "rdf_store:/data/rdf_store"
       - "rdf_resources:/data/rdf_resources"
+      - ".:/app"
     restart: always
