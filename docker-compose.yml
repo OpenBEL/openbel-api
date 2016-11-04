@@ -2,16 +2,14 @@ version: '2'
 
 volumes:
   mongodb_data: {}
-  resource_search: {}
   rdf_store: {}
-
-environment:
-  - BIORDF_DB=http://test.com/me.db
+  rdf_resources: {}
 
 services:
   mongodb:
-    image: mongodb:3.2
-    volume: mongodb_data:/data/db
+    image: mongo:3.2
+    volumes:
+      - mongodb_data:/data/db
     restart: always
 
   api:
@@ -25,10 +23,6 @@ services:
     ports:
       - "9292:9292"
     volumes:
-      - "resource_search:/data/biological-concepts-rdf.db"
-      - "rdf_store:/data/biological-concepts-rdf"
+      - "rdf_store:/data/rdf_store"
+      - "rdf_resources:/data/rdf_resources"
     restart: always
-
-  data:
-    build:
-      context: ./containers/data
