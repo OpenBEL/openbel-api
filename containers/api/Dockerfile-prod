@@ -1,0 +1,28 @@
+FROM jruby:9.1.5.0
+
+# the container will expose 9292
+# must run with port binding: -p 9292:9292
+EXPOSE 9292
+
+# need make for native extensions (even though JRuby doesn't support it)
+RUN apt-get -y update && apt-get install -y make
+
+# install latest release plus deps
+RUN gem install openbel-api
+
+# hack, problem with deployment of bel_parser:java 1.0.7
+# TODO fix, bump version and redeploy
+COPY bel_parser-1.0.7-java.gem .
+RUN gem install bel_parser-1.0.7-java.gem
+
+# setup path for data volumes
+# - /data to hold sqlite db
+# - /data/biological-concepts-rdf to hold rdf store
+RUN ["mkdir", "-p", "/data/biological-concepts-rdf"]
+
+# copy over api config file (docker-specific)
+COPY config.yml .
+
+# run openbel api using docker app config
+CMD ["openbel-api", "--file", "./config.yml"]
+# vim: ft=dockerfile
