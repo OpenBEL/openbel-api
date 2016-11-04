@@ -10,11 +10,6 @@ RUN apt-get -y update && apt-get install -y make
 # install latest release plus deps
 RUN gem install openbel-api
 
-# hack, problem with deployment of bel_parser:java 1.0.7
-# TODO fix, bump version and redeploy
-COPY bel_parser-1.0.7-java.gem .
-RUN gem install bel_parser-1.0.7-java.gem
-
 # setup path for data volumes
 # - /data to hold sqlite db
 # - /data/biological-concepts-rdf to hold rdf store
