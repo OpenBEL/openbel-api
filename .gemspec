@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
                                  'README.md'
                                ].flatten!
   spec.executables           = Dir.glob('bin/*').map(&File.method(:basename))
-  spec.homepage              = 'https://github.com/OpenBEL/openbel-server'
+  spec.homepage              = 'https://github.com/OpenBEL/openbel-api'
   spec.require_paths         = ['app', 'lib']
   spec.platform              = 'java'
   spec.required_ruby_version = '>= 2.0.0'
