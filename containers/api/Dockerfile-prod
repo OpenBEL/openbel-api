@@ -13,9 +13,11 @@ RUN gem install openbel-api
 # setup path for data volumes
 # - /data/rdf_resources/ to hold sqlite db (biological-concepts-rdf.db)
 # - /data/rdf_store/ to hold rdf store
-RUN ["mkdir", "-p", "/data/rdf_resources"]
 
+RUN ["mkdir", "-p", "/data/rdf_resources"]
 RUN ["mkdir", "-p", "/data/rdf_store"]
+
+COPY ./search.db /data/rdf_resources/biological-concepts-rdf.db
 
 # copy over api config file (docker-specific)
 COPY config.yml .

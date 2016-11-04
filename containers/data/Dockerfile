@@ -1,14 +1,9 @@
 FROM debian:8
 
-RUN apt-get update && apt-get install -y curl \
-    && rm -rf /var/lib/apt/lists/*
+ARG BIORDF_DB
 
-RUN ["/bin/bash", "mkdir", "-p", "/data"]
+RUN ["mkdir", "-p", "/data/rdf_resources"]
 
-WORKDIR /data
+ADD $BIORDF_DB /data/rdf_resources/biological-concepts-rdf.db
 
-ENV BIORDF_DB http://example.com/testme
-
-RUN curl -SL $BIORDF_DB
-
-VOLUME ['/data/biological-concepts-rdf.db']
+# VOLUME ['/data/rdf_resources']
