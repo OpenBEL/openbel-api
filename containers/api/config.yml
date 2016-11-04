@@ -51,12 +51,12 @@ nanopub_store:
 # RDF dataset for BEL datasets, annotations, and namespaces using Apache Jena.
 resource_rdf:
   jena:
-    tdb_directory: '/data/biological-concepts-rdf'
+    tdb_directory: '/data/rdf_store'
 
 # Full-text search over annotation and namespace values using SQLite.
 resource_search:
   sqlite:
-    database_file: '/data/biological-concepts-rdf.db'
+    database_file: '/data/rdf_resources/biological-concepts-rdf.db'
 
 # Set a secret used during session creation....
 session_secret: 'changeme'
