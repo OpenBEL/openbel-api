@@ -1,0 +1,36 @@
+version: '2'
+
+volumes:
+  mongodb_data: {}
+  resource_search: {}
+  rdf_store: {}
+
+environment:
+  - BIORDF_DB=http://test.com/me.db
+
+services:
+  mongodb:
+    image: mongodb:3.2
+    volume: mongodb_data:/data/db
+    restart: always
+
+  api:
+    build:
+        context: ./containers/api
+        dockerfile: Dockerfile-prod
+    depends_on:
+      - mongodb
+    expose:
+     - "9292"
+    ports:
+      - "9292:9292"
+    volumes:
+      - "resource_search:/data/biological-concepts-rdf.db"
+      - "rdf_store:/data/biological-concepts-rdf"
+    restart: always
+
+  data:
+    build:
+      context: ./containers/data
+
+
