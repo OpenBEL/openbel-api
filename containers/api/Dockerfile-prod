@@ -17,7 +17,12 @@ RUN gem install openbel-api
 RUN ["mkdir", "-p", "/data/rdf_resources"]
 RUN ["mkdir", "-p", "/data/rdf_store"]
 
+# copy over SQLite database used for searching annotations and namespaces
 COPY ./search.db /data/rdf_resources/biological-concepts-rdf.db
+
+# copy over RDF store used for storing datasets and annotation/namespace RDF
+# (consistent resource versions must be used between SQLite db and RDF store)
+COPY ./rdf_store /data/rdf_store
 
 # copy over api config file (docker-specific)
 COPY config.yml .
