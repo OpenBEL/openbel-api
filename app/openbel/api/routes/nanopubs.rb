@@ -32,6 +32,11 @@ module OpenBEL
         @annotation_grouping_transform = AnnotationGroupingTransform.new
       end
 
+      configure :development do |config|
+        Nanopubs.reset!
+        use Rack::Reloader
+      end
+
       helpers do
 
         def stream_nanopub_objects(cursor)

@@ -6,6 +6,7 @@ require 'bel_parser'
 
 require_relative 'util'
 
+require 'rack'
 require 'rack/cors'
 require 'sinatra/base'
 require "sinatra/cookies"
