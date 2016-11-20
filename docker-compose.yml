@@ -1,29 +1,33 @@
 version: '2'
 
 volumes:
-  mongodb_data: {}
-  rdf_store: {}
-  rdf_resources: {}
+  mongodb_data:
 
 services:
+
   mongodb:
     image: mongo:3.2
     volumes:
       - mongodb_data:/data/db
     restart: always
 
-  api:
+  openbel-data:
     build:
-        context: ./containers/api
-        dockerfile: Dockerfile
+      context: ./containers/data
+    restart: always
+
+  openbel-api:
+    build:
+      context: ./containers/api
     depends_on:
+      - openbel-data
       - mongodb
     expose:
-     - "9292"
+      - "9292"
     ports:
       - "9292:9292"
+    volumes_from:
+      - openbel-data
     volumes:
-      - "rdf_store:/data/rdf_store"
-      - "rdf_resources:/data/rdf_resources"
-      - ".:/app"
+      - .:/app
     restart: always

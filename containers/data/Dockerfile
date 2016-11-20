@@ -1,9 +1,11 @@
-FROM debian:8
-
-ARG BIORDF_DB
+FROM alpine
 
 RUN ["mkdir", "-p", "/data/rdf_resources"]
+RUN ["mkdir", "-p", "/data/rdf_store"]
 
-ADD $BIORDF_DB /data/rdf_resources/biological-concepts-rdf.db
+COPY ./data/biological-concepts-rdf.db /data/rdf_resources/
+COPY ./data/rdf_store /data/rdf_store
 
-# VOLUME ['/data/rdf_resources']
+VOLUME /data
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]

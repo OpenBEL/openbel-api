@@ -16,3 +16,6 @@ node_modules
 VimFlavor*
 /openbel-api-*gem
 openbel-api-config.yml
+
+# docker development
+containers/data/data/*

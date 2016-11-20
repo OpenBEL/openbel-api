@@ -14,7 +14,7 @@
 #      --volume "$(realpath ../../):/app" \
 #      {IMAGE ID from #3}
 
-FROM jruby:9.1.5.0
+FROM jruby:9.1
 
 # the container will expose 9292
 # must run with port binding: -p 9292:9292
@@ -31,22 +31,14 @@ RUN apt-get -y update && apt-get install -y make
 #   (consistent resource versions must be used between SQLite db and RDF store)
 RUN ["mkdir", "-p", "/data/rdf_resources"]
 RUN ["mkdir", "-p", "/data/rdf_store"]
-COPY ./search.db /data/rdf_resources/biological-concepts-rdf.db
-COPY ./rdf_store /data/rdf_store
 
 # setup /app
 # - holds mounted openbel-api volume for development
 RUN ["mkdir", "-p", "/app"]
 VOLUME /app
 
-# setup /build
-# - copy over docker-specific config to use data resources
-# - copy over CMD to run install and run of openbel-api
-RUN ["mkdir", "-p", "/build"]
-COPY config.yml /build/
-COPY install_and_run.sh /build/
+COPY run-developer-build.sh /
+COPY config.yml /
 
-WORKDIR /build
-
-CMD ["./install_and_run.sh"]
+CMD ["./run-developer-build.sh"]
 # vim: ft=dockerfile
