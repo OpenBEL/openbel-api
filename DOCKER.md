@@ -19,4 +19,4 @@ To run either layout you will need to first build then start.
 - `docker-compose --file choose-layout-file.yml build`
 - `docker-compose --file choose-layout-file.yml up`
 
-See [DEVELOPMENT.md](./DEVELOPMENT.MD) for more details.
+See [DEVELOPMENT.md](./DEVELOPMENT.md) for more details.
