@@ -1,19 +1,23 @@
-# Docker Notes
+## OpenBEL API on Docker
 
-This document describes how to use Docker for development and production deployment of the
-OpenBEL API.
+The *openbel-api* repository includes both production and local
+configurations.
 
-### Using Docker
+OpenBEL API consists of the following images:
 
-#### Production docker
+- MongoDB 3.2
+- JRuby 9.1
+- OpenBEL API
+- Data container (for RDF resources)
 
-1. Make sure you add the search.db file to the containers/api folder.  This is the sqlite database with the namespaces, etc for use in the REST API.
+The developer docker layout is defined in *docker-compose.yml*.
 1. Then run the following commands
 
     docker-compose -f docker-compose-prod.yml build
     docker-compose -f docker-compose-prod.yml up
 
 You can then access the REST api at http://localhost:9292/api
+
 
 To stop the docker containers
 
