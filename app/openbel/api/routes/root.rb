@@ -3,6 +3,11 @@ module OpenBEL
 
     class Root < Base
 
+      configure :development do |config|
+        Root.reset!
+        use Rack::Reloader
+      end
+
       options '/api' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200

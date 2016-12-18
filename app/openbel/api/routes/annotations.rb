@@ -27,6 +27,11 @@ module OpenBEL
         )
       end
 
+      configure :development do |config|
+        Annotations.reset!
+        use Rack::Reloader
+      end
+
       options '/api/annotations' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200

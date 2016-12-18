@@ -3,6 +3,11 @@ module OpenBEL
 
     class Authenticate < Base
 
+      configure :development do |config|
+        Authenticate.reset!
+        use Rack::Reloader
+      end
+
       get '/api/authentication-enabled' do
         enabled = OpenBEL::Settings[:auth][:enabled]
         hdrs = {'Content-Type' => 'application/json'}

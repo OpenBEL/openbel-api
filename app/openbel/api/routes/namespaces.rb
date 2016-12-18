@@ -40,6 +40,11 @@ module OpenBEL
         )
       end
 
+      configure :development do |config|
+        Namespaces.reset!
+        use Rack::Reloader
+      end
+
       options '/api/namespaces' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200

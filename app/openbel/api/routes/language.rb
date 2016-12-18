@@ -18,6 +18,11 @@ module OpenBEL
         @spec       = BELParser::Language.specification(bel_version)
       end
 
+      configure :development do |config|
+        Language.reset!
+        use Rack::Reloader
+      end
+
       options '/api/language' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200

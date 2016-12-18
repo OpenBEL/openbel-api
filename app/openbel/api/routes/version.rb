@@ -16,6 +16,11 @@ module OpenBEL
       }
       DEFAULT_TYPE     = TEXT
 
+      configure :development do |config|
+        Version.reset!
+        use Rack::Reloader
+      end
+
       helpers do
         def requested_media_type
           if params && params[:format]

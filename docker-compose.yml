@@ -1,0 +1,33 @@
+version: '2'
+
+volumes:
+  mongodb_data:
+
+services:
+
+  mongodb:
+    image: mongo:3.2
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+  openbel-data:
+    build:
+      context: ./containers/data
+    restart: always
+
+  openbel-api:
+    build:
+      context: ./containers/api
+    depends_on:
+      - openbel-data
+      - mongodb
+    expose:
+      - "9292"
+    ports:
+      - "9292:9292"
+    volumes_from:
+      - openbel-data
+    volumes:
+      - .:/app
+    restart: always

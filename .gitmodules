@@ -1,0 +1,16 @@
+[submodule "subprojects/bel-rdf-jena"]
+	path = subprojects/bel-rdf-jena
+	url = git@github.com:OpenBEL/bel.rb-rdf-jena.git
+	branch = next
+[submodule "subprojects/bel-search-sqlite"]
+	path = subprojects/bel-search-sqlite
+	url = git@github.com:OpenBEL/bel.rb-search-sqlite.git
+	branch = next
+[submodule "subprojects/bel"]
+	path = subprojects/bel
+	url = git@github.com:OpenBEL/bel.rb.git
+	branch = next
+[submodule "subprojects/bel_parser"]
+	path = subprojects/bel_parser
+	url = git@github.com:OpenBEL/bel_parser.git
+	branch = next

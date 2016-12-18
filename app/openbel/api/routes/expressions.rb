@@ -41,6 +41,11 @@ module OpenBEL
           BELParser::Resource.default_url_reader)
       end
 
+      configure :development do |config|
+        Expressions.reset!
+        use Rack::Reloader
+      end
+
       options '/api/expressions/*/completions' do
         response.headers['Allow'] = 'OPTIONS,GET'
         status 200

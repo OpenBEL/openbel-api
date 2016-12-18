@@ -56,6 +56,11 @@ module OpenBEL
         @annotation_transform = AnnotationTransform.new(annotations)
       end
 
+      configure :development do |config|
+        Datasets.reset!
+        use Rack::Reloader
+      end
+
       # Hang on to the Rack IO in order to do unbuffered reads.
       # use Rack::Config do |env|
       #   env['rack.input'], env['data.input'] = StringIO.new, env['rack.input']

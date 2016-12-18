@@ -1,0 +1,38 @@
+version: '2'
+
+volumes:
+  mongodb_data: {}
+  rdf_store: {}
+  rdf_resources: {}
+
+services:
+  mongodb:
+    image: mongo:3.2
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+  api:
+    build:
+        context: ./containers/api
+        dockerfile: Dockerfile-prod
+    depends_on:
+      - mongodb
+    expose:
+     - "9292"
+    ports:
+      - "9292:9292"
+    volumes:
+      - "rdf_store:/data/rdf_store"
+      - "rdf_resources:/data/rdf_resources"
+    restart: always
+
+# Data container - pulls RDF Resources sqlite db into data volume
+  # data:
+  #   build:
+  #     context: ./containers/data
+  #     args:
+  #       - BIORDF_DB=http://172.31.99.212:8000/search.db
+  #   volumes:
+  #     - "rdf_resources:/data/rdf_resources"
+
