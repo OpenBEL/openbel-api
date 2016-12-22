@@ -10,7 +10,7 @@ services:
     expose:
       - "27017"
     ports:
-      - "27017:27017"cd t
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
     restart: always
