@@ -59,7 +59,7 @@ Then follow a few steps:
   - `git clone git@github.com:OpenBEL/openbel-api.git`
 2. Change directory to the cloned repository.
   - `cd openbel-api`
-3. Clone submodules for local developement to the *subprojects/* directory.
+3. Clone submodules for local development to the *subprojects/* directory.
   - `git submodule update`
 
 Then you will need to obtain RDF resources and full-text search database containing

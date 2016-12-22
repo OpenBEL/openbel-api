@@ -38,7 +38,7 @@ RUN ["mkdir", "-p", "/app"]
 VOLUME /app
 
 COPY run-developer-build.sh /
-COPY config.yml /
+# COPY config.yml /
 
 CMD ["./run-developer-build.sh"]
 # vim: ft=dockerfile

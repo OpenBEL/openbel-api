@@ -9,6 +9,7 @@
 /doc
 /out
 /tags
+/data
 node_modules
 /docs/openbel-api.html
 .flavors

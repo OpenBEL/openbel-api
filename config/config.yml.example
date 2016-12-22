@@ -8,7 +8,7 @@ bel:
   #     (BEL version 1.0 specification)
   #   2.0
   #     (BEL version 2.0 specification)
-  version: 2.0
+  version: 1.0
 
 # Storage of nanopubs through the Mongo database.
 nanopub_store:
@@ -16,8 +16,8 @@ nanopub_store:
 
     # The MongoDB host to connect to. For example if MongoDB's net.bindIp
     # setting is configured as 127.0.0.1 we should be able to connect using
-    # localhost.
-    host:                     'localhost'
+    # localhost.  We use 'mongodb' for the docker-compose file
+    host:                     'mongodb'
 
     # The default MongoDB port. Configured under MongoDB's `net.port` setting.
     port:                     27017

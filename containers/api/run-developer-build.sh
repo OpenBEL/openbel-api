@@ -4,7 +4,7 @@ cd /app
 
 bundle install --system
 
-export OPENBEL_API_CONFIG_FILE=/config.yml
+# export OPENBEL_API_CONFIG_FILE=/config.yml
 
 exec jruby -S bundle exec puma \
   --environment development \

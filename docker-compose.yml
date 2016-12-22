@@ -7,27 +7,28 @@ services:
 
   mongodb:
     image: mongo:3.2
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"cd t
     volumes:
       - mongodb_data:/data/db
-    restart: always
-
-  openbel-data:
-    build:
-      context: ./containers/data
     restart: always
 
   openbel-api:
     build:
       context: ./containers/api
     depends_on:
-      - openbel-data
       - mongodb
+    environment:
+      OPENBEL_API_CONFIG_FILE: /config/config.yml
     expose:
       - "9292"
     ports:
       - "9292:9292"
-    volumes_from:
-      - openbel-data
     volumes:
       - .:/app
+      - ./data/rdf-resources:/data/rdf_resources
+      - ./data/rdf-store:/data/rdf_store
+      - ./config:/config
     restart: always

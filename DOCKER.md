@@ -36,7 +36,12 @@ You can then access the REST API at http://localhost:9292/api
 
 Access running docker api container
 
-    docker exec -it openbelapi_api_1 /bin/bash
+    docker-compose exec openbel-api /bin/bash
+    docker-compose exec mongodb /bin/bash
+
+Logs
+
+    docker-compose logs openbel-api
 
 Clean up docker containers
 

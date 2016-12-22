@@ -26,8 +26,8 @@ Then you will need to obtain RDF resources and full-text search database contain
 biological concepts (e.g. annotation, namespaces). Download data from
 [OpenBEL Build Server](https://build.openbel.org/browse/OR).
 
-- Copy RDF resources to `containers/api/` and name it `rdf_store`.
-- Copy full-text search SQLite database to `containers/api` and name it `search.db`.
+- Copy RDF resources to `data` and name it `rdf_store`.
+- Copy full-text search SQLite database to `data/rdf_resources` and name it `biological-concepts-rdf.db`.
 
 Now you can build *openbel-api* using the *docker-compose-prod.yml* docker compose
 layout.
