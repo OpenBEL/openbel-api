@@ -60,7 +60,7 @@ Then follow a few steps:
 2. Change directory to the cloned repository.
   - `cd openbel-api`
 3. Clone submodules for local developement to the *subprojects/* directory.
-  - `git submodule update`
+  - `git submodule update --init`
 
 Then you will need to obtain RDF resources and full-text search database containing
 biological concepts (e.g. annotation, namespaces). Download data from
