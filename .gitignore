@@ -10,6 +10,7 @@
 /out
 /tags
 /data
+/config/config.yml
 node_modules
 /docs/openbel-api.html
 .flavors

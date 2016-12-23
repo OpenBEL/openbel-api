@@ -4,6 +4,29 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="RVM: ruby-2.2.1" jdkType="RUBY_SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="bel (v[path], /Users/william/code/openbel/openbel-api/subprojects/bel) [path][gem]">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/subprojects/bel/bin" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/ext" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/lib" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/tasks" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/scripts" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/support" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/statement_ast" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/subprojects/bel/bin" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/ext" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/lib" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/tasks" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/scripts" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/support" />
+          <root url="file://$MODULE_DIR$/subprojects/bel/statement_ast" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="bundler (v1.13.6, RVM: ruby-2.2.1) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="ffi (v1.9.8, RVM: ruby-2.2.1) [gem]" level="application" />
   </component>
 </module>
