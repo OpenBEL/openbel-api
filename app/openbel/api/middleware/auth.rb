@@ -39,14 +39,17 @@ module OpenBEL
       token = token_param unless token_param.nil?
 
       secret = OpenBEL::Settings[:auth][:secret]
-      secret = Base64.decode64(secret)
+      pubkey = OpenSSL::PKey::RSA.new(secret)
+
+      # secret = Base64.decode64(secret)
+
       # whether we should verify the token
       verify = true
       # JWT options passed to decode
-      options = {}
+      options = { :algorithm => 'RS256' }
 
       begin
-        decoded_token = decode(token, secret, verify, options)
+        decoded_token = decode(token, pubkey, verify, options)
       rescue ::JWT::VerificationError => ve
         puts ve.inspect
         raise 'invalid authorization token'
