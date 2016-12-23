@@ -27,7 +27,21 @@ module OpenBEL
         # Annotations using RdfRepository
         @annotations = BEL::Resource::Annotations.new(@rr)
         # Namespaces using RdfRepository
-        @namespaces = BEL::Resource::Namespaces.new(@rr)
+        @namespaces  = BEL::Resource::Namespaces.new(@rr)
+
+        @supported_namespaces = Hash[
+          @namespaces.each.map { |ns|
+            prefix = ns.prefix.first.upcase
+
+            [
+              prefix,
+              BELParser::Expression::Model::Namespace.new(
+                prefix,
+                ns.uri
+              )
+            ]
+          }
+        ]
 
         # Resource Search using SQLite.
         @search = BEL::Resource::Search.plugins[:sqlite].create_search(
@@ -182,7 +196,9 @@ module OpenBEL
         statement =
           BELParser::Expression.parse_statements(
             bel,
-            @spec)
+            @spec,
+            @supported_namespaces
+        )
         halt 404 unless statement
 
         response.headers['Content-Type'] = 'application/json'
