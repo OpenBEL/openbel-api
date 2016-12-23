@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# run via: bash <(curl -s https://raw.githubusercontent.com/OpenBEL/openbel-api/master/bin/setup-dev-server.sh)
+# run via: bash <(curl -s https://raw.githubusercontent.com/OpenBEL/openbel-api/master/bin/setup-docker.sh)
 
 hash docker 2>/dev/null || { echo >&2 "I require docker. Please install.  Aborting."; exit 1; }
 hash docker-compose 2>/dev/null || { echo >&2 "I require docker-compose. Please install.  Aborting."; exit 1; }
@@ -38,11 +38,16 @@ fi
 
 cd $HOME
 
-cp config/config.yml.example config/config.yml
+if [ ! -f "$HOME/config/config.yml"]; then
+    cp config/config.yml.example config/config.yml
+fi
 
-echo "Remember to configure config/config.yml"
+printf "Remember to configure config/config.yml\n\n"
 
-docker-compose build
+echo "To start the dev docker instance: "
+echo "  docker-compose build"
+echo "  docker-compose up"
 
-echo "Re-run docker-compose build if you changed config.yml"
-echo "Now run docker-compose up to start the server"
+printf "\n\nTo run production docker: "
+echo "  docker-compose -f docker-compose-prod.yml build"
+echo "  docker-compose -f docker-compose-prod.yml up"

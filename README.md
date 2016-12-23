@@ -61,6 +61,8 @@ The OpenBEL API is built to run with [JRuby][JRuby] and [Java 8][Java 8].
 
 ## Getting up and Running
 
+*See the DOCKER.md file instructions for using Docker (recommended).*
+
 ### Installation
 
 The OpenBEL API is packaged and installed as a Ruby gem. A Ruby gem is packed library or application that runs on the Ruby virtual machine. In this case OpenBEL API runs only on [JRuby][JRuby].
