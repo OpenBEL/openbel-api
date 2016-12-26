@@ -2,6 +2,7 @@
 
 The OpenBEL API provides RESTful API access to your BEL content. It is part of [OpenBEL Platform][OpenBEL Platform].
 
+
 ## Features
 
 - Nanopub Store
@@ -134,30 +135,47 @@ resource_search:
     database_file: 'biological-concepts-rdf.db'
 ```
 
-
 **Tip**
 You can obtain the latest Resource Search database (20150611) from the [OpenBEL build server][Resource Search 20150611].
 
-*Token-based authentication*
-The OpenBEL API is equipped to require authentication for specific API paths (e.g. nanopub, Datasets). The implementation uses [Auth0][Auth0] as a single sign-on service.
 
-By default authentication is disabled.
+## Enabling Authentication
 
-The default configuration is:
+The OpenBEL API uses *Token-based authentication* supported by Keycloak.
+The OpenBEL API is equipped to require authentication for specific API
+paths (e.g. nanopub, Datasets). The implementation uses [Keycloak][Keycloak]
+for a single sign-on service.
+
+By default, authentication is disabled.  The default configuration is:
 
 ```yaml
 # Set a secret used during session creation....
 session_secret: 'changeme'
 
-# User authentication using Auth0.
 auth:
+  # Controls whether the API requires authentication
   enabled: false
-  redirect: 'https://openbel.auth0.com/authorize?response_type=code&scope=openid%20profile&client_id=K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
-  default_connection: 'linkedin'
-  domain:   'openbel.auth0.com'
-  id:       'K4oAPUaROjbWWTCoAhf0nKYfTGsZWbHE'
-  # secret:   'auth0 client secret here'
+  # Used by the auth middleware to decode and verify the JWT
+  #secret:   'JWT secret here'
+
+# API Authentication is provided via JWTs from Keycloak
+#    see http://jwt.io/ and https://keycloak.org
+# auth:
+#   # Controls whether the API requires authentication
+#   enabled: true
+#   # Used by the auth middleware to decode and verify the JWT
+#   secret: |
+#     -----BEGIN PUBLIC KEY-----
+#     <keycloak_pub_key>
+#     -----END PUBLIC KEY-----
 ```
+
+An example
+The keycloak Pub Key can be found in the Admin console for Keycloak:
+
+1. Realm Settings
+1. Keys tab
+1. Public Key -> View
 
 ### Running the OpenBEL API
 
@@ -278,7 +296,7 @@ Built with collaboration and a lot of :heart: by the [OpenBEL][OpenBEL] communit
 [Upgrading]: https://github.com/OpenBEL/openbel-api/blob/master/UPGRADING.md
 [RubyGems]: https://rubygems.org
 [RDF]: http://www.w3.org/RDF/
-[Auth0]: https://auth0.com/
+[Keycloak]: https://http://www.keycloak.org/
 [Puma HTTP server]: http://puma.io/
 [Resource RDF 20150611]: http://build.openbel.org/browse/OR-RRD2/latestSuccessful/artifact
 [Resource Search 20150611]: http://build.openbel.org/browse/OR-RSD2/latestSuccessful/artifact
