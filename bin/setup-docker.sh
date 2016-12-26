@@ -6,13 +6,22 @@ hash docker 2>/dev/null || { echo >&2 "I require docker. Please install.  Aborti
 hash docker-compose 2>/dev/null || { echo >&2 "I require docker-compose. Please install.  Aborting."; exit 1; }
 
 
+ssh_status=$(ssh -o BatchMode=yes -o ConnectTimeout=5 git@github.com 2>&1)
+
+if [[ $ssh_status == *"successfully authenticated"* ]] ; then
+  clone_cmd="git clone git@github.com:OpenBEL/openbel-api.git";
+else
+  clone_cmd="git clone https://github.com/OpenBEL/openbel-api.git";
+fi
+
 if [ ! -d "openbel-api" ]; then
-    git clone git@github.com:OpenBEL/openbel-api.git
+    $clone_cmd
 else
     cd openbel-api;
     git pull;
     cd ..;
 fi
+
 
 cd openbel-api
 git submodule update --init  # Update project submodules (in the ./subprojects directory)
