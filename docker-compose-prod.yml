@@ -23,6 +23,6 @@ services:
     ports:
       - "9292:9292"
     volumes:
-      - "./containers/data/rdf_store:/data/rdf_store"
-      - "./containers/data/rdf_resources:/data/rdf_resources"
+      - "./data/rdf_store:/data/rdf_store"
+      - "./data/rdf_resources:/data/rdf_resources"
     restart: always
