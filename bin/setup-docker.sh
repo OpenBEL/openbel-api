@@ -47,7 +47,7 @@ fi
 
 cd $HOME
 
-if [ ! -f "$HOME/config/config.yml"]; then
+if [ ! -f "$HOME/config/config.yml" ]; then
     cp config/config.yml.example config/config.yml
 fi
 
