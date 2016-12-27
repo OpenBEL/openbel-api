@@ -14,15 +14,17 @@ services:
 
   api:
     build:
-        context: .
-        dockerfile: ./containers/api/Dockerfile-prod
+        context: ./containers/api
+        dockerfile: Dockerfile-prod
     depends_on:
       - mongodb
+    environment:
+      OPENBEL_API_CONFIG_FILE: /config/config.yml
     expose:
      - "9292"
     ports:
       - "9292:9292"
     volumes:
-      - "./data/rdf_store:/data/rdf_store"
-      - "./data/rdf_resources:/data/rdf_resources"
+      - "./data:/data"
+      - "./config/config.yml:/config/config.yml"
     restart: always

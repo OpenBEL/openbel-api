@@ -18,8 +18,8 @@ RUN ["mkdir", "-p", "/data/rdf_resources"]
 RUN ["mkdir", "-p", "/data/rdf_store"]
 RUN ["mkdir", "-p", "/config"]
 
-# copy over api config file (docker-specific)
-COPY ./config/config.yml /config/config.yml
+# copy over api config file (docker-specific) -- context is ./containers/api
+# COPY ../../config/config.yml /config/config.yml
 
 # run openbel api using docker app config
 CMD ["openbel-api", "--file", "/config/config.yml"]
