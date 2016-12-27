@@ -20,9 +20,8 @@ module OpenBEL
         @spec         = BELParser::Language.specification(bel_version)
 
         # RdfRepository using Jena.
-        @rr = BEL::RdfRepository.plugins[:jena].create_repository(
-          :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
-        )
+        tdb = OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
+        @rr = BEL::RdfRepository.plugins[:jena].create_repository(:tdb_directory => tdb)
 
         # Annotations using RdfRepository
         @annotations = BEL::Resource::Annotations.new(@rr)
@@ -50,8 +49,8 @@ module OpenBEL
 
         @expression_validator = BELParser::Expression::Validator.new(
           @spec,
-          BELParser::Resources::DEFAULT_NAMESPACES,
-          BELParser::Resource.default_uri_reader,
+          @supported_namespaces,
+          BELParser::Resource::JenaTDBReader.new(tdb),
           BELParser::Resource.default_url_reader)
       end
 
