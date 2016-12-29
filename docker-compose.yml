@@ -15,7 +15,7 @@ services:
       - mongodb_data:/data/db
     restart: always
 
-  openbel-api:
+  api:
     build:
       context: ./containers/api
     depends_on:

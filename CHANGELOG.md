@@ -3,6 +3,13 @@ All notable changes to openbel-api will be documented in this file. The curated 
 
 This project adheres to [Semantic Versioning][Semantic Versioning].
 
+## [1.0.4][1.0.4] - 2016-12-28
+### Added
+- Docker containers for development and production use of OpenBEL
+
+### Changed
+- Converted authentication to use Keycloak Pubkey RSA256 Token authentication
+
 ## [1.0.1][1.0.1] - 2016-06-08
 ### Added
 - Renaming APIs and code on [new terminology][new terminology].
@@ -87,6 +94,7 @@ Datasets are stored with a URI computed from the scheme and host that is serving
   - Retrieve equivalent namespace values from the individual.
   - Retrieve orthologous namespace values from the individual.
 
+[1.0.4]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.4
 [1.0.1]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.1
 [1.0.0]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.2...1.0.0
 [0.6.2]:                       https://github.com/OpenBEL/openbel-api/compare/0.6.1...0.6.2
