@@ -1,6 +1,7 @@
 require 'cgi'
 require 'bel'
 require 'uri'
+require 'bel_parser/completion'
 require 'bel_parser/expression/model'
 require 'bel_parser/expression/parser'
 require 'bel_parser/expression/validator'
@@ -170,7 +171,7 @@ module OpenBEL
         halt 400 unless bel and caret_position
 
         begin
-          completions = BEL::Completion.complete(bel, @spec, @search, @namespaces, caret_position)
+          completions = BELParser::Completion.complete(bel, @spec, @search, @namespaces, caret_position)
         rescue IndexError => ex
           halt(
             400,
@@ -258,8 +259,7 @@ module OpenBEL
 
         @expression_validator.each(
           StringIO.new("#{bel}\n")
-        ) do |(num, line, ast, result)|
-
+        ) do |(_, _, _, result)|
           return result.to_s
         end
       end
