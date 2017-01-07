@@ -46,6 +46,11 @@ module OpenBEL
               :type => 'namespace_value',
               :href => "#{base_url}/api/namespaces/hgnc/#{id}"
             }
+          when :relationship
+            {
+              :type => 'relationship',
+              :href => "#{base_url}/api/relationships/#{id}"
+            }
           else
             raise NotImplementedError.new("Unexpected resource type, #{type}")
           end
