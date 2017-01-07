@@ -4,10 +4,11 @@ cd /app
 
 bundle install --system
 
-# export OPENBEL_API_CONFIG_FILE=/config.yml
+if [ -z "$RACK_ENV" ]; then
+  export RACK_ENV=development
+fi
 
 exec jruby -S bundle exec puma \
-  --environment development \
   --log-requests \
   --pidfile /app/openbel-api.pid \
   --port 9292 \
