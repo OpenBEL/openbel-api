@@ -71,13 +71,23 @@ module OpenBEL
         end
 
         def base_url
-          env['HTTP_X_REAL_BASE_URL'] ||
-            "#{env['rack.url_scheme']}://#{env['SERVER_NAME']}:#{env['SERVER_PORT']}"
+          if env['SERVER_PORT'] == 443
+            scheme = 'https'
+          else
+            scheme = 'http'
+          end
+
+          "#{scheme}://#{env['HTTP_HOST']}"
         end
 
         def url
-          env['HTTP_X_REAL_URL'] ||
-            "#{env['rack.url_scheme']}://#{env['SERVER_NAME']}:#{env['SERVER_PORT']}/#{env['PATH_INFO']}"
+          if env['SERVER_PORT'] == 443
+            scheme = 'https'
+          else
+            scheme = 'http'
+          end
+
+          "#{scheme}://#{env['HTTP_HOST']}/#{env['PATH_INFO']}"
         end
 
         def schema_url(name)
