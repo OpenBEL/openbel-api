@@ -21,14 +21,14 @@ module OpenBEL
         mongo = OpenBEL::Settings[:nanopub_store][:mongo]
         @api  = OpenBEL::Nanopub::Nanopub.new(mongo)
 
-        # RdfRepository using Jena
-        @rr = BEL::RdfRepository.plugins[:jena].create_repository(
-          :tdb_directory => OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
-        )
+        # RdfRepository using Jena.
+        tdb = OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
+        @rr = BEL::RdfRepository.plugins[:jena].create_repository(:tdb_directory => tdb)
+
 
         # Annotations using RdfRepository
-        annotations                    = BEL::Resource::Annotations.new(@rr)
-        @annotation_transform          = AnnotationTransform.new(annotations)
+        @annotations                    = BEL::Resource::Annotations.new(@rr)
+        @annotation_transform          = AnnotationTransform.new(@annotations)
         @annotation_grouping_transform = AnnotationGroupingTransform.new
       end
 
@@ -116,7 +116,7 @@ module OpenBEL
         # Validate BNJ.
         validate_media_type! "application/json"
         nanopub_obj = read_json
-
+        # STDERR.puts "DBG: nanopub_obj Variable config is #{nanopub_obj.inspect}"
         schema_validation = validate_schema(keys_to_s_deep(nanopub_obj), :nanopub)
         unless schema_validation[0]
           halt(
@@ -127,6 +127,7 @@ module OpenBEL
         end
 
         nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_obj[:nanopub])
+        # STDERR.puts "DBG: nanopub Variable config is #{nanopub.inspect}"
 
         # Standardize annotations.
         @annotation_transform.transform_nanopub!(nanopub, base_url)
@@ -135,12 +136,22 @@ module OpenBEL
         facets = map_nanopub_facets(nanopub)
         hash = nanopub.to_h
         hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
+
+        # STDERR.puts "DBG: Variable config is #{hash.inspect}"
+
         hash[:facets]        = facets
         _id                  = @api.create_nanopub(hash)
 
         # Return Location information (201).
         status 201
         headers "Location" => "#{base_url}/api/nanopubs/#{_id}"
+        headers "Content-Type" => 'application/json'
+        render_json(
+            {
+                :status => 201,
+                :location => "#{base_url}/api/nanopubs/#{_id}"
+             }
+        )
       end
 
 			get '/api/nanopubs-stream', provides: 'application/json' do
