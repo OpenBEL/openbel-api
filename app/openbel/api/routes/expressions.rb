@@ -171,7 +171,7 @@ module OpenBEL
         halt 400 unless bel and caret_position
 
         begin
-          completions = BELParser::Completion.complete(bel, @spec, @search, @namespaces, caret_position)
+          completions = BELParser::Completion.complete(bel, @spec, @search, @supported_namespaces, caret_position)
         rescue IndexError => ex
           halt(
             400,
