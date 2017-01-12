@@ -192,13 +192,22 @@ module OpenBEL
         bel     = params[:splat].first
         flatten = as_bool(params[:flatten])
 
-        statement =
-          BELParser::Expression.parse_statements(
-            bel,
-            @spec,
-            @supported_namespaces
-        )
-        halt 404 unless statement
+        begin
+          statement =
+            BELParser::Expression.parse_statements(
+              bel,
+              @spec,
+              @supported_namespaces
+          )
+          halt 404 unless statement
+        rescue Exception => ex
+          halt(
+              422,
+              {'Content-Type' => 'application/json'},
+              render_json({ :status => 422, :status_name => 'UNPROCESSABLE ENTITY', :msg => ex.to_s })
+          )
+        end
+
 
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump({
