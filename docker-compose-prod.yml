@@ -20,6 +20,7 @@ services:
       - mongodb
     environment:
       OPENBEL_API_CONFIG_FILE: /config/config.yml
+      RACK_ENV: production
     expose:
      - "9292"
     ports:
