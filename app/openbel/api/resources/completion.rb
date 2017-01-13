@@ -8,12 +8,12 @@ module OpenBEL
         adapter Oat::Adapters::HAL
         schema do
           type :completion
-          property :type,      item[:type]
-          property :label,     item[:label]
-          property :value,     item[:value]
-          property :highlight, item[:highlight]
-          property :actions,   item[:actions]
-          property :id,        item[:id]
+          property :type,           item[:type]
+          property :id,             item[:id]
+          property :label,          item[:label]
+          property :value,          item[:value]
+          property :caret_position, item[:caret_position]
+          property :validation,     item[:validation]
         end
       end
 
@@ -25,18 +25,10 @@ module OpenBEL
             p.completion item
           end
 
-          link :self,        link_self(item[:id])
           link :describedby, link_described_by(item[:type], item[:id])
         end
 
         private
-
-        def link_self(id)
-          {
-            :type => 'completion',
-            :href => "#{base_url}/api/expressions/#{id}/completions"
-          }
-        end
 
         def link_described_by(type, id)
           case type
@@ -54,6 +46,11 @@ module OpenBEL
             {
               :type => 'namespace_value',
               :href => "#{base_url}/api/namespaces/hgnc/#{id}"
+            }
+          when :relationship
+            {
+              :type => 'relationship',
+              :href => "#{base_url}/api/relationships/#{id}"
             }
           else
             raise NotImplementedError.new("Unexpected resource type, #{type}")

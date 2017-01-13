@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
                                  'Nick Bargnesi',
                                  'William Hayes'
                                ]
-  spec.date                  = %q{2016-03-23}
+  spec.date                  = %q{2017-01-13}
   spec.email                 = %q{abargnesi@selventa.com}
   spec.files                 = [
                                  Dir.glob('app/**/*.{json,rb,ru}'),
@@ -33,23 +33,20 @@ Gem::Specification.new do |spec|
 
   # Dependencies
 
-  ## bel.rb
-  spec.add_runtime_dependency 'bel',               '~> 1.0.0'
+  ## bel.rb + plugins
+  spec.add_runtime_dependency 'bel',               '~> 1.1.0'
+  spec.add_runtime_dependency 'bel-search-sqlite', '~> 1.1.0'
+  spec.add_runtime_dependency 'bel-rdf-jena',      '~> 1.1.0'
 
   ## bel.rb translator dependencies
   spec.add_runtime_dependency 'json-ld',           '2.0.0'
   spec.add_runtime_dependency 'rdf-json',          '2.0.0'
   spec.add_runtime_dependency 'rdf-rdfa',          '2.0.0'
+  spec.add_runtime_dependency 'rdf-xsd',           '2.0.0'
   spec.add_runtime_dependency 'rdf-rdfxml',        '2.0.0'
   spec.add_runtime_dependency 'rdf-trig',          '2.0.0'
   spec.add_runtime_dependency 'rdf-trix',          '2.0.0'
   spec.add_runtime_dependency 'rdf-turtle',        '2.0.0'
-
-  ## bel.rb plugin - annotation/namespace search
-  spec.add_runtime_dependency 'bel-search-sqlite', '~> 1.0.0'
-
-  ## bel.rb plugin - RDF repository using Apache Jena
-  spec.add_runtime_dependency 'bel-rdf-jena',      '~> 1.0.0'
 
   ## Mongo - Faceted search of nanopub.
   spec.add_runtime_dependency 'mongo',             '1.12.5'
