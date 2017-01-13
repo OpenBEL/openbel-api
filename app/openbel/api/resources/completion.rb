@@ -13,7 +13,7 @@ module OpenBEL
           property :label,          item[:label]
           property :value,          item[:value]
           property :caret_position, item[:caret_position]
-          property :semantics,      item[:semantics]
+          property :validation,     item[:validation]
         end
       end
 
