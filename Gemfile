@@ -15,3 +15,4 @@ gem 'bel_parser',        path: at_root('./subprojects/bel_parser'),        platf
 gem 'bel',               path: at_root('./subprojects/bel'),               platforms: :jruby
 gem 'bel-rdf-jena',      path: at_root('./subprojects/bel-rdf-jena'),      platforms: :jruby
 gem 'bel-search-sqlite', path: at_root('./subprojects/bel-search-sqlite'), platforms: :jruby
+gem 'rdf-jena',          path: at_root('./subprojects/rdf-jena'),          platforms: :jruby

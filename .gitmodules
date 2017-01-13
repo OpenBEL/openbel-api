@@ -14,3 +14,7 @@
 	path = subprojects/bel_parser
 	url = git@github.com:OpenBEL/bel_parser.git
 	branch = next
+[submodule "subprojects/rdf-jena"]
+	path = subprojects/rdf-jena
+	url = git@github.com:abargnesi/rdf-jena.git
+	branch = master
