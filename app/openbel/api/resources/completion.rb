@@ -8,13 +8,12 @@ module OpenBEL
         adapter Oat::Adapters::HAL
         schema do
           type :completion
-          property :type,              item[:type]
-          property :id,                item[:id]
-          property :label,             item[:label]
-          property :value,             item[:value]
-          property :caret_position,    item[:caret_position]
-          property :semantics,         item[:semantics]
-          property :semantic_warnings, item[:semantic_warnings]
+          property :type,           item[:type]
+          property :id,             item[:id]
+          property :label,          item[:label]
+          property :value,          item[:value]
+          property :caret_position, item[:caret_position]
+          property :semantics,      item[:semantics]
         end
       end
 
