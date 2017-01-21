@@ -295,8 +295,9 @@ module OpenBEL
           )
         end
 
-        message             = ''
-        terms               = ast.first.traverse.select { |node| node.type == :term }.to_a
+        message = ''
+        terms   = ast.first.traverse.select { |node| node.type == :term }.to_a
+
         semantics_functions =
           BELParser::Language::Semantics.semantics_functions.reject { |fun|
             fun == BELParser::Language::Semantics::SignatureMapping
@@ -343,6 +344,7 @@ module OpenBEL
 
             {
               term:               bel_term,
+              valid:              term_result.valid_semantics?,
               valid_signatures:   term_result.valid_signature_mappings.map(&:to_s),
               invalid_signatures: term_result.invalid_signature_mappings.map(&:to_s)
             }
