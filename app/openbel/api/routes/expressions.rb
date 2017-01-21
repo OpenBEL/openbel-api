@@ -215,7 +215,6 @@ module OpenBEL
           )
         end
 
-
         response.headers['Content-Type'] = 'application/json'
         MultiJson.dump({
           :expression_components => statement_components(statement, flatten),
@@ -271,19 +270,20 @@ module OpenBEL
       get '/api/expressions/*/validation/?' do
         bel = params[:splat].first
 
-        if request.accept.any? { |accept| accept.to_s == 'application/json' }
-          filter =
-            BELParser::ASTFilter.new(
-              BELParser::ASTGenerator.new("#{bel}\n"),
-              :simple_statement,
-              :observed_term,
-              :nested_statement
-            )
-          _, _, ast = filter.each.first
+        filter =
+          BELParser::ASTFilter.new(
+            BELParser::ASTGenerator.new("#{bel}\n"),
+            :simple_statement,
+            :observed_term,
+            :nested_statement
+          )
+        _, _, ast = filter.each.first
 
-          if ast.nil? || ast.empty?
-            response.headers['Content-Type'] = 'application/json'
-            return render_json(
+        if ast.nil? || ast.empty?
+          halt(
+            400,
+            {'Content-Type' => 'application/json'},
+            render_json(
               {
                 valid_syntax:    false,
                 valid_semantics: false,
@@ -292,62 +292,65 @@ module OpenBEL
                 term_signatures: []
               }
             )
-          end
+          )
+        end
 
-          message             = ''
-          terms               = ast.first.traverse.select { |node| node.type == :term }.to_a
-          semantics_functions =
-            BELParser::Language::Semantics.semantics_functions.reject { |fun|
-              fun == BELParser::Language::Semantics::SignatureMapping
-            }
+        message             = ''
+        terms               = ast.first.traverse.select { |node| node.type == :term }.to_a
+        semantics_functions =
+          BELParser::Language::Semantics.semantics_functions.reject { |fun|
+            fun == BELParser::Language::Semantics::SignatureMapping
+          }
 
-          semantic_warnings =
-            ast
-              .first
-              .traverse
-              .flat_map { |node|
-                semantics_functions.flat_map { |func|
-                  func.map(node, @spec, @supported_namespaces)
-                }
-              }
-              .compact
-
-          if semantic_warnings.empty?
-            valid = true
-          else
-            valid = false
-            message =
-              semantic_warnings.reduce('') { |msg, warning|
-                msg << "#{warning}\n"
-              }
-            message << "\n"
-          end
-
-          urir      = BELParser::Resource.default_uri_reader
-          urlr      = BELParser::Resource.default_url_reader
-          validator = BELParser::Language::ExpressionValidator.new(@spec, @supported_namespaces, urir, urlr)
-          term_semantics =
-            terms.map { |term|
-              term_result = validator.validate(term)
-              valid      &= term_result.valid_semantics?
-              bel_term    = serialize(term)
-
-              unless valid
-                message << "Term: #{bel_term}\n"
-                term_result.invalid_signature_mappings.map { |m|
-                  message << "  #{m}\n"
-                }
-                message << "\n"
-              end
-
-              {
-                term:               bel_term,
-                valid_signatures:   term_result.valid_signature_mappings.map(&:to_s),
-                invalid_signatures: term_result.invalid_signature_mappings.map(&:to_s)
+        semantic_warnings =
+          ast
+            .first
+            .traverse
+            .flat_map { |node|
+              semantics_functions.flat_map { |func|
+                func.map(node, @spec, @supported_namespaces)
               }
             }
+            .compact
 
-          response.headers['Content-Type'] = 'application/json'
+        if semantic_warnings.empty?
+          valid = true
+        else
+          valid = false
+          message =
+            semantic_warnings.reduce('') { |msg, warning|
+              msg << "#{warning}\n"
+            }
+          message << "\n"
+        end
+
+        urir      = BELParser::Resource.default_uri_reader
+        urlr      = BELParser::Resource.default_url_reader
+        validator = BELParser::Language::ExpressionValidator.new(@spec, @supported_namespaces, urir, urlr)
+        term_semantics =
+          terms.map { |term|
+            term_result = validator.validate(term)
+            valid      &= term_result.valid_semantics?
+            bel_term    = serialize(term)
+
+            unless valid
+              message << "Term: #{bel_term}\n"
+              term_result.invalid_signature_mappings.map { |m|
+                message << "  #{m}\n"
+              }
+              message << "\n"
+            end
+
+            {
+              term:               bel_term,
+              valid_signatures:   term_result.valid_signature_mappings.map(&:to_s),
+              invalid_signatures: term_result.invalid_signature_mappings.map(&:to_s)
+            }
+          }
+
+        halt(
+          valid ? 200 : 422,
+          {'Content-Type' => 'application/json'},
           render_json(
             {
               validation: {
@@ -360,16 +363,7 @@ module OpenBEL
               }
             }
           )
-        else
-          response.headers['Content-Type'] = 'text/plain'
-          @expression_validator.each(
-            StringIO.new("#{bel}\n")
-          ) do |(_, _, _, result)|
-            return result.to_s
-          end
-
-          return "Invalid syntax."
-        end
+        )
       end
     end
   end
