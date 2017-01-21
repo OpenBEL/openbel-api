@@ -25,11 +25,31 @@ module OpenBEL
         tdb = OpenBEL::Settings[:resource_rdf][:jena][:tdb_directory]
         @rr = BEL::RdfRepository.plugins[:jena].create_repository(:tdb_directory => tdb)
 
-
-        # Annotations using RdfRepository
-        @annotations                    = BEL::Resource::Annotations.new(@rr)
+        # Annotations and Namespaces using RdfRepository
+        @annotations                   = BEL::Resource::Annotations.new(@rr)
+        @namespaces                    = BEL::Resource::Namespaces.new(@rr)
         @annotation_transform          = AnnotationTransform.new(@annotations)
         @annotation_grouping_transform = AnnotationGroupingTransform.new
+        @default_references            = {
+          :annotations => @annotations.each.map { |an|
+            prefix = an.prefix.first.capitalize
+
+            {
+              :keyword => prefix,
+              :type    => :uri,
+              :domain  => an.uri.to_s
+            }
+          },
+          :namespaces  => @namespaces.each.map  { |ns|
+            prefix = ns.prefix.first.upcase
+
+            {
+              :keyword => prefix,
+              :type    => :uri,
+              :domain  => ns.uri.to_s
+            }
+          }
+        }
       end
 
       configure :development do |config|
@@ -126,7 +146,10 @@ module OpenBEL
           )
         end
 
-        nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_obj[:nanopub])
+        nanopub_hash                = nanopub_obj[:nanopub]
+        nanopub_hash[:references] ||= @default_references
+
+        nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
         # STDERR.puts "DBG: nanopub Variable config is #{nanopub.inspect}"
 
         # Standardize annotations.
@@ -225,9 +248,11 @@ module OpenBEL
           )
         end
 
+        nanopub_hash                = nanopub_obj[:nanopub]
+        nanopub_hash[:references] ||= @default_references
+
         # transformation
-        nanopub = nanopub_obj[:nanopub]
-        nanopub  = ::BEL::Nanopub::Nanopub.create(nanopub)
+        nanopub  = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
         @annotation_transform.transform_nanopub!(nanopub, base_url)
 
         facets                  = map_nanopub_facets(nanopub)
