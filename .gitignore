@@ -22,3 +22,5 @@ openbel-api-config.yml
 # docker development
 containers/data/data/*
 containers/api/config.yml
+
+.idea
