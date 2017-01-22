@@ -257,25 +257,17 @@ API documentation with *Try it* functionality is available here [OpenBEL API doc
 
 Releases of *openbel-api* should follow these steps:
 
-1. Update the version in the `VERSION` file.
 
-2. Add changes for this version to the `CHANGELOG` file. This file is modelled after http://keepachangelog.com/.
+1. Add changes for this version to the `CHANGELOG` file. This file is modelled after http://keepachangelog.com/.
 
-3. Push the changes for `VERSION` and `CHANGELOG` on the master branch.
+1. Push the changes for `CHANGELOG` on the master branch.
 
-4. Ensure the *master* branch has all of the required changes.
+1. Ensure the *master* branch has all of the required changes.
 
-5. Create a git tag, named after the version, on the *master* branch. Push this tag to GitHub.
+1. Run `make deploy-{major|minor|patch}` in order to bump the version, tag and push tag
 
-6. Create the Ruby and Java RubyGem for *openbel-api*.
+1. Create a release on GitHub for this version and attach the gem file (openbel-api-VERSION-java.gem)
 
-  `gem build .gemspec`
-
-7. Create a release on GitHub for this version and attach the gem file.
-
-8. Push gems to RubyGems.
-
-  `gem push openbel-api-VERSION-java.gem`
 
 -----
 

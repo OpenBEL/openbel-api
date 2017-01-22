@@ -3,6 +3,24 @@ All notable changes to openbel-api will be documented in this file. The curated 
 
 This project adheres to [Semantic Versioning][Semantic Versioning].
 
+## [1.1.0][1.1.0] - 2017-01-21
+
+### Added
+- Updated BEL Statement Completion - added semantic completion
+
+### Changed
+- Enhanced deployment tooling using make and bumpversion
+
+- Altered validation to return 422 when BEL Statement is invalid
+
+- Annotation and Namespace API endpoints with prefixes will uppercase prefix as prefixes are now stored in Uppercase format
+
+- POST/PUT /api/nanopubs uses default namespaces/annotations if references object is not part of nanopub
+
+- Now /completions and /validation both return the same resource type for the "validation" JSON object
+
+- Added location to POST /api/nanopub to response body
+
 ## [1.0.4][1.0.4] - 2016-12-28
 ### Added
 - Docker containers for development and production use of OpenBEL
