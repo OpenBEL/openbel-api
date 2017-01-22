@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openbel-api (1.1.0-java)
+    openbel-api (1.0.5-java)
       bel (~> 1.1.0)
       bel-rdf-jena (~> 1.1.0)
       bel-search-sqlite (~> 1.1.0)
@@ -46,7 +46,7 @@ PATH
 PATH
   remote: subprojects/bel_parser
   specs:
-    bel_parser (1.1.0-java)
+    bel_parser (1.1.1-java)
       dbm-mapdb3 (~> 0.6.0.beta)
       levenshtein-jruby (= 0.1.0)
       sparql-client (~> 2.0.0)
@@ -179,4 +179,4 @@ DEPENDENCIES
   rdf-jena!
 
 BUNDLED WITH
-   1.13.6
+   1.13.7
