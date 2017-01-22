@@ -22,9 +22,10 @@ module OpenBEL
           if nanopub
             experiment_context = nanopub.experiment_context
             if experiment_context != nil
-              experiment_context.values.map! { |annotation|
-                transform_annotation(annotation, base_url)
-              }
+              nanopub.experiment_context.values =
+                experiment_context.values.flat_map { |annotation|
+                  transform_annotation(annotation, base_url)
+                }
             end
           end
         end
@@ -62,29 +63,49 @@ module OpenBEL
         def structured_annotation(name, value, base_url)
           annotation = @annotations.find(name).first
           if annotation
+            annotation_label  = annotation.pref_label.first.to_s
+            annotation_prefix = annotation.prefix.first.to_s
+
             if value.respond_to?(:each)
-              {
-                :name  => annotation.prefLabel.to_s,
-                :value => value.map { |v|
-                  mapped = annotation.find(v).first
-                  mapped ? mapped.prefLabel.to_s : v
-                }
+              value.map { |v|
+                annotation_value = annotation.find(v).first
+
+                if annotation_value
+                  identifier  = annotation_value.identifier.first.to_s
+                  value_label = annotation_value.pref_label.first.to_s
+                  {
+                    :name  => annotation_label,
+                    :value => value_label,
+                    :uri   => ANNOTATION_VALUE_URI % [
+                      base_url,
+                      annotation_prefix,
+                      identifier
+                    ]
+                  }
+                else
+                  {
+                    :name  => annotation_label,
+                    :value => v
+                  }
+                end
               }
             else
               annotation_value = annotation.find(value).first
+              identifier       = annotation_value.identifier.first.to_s
+              value_label      = annotation_value.pref_label.first.to_s
               if annotation_value
                 {
-                  :name  => annotation.prefLabel.to_s,
-                  :value => annotation_value.prefLabel.to_s,
+                  :name  => annotation_label,
+                  :value => value_label,
                   :uri   => ANNOTATION_VALUE_URI % [
                     base_url,
-                    annotation.prefix.to_s,
-                    annotation_value.identifier.to_s
+                    annotation_prefix,
+                    identifier
                   ]
                 }
               else
                 {
-                  :name  => annotation.prefLabel.to_s,
+                  :name  => annotation_label,
                   :value => value
                 }
               end
