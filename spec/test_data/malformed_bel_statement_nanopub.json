@@ -1,0 +1,80 @@
+{
+  "nanopub": {
+    "bel_statement": "act(p(sfam:\"PRKC Family\"),ma(default:\"Kinase Activity\")) -> (p(HGNC:VEGFA",
+    "citation": {
+      "type": "PubMed",
+      "name": "The Journal of biological chemistry",
+      "id": "11751905",
+      "date": "2002-01-20",
+      "authors": [
+        "Podar K",
+        "Tai YT",
+        "Lin BK",
+        "Narsimhan RP",
+        "Sattler M",
+        "Kijima T",
+        "Salgia R",
+        "Gupta D",
+        "Chauhan D",
+        "Anderson KC"
+      ],
+      "comment": ""
+    },
+    "support": null,
+    "experiment_context": [
+      {
+        "name": "DO",
+        "value": [
+          "multiple myeloma",
+          "sex differentiation disease"
+        ]
+      },
+      {
+        "name": "Evidence",
+        "value": "(a) Co-immunoprecipitation of CADTK and β1-integrin with PKCα. (b) constitutive association\\n"
+      },
+      {
+        "name": "TAXON",
+        "value": [
+          "9606",
+          "10090"
+        ]
+      },
+      {
+        "name": "TextLocation",
+        "value": "Legend"
+      },
+      {
+        "name": "Mesh Cellular Structures",
+        "value": "Cellulosomes"
+      }
+    ],
+    "metadata": [
+      {
+        "name": "bel_version",
+        "value": "2.0"
+      },
+      {
+        "name": "document_header",
+        "value": {
+          "BELVersion": "2.0",
+          "Name": "BEL Framework Small Corpus Document",
+          "Description": "Approximately 2000 hand curated statements drawn from 57 PubMeds.",
+          "Version": "20150611",
+          "Copyright": "Copyright (c) 2011-2015, Selventa. All Rights Reserved.",
+          "Authors": [
+            "Selventa"
+          ],
+          "Licenses": [
+            "Creative Commons Attribution-Non-Commercial-ShareAlike 3.0 Unported License"
+          ],
+          "ContactInfo": "support@belframework.org"
+        }
+      },
+      {
+        "name": "dataset",
+        "value": "BEL Framework Small Corpus Document/20150611"
+      }
+    ]
+  }
+}
