@@ -311,10 +311,30 @@ module OpenBEL
           )
         end
 
-        nanopub_hash                = nanopub_obj[:nanopub]
-        nanopub_hash[:references] ||= @default_references
+        nanopub_hash = nanopub_obj[:nanopub]
+        if nanopub_hash[:references]
+          nanopub_hash[:references] = {
+            :annotations => nanopub_hash[:references][:annotations].map { |anno|
+              {
+                :keyword => anno[:keyword],
+                :type    => :uri,
+                :domain  => anno[:uri]
+              }
+            },
+            :namespaces  => nanopub_hash[:references][:namespaces].map { |ns|
+              {
+                :keyword => ns[:keyword],
+                :type    => :uri,
+                :domain  => ns[:uri]
+              }
+            }
+          }
+        else
+          nanopub_hash[:references] = @default_references
+        end
 
         nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+
         # STDERR.puts "DBG: nanopub Variable config is #{nanopub.inspect}"
 
         # Standardize annotations.
@@ -418,8 +438,27 @@ module OpenBEL
           )
         end
 
-        nanopub_hash                = nanopub_obj[:nanopub]
-        nanopub_hash[:references] ||= @default_references
+        nanopub_hash = nanopub_obj[:nanopub]
+        if nanopub_hash[:references]
+          nanopub_hash[:references] = {
+            :annotations => nanopub_hash[:references][:annotations].map { |anno|
+              {
+                :keyword => anno[:keyword],
+                :type    => :uri,
+                :domain  => anno[:uri]
+              }
+            },
+            :namespaces  => nanopub_hash[:references][:namespaces].map { |ns|
+              {
+                :keyword => ns[:keyword],
+                :type    => :uri,
+                :domain  => ns[:uri]
+              }
+            }
+          }
+        else
+          nanopub_hash[:references] = @default_references
+        end
 
         # transformation
         nanopub  = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
