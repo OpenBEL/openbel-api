@@ -1,0 +1,45 @@
+{
+  "nanopub": {
+    "bel_statement": "act(p(SFAM:\"PRKC Family\"), ma(DEFAULT:\"Kinase Activity\")) -> (p(HGNC:VEGFA) -> act(p(HGNC:PTK2B)))",
+    "citation": {
+      "type": "PubMed",
+      "name": "The Journal of biological chemistry",
+      "id": "11751905",
+      "date": "2002-01-20",
+      "authors": [
+        "Podar K",
+        "Tai YT",
+        "Lin BK",
+        "Narsimhan RP",
+        "Sattler M",
+        "Kijima T",
+        "Salgia R",
+        "Gupta D",
+        "Chauhan D",
+        "Anderson KC"
+      ],
+      "comment": ""
+    },
+    "support": null,
+    "experiment_context": [
+      {
+        "name":  "TAXON",
+        "value": "562"
+      },
+      {
+        "name": "Evidence",
+        "value": "(a) Co-immunoprecipitation of CADTK and β1-integrin with PKCα. (b) constitutive association\\n"
+      },
+      {
+        "name": "TextLocation",
+        "value": "Legend"
+      }
+    ],
+    "metadata": [
+      {
+        "name": "bel_version",
+        "value": "2.0"
+      }
+    ]
+  }
+}
