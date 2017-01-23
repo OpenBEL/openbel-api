@@ -9,6 +9,7 @@ define deploy_commands
     @echo "Update CHANGELOG"
     @echo "Create Github release and attach the gem file"
 
+    git push
 	git push --tags
 endef
 
