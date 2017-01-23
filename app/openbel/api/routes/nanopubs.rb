@@ -146,11 +146,17 @@ module OpenBEL
           experiment_context.values.each do |annotation|
             name, value = annotation.values_at(:name, :value)
             found_annotation  = @annotations.find(name).first
-            next unless found_annotation
 
-            if found_annotation.find(value).first == nil
-              invalid_annotations << annotation
+            if found_annotation
+              if found_annotation.find(value).first == nil
+                # structured annotations, without a match, is invalid
+                invalid_annotations << annotation
+              else
+                # structured annotations, with a match, is invalid
+                valid_annotations << annotation
+              end
             else
+              # free annotations considered valid
               valid_annotations << annotation
             end
           end
@@ -195,13 +201,19 @@ module OpenBEL
             ]
           end
 
-          message = ''
-          terms   = ast.first.traverse.select { |node| node.type == :term }.to_a
+          urir      = BELParser::Resource.default_uri_reader
+          urlr      = BELParser::Resource.default_url_reader
+          validator = BELParser::Language::ExpressionValidator.new(@spec, @supported_namespaces, urir, urlr)
+          message   = ''
+          terms     = ast.first.traverse.select { |node| node.type == :term }.to_a
 
           semantics_functions =
             BELParser::Language::Semantics.semantics_functions.reject { |fun|
               fun == BELParser::Language::Semantics::SignatureMapping
             }
+
+          result        = validator.validate(ast.first)
+          syntax_errors = result.syntax_results.map(&:to_s)
 
           semantic_warnings =
             ast
@@ -214,20 +226,22 @@ module OpenBEL
               }
               .compact
 
-          if semantic_warnings.empty?
+          if syntax_errors.empty? && semantic_warnings.empty?
             valid = true
           else
-            valid = false
-            message =
+            valid   = false
+            message = ''
+            message +=
+              syntax_errors.reduce('') { |msg, error|
+                msg << "#{error}\n"
+              }
+            message +=
               semantic_warnings.reduce('') { |msg, warning|
                 msg << "#{warning}\n"
               }
             message << "\n"
           end
 
-          urir      = BELParser::Resource.default_uri_reader
-          urlr      = BELParser::Resource.default_url_reader
-          validator = BELParser::Language::ExpressionValidator.new(@spec, @supported_namespaces, urir, urlr)
           term_semantics =
             terms.map { |term|
               term_result = validator.validate(term)
@@ -245,6 +259,7 @@ module OpenBEL
               {
                 term:               bel_term,
                 valid:              term_result.valid_semantics?,
+                errors:             term_result.syntax_results.map(&:to_s),
                 valid_signatures:   term_result.valid_signature_mappings.map(&:to_s),
                 invalid_signatures: term_result.invalid_signature_mappings.map(&:to_s)
               }
@@ -257,6 +272,7 @@ module OpenBEL
               valid_syntax:    true,
               valid_semantics: valid,
               message:         valid ? 'Valid semantics' : message,
+              errors:          syntax_errors,
               warnings:        semantic_warnings.map(&:to_s),
               term_signatures: term_semantics
             }
