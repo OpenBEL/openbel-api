@@ -263,9 +263,9 @@ module OpenBEL
           ]
         end
 
-        def validate_nanopub!(nanopub)
-          stmt_result, stmt_validation     = validate_statement(nanopub.bel_statement)
-          expctx_result, expctx_validation = validate_experiment_context(nanopub.experiment_context)
+        def validate_nanopub!(bel_statement, experiment_context)
+          stmt_result, stmt_validation     = validate_statement(bel_statement)
+          expctx_result, expctx_validation = validate_experiment_context(experiment_context)
 
           return nil if stmt_result == :valid && expctx_result == :valid
 
@@ -301,7 +301,6 @@ module OpenBEL
         strict = as_bool(params[:strict]) || false
 
         nanopub_obj = read_json
-        # STDERR.puts "DBG: nanopub_obj Variable config is #{nanopub_obj.inspect}"
         schema_validation = validate_schema(keys_to_s_deep(nanopub_obj), :nanopub)
         unless schema_validation[0]
           halt(
@@ -333,23 +332,24 @@ module OpenBEL
           nanopub_hash[:references] = @default_references
         end
 
-        nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        original_bel_statement = nanopub_hash[:bel_statement]
 
-        # STDERR.puts "DBG: nanopub Variable config is #{nanopub.inspect}"
+        begin
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        rescue ArgumentError
+          nanopub_hash[:bel_statement] = nil
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        end
 
         # Standardize annotations.
         @annotation_transform.transform_nanopub!(nanopub, base_url)
 
         # Validate nanopub when strict is enabled.
-        validate_nanopub!(nanopub) if strict
+        validate_nanopub!(original_bel_statement, nanopub.experiment_context) if strict
 
-        # Build facets.
-        facets = map_nanopub_facets(nanopub)
-        hash = nanopub.to_h
-        hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
-
-        # STDERR.puts "DBG: Variable config is #{hash.inspect}"
-
+        facets               = map_nanopub_facets(nanopub)
+        hash                 = nanopub.to_h
+        hash[:bel_statement] = (hash[:bel_statement] || original_bel_statement).to_s
         hash[:facets]        = facets
         _id                  = @api.create_nanopub(hash)
 
@@ -460,14 +460,23 @@ module OpenBEL
           nanopub_hash[:references] = @default_references
         end
 
+        original_bel_statement = nanopub_hash[:bel_statement]
+
+        begin
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        rescue ArgumentError
+          nanopub_hash[:bel_statement] = nil
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        end
+
         # transformation
-        nanopub  = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
         @annotation_transform.transform_nanopub!(nanopub, base_url)
 
         # Validate nanopub when strict is enabled.
-        validate_nanopub!(nanopub) if strict
+        validate_nanopub!(original_bel_statement, nanopub.experiment_context) if strict
 
         facets                  = map_nanopub_facets(nanopub)
+        hash[:bel_statement]    = (hash[:bel_statement] || original_bel_statement).to_s
         nanopub                 = nanopub.to_h
         nanopub[:bel_statement] = nanopub.fetch(:bel_statement, nil).to_s
         nanopub[:facets]        = facets
