@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    openbel-api (1.0.5-java)
-      bel (~> 1.1.0)
-      bel-rdf-jena (~> 1.1.0)
-      bel-search-sqlite (~> 1.1.0)
+    openbel-api (1.2.2-java)
+      bel (>= 1.1.0)
+      bel-rdf-jena (>= 1.1.0)
+      bel-search-sqlite (>= 1.1.0)
       bson (= 1.12.5)
       dot_hash (= 0.5.9)
       jrjackson (= 0.3.7)
