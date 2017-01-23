@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel_parser'
 require 'cgi'
 require 'openbel/api/nanopub/mongo'
 require 'openbel/api/nanopub/facet_filter'
@@ -14,9 +15,13 @@ module OpenBEL
       include OpenBEL::Nanopub::FacetFilter
       include OpenBEL::Resource::Nanopub
       include OpenBEL::Helpers
+      include BELParser::Parsers
 
       def initialize(app)
         super
+
+        bel_version = OpenBEL::Settings[:bel][:version]
+        @spec       = BELParser::Language.specification(bel_version)
 
         mongo = OpenBEL::Settings[:nanopub_store][:mongo]
         @api  = OpenBEL::Nanopub::Nanopub.new(mongo)
@@ -50,6 +55,20 @@ module OpenBEL
             }
           }
         }
+
+        @supported_namespaces = Hash[
+          @namespaces.each.map { |ns|
+            prefix = ns.prefix.first.upcase
+
+            [
+              prefix,
+              BELParser::Expression::Model::Namespace.new(
+                prefix,
+                ns.uri
+              )
+            ]
+          }
+        ]
       end
 
       configure :development do |config|
@@ -120,6 +139,165 @@ module OpenBEL
             new_hash
           end
         end
+
+        def validate_experiment_context(experiment_context)
+          valid_annotations   = []
+          invalid_annotations = []
+          experiment_context.values.each do |annotation|
+            name, value = annotation.values_at(:name, :value)
+            found_annotation  = @annotations.find(name).first
+
+            if found_annotation
+              if found_annotation.find(value).first == nil
+                # structured annotations, without a match, is invalid
+                invalid_annotations << annotation
+              else
+                # structured annotations, with a match, is invalid
+                valid_annotations << annotation
+              end
+            else
+              # free annotations considered valid
+              valid_annotations << annotation
+            end
+          end
+
+          [
+            invalid_annotations.empty? ? :valid : :invalid,
+            {
+              :valid               => invalid_annotations.empty?,
+              :valid_annotations   => valid_annotations,
+              :invalid_annotations => invalid_annotations,
+              :message             =>
+                invalid_annotations
+                  .map { |annotation|
+                    name, value = annotation.values_at(:name, :value)
+                    %Q{The value "#{value}" was not found in annotation "#{name}".}
+                  }
+                  .join("\n")
+            }
+          ]
+        end
+
+        def validate_statement(bel)
+          filter =
+            BELParser::ASTFilter.new(
+              BELParser::ASTGenerator.new("#{bel}\n"),
+              :simple_statement,
+              :observed_term,
+              :nested_statement
+            )
+          _, _, ast = filter.each.first
+
+          if ast.nil? || ast.empty?
+            return [
+              :syntax_invalid,
+              {
+                valid_syntax:    false,
+                valid_semantics: false,
+                message:         'Invalid syntax.',
+                warnings:        [],
+                term_signatures: []
+              }
+            ]
+          end
+
+          urir      = BELParser::Resource.default_uri_reader
+          urlr      = BELParser::Resource.default_url_reader
+          validator = BELParser::Language::ExpressionValidator.new(@spec, @supported_namespaces, urir, urlr)
+          message   = ''
+          terms     = ast.first.traverse.select { |node| node.type == :term }.to_a
+
+          semantics_functions =
+            BELParser::Language::Semantics.semantics_functions.reject { |fun|
+              fun == BELParser::Language::Semantics::SignatureMapping
+            }
+
+          result        = validator.validate(ast.first)
+          syntax_errors = result.syntax_results.map(&:to_s)
+
+          semantic_warnings =
+            ast
+              .first
+              .traverse
+              .flat_map { |node|
+                semantics_functions.flat_map { |func|
+                  func.map(node, @spec, @supported_namespaces)
+                }
+              }
+              .compact
+
+          if syntax_errors.empty? && semantic_warnings.empty?
+            valid = true
+          else
+            valid   = false
+            message = ''
+            message +=
+              syntax_errors.reduce('') { |msg, error|
+                msg << "#{error}\n"
+              }
+            message +=
+              semantic_warnings.reduce('') { |msg, warning|
+                msg << "#{warning}\n"
+              }
+            message << "\n"
+          end
+
+          term_semantics =
+            terms.map { |term|
+              term_result = validator.validate(term)
+              valid      &= term_result.valid_semantics?
+              bel_term    = serialize(term)
+
+              unless valid
+                message << "Term: #{bel_term}\n"
+                term_result.invalid_signature_mappings.map { |m|
+                  message << "  #{m}\n"
+                }
+                message << "\n"
+              end
+
+              {
+                term:               bel_term,
+                valid:              term_result.valid_semantics?,
+                errors:             term_result.syntax_results.map(&:to_s),
+                valid_signatures:   term_result.valid_signature_mappings.map(&:to_s),
+                invalid_signatures: term_result.invalid_signature_mappings.map(&:to_s)
+              }
+            }
+
+          [
+            valid ? :valid : :semantics_invalid,
+            {
+              expression:      bel,
+              valid_syntax:    true,
+              valid_semantics: valid,
+              message:         valid ? 'Valid semantics' : message,
+              errors:          syntax_errors,
+              warnings:        semantic_warnings.map(&:to_s),
+              term_signatures: term_semantics
+            }
+          ]
+        end
+
+        def validate_nanopub!(bel_statement, experiment_context)
+          stmt_result, stmt_validation     = validate_statement(bel_statement)
+          expctx_result, expctx_validation = validate_experiment_context(experiment_context)
+
+          return nil if stmt_result == :valid && expctx_result == :valid
+
+          halt(
+            422,
+            {'Content-Type' => 'application/json'},
+            render_json(
+              {
+                :nanopub_validation => {
+                  :bel_statement_validation      => stmt_validation,
+                  :experiment_context_validation => expctx_validation
+                }
+              }
+            )
+          )
+        end
       end
 
       options '/api/nanopubs' do
@@ -135,8 +313,10 @@ module OpenBEL
       post '/api/nanopubs' do
         # Validate BNJ.
         validate_media_type! "application/json"
+
+        strict = as_bool(params[:strict]) || false
+
         nanopub_obj = read_json
-        # STDERR.puts "DBG: nanopub_obj Variable config is #{nanopub_obj.inspect}"
         schema_validation = validate_schema(keys_to_s_deep(nanopub_obj), :nanopub)
         unless schema_validation[0]
           halt(
@@ -146,22 +326,46 @@ module OpenBEL
           )
         end
 
-        nanopub_hash                = nanopub_obj[:nanopub]
-        nanopub_hash[:references] ||= @default_references
+        nanopub_hash = nanopub_obj[:nanopub]
+        if nanopub_hash[:references]
+          nanopub_hash[:references] = {
+            :annotations => nanopub_hash[:references][:annotations].map { |anno|
+              {
+                :keyword => anno[:keyword],
+                :type    => :uri,
+                :domain  => anno[:uri]
+              }
+            },
+            :namespaces  => nanopub_hash[:references][:namespaces].map { |ns|
+              {
+                :keyword => ns[:keyword],
+                :type    => :uri,
+                :domain  => ns[:uri]
+              }
+            }
+          }
+        else
+          nanopub_hash[:references] = @default_references
+        end
 
-        nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
-        # STDERR.puts "DBG: nanopub Variable config is #{nanopub.inspect}"
+        original_bel_statement = nanopub_hash[:bel_statement]
+
+        begin
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        rescue ArgumentError
+          nanopub_hash[:bel_statement] = nil
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        end
 
         # Standardize annotations.
         @annotation_transform.transform_nanopub!(nanopub, base_url)
 
-        # Build facets.
-        facets = map_nanopub_facets(nanopub)
-        hash = nanopub.to_h
-        hash[:bel_statement] = hash.fetch(:bel_statement, nil).to_s
+        # Validate nanopub when strict is enabled.
+        validate_nanopub!(original_bel_statement, nanopub.experiment_context) if strict
 
-        # STDERR.puts "DBG: Variable config is #{hash.inspect}"
-
+        facets               = map_nanopub_facets(nanopub)
+        hash                 = nanopub.to_h
+        hash[:bel_statement] = (hash[:bel_statement] || original_bel_statement).to_s
         hash[:facets]        = facets
         _id                  = @api.create_nanopub(hash)
 
@@ -235,6 +439,8 @@ module OpenBEL
 
         validate_media_type! "application/json"
 
+        strict = as_bool(params[:strict]) || false
+
         ev = @api.find_nanopub_by_id(object_id)
         halt 404 unless ev
 
@@ -248,14 +454,45 @@ module OpenBEL
           )
         end
 
-        nanopub_hash                = nanopub_obj[:nanopub]
-        nanopub_hash[:references] ||= @default_references
+        nanopub_hash = nanopub_obj[:nanopub]
+        if nanopub_hash[:references]
+          nanopub_hash[:references] = {
+            :annotations => nanopub_hash[:references][:annotations].map { |anno|
+              {
+                :keyword => anno[:keyword],
+                :type    => :uri,
+                :domain  => anno[:uri]
+              }
+            },
+            :namespaces  => nanopub_hash[:references][:namespaces].map { |ns|
+              {
+                :keyword => ns[:keyword],
+                :type    => :uri,
+                :domain  => ns[:uri]
+              }
+            }
+          }
+        else
+          nanopub_hash[:references] = @default_references
+        end
+
+        original_bel_statement = nanopub_hash[:bel_statement]
+
+        begin
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        rescue ArgumentError
+          nanopub_hash[:bel_statement] = nil
+          nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
+        end
 
         # transformation
-        nanopub  = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
         @annotation_transform.transform_nanopub!(nanopub, base_url)
 
+        # Validate nanopub when strict is enabled.
+        validate_nanopub!(original_bel_statement, nanopub.experiment_context) if strict
+
         facets                  = map_nanopub_facets(nanopub)
+        hash[:bel_statement]    = (hash[:bel_statement] || original_bel_statement).to_s
         nanopub                 = nanopub.to_h
         nanopub[:bel_statement] = nanopub.fetch(:bel_statement, nil).to_s
         nanopub[:facets]        = facets

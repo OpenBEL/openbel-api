@@ -7,7 +7,7 @@ define deploy_commands
     gem push openbel-api-`cat VERSION`-java.gem
 
     @echo "Update CHANGELOG"
-    @echo "Create Github release and attach the gem file"
+    @echo "Create Github release and attach the gem file
 
     git push
 	git push --tags
