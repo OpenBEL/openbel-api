@@ -91,8 +91,6 @@ module OpenBEL
               }
             else
               annotation_value = annotation.find(value).first
-              identifier       = annotation_value.identifier.first.to_s
-              value_label      = annotation_value.pref_label.first.to_s
               if annotation_value
                 identifier  = annotation_value.identifier.first.to_s
                 value_label = annotation_value.pref_label.first.to_s
