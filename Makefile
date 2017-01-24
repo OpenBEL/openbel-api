@@ -1,5 +1,7 @@
 # Run make help to find out what the commands are
 
+## TODO add gem push submodules - only pushing openbel-api right now
+
 define deploy_commands
 
     # Build and deploy gem to RubyGems
