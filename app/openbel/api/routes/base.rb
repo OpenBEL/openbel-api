@@ -71,20 +71,21 @@ module OpenBEL
         end
 
         def base_url
-          if env['SERVER_PORT'] == 443
-            scheme = 'https'
-          else
+          STDERR.puts "DBG: Variable config is #{env.inspect}"
+          if env['SERVER_NAME'] == 'localhost'
             scheme = 'http'
+          else
+            scheme = 'https'
           end
 
           "#{scheme}://#{env['HTTP_HOST']}"
         end
 
         def url
-          if env['SERVER_PORT'] == 443
-            scheme = 'https'
-          else
+          if env['SERVER_NAME'] == 'localhost'
             scheme = 'http'
+          else
+            scheme = 'https'
           end
 
           "#{scheme}://#{env['HTTP_HOST']}/#{env['PATH_INFO']}"
