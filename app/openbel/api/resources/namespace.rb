@@ -103,24 +103,23 @@ module OpenBEL
       class NamespaceValueResourceSerializer < BaseSerializer
         adapter Oat::Adapters::HAL
         schema do
-          parts = URI(item.delete(:rdf_uri)).path.split('/')[3..-1]
-          namespace_id = parts[0]
-          namespace_value_id = parts.join('/')
+          id       = item[:namespace][:prefix]
+          value_id = item[:identifier]
 
           type     :namespace_value
           property :namespace_value, item
-          link     :self,            link_self(namespace_value_id)
-          link     :collection,      link_namespace(namespace_id)
-          link     :equivalents,     link_equivalents(namespace_value_id)
-          link     :orthologs,       link_orthologs(namespace_value_id)
+          link     :self,            link_self(id, value_id)
+          link     :collection,      link_namespace(id)
+          link     :equivalents,     link_equivalents(id, value_id)
+          link     :orthologs,       link_orthologs(id, value_id)
         end
 
         private
 
-        def link_self(id)
+        def link_self(id, value_id)
           {
             :type => :namespace_value,
-            :href => "#{base_url}/api/namespaces/#{id}"
+            :href => "#{base_url}/api/namespaces/#{id}/values/#{value_id}"
           }
         end
 
@@ -131,17 +130,17 @@ module OpenBEL
           }
         end
 
-        def link_equivalents(id)
+        def link_equivalents(id, value_id)
           {
             :type => :namespace_value_collection,
-            :href => "#{base_url}/api/namespaces/#{id}/equivalents"
+            :href => "#{base_url}/api/namespaces/#{id}/values/#{value_id}/equivalents"
           }
         end
 
-        def link_orthologs(id)
+        def link_orthologs(id, value_id)
           {
             :type => :namespace_value_collection,
-            :href => "#{base_url}/api/namespaces/#{id}/orthologs"
+            :href => "#{base_url}/api/namespaces/#{id}/values/#{value_id}/orthologs"
           }
         end
       end

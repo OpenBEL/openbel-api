@@ -103,7 +103,8 @@ module OpenBEL
         private
 
         def setup(item)
-          @annotation_id, @annotation_value_id = URI(item.uri).path.split('/')[3..-1]
+          @annotation_id       = item.annotation.prefix.first
+          @annotation_value_id = item.identifier.first
         end
 
         def link_self
