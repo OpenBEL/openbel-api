@@ -285,11 +285,14 @@ module OpenBEL
             {'Content-Type' => 'application/json'},
             render_json(
               {
-                valid_syntax:    false,
-                valid_semantics: false,
-                message:         'Invalid syntax.',
-                warnings:        [],
-                term_signatures: []
+                validation: {
+                  expression:      bel,
+                  valid_syntax:    false,
+                  valid_semantics: false,
+                  message:         'Invalid syntax.',
+                  warnings:        [],
+                  term_signatures: []
+                }
               }
             )
           )
