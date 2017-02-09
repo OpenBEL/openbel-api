@@ -245,7 +245,7 @@ API documentation with *Try it* functionality is available here [OpenBEL API doc
 
 ## Development
 
-### branches
+### Branches
 
 - master branch
   - Contains stable code. Releases are created from this branch using a tag (e.g. `MAJOR.MINOR.PATCH`).
@@ -253,7 +253,7 @@ API documentation with *Try it* functionality is available here [OpenBEL API doc
 - next branch
   - Contains unstable code. Commits should be merged into master after it stabilizes.
 
-### releases
+### Releases
 
 Releases of *openbel-api* should follow these steps:
 

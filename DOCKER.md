@@ -63,6 +63,10 @@ To stop the docker containers
 
     docker-compose -f docker-compose-prod.yml stop
 
+To change the port that production docker is running on, add ` -- --port <portnumber>`
+to the production Dockerfile at the end of the CMD:
+
+    CMD ["openbel-api", "--file", "/config/config.yml", "--", "--port", "9393"]
 
 ### Development docker
 

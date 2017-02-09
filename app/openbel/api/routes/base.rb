@@ -71,7 +71,7 @@ module OpenBEL
         end
 
         def base_url
-          STDERR.puts "DBG: Variable config is #{env.inspect}"
+          # STDERR.puts "DBG: Variable config is #{env.inspect}"
           if env['SERVER_NAME'] == 'localhost'
             scheme = 'http'
           else
