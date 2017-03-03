@@ -210,9 +210,6 @@ module OpenBEL
     end
 
     def validate_nanopub!(bel_statement, experiment_context)
-
-      STDERR.puts "DBG: Variable config is #{bel_statement.inspect}"
-
       stmt_result, stmt_validation     = validate_statement(bel_statement)
       expctx_result, expctx_validation = validate_experiment_context(experiment_context)
 
