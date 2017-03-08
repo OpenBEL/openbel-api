@@ -44,6 +44,9 @@ def run_examples():
             for bel in f:
                 cnt += 1
                 bel = bel.strip()
+
+                print(f"Running bel: {bel}")
+
                 (status, msg) = send_request(bel)
                 if status != 200:
                     error_cnt += 1
