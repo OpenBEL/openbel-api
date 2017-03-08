@@ -46,7 +46,7 @@ PATH
 PATH
   remote: subprojects/bel_parser
   specs:
-    bel_parser (1.1.1-java)
+    bel_parser (1.1.2-java)
       dbm-mapdb3 (~> 0.6.0.beta)
       levenshtein-jruby (= 0.1.0)
       sparql-client (~> 2.0.0)
