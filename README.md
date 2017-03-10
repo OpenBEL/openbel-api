@@ -245,7 +245,7 @@ API documentation with *Try it* functionality is available here [OpenBEL API doc
 
 ## Development
 
-### branches
+### Branches
 
 - master branch
   - Contains stable code. Releases are created from this branch using a tag (e.g. `MAJOR.MINOR.PATCH`).
@@ -253,7 +253,7 @@ API documentation with *Try it* functionality is available here [OpenBEL API doc
 - next branch
   - Contains unstable code. Commits should be merged into master after it stabilizes.
 
-### releases
+### Releases
 
 Releases of *openbel-api* should follow these steps:
 
@@ -272,6 +272,8 @@ Releases of *openbel-api* should follow these steps:
 -----
 
 Built with collaboration and a lot of :heart: by the [OpenBEL][OpenBEL] community.
+
+<a href="https://koding.com/"> <img src="https://koding-cdn.s3.amazonaws.com/badges/made-with-koding/v1/koding_badge_ReadmeLight.png" srcset="https://koding-cdn.s3.amazonaws.com/badges/made-with-koding/v1/koding_badge_ReadmeLight.png 1x, https://koding-cdn.s3.amazonaws.com/badges/made-with-koding/v1/koding_badge_ReadmeLight@2x.png 2x" alt="Made with Koding" /> </a>
 
 [OpenBEL]: http://www.openbel.org
 [OpenBEL Platform]: https://github.com/OpenBEL/openbel-platform

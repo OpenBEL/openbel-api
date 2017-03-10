@@ -44,8 +44,9 @@ module OpenBEL
             }
           when :namespace_value
             {
-              :type => 'namespace_value',
-              :href => "#{base_url}/api/namespaces/hgnc/#{id}"
+                # TODO Add namespace
+              # :type => 'namespace_value',
+              # :href => "#{base_url}/api/namespaces/#{namespace}/values/#{id}"
             }
           when :relationship
             {
