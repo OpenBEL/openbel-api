@@ -6,25 +6,17 @@ Usage:  program.py <customer>
 
 """
 
-
 import requests
 import json
-<<<<<<< HEAD
-
-base_url = "http://localhost:9292"
-
-files = ['bel2.0-example-statements.bel', 'bel2_document_examples.bel']
-
-=======
 import os.path
 
 base_url = "http://localhost:9292"
 
 files = [
-  f"{os.path.dirname(__file__)}/bel2.0-example-statements.bel",
-  f"{os.path.dirname(__file__)}/bel2_document_examples.bel"
+    f"{os.path.dirname(__file__)}/bel2.0-example-statements.bel",
+    f"{os.path.dirname(__file__)}/bel2_document_examples.bel"
 ]
->>>>>>> f907ee387ff6eed343592d24c2751c10d7e08b93
+
 
 def send_request(bel):
     # Issue #134
@@ -32,11 +24,7 @@ def send_request(bel):
 
     try:
         response = requests.get(
-<<<<<<< HEAD
-            url=f"{base_url}/api/expressions/{bel}/validation",
-=======
             url=f"{base_url}/api/expressions/{requests.utils.quote(bel)}/validation",
->>>>>>> f907ee387ff6eed343592d24c2751c10d7e08b93
         )
         try:
             r = response.json()
