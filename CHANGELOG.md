@@ -3,6 +3,12 @@ All notable changes to openbel-api will be documented in this file. The curated 
 
 This project adheres to [Semantic Versioning][Semantic Versioning].
 
+
+## [1.2.0][1.2.0] - 2017-01-22
+
+### Changed
+- strict=yes query param on POST /api/nanopub will result in a 422 if the BEL statement or Annotations are bad
+
 ## [1.1.0][1.1.0] - 2017-01-21
 
 ### Added

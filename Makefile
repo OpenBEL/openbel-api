@@ -1,5 +1,7 @@
 # Run make help to find out what the commands are
 
+## TODO add gem push submodules - only pushing openbel-api right now
+
 define deploy_commands
 
     # Build and deploy gem to RubyGems
@@ -7,8 +9,9 @@ define deploy_commands
     gem push openbel-api-`cat VERSION`-java.gem
 
     @echo "Update CHANGELOG"
-    @echo "Create Github release and attach the gem file
+    @echo "Create Github release and attach the gem file"
 
+    git push
 	git push --tags
 endef
 

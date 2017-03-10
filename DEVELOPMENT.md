@@ -48,3 +48,10 @@ Use Ctrl-C to stop
 #### On Docker
 
 Please see the DOCKER.md file for guidance with Docker
+
+### Running Tests
+
+
+    API_ROOT_URL=https://pmi-openbel.sbvimprover.com/api rspec -fd spec/expression/*
+
+You will need to install the **hyperclient** gem first with: `gem install hyperclient`

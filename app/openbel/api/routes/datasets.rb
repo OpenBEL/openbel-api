@@ -136,28 +136,28 @@ module OpenBEL
               )
             end
 
-            datasets         = @rr.query_pattern(RDF::Statement.new(nil, RDF.type, VOID.Dataset))
-            existing_dataset = datasets.find { |dataset_statement|
-              @rr.has_statement?(
-                  RDF::Statement.new(dataset_statement.subject, DC.identifier, identifier_statement.object)
-              )
-            }
+            # datasets         = @rr.query_pattern(RDF::Statement.new(nil, RDF.type, VOID.Dataset))
+            # existing_dataset = datasets.find { |dataset_statement|
+            #   @rr.has_statement?(
+            #       RDF::Statement.new(dataset_statement.subject, DC.identifier, identifier_statement.object)
+            #   )
+            # }
 
-            if existing_dataset
-              dataset_uri = existing_dataset.subject.to_s
-              headers 'Location' => dataset_uri
-              halt(
-                  409,
-                  { 'Content-Type' => 'application/json' },
-                  render_json(
-                      {
-                          :status => 409,
-                          :msg => %Q{The dataset document matches an existing dataset resource by identifier "#{identifier_statement.object}".},
-                          :location => dataset_uri
-                      }
-                  )
-              )
-            end
+            # if existing_dataset
+            #   dataset_uri = existing_dataset.subject.to_s
+            #   headers 'Location' => dataset_uri
+            #   halt(
+            #       409,
+            #       { 'Content-Type' => 'application/json' },
+            #       render_json(
+            #           {
+            #               :status => 409,
+            #               :msg => %Q{The dataset document matches an existing dataset resource by identifier "#{identifier_statement.object}".},
+            #               :location => dataset_uri
+            #           }
+            #       )
+            #   )
+            # end
 
             [void_dataset_uri, void_dataset]
           ensure
@@ -216,6 +216,7 @@ module OpenBEL
 
           dataset
         end
+
       end
 
       options '/api/datasets' do
@@ -270,6 +271,8 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
         # Check dataset in request for suitability and conflict with existing resources.
         void_dataset_uri, void_dataset = check_dataset(io, type)
 
+        # STDERR.puts "DBG: Variable config is #{void_dataset_uri.inspect}"
+
         # Create dataset in RDF.
         @rr.insert_statements(void_dataset)
 
@@ -297,6 +300,13 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
           # Create dataset field for efficient removal.
           hash[:_dataset]            = dataset_id
           hash[:bel_statement]       = hash[:bel_statement].to_s
+
+          # Validate nanopub
+          original_bel_statement = hash[:bel_statement].to_s
+
+          # STDERR.puts "DBG: Variable config is #{original_bel_statement.inspect}"
+          # STDERR.puts "DBG: Variable config is #{nanopub.experiment_context.inspect}"
+          # validate_nanopub!(original_bel_statement, nanopub.experiment_context)
 
           nanopub_batch << hash
 
@@ -335,6 +345,7 @@ the "multipart/form-data" content type. Allowed dataset content types are: #{ACC
 
         status 201
         headers 'Location' => void_dataset_uri.to_s
+        render_json({"Location": void_dataset_uri.to_s})
       end
 
       get '/api/datasets/:id' do
