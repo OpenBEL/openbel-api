@@ -12,6 +12,9 @@ import os.path
 
 base_url = "http://localhost:9292"
 
+# Pull these from the repo: openbel/language/version_2.0/*.bel
+# I softlink them into the bin dir
+
 files = [
     f"{os.path.dirname(__file__)}/bel2.0-example-statements.bel",
     f"{os.path.dirname(__file__)}/bel2_document_examples.bel"
