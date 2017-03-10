@@ -9,11 +9,14 @@ Usage:  program.py <customer>
 
 import requests
 import json
+import os.path
 
 base_url = "http://localhost:9292"
 
-files = ['bel2.0-example-statements.bel', 'bel2_document_examples.bel']
-
+files = [
+  f"{os.path.dirname(__file__)}/bel2.0-example-statements.bel",
+  f"{os.path.dirname(__file__)}/bel2_document_examples.bel"
+]
 
 def send_request(bel):
     # Issue #134
