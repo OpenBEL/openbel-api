@@ -54,7 +54,7 @@ PATH
 PATH
   remote: subprojects/bel
   specs:
-    bel (1.1.0)
+    bel (1.1.1)
       bel_parser (~> 1.1.0)
       ffi (= 1.9.8)
       rdf (~> 2.0.0)
@@ -179,4 +179,4 @@ DEPENDENCIES
   rdf-jena!
 
 BUNDLED WITH
-   1.13.7
+   1.14.6
