@@ -24,7 +24,7 @@ def send_request(bel):
 
     try:
         response = requests.get(
-            url=f"{base_url}/api/expressions/{bel}/validation",
+            url=f"{base_url}/api/expressions/{requests.utils.quote(bel)}/validation",
         )
         try:
             r = response.json()
