@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openbel-api (1.2.6-java)
+    openbel-api (1.2.7-java)
       bel (~> 1.1.0)
       bel-rdf-jena (~> 1.1.0)
       bel-search-sqlite (~> 1.1.0)
