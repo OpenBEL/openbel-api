@@ -336,7 +336,6 @@ module OpenBEL
         validate_nanopub!(original_bel_statement, nanopub.experiment_context) if strict
 
         facets                  = map_nanopub_facets(nanopub)
-        hash[:bel_statement]    = (hash[:bel_statement] || original_bel_statement).to_s
         nanopub                 = nanopub.to_h
         nanopub[:bel_statement] = nanopub.fetch(:bel_statement, nil).to_s
         nanopub[:facets]        = facets

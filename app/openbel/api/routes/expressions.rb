@@ -176,8 +176,13 @@ module OpenBEL
         caret_position = (params[:caret_position] || bel.length).to_i
         halt 400 unless bel and caret_position
 
+        include_invalid_semantics = as_bool(params[:include_invalid_semantics])
+
         begin
-          completions = BELParser::Completion.complete(bel, @spec, @search, @supported_namespaces, caret_position)
+          completions =
+            BELParser::Completion.complete(
+              bel, @spec, @search, @supported_namespaces, caret_position, include_invalid_semantics
+            )
         rescue IndexError => ex
           halt(
             400,

@@ -6,13 +6,19 @@ Usage:  program.py <customer>
 
 """
 
-
 import requests
 import json
+import os.path
 
 base_url = "http://localhost:9292"
 
-files = ['bel2.0-example-statements.bel', 'bel2_document_examples.bel']
+# Pull these from the repo: openbel/language/version_2.0/*.bel
+# I softlink them into the bin dir
+
+files = [
+    f"{os.path.dirname(__file__)}/bel2.0-example-statements.bel",
+    f"{os.path.dirname(__file__)}/bel2_document_examples.bel"
+]
 
 
 def send_request(bel):
@@ -21,7 +27,7 @@ def send_request(bel):
 
     try:
         response = requests.get(
-            url=f"{base_url}/api/expressions/{bel}/validation",
+            url=f"{base_url}/api/expressions/{requests.utils.quote(bel)}/validation",
         )
         try:
             r = response.json()
