@@ -321,6 +321,7 @@ module OpenBEL
         end
 
         original_bel_statement = nanopub_hash[:bel_statement]
+        # STDERR.puts "DBG: Variable config is #{original_bel_statement.inspect}"
 
         begin
           nanopub = ::BEL::Nanopub::Nanopub.create(nanopub_hash)
@@ -337,9 +338,10 @@ module OpenBEL
 
         facets                  = map_nanopub_facets(nanopub)
         nanopub                 = nanopub.to_h
-        nanopub[:bel_statement] = nanopub.fetch(:bel_statement, nil).to_s
+        nanopub[:bel_statement] = original_bel_statement.to_s
         nanopub[:facets]        = facets
 
+        # STDERR.puts "DBG: Variable config is #{nanopub.inspect}"
         @api.update_nanopub_by_id(object_id, nanopub)
 
         status 202
